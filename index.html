@@ -20,13 +20,17 @@
             theme: {
                 extend: {
                     colors: {
-                        dark: { bg: '#0A0E17', card: '#131927', surface: '#1A2235' },
-                        neon: { cyan: '#00E5FF', green: '#00E676', red: '#FF1744' }
+                        dark: { bg: '#080C14', card: '#111724', surface: '#1A2235' },
+                        bank: {
+                            balance: '#00E5FF',  // Cyan
+                            income: '#00E676',   // Green
+                            expense: '#FF1744'   // Red
+                        }
                     },
                     boxShadow: {
-                        'glow-cyan': '0 0 20px -5px rgba(0, 229, 255, 0.4)',
-                        'glow-green': '0 0 20px -5px rgba(0, 230, 118, 0.4)',
-                        'glow-red': '0 0 20px -5px rgba(255, 23, 68, 0.4)',
+                        'glow-balance': '0 0 20px -5px rgba(0, 229, 255, 0.4)',
+                        'glow-income': '0 0 20px -5px rgba(0, 230, 118, 0.4)',
+                        'glow-expense': '0 0 20px -5px rgba(255, 23, 68, 0.4)',
                     }
                 }
             }
@@ -34,46 +38,47 @@
     </script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800;900&display=swap');
         
         body { 
             font-family: 'Inter', sans-serif;
-            background-color: #0A0E17;
+            background-color: #080C14;
             color: #FFFFFF;
             -webkit-tap-highlight-color: transparent;
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* עיצוב כרטיסים נקי ויוקרתי */
-        .charcoal-card {
-            background: rgba(19, 25, 39, 0.8);
+        /* כרטיס בנקאי יוקרתי */
+        .bank-card {
+            background: linear-gradient(145deg, rgba(26, 34, 53, 0.8) 0%, rgba(17, 23, 36, 0.95) 100%);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-radius: 1.5rem;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        /* מסגרת לוגו מודרנית (במקום העיגול המוזר) */
+        .bank-card-main {
+            background: linear-gradient(135deg, #111724 0%, #0A0E17 100%);
+            border-top: 1px solid rgba(0, 229, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 1px 20px rgba(0, 229, 255, 0.05);
+        }
+
         .premium-logo-box {
             background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
             border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.2);
-            padding: 4px;
+            border-radius: 1.2rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            padding: 3px;
         }
-        .premium-logo-box img {
-            border-radius: 1.25rem;
-        }
+        .premium-logo-box img { border-radius: 1rem; }
 
-        .border-glow-cyan { border: 1px solid rgba(0, 229, 255, 0.3); box-shadow: 0 0 20px rgba(0, 229, 255, 0.1); }
-        .text-glow-cyan { text-shadow: 0 0 15px rgba(0, 229, 255, 0.6); color: #00E5FF; }
-
-        .hover-bounce:active { transform: scale(0.96); }
+        .hover-press:active { transform: scale(0.97); }
 
         .cyber-input {
-            background: rgba(10, 14, 23, 0.8);
+            background: rgba(8, 12, 20, 0.8);
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 1.2rem;
             padding: 1.25rem;
@@ -82,14 +87,28 @@
             color: #FFFFFF;
             font-weight: 600;
             transition: all 0.3s ease;
+            text-align: right;
         }
-        .cyber-input:focus { border-color: #00E5FF; box-shadow: 0 0 15px rgba(0, 229, 255, 0.2); background: rgba(19, 25, 39, 1); }
+        .cyber-input:focus { border-color: #00E5FF; box-shadow: 0 0 15px rgba(0, 229, 255, 0.15); background: rgba(17, 23, 36, 1); }
 
         @keyframes fadeInRise {
-            from { opacity: 0; transform: translateY(20px); filter: blur(5px); }
+            from { opacity: 0; transform: translateY(15px); filter: blur(3px); }
             to { opacity: 1; transform: translateY(0); filter: blur(0); }
         }
-        .animate-rise { animation: fadeInRise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; }
+        .animate-rise { animation: fadeInRise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; }
+
+        /* נקודת חיווי זמן אמת */
+        @keyframes livePulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(0, 230, 118, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
+        }
+        .live-dot {
+            width: 8px; height: 8px;
+            background-color: #00E676;
+            border-radius: 50%;
+            animation: livePulse 2s infinite;
+        }
 
         ::-webkit-scrollbar { display: none; }
     </style>
@@ -133,22 +152,15 @@
                 if (this.state.hasError) {
                     return (
                         <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center bg-dark-bg">
-                            <h1 className="text-2xl font-bold text-white mb-4">מאתחל מערכת...</h1>
-                            <button onClick={() => window.location.reload()} className="bg-neon-cyan text-black px-6 py-2 rounded-full font-bold">טען מחדש</button>
+                            <Icon name="shield-alert" className="text-bank-expense mb-4" size={48} />
+                            <h1 className="text-2xl font-bold text-white mb-4">המערכת מסתנכרנת...</h1>
+                            <button onClick={() => window.location.reload()} className="bg-bank-balance text-dark-bg px-8 py-3 rounded-2xl font-bold">טען מחדש</button>
                         </div>
                     );
                 }
                 return this.props.children;
             }
         }
-
-        // רקע נקי ומקצועי למסך הכניסה
-        const AmbientBackground = () => (
-            <div className="fixed inset-0 w-full h-full z-[-1] overflow-hidden bg-dark-bg">
-                <div className="absolute top-[-20%] left-[-20%] w-[500px] h-[500px] bg-blue-900 rounded-full mix-blend-screen filter blur-[120px] opacity-20 pointer-events-none"></div>
-                <div className="absolute bottom-[-20%] right-[-20%] w-[500px] h-[500px] bg-cyan-900 rounded-full mix-blend-screen filter blur-[120px] opacity-20 pointer-events-none"></div>
-            </div>
-        );
 
         const LoginScreen = () => {
             const [email, setEmail] = useState('');
@@ -171,35 +183,33 @@
             };
 
             return (
-                <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center relative z-10 overflow-hidden">
-                    <AmbientBackground />
-                    
-                    <div className="w-full max-w-sm z-10 animate-rise">
+                <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center bg-dark-bg">
+                    <div className="w-full max-w-sm animate-rise">
                         <div className="flex flex-col items-center mb-8">
-                            <div className="w-28 h-28 premium-logo-box mb-6">
+                            <div className="w-24 h-24 premium-logo-box mb-6">
                                 <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" className="w-full h-full object-cover" />
                             </div>
-                            <h1 className="text-3xl font-black text-white mb-1">AO ניהול תקציב</h1>
+                            <h1 className="text-3xl font-black text-white mb-1">AO Banking</h1>
                             <p className="text-slate-400 text-sm font-medium">התקציב האישי שלכם</p>
                         </div>
 
-                        <div className="charcoal-card p-8 shadow-2xl relative">
-                            <button onClick={handleGoogleLogin} className="hover-bounce w-full bg-white text-dark-bg p-4 rounded-2xl font-black flex items-center justify-center gap-3 shadow-lg mb-6 transition-all">
-                                <Icon name="chrome" className="text-blue-500" /> התחברות עם גוגל
+                        <div className="bank-card p-8">
+                            <button onClick={handleGoogleLogin} className="hover-press w-full bg-white text-dark-bg p-4 rounded-2xl font-black flex items-center justify-center gap-3 mb-6 transition-all">
+                                <Icon name="chrome" className="text-blue-500" /> כניסה מהירה עם גוגל
                             </button>
 
                             <div className="flex items-center gap-4 text-slate-500 mb-6">
                                 <div className="h-px bg-slate-700 flex-1"></div>
-                                <span className="text-[11px] font-bold uppercase tracking-wider">או במייל</span>
+                                <span className="text-[11px] font-bold uppercase tracking-wider">או כניסה במייל</span>
                                 <div className="h-px bg-slate-700 flex-1"></div>
                             </div>
                             
                             <form onSubmit={handleEmailAuth} className="space-y-4">
-                                <input type="email" placeholder="אימייל" className="cyber-input text-right" value={email} onChange={e => setEmail(e.target.value)} required />
-                                <input type="password" placeholder="סיסמא" className="cyber-input text-right" value={password} onChange={e => setPassword(e.target.value)} required />
-                                {error && <p className="text-neon-red text-xs font-bold text-center">{error}</p>}
-                                <button type="submit" className="hover-bounce w-full bg-neon-cyan text-dark-bg p-4 rounded-2xl font-black shadow-glow-cyan transition-all mt-2">
-                                    {isRegister ? 'צור חשבון חדש' : 'כניסה למערכת'}
+                                <input type="email" placeholder="אימייל" className="cyber-input" value={email} onChange={e => setEmail(e.target.value)} required />
+                                <input type="password" placeholder="סיסמא" className="cyber-input" value={password} onChange={e => setPassword(e.target.value)} required />
+                                {error && <p className="text-bank-expense text-xs font-bold text-center">{error}</p>}
+                                <button type="submit" className="hover-press w-full bg-bank-balance text-dark-bg p-4 rounded-2xl font-black transition-all mt-2 shadow-glow-balance">
+                                    {isRegister ? 'צור חשבון בנקאי' : 'כניסה לחשבון'}
                                 </button>
                             </form>
                             <button onClick={() => setIsRegister(!isRegister)} className="text-slate-400 text-sm font-bold mt-6 hover:text-white transition-colors">
@@ -280,103 +290,114 @@
             const deleteItem = async (col, id) => await db.collection('users').doc(user.uid).collection(col).doc(id).delete();
 
             if (loading) return (
-                <div className="min-h-screen flex items-center justify-center bg-dark-bg relative">
-                    <AmbientBackground />
-                    <Icon name="loader-2" className="animate-spin text-neon-cyan" size={40} />
+                <div className="min-h-screen flex flex-col items-center justify-center bg-dark-bg">
+                    <Icon name="loader-2" className="animate-spin text-bank-balance mb-4" size={40} />
+                    <span className="text-slate-400 font-medium">מתחבר לכספת...</span>
                 </div>
             );
             
             if (!user) return <LoginScreen />;
 
-            // חילוץ שם חכם - אם אין שם תצוגה מגוגל, ניקח את תחילת המייל
             const userName = user.displayName ? user.displayName.split(' ')[0] : (user.email ? user.email.split('@')[0] : 'משתמש');
 
             return (
-                <div className="min-h-screen pb-32 bg-dark-bg relative">
-                    <AmbientBackground />
-                    <header className="px-6 pt-10 pb-4 relative z-10 animate-rise">
-                        <div className="flex justify-between items-center mb-6">
+                <div className="min-h-screen pb-32 bg-dark-bg">
+                    <header className="px-5 pt-10 pb-2 animate-rise">
+                        
+                        {/* סרגל עליון בנקאי */}
+                        <div className="flex justify-between items-start mb-6">
                             <div className="flex items-center gap-4">
-                                <div className="w-14 h-14 premium-logo-box">
+                                <div className="w-12 h-12 premium-logo-box">
                                     <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" className="w-full h-full object-cover" />
                                 </div>
-                                <div className="flex flex-col justify-center">
+                                <div>
                                     <h1 className="text-xl font-bold text-white">שלום, {userName}</h1>
-                                    <h2 className="text-sm text-slate-400 font-medium">התקציב האישי שלכם</h2>
+                                    <div className="flex items-center gap-1.5 mt-0.5">
+                                        <div className="live-dot"></div>
+                                        <h2 className="text-xs text-slate-400 font-medium">התקציב האישי שלכם</h2>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-3">
-                                <button onClick={() => auth.signOut()} className="p-3 charcoal-card rounded-full hover-bounce text-slate-300">
-                                    <Icon name="log-out" size={18}/>
-                                </button>
-                                <button onClick={() => window.location.reload()} className="p-3 charcoal-card rounded-full hover-bounce text-slate-300">
+                            <div className="flex items-center gap-2">
+                                <button onClick={() => window.location.reload()} className="p-2.5 bank-card hover-press text-slate-300">
                                     <Icon name="refresh-cw" size={18}/>
+                                </button>
+                                <button onClick={() => auth.signOut()} className="p-2.5 bank-card hover-press text-slate-300">
+                                    <Icon name="log-out" size={18}/>
                                 </button>
                             </div>
                         </div>
 
-                        <div className="charcoal-card border-glow-cyan p-8 text-center relative mt-4">
-                            <div className="flex justify-center items-center gap-2 mb-2">
-                                <Icon name="wallet" className="text-neon-cyan" size={20} />
-                                <span className="text-white font-medium text-sm">יתרה פנויה לניצול</span>
-                            </div>
-                            <h2 className="text-5xl font-black text-glow-cyan tracking-tighter mt-2">
-                                {cycleData.balance.toLocaleString()} ₪
+                        {/* כרטיס יתרה ראשי - צבע 1 (תכלת) */}
+                        <div className="bank-card bank-card-main p-8 text-center mt-2 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-bank-balance to-transparent opacity-50"></div>
+                            <span className="text-slate-400 font-semibold text-sm">יתרה פנויה לניצול</span>
+                            <h2 className={`text-5xl font-black mt-2 tracking-tight ${cycleData.balance >= 0 ? 'text-bank-balance' : 'text-bank-expense'} drop-shadow-[0_0_15px_rgba(0,229,255,0.4)]`}>
+                                ₪ {cycleData.balance.toLocaleString()}
                             </h2>
                         </div>
 
+                        {/* 3 כרטיסי סיכום עם צבעים מופרדים */}
                         <div className="grid grid-cols-3 gap-3 mt-4">
-                            <div className="charcoal-card p-4 text-center">
-                                <p className="text-[11px] text-slate-400 font-bold mb-1">הכנסות</p>
-                                <p className="text-white font-black text-lg">{cycleData.totalIncome.toLocaleString()} ₪</p>
+                            <div className="bank-card p-4 text-center border-t border-t-bank-income/20">
+                                <p className="text-[11px] text-slate-400 font-medium mb-1">הכנסות</p>
+                                <p className="text-bank-income font-bold text-lg">₪ {cycleData.totalIncome.toLocaleString()}</p>
                             </div>
-                            <div className="charcoal-card p-4 text-center">
-                                <p className="text-[11px] text-slate-400 font-bold mb-1">קבועות</p>
-                                <p className="text-white font-black text-lg">-{cycleData.totalFixedExp.toLocaleString()} ₪</p>
+                            <div className="bank-card p-4 text-center border-t border-t-bank-expense/20">
+                                <p className="text-[11px] text-slate-400 font-medium mb-1">קבועות</p>
+                                <p className="text-bank-expense font-bold text-lg">₪ {cycleData.totalFixedExp.toLocaleString()}</p>
                             </div>
-                            <div className="charcoal-card p-4 text-center">
-                                <p className="text-[11px] text-slate-400 font-bold mb-1">משתנות</p>
-                                <p className="text-white font-black text-lg">-{cycleData.totalVarExp.toLocaleString()} ₪</p>
+                            <div className="bank-card p-4 text-center border-t border-t-bank-expense/20">
+                                <p className="text-[11px] text-slate-400 font-medium mb-1">משתנות</p>
+                                <p className="text-bank-expense font-bold text-lg">₪ {cycleData.totalVarExp.toLocaleString()}</p>
                             </div>
                         </div>
                     </header>
 
-                    <main className="px-6 space-y-8 mt-2 relative z-10 animate-rise" style={{animationDelay: '0.1s'}}>
+                    <main className="px-5 space-y-8 mt-4 animate-rise" style={{animationDelay: '0.1s'}}>
                         {view === 'dashboard' && (
                             <>
+                                {/* כפתורי פעולה */}
                                 <div className="grid grid-cols-2 gap-4">
-                                    <button onClick={() => { setModalType('income'); setIsModalOpen(true); }} className="hover-bounce charcoal-card border border-neon-cyan/20 p-5 flex flex-col items-center justify-center gap-3">
-                                        <div className="bg-dark-bg p-3 rounded-full"><Icon name="arrow-up" className="text-neon-cyan" size={24} /></div>
-                                        <span className="text-white font-bold">הכנסה</span>
+                                    <button onClick={() => { setModalType('income'); setIsModalOpen(true); }} className="hover-press bank-card p-5 flex flex-col items-center justify-center gap-2 border-b-2 border-b-bank-income/50">
+                                        <div className="bg-bank-income/10 p-3 rounded-full"><Icon name="arrow-up" className="text-bank-income" size={22} /></div>
+                                        <span className="text-white font-semibold">הפקדה (הכנסה)</span>
                                     </button>
-                                    <button onClick={() => { setModalType('expense'); setIsModalOpen(true); }} className="hover-bounce charcoal-card border border-slate-700/50 p-5 flex flex-col items-center justify-center gap-3">
-                                        <div className="bg-dark-bg p-3 rounded-full"><Icon name="arrow-down" className="text-slate-300" size={24} /></div>
-                                        <span className="text-white font-bold">הוצאה</span>
+                                    <button onClick={() => { setModalType('expense'); setIsModalOpen(true); }} className="hover-press bank-card p-5 flex flex-col items-center justify-center gap-2 border-b-2 border-b-bank-expense/50">
+                                        <div className="bg-bank-expense/10 p-3 rounded-full"><Icon name="arrow-down" className="text-bank-expense" size={22} /></div>
+                                        <span className="text-white font-semibold">חיוב (הוצאה)</span>
                                     </button>
                                 </div>
 
+                                {/* רשימת תנועות בסגנון Ledger בנקאי */}
                                 <section>
-                                    <h3 className="font-bold text-lg text-white mb-4">תנועות אחרונות</h3>
-                                    <div className="space-y-3">
+                                    <div className="flex justify-between items-end mb-4 px-1">
+                                        <h3 className="font-bold text-lg text-white">עובר ושב (עו"ש)</h3>
+                                        <span className="text-xs text-slate-500 font-medium">החודש הנוכחי</span>
+                                    </div>
+                                    
+                                    <div className="bank-card overflow-hidden">
                                         {(() => {
                                             const combined = [...cycleData.filteredIncomes, ...cycleData.filteredExpenses].sort((a,b) => new Date(b.date) - new Date(a.date));
-                                            if (combined.length === 0) return <div className="charcoal-card p-6 text-center text-slate-500 font-medium">אין תנועות במחזור זה.</div>;
-                                            return combined.map(item => {
+                                            if (combined.length === 0) return <div className="p-6 text-center text-slate-500 font-medium">אין תנועות במחזור זה.</div>;
+                                            return combined.map((item, index) => {
                                                 const isInc = incomes.some(i => i.id === item.id);
                                                 return (
-                                                    <div key={item.id} className="charcoal-card p-4 flex justify-between items-center border border-white/5">
+                                                    <div key={item.id} className={`p-4 flex justify-between items-center ${index !== combined.length - 1 ? 'border-b border-white/5' : ''}`}>
                                                         <div className="flex items-center gap-4">
-                                                            <div className={`p-2 rounded-full bg-dark-bg border ${isInc ? 'border-neon-cyan/30 text-neon-cyan' : 'border-slate-700 text-slate-300'}`}>
-                                                                <Icon name={isInc ? "plus" : "minus"} size={16} />
+                                                            <div className={`p-2 rounded-xl bg-dark-bg border ${isInc ? 'border-bank-income/30 text-bank-income' : 'border-slate-700/50 text-slate-400'}`}>
+                                                                <Icon name={isInc ? "arrow-up-right" : "arrow-down-left"} size={16} />
                                                             </div>
                                                             <div>
                                                                 <p className="font-bold text-white text-sm">{item.description}</p>
-                                                                <p className="text-[10px] text-slate-400 mt-0.5">{new Date(item.date).toLocaleDateString('he-IL')}</p>
+                                                                <p className="text-[10px] text-slate-500 mt-0.5">{new Date(item.date).toLocaleDateString('he-IL')}</p>
                                                             </div>
                                                         </div>
-                                                        <div className="flex items-center gap-3">
-                                                            <span className={`font-bold ${isInc ? 'text-neon-cyan' : 'text-white'}`}>{item.amount} ₪</span>
-                                                            <button onClick={() => deleteItem(isInc ? 'incomes' : 'expenses', item.id)} className="text-slate-600 hover:text-neon-red transition-colors p-2"><Icon name="trash-2" size={16} /></button>
+                                                        <div className="flex items-center gap-4">
+                                                            <span className={`font-bold font-mono ${isInc ? 'text-bank-income' : 'text-white'}`} dir="ltr">
+                                                                {isInc ? '+' : '-'}₪{item.amount.toLocaleString()}
+                                                            </span>
+                                                            <button onClick={() => deleteItem(isInc ? 'incomes' : 'expenses', item.id)} className="text-slate-600 hover:text-bank-expense transition-colors"><Icon name="trash-2" size={16} /></button>
                                                         </div>
                                                     </div>
                                                 );
@@ -388,10 +409,10 @@
                         )}
 
                         {view === 'settings' && (
-                            <section className="space-y-8 animate-rise">
-                                <div className="charcoal-card p-6">
-                                    <h3 className="font-bold text-lg text-white mb-2 flex items-center gap-2"><Icon name="calendar" className="text-neon-cyan"/> יום איפוס חודשי</h3>
-                                    <p className="text-slate-400 text-sm mb-4">באיזה יום בחודש התקציב יתאפס?</p>
+                            <section className="space-y-6 animate-rise">
+                                <div className="bank-card p-6 border-t-2 border-t-bank-balance/30">
+                                    <h3 className="font-bold text-lg text-white mb-2 flex items-center gap-2"><Icon name="calendar" className="text-bank-balance" size={20}/> תאריך חיוב / משכורת</h3>
+                                    <p className="text-slate-400 text-sm mb-4">באיזה יום בחודש התקציב שלך מתאפס?</p>
                                     <div className="flex items-center gap-4">
                                         <input type="number" min="1" max="31" value={resetDay} onChange={(e) => {
                                             const v = Number(e.target.value);
@@ -403,50 +424,51 @@
                                 </div>
 
                                 <div>
-                                    <h3 className="font-bold text-lg text-white mb-3">הכנסות קבועות</h3>
-                                    <form onSubmit={(e) => handleAddFixed(e, 'income')} className="charcoal-card p-5 space-y-4">
-                                        <input name="name" required className="cyber-input" placeholder="שם (למשל: משכורת)" />
+                                    <h3 className="font-bold text-lg text-white mb-3 px-1">הוראות קבע (הוצאות)</h3>
+                                    <form onSubmit={(e) => handleAddFixed(e, 'expense')} className="bank-card p-5 space-y-4 mb-3 border-l-2 border-l-bank-expense/50">
+                                        <input name="name" required className="cyber-input" placeholder="שם החיוב (למשל: משכנתא)" />
                                         <input name="amount" type="number" required className="cyber-input" placeholder="סכום (₪)" />
-                                        <button type="submit" className="w-full bg-dark-surface border border-slate-700 text-white p-3 rounded-xl font-bold hover-bounce">שמור הכנסה</button>
+                                        <button type="submit" className="w-full bg-dark-surface border border-slate-700 text-white p-3 rounded-xl font-bold hover-press">הוסף חיוב קבוע</button>
                                     </form>
-                                    <div className="mt-3 space-y-2">{fixedIncomes.map(item => (
-                                        <div key={item.id} className="charcoal-card p-3 flex justify-between items-center"><p className="text-sm font-medium">{item.name}</p><div className="flex gap-4"><span className="text-neon-cyan font-bold text-sm">₪{item.amount}</span><button onClick={() => deleteItem('fixed_incomes', item.id)} className="text-slate-500"><Icon name="x" size={16}/></button></div></div>
+                                    <div className="space-y-2">{fixedExpenses.map(item => (
+                                        <div key={item.id} className="bank-card p-4 flex justify-between items-center"><p className="text-sm font-medium">{item.name}</p><div className="flex gap-4"><span className="font-mono text-bank-expense">₪{item.amount.toLocaleString()}</span><button onClick={() => deleteItem('fixed_settings', item.id)} className="text-slate-500"><Icon name="x" size={16}/></button></div></div>
                                     ))}</div>
                                 </div>
 
-                                <div>
-                                    <h3 className="font-bold text-lg text-white mb-3">הוצאות קבועות</h3>
-                                    <form onSubmit={(e) => handleAddFixed(e, 'expense')} className="charcoal-card p-5 space-y-4">
-                                        <input name="name" required className="cyber-input" placeholder="שם (למשל: שכירות)" />
+                                <div className="pt-4">
+                                    <h3 className="font-bold text-lg text-white mb-3 px-1">הכנסות קבועות</h3>
+                                    <form onSubmit={(e) => handleAddFixed(e, 'income')} className="bank-card p-5 space-y-4 mb-3 border-l-2 border-l-bank-income/50">
+                                        <input name="name" required className="cyber-input" placeholder="מקור (למשל: משכורת בסיס)" />
                                         <input name="amount" type="number" required className="cyber-input" placeholder="סכום (₪)" />
-                                        <button type="submit" className="w-full bg-dark-surface border border-slate-700 text-white p-3 rounded-xl font-bold hover-bounce">שמור הוצאה</button>
+                                        <button type="submit" className="w-full bg-dark-surface border border-slate-700 text-white p-3 rounded-xl font-bold hover-press">הוסף הפקדה קבועה</button>
                                     </form>
-                                    <div className="mt-3 space-y-2">{fixedExpenses.map(item => (
-                                        <div key={item.id} className="charcoal-card p-3 flex justify-between items-center"><p className="text-sm font-medium">{item.name}</p><div className="flex gap-4"><span className="font-bold text-sm">₪{item.amount}</span><button onClick={() => deleteItem('fixed_settings', item.id)} className="text-slate-500"><Icon name="x" size={16}/></button></div></div>
+                                    <div className="space-y-2">{fixedIncomes.map(item => (
+                                        <div key={item.id} className="bank-card p-4 flex justify-between items-center"><p className="text-sm font-medium">{item.name}</p><div className="flex gap-4"><span className="font-mono text-bank-income">₪{item.amount.toLocaleString()}</span><button onClick={() => deleteItem('fixed_incomes', item.id)} className="text-slate-500"><Icon name="x" size={16}/></button></div></div>
                                     ))}</div>
                                 </div>
                             </section>
                         )}
                     </main>
 
-                    <nav className="fixed bottom-4 left-6 right-6 charcoal-card p-3 flex justify-around rounded-[2rem] z-40 border border-white/10">
-                        <button onClick={() => setView('dashboard')} className={`hover-bounce flex flex-col items-center px-10 py-2 rounded-xl transition-all ${view === 'dashboard' ? 'text-neon-cyan' : 'text-slate-500'}`}><Icon name="layout-dashboard" size={24} /><span className="text-[11px] font-bold mt-1">ראשי</span></button>
-                        <button onClick={() => setView('settings')} className={`hover-bounce flex flex-col items-center px-10 py-2 rounded-xl transition-all ${view === 'settings' ? 'text-white' : 'text-slate-500'}`}><Icon name="settings" size={24} /><span className="text-[11px] font-bold mt-1">הגדרות</span></button>
+                    {/* סרגל ניווט תחתון נקי */}
+                    <nav className="fixed bottom-5 left-5 right-5 bank-card p-2 flex justify-around rounded-2xl z-40 border border-white/10 shadow-2xl">
+                        <button onClick={() => setView('dashboard')} className={`hover-press flex flex-col items-center px-12 py-3 rounded-xl transition-all ${view === 'dashboard' ? 'bg-white/5 text-bank-balance' : 'text-slate-500'}`}><Icon name="wallet" size={22} /><span className="text-[11px] font-bold mt-1.5">החשבון שלי</span></button>
+                        <button onClick={() => setView('settings')} className={`hover-press flex flex-col items-center px-12 py-3 rounded-xl transition-all ${view === 'settings' ? 'bg-white/5 text-white' : 'text-slate-500'}`}><Icon name="settings-2" size={22} /><span className="text-[11px] font-bold mt-1.5">ניהול והגדרות</span></button>
                     </nav>
 
                     {isModalOpen && (
                         <div className="fixed inset-0 z-50 flex items-end justify-center">
                             <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsModalOpen(false)}></div>
-                            <div className="relative w-full max-w-md charcoal-card rounded-b-none rounded-t-[2.5rem] p-8 animate-rise border-t-2 border-slate-700">
-                                <div className="w-12 h-1 bg-slate-600 rounded-full mx-auto mb-6"></div>
-                                <h3 className="text-2xl font-bold text-center mb-6 text-white">{modalType === 'income' ? 'הכנסה חדשה' : 'הוצאה חדשה'}</h3>
+                            <div className={`relative w-full max-w-md bank-card rounded-b-none rounded-t-[2.5rem] p-8 animate-rise border-t-2 ${modalType === 'income' ? 'border-bank-income' : 'border-bank-expense'}`}>
+                                <div className="w-12 h-1 bg-slate-700 rounded-full mx-auto mb-6"></div>
+                                <h3 className="text-xl font-bold text-center mb-6 text-white">{modalType === 'income' ? 'רישום הפקדה חדשה' : 'רישום חיוב חדש'}</h3>
                                 <form onSubmit={handleAddItem} className="space-y-6">
                                     <div className="relative">
-                                        <span className={`absolute left-6 top-1/2 -translate-y-1/2 text-2xl font-bold ${modalType === 'income' ? 'text-neon-cyan' : 'text-white'}`}>₪</span>
-                                        <input name="amount" type="number" required autoFocus className={`cyber-input text-5xl font-black text-center py-6 transition-all ${modalType === 'income' ? 'text-neon-cyan focus:border-neon-cyan' : 'text-white focus:border-white'}`} placeholder="0" />
+                                        <span className={`absolute left-6 top-1/2 -translate-y-1/2 text-2xl font-bold ${modalType === 'income' ? 'text-bank-income' : 'text-bank-expense'}`}>₪</span>
+                                        <input name="amount" type="number" required autoFocus className={`cyber-input text-5xl font-black text-center py-6 font-mono border-2 transition-all ${modalType === 'income' ? 'text-bank-income border-bank-income/30 focus:border-bank-income' : 'text-white border-bank-expense/30 focus:border-bank-expense'}`} placeholder="0" />
                                     </div>
-                                    <input name="description" required className="cyber-input text-center" placeholder="על מה מדובר?" />
-                                    <button type="submit" className={`hover-bounce w-full p-5 rounded-[1.5rem] font-bold text-xl text-dark-bg ${modalType === 'income' ? 'bg-neon-cyan shadow-glow-cyan' : 'bg-white'}`}>שמור תנועה</button>
+                                    <input name="description" required className="cyber-input text-center" placeholder="עבור מה הפעולה?" />
+                                    <button type="submit" className={`hover-press w-full p-5 rounded-[1.2rem] font-bold text-lg text-dark-bg ${modalType === 'income' ? 'bg-bank-income shadow-glow-income' : 'bg-bank-expense shadow-glow-expense'}`}>אישור ועדכון יתרה</button>
                                 </form>
                             </div>
                         </div>
