@@ -1,866 +1,330 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AO Banking</title>
-  <link rel="icon" type="image/jpeg" href="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <link rel="icon" type="image/jpg" href="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg">
+    <link rel="apple-touch-icon" href="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg">
 
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    <title>AO ניהול תקציב | התקציב האישי שלכם</title>
+    <meta name="description" content="הדרך המקצועית והיוקרתית לניהול התקציב האישי שלכם.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://a4190656-cloud.github.io/AO-TIMLulll/">
+    <meta property="og:title" content="AO ניהול תקציב | Banking Style">
+    <meta property="og:description" content="הצטרפו לניהול תקציב חכם. בואו לעקוב אחרי הכסף שלכם בסטייל.">
+    <meta property="og:image" content="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
 
-    :root {
-      --bg:      #06090F;
-      --card:    #0D1320;
-      --border:  rgba(255,255,255,0.07);
-      --cyan:    #00E5FF;
-      --green:   #00E676;
-      --red:     #FF1744;
-      --text:    #FFFFFF;
-      --muted:   rgba(255,255,255,0.42);
-    }
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-    html, body { height: 100%; }
-    body {
-      font-family: 'Syne', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      -webkit-tap-highlight-color: transparent;
-      overflow-x: hidden;
-    }
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: { bg: '#06090F', card: '#111724', surface: '#161D2D' },
+                        bank: { balance: '#00E5FF', income: '#00E676', expense: '#FF1744' }
+                    },
+                    boxShadow: { 'glow-balance': '0 0 25px -5px rgba(0, 229, 255, 0.3)' }
+                }
+            }
+        }
+    </script>
 
-    body::before {
-      content: '';
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background-image:
-        linear-gradient(rgba(0,229,255,0.017) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,229,255,0.017) 1px, transparent 1px);
-      background-size: 44px 44px;
-    }
-
-    #app { position: relative; z-index: 1; padding-bottom: 110px; }
-
-    .hidden { display: none !important; }
-
-    /* CARD */
-    .card {
-      background: linear-gradient(145deg, rgba(13,19,32,0.92), rgba(6,9,15,0.96));
-      border: 1px solid var(--border);
-      border-radius: 18px;
-    }
-
-    /* HERO */
-    .hero-card {
-      background: linear-gradient(140deg, #0D1320 0%, #070B15 100%);
-      border: 1px solid rgba(0,229,255,0.17);
-      border-radius: 22px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-card::before {
-      content: '';
-      position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(ellipse at 65% -10%, rgba(0,229,255,0.08) 0%, transparent 65%);
-    }
-    .hero-card::after {
-      content: '';
-      position: absolute; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(0,229,255,0.4), transparent);
-      animation: scanline 3.5s linear infinite;
-      pointer-events: none;
-    }
-    @keyframes scanline { 0% { top: -2%; } 100% { top: 108%; } }
-
-    /* INPUTS */
-    .inp {
-      display: block; width: 100%;
-      background: rgba(6,9,15,0.88);
-      border: 1px solid rgba(255,255,255,0.09);
-      border-radius: 13px;
-      padding: 13px 15px;
-      color: #fff;
-      font-family: 'Syne', sans-serif;
-      font-size: 15px; font-weight: 600;
-      text-align: right; outline: none;
-      transition: border-color .2s, box-shadow .2s, background .2s;
-    }
-    .inp:focus {
-      border-color: var(--cyan);
-      background: rgba(13,19,32,1);
-      box-shadow: 0 0 0 3px rgba(0,229,255,0.1);
-    }
-    .inp::placeholder { color: rgba(255,255,255,0.24); }
-
-    /* BUTTONS */
-    .btn {
-      display: block; width: 100%; padding: 14px;
-      border-radius: 15px; border: none;
-      font-family: 'Syne', sans-serif;
-      font-size: 14px; font-weight: 700;
-      cursor: pointer;
-      transition: transform .14s, opacity .14s;
-    }
-    .btn:active { transform: scale(0.96); }
-    .btn:disabled { opacity: .4; pointer-events: none; }
-    .btn-cyan  { background: var(--cyan);  color: #06090F; box-shadow: 0 0 20px rgba(0,229,255,0.25); }
-    .btn-green { background: var(--green); color: #06090F; box-shadow: 0 0 20px rgba(0,230,118,0.25); }
-    .btn-red   { background: var(--red);   color: #fff;    box-shadow: 0 0 20px rgba(255,23,68,0.25);  }
-    .btn-ghost { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; }
-
-    /* LOGO */
-    .logo-frame {
-      background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.03));
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 17px; padding: 3px;
-      box-shadow: 0 8px 26px rgba(0,0,0,0.5);
-      display: inline-flex;
-    }
-    .logo-frame img { border-radius: 13px; display: block; }
-
-    /* LIVE DOT */
-    .live-dot {
-      width: 7px; height: 7px;
-      background: var(--green); border-radius: 50%;
-      display: inline-block;
-      animation: livePulse 2s ease-in-out infinite;
-    }
-    @keyframes livePulse {
-      0%   { box-shadow: 0 0 0 0 rgba(0,230,118,0.55); }
-      70%  { box-shadow: 0 0 0 7px rgba(0,230,118,0); }
-      100% { box-shadow: 0 0 0 0 rgba(0,230,118,0); }
-    }
-
-    /* TICKER */
-    #ticker-wrap {
-      overflow: hidden;
-      background: var(--card);
-      border-bottom: 1px solid var(--border);
-      height: 28px; display: flex; align-items: center;
-    }
-    #ticker-inner {
-      display: flex; white-space: nowrap;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px; color: rgba(255,255,255,0.32);
-      animation: ticker 26s linear infinite;
-    }
-    #ticker-inner span { padding: 0 16px; }
-    #ticker-inner .dot { color: var(--cyan); padding: 0 4px; }
-    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-    /* ANIMATIONS */
-    @keyframes floatUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .rise { animation: floatUp .5s cubic-bezier(.16,1,.3,1) forwards; opacity: 0; }
-    .d1 { animation-delay: .07s; }
-    .d2 { animation-delay: .14s; }
-    .d3 { animation-delay: .22s; }
-
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to   { transform: translateY(0); }
-    }
-    .slide-up { animation: slideUp .36s cubic-bezier(.16,1,.3,1) forwards; }
-
-    @keyframes numPop {
-      from { opacity: 0; transform: scale(.88); }
-      to   { opacity: 1; transform: scale(1); }
-    }
-    .num-pop { animation: numPop .38s ease forwards; }
-
-    /* BALANCE */
-    .bal-pos { color: var(--cyan);  text-shadow: 0 0 22px rgba(0,229,255,0.5); }
-    .bal-neg { color: var(--red);   text-shadow: 0 0 22px rgba(255,23,68,0.5);  }
-
-    /* NAV */
-    #nav {
-      position: fixed; bottom: 12px; left: 12px; right: 12px;
-      display: flex;
-      background: linear-gradient(180deg, rgba(13,19,32,0.97), rgba(6,9,15,0.99));
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 20px;
-      backdrop-filter: blur(22px);
-      z-index: 100; padding: 4px;
-    }
-    .nav-btn {
-      flex: 1; display: flex; flex-direction: column;
-      align-items: center; gap: 4px;
-      padding: 11px 8px;
-      border: none; background: transparent;
-      color: rgba(255,255,255,0.3);
-      font-family: 'Syne', sans-serif;
-      font-size: 11px; font-weight: 700;
-      border-radius: 17px; cursor: pointer;
-      transition: background .18s, color .18s;
-      letter-spacing: .02em;
-    }
-    .nav-btn.active { background: rgba(255,255,255,0.07); color: var(--cyan); }
-    .nav-btn svg { width: 20px; height: 20px; }
-
-    /* MODAL */
-    #modal-overlay {
-      position: fixed; inset: 0; z-index: 200;
-      background: rgba(0,0,0,0.72);
-      backdrop-filter: blur(6px);
-      display: flex; align-items: flex-end; justify-content: center;
-    }
-    #modal-sheet {
-      width: 100%; max-width: 480px;
-      background: linear-gradient(145deg, rgba(13,19,32,0.99), rgba(6,9,15,1));
-      border: 1px solid var(--border);
-      border-bottom: none;
-      border-radius: 26px 26px 0 0;
-      padding: 24px 22px 38px;
-    }
-    .modal-handle {
-      width: 38px; height: 4px;
-      background: rgba(255,255,255,0.14);
-      border-radius: 10px;
-      margin: 0 auto 18px;
-    }
-
-    /* TX ROWS */
-    .tx-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 13px 16px;
-      transition: background .15s;
-    }
-    .tx-row:hover { background: rgba(255,255,255,0.022); }
-    .tx-icon {
-      width: 34px; height: 34px; border-radius: 11px;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-
-    /* SETTINGS */
-    .sblock {
-      border-radius: 18px; overflow: hidden;
-      border: 1px solid var(--border);
-      background: linear-gradient(145deg, rgba(13,19,32,0.92), rgba(6,9,15,0.96));
-      margin-bottom: 14px;
-    }
-    .sblock-head {
-      padding: 13px 17px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      font-weight: 700; font-size: 13px;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .sblock-body { padding: 15px 17px; }
-
-    .fixed-row {
-      display: flex; justify-content: space-between; align-items: center;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.055);
-      border-radius: 11px;
-      padding: 10px 13px; margin-bottom: 7px;
-    }
-    .del-btn {
-      background: none; border: none; cursor: pointer;
-      color: rgba(255,255,255,0.22); font-size: 15px; line-height: 1;
-      padding: 2px 6px; transition: color .14s;
-    }
-    .del-btn:hover { color: var(--red); }
-
-    /* GOOGLE BTN */
-    .btn-google {
-      width: 100%; padding: 13px;
-      background: #fff; color: #06090F;
-      border: none; border-radius: 15px;
-      font-family: 'Syne', sans-serif;
-      font-size: 14px; font-weight: 700;
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-      cursor: pointer;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.35);
-      transition: transform .14s;
-    }
-    .btn-google:active { transform: scale(0.96); }
-
-    /* MISC */
-    .err   { color: var(--red);   font-size: 12px; font-weight: 700; text-align: center; margin-top: 6px; }
-    .saved { color: var(--green); font-size: 12px; font-weight: 700; text-align: center; margin-top: 4px; }
-    .muted { color: var(--muted); }
-    .mono  { font-family: 'JetBrains Mono', monospace; }
-    .press:active { transform: scale(0.96); }
-    ::-webkit-scrollbar { display: none; }
-
-    .link-btn {
-      background: none; border: none;
-      color: var(--muted); font-family: 'Syne', sans-serif;
-      font-size: 13px; font-weight: 600;
-      cursor: pointer; display: block;
-      width: 100%; text-align: center; padding: 10px;
-      transition: color .16s;
-    }
-    .link-btn:hover { color: #fff; }
-
-    .screen {
-      min-height: 100vh; display: flex;
-      flex-direction: column; align-items: center; justify-content: center;
-      padding: 24px;
-    }
-  </style>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #06090F; color: #FFFFFF; -webkit-tap-highlight-color: transparent; min-height: 100vh; overflow-x: hidden; }
+        .bank-card { background: linear-gradient(145deg, rgba(28, 37, 56, 0.8) 0%, rgba(15, 21, 33, 0.98) 100%); backdrop-filter: blur(24px); border-radius: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.06); box-shadow: 0 12px 35px -12px rgba(0,0,0,0.6); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .bank-card-main { background: linear-gradient(135deg, #0F1521 0%, #06090F 100%); border-top: 1px solid rgba(0, 229, 255, 0.4); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); }
+        .premium-logo-box { background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03)); border: 1px solid rgba(255,255,255,0.18); border-radius: 1.2rem; padding: 3px; }
+        .premium-logo-box img { border-radius: 1rem; }
+        .hover-press:active { transform: scale(0.96); opacity: 0.9; }
+        .cyber-input { background: rgba(6, 9, 15, 0.85); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.25rem; padding: 1.25rem; width: 100%; outline: none; color: #FFFFFF; font-weight: 600; text-align: right; }
+        .cyber-input:focus { border-color: #00E5FF; }
+        @keyframes fadeInRise { from { opacity: 0; transform: translateY(12px); filter: blur(4px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+        .animate-rise { animation: fadeInRise 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        @keyframes livePulse { 0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.4); } 70% { box-shadow: 0 0 0 8px rgba(0, 230, 118, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); } }
+        .live-dot { width: 7px; height: 7px; background-color: #00E676; border-radius: 50%; animation: livePulse 2.5s infinite; }
+        ::-webkit-scrollbar { display: none; }
+    </style>
 </head>
 <body>
+    <div id="root"></div>
 
-<!-- LOADING -->
-<div id="screen-loading" class="screen">
-  <div class="logo-frame" style="width:62px;height:62px;margin-bottom:18px">
-    <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" style="width:56px;height:56px">
-  </div>
-  <p style="color:var(--muted);font-size:13px;font-weight:600">מתחבר לחשבון...</p>
-</div>
+    <script type="text/babel">
+        const { useState, useEffect, useMemo, useRef } = React;
 
-<!-- LOGIN -->
-<div id="screen-login" class="screen hidden">
-  <div style="width:100%;max-width:370px">
-    <div style="text-align:center;margin-bottom:30px" class="rise">
-      <div class="logo-frame" style="margin:0 auto 16px;width:86px;height:86px">
-        <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" style="width:80px;height:80px">
-      </div>
-      <h1 style="font-size:26px;font-weight:800;letter-spacing:-.4px">AO Banking</h1>
-      <p style="color:var(--muted);font-size:13px;margin-top:5px">ניהול תקציב חכם ופשוט</p>
-    </div>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBqpLOIbztpurGuUqpfaWZT71JcofKG2rc",
+            authDomain: "riki-aharele-budget.firebaseapp.com",
+            projectId: "riki-aharele-budget",
+            storageBucket: "riki-aharele-budget.firebasestorage.app",
+            messagingSenderId: "53506652532",
+            appId: "1:53506652532:web:28b3e3fc28114b1feb9421"
+        };
 
-    <div class="card rise d1" style="padding:26px 22px">
-      <button id="btn-google-login" class="btn-google" style="margin-bottom:20px">
-        <svg width="19" height="19" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-        כניסה עם גוגל
-      </button>
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        const Icon = ({ name, size = 24, className = "" }) => {
+            const spanRef = useRef(null);
+            useEffect(() => {
+                if (spanRef.current && window.lucide) {
+                    spanRef.current.innerHTML = `<i data-lucide="${name}" class="${className}"></i>`;
+                    window.lucide.createIcons({ root: spanRef.current });
+                    const svg = spanRef.current.querySelector('svg');
+                    if (svg) { svg.style.width = size + 'px'; svg.style.height = size + 'px'; }
+                }
+            }, [name, size, className]);
+            return <span ref={spanRef} className="inline-flex items-center justify-center"></span>;
+        };
 
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-        <div style="flex:1;height:1px;background:rgba(255,255,255,0.06)"></div>
-        <span style="font-size:11px;color:rgba(255,255,255,0.28);font-weight:700;letter-spacing:.1em">או עם אימייל</span>
-        <div style="flex:1;height:1px;background:rgba(255,255,255,0.06)"></div>
-      </div>
-
-      <div id="login-name-wrap" class="hidden" style="margin-bottom:9px">
-        <input id="login-name" class="inp" type="text" placeholder="השם המלא שלך">
-      </div>
-      <input id="login-email" class="inp" type="email" placeholder="כתובת אימייל" style="margin-bottom:9px">
-      <input id="login-pass"  class="inp" type="password" placeholder="סיסמה">
-      <div id="login-err" class="err hidden"></div>
-      <button id="btn-email-auth" class="btn btn-cyan" style="margin-top:13px">כניסה לחשבון</button>
-      <button id="btn-toggle-mode" class="link-btn" style="margin-top:6px">עוד אין חשבון? הירשם עכשיו ←</button>
-    </div>
-  </div>
-</div>
-
-<!-- SET NAME -->
-<div id="screen-setname" class="screen hidden">
-  <div style="width:100%;max-width:340px">
-    <div style="text-align:center;margin-bottom:26px" class="rise">
-      <div class="logo-frame" style="margin:0 auto 14px;width:74px;height:74px">
-        <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" style="width:68px;height:68px">
-      </div>
-      <h1 style="font-size:21px;font-weight:800">ברוך הבא!</h1>
-      <p style="color:var(--muted);font-size:13px;margin-top:5px">איך לקרוא לך?</p>
-    </div>
-    <div class="card rise d1" style="padding:22px">
-      <input id="setname-input" class="inp" type="text" placeholder="השם שלך" style="margin-bottom:11px">
-      <div id="setname-err" class="err hidden"></div>
-      <button id="btn-setname" class="btn btn-cyan">המשך לחשבון</button>
-    </div>
-  </div>
-</div>
-
-<!-- MAIN APP -->
-<div id="app" class="hidden">
-
-  <!-- Ticker -->
-  <div id="ticker-wrap">
-    <div id="ticker-inner"></div>
-  </div>
-
-  <!-- Header -->
-  <div style="padding:20px 16px 0">
-    <!-- Top bar -->
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px" class="rise">
-      <div style="display:flex;align-items:center;gap:11px">
-        <div class="logo-frame" style="width:42px;height:42px">
-          <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" style="width:36px;height:36px">
-        </div>
-        <div>
-          <p id="header-name" style="font-weight:700;font-size:15px;line-height:1.2">שלום!</p>
-          <div style="display:flex;align-items:center;gap:5px;margin-top:3px">
-            <span class="live-dot"></span>
-            <span style="font-size:11px;color:var(--muted);font-weight:600">חשבון פעיל</span>
-          </div>
-        </div>
-      </div>
-      <div style="display:flex;gap:7px">
-        <button onclick="window.location.reload()" class="card press" style="padding:9px;border:none;cursor:pointer;color:rgba(255,255,255,0.45)">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
-        </button>
-        <button id="btn-signout" class="card press" style="padding:9px;border:none;cursor:pointer;color:rgba(255,255,255,0.45)">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Hero balance -->
-    <div class="hero-card rise d1" style="padding:28px 18px;text-align:center">
-      <p style="color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px">יתרה פנויה</p>
-      <p id="balance-display" class="mono" style="font-size:46px;font-weight:800;letter-spacing:-1px;line-height:1"></p>
-      <div style="width:72px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);margin:12px auto 0;opacity:.4"></div>
-    </div>
-
-    <!-- 3 stats -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:11px" class="rise d2">
-      <div class="card" style="padding:11px 8px;text-align:center;border-top:1px solid rgba(0,230,118,0.22)">
-        <p style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.06em;margin-bottom:3px">הכנסות</p>
-        <p id="stat-income" class="mono" style="color:var(--green);font-weight:700;font-size:14px">₪0</p>
-      </div>
-      <div class="card" style="padding:11px 8px;text-align:center;border-top:1px solid rgba(255,23,68,0.2)">
-        <p style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.06em;margin-bottom:3px">קבועות</p>
-        <p id="stat-fixed" class="mono" style="color:var(--red);font-weight:700;font-size:14px">₪0</p>
-      </div>
-      <div class="card" style="padding:11px 8px;text-align:center;border-top:1px solid rgba(255,23,68,0.2)">
-        <p style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.06em;margin-bottom:3px">משתנות</p>
-        <p id="stat-var" class="mono" style="color:var(--red);font-weight:700;font-size:14px">₪0</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Content area -->
-  <div style="padding:16px 16px 0">
-
-    <!-- DASHBOARD -->
-    <div id="view-dashboard">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:20px" class="rise d3">
-        <button id="btn-add-income" class="card press" style="padding:18px 10px;border:1px solid rgba(0,230,118,0.26);background:linear-gradient(135deg,rgba(0,230,118,0.09),rgba(0,230,118,0.03));cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:9px;border-radius:17px">
-          <div style="width:38px;height:38px;border-radius:11px;background:rgba(0,230,118,0.11);border:1px solid rgba(0,230,118,0.24);display:flex;align-items:center;justify-content:center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </div>
-          <span style="color:var(--green);font-size:12px;font-weight:700">הפקדה</span>
-        </button>
-        <button id="btn-add-expense" class="card press" style="padding:18px 10px;border:1px solid rgba(255,23,68,0.26);background:linear-gradient(135deg,rgba(255,23,68,0.09),rgba(255,23,68,0.03));cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:9px;border-radius:17px">
-          <div style="width:38px;height:38px;border-radius:11px;background:rgba(255,23,68,0.11);border:1px solid rgba(255,23,68,0.24);display:flex;align-items:center;justify-content:center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </div>
-          <span style="color:var(--red);font-size:12px;font-weight:700">חיוב</span>
-        </button>
-      </div>
-
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <p style="font-weight:700;font-size:14px">תנועות אחרונות</p>
-        <p style="font-size:11px;color:var(--muted)">המחזור הנוכחי</p>
-      </div>
-      <div id="tx-list" class="card" style="overflow:hidden;margin-bottom:16px">
-        <div style="padding:28px;text-align:center;color:var(--muted);font-size:13px">טוען...</div>
-      </div>
-    </div>
-
-    <!-- SETTINGS -->
-    <div id="view-settings" class="hidden">
-
-      <!-- Change name -->
-      <div class="sblock">
-        <div class="sblock-head">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          שינוי שם
-        </div>
-        <div class="sblock-body">
-          <input id="settings-name-input" class="inp" type="text" placeholder="השם שלך" style="margin-bottom:9px">
-          <button id="btn-save-name" class="btn btn-ghost" style="font-size:13px;padding:10px">שמור שם</button>
-          <div id="name-saved" class="saved hidden">✓ נשמר בהצלחה!</div>
-        </div>
-      </div>
-
-      <!-- Reset day -->
-      <div class="sblock">
-        <div class="sblock-head">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          יום איפוס תקציב
-        </div>
-        <div class="sblock-body">
-          <p style="color:var(--muted);font-size:13px;margin-bottom:12px">באיזה יום מתאפס המחזור החודשי?</p>
-          <div style="display:flex;align-items:center;gap:11px">
-            <input id="reset-day-input" class="inp mono" type="number" min="1" max="31" style="max-width:85px;text-align:center;font-size:19px;padding:11px 8px">
-            <span style="color:var(--muted);font-weight:600;font-size:14px">לחודש</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Fixed expenses -->
-      <div class="sblock">
-        <div class="sblock-head">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-          הוראות קבע – הוצאות
-        </div>
-        <div class="sblock-body">
-          <input id="fe-name"   class="inp" type="text"   placeholder="שם החיוב"  style="margin-bottom:8px">
-          <input id="fe-amount" class="inp" type="number" placeholder="סכום ₪"    style="margin-bottom:10px">
-          <button id="btn-add-fe" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px">+ הוסף חיוב קבוע</button>
-          <div id="fe-list"></div>
-        </div>
-      </div>
-
-      <!-- Fixed incomes -->
-      <div class="sblock">
-        <div class="sblock-head">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
-          הכנסות קבועות
-        </div>
-        <div class="sblock-body">
-          <input id="fi-name"   class="inp" type="text"   placeholder="מקור הכנסה" style="margin-bottom:8px">
-          <input id="fi-amount" class="inp" type="number" placeholder="סכום ₪"      style="margin-bottom:10px">
-          <button id="btn-add-fi" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px">+ הוסף הכנסה קבועה</button>
-          <div id="fi-list"></div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Nav -->
-  <nav id="nav">
-    <button class="nav-btn active" id="nav-dashboard" onclick="switchView('dashboard')">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
-      החשבון שלי
-    </button>
-    <button class="nav-btn" id="nav-settings" onclick="switchView('settings')">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
-      הגדרות
-    </button>
-  </nav>
-</div>
-
-<!-- Modal -->
-<div id="modal-overlay" class="hidden" onclick="handleOverlayClick(event)">
-  <div id="modal-sheet" class="slide-up" onclick="event.stopPropagation()">
-    <div class="modal-handle"></div>
-    <h3 id="modal-title" style="text-align:center;font-size:17px;font-weight:700;margin-bottom:18px"></h3>
-    <input id="modal-amount" class="inp mono" type="number" placeholder="0"
-      style="font-size:40px;font-weight:800;text-align:center;padding:18px 10px;margin-bottom:11px">
-    <input id="modal-desc" class="inp" type="text" placeholder="תיאור הפעולה" style="margin-bottom:14px">
-    <button id="modal-submit" class="btn" style="font-size:15px;padding:15px">אישור ועדכון יתרה</button>
-  </div>
-</div>
-
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
-<script>
-(function() {
-  'use strict';
-
-  /* Init Firebase */
-  const FB_CFG = {
-    apiKey: "AIzaSyBqpLOIbztpurGuUqpfaWZT71JcofKG2rc",
-    authDomain: "riki-aharele-budget.firebaseapp.com",
-    projectId: "riki-aharele-budget",
-    storageBucket: "riki-aharele-budget.firebasestorage.app",
-    messagingSenderId: "53506652532",
-    appId: "1:53506652532:web:28b3e3fc28114b1feb9421"
-  };
-  if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
-  const auth = firebase.auth();
-  const db   = firebase.firestore();
-
-  /* State */
-  var uid = null, resetDay = 1, displayName = '';
-  var incomes = [], expenses = [], fixedExpenses = [], fixedIncomes = [];
-  var modalType = 'income', isRegMode = false, unsubs = [];
-
-  /* Helpers */
-  function $(id){ return document.getElementById(id); }
-  function show(id){ $(id).classList.remove('hidden'); }
-  function hide(id){ $(id).classList.add('hidden'); }
-  function fmt(n) { return '₪' + Number(n||0).toLocaleString('he-IL'); }
-
-  function showScreen(name) {
-    ['screen-loading','screen-login','screen-setname','app'].forEach(hide);
-    show(name);
-  }
-
-  /* Nav switch */
-  window.switchView = function(v) {
-    if (v === 'dashboard') {
-      show('view-dashboard'); hide('view-settings');
-      $('nav-dashboard').classList.add('active');
-      $('nav-settings').classList.remove('active');
-    } else {
-      hide('view-dashboard'); show('view-settings');
-      $('nav-settings').classList.add('active');
-      $('nav-dashboard').classList.remove('active');
-      renderFixedLists();
-    }
-  };
-
-  /* Cycle */
-  function cycleStart() {
-    var now = new Date();
-    var s   = new Date(now.getFullYear(), now.getMonth(), resetDay || 1);
-    if (now.getDate() < (resetDay || 1)) s.setMonth(s.getMonth() - 1);
-    return s;
-  }
-  function calcIncome()   {
-    var s = cycleStart();
-    return incomes.filter(function(i){ return new Date(i.date) >= s; })
-                  .reduce(function(a,i){ return a + Number(i.amount||0); }, 0)
-         + fixedIncomes.reduce(function(a,i){ return a + Number(i.amount||0); }, 0);
-  }
-  function calcFixedExp() { return fixedExpenses.reduce(function(a,i){ return a+Number(i.amount||0); }, 0); }
-  function calcVarExp()   {
-    var s = cycleStart();
-    return expenses.filter(function(i){ return new Date(i.date) >= s; })
-                   .reduce(function(a,i){ return a+Number(i.amount||0); }, 0);
-  }
-  function calcBal() { return calcIncome() - calcFixedExp() - calcVarExp(); }
-
-  /* Ticker */
-  function updateTicker() {
-    var seg = '<span>AO Banking</span><span class="dot">●</span>'
-            + '<span>יתרה: ' + fmt(calcBal()) + '</span><span class="dot">●</span>'
-            + '<span>הכנסות: ' + fmt(calcIncome()) + '</span><span class="dot">●</span>'
-            + '<span>קבועות: ' + fmt(calcFixedExp()) + '</span><span class="dot">●</span>'
-            + '<span>משתנות: ' + fmt(calcVarExp()) + '</span><span class="dot">●</span>';
-    $('ticker-inner').innerHTML = seg + seg;
-  }
-
-  /* Render stats */
-  function renderStats() {
-    var bal = calcBal();
-    var el  = $('balance-display');
-    el.textContent = fmt(bal);
-    el.className   = 'mono num-pop ' + (bal >= 0 ? 'bal-pos' : 'bal-neg');
-    $('stat-income').textContent = fmt(calcIncome());
-    $('stat-fixed').textContent  = fmt(calcFixedExp());
-    $('stat-var').textContent    = fmt(calcVarExp());
-    updateTicker();
-  }
-
-  /* Render transactions */
-  function renderTx() {
-    var s   = cycleStart();
-    var all = [];
-    incomes.forEach(function(i){ if (new Date(i.date) >= s) all.push(Object.assign({}, i, {_t:'income'})); });
-    expenses.forEach(function(i){ if (new Date(i.date) >= s) all.push(Object.assign({}, i, {_t:'expense'})); });
-    all.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
-
-    var el = $('tx-list');
-    if (!all.length) {
-      el.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted);font-size:13px">אין תנועות במחזור הנוכחי</div>';
-      return;
-    }
-    el.innerHTML = all.map(function(item, idx) {
-      var isInc = item._t === 'income';
-      var notLast = idx < all.length - 1;
-      return '<div class="tx-row"' + (notLast ? ' style="border-bottom:1px solid rgba(255,255,255,0.04)"' : '') + '>'
-        + '<div style="display:flex;align-items:center;gap:11px">'
-        + '<div class="tx-icon" style="background:' + (isInc ? 'rgba(0,230,118,0.1)' : 'rgba(255,255,255,0.05)') + ';border:1px solid ' + (isInc ? 'rgba(0,230,118,0.2)' : 'rgba(255,255,255,0.08)') + '">'
-        + (isInc
-          ? '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>'
-          : '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>')
-        + '</div>'
-        + '<div>'
-        + '<p style="font-weight:600;font-size:13px;line-height:1.3">' + (item.description || '') + '</p>'
-        + '<p class="mono" style="font-size:10px;color:var(--muted);margin-top:2px">' + new Date(item.date).toLocaleDateString('he-IL') + '</p>'
-        + '</div></div>'
-        + '<div style="display:flex;align-items:center;gap:11px">'
-        + '<span class="mono" style="font-weight:700;font-size:13px;color:' + (isInc ? 'var(--green)' : 'var(--text)') + '">'
-        + (isInc ? '+' : '−') + fmt(item.amount) + '</span>'
-        + '<button onclick="delItem(\'' + (isInc ? 'incomes' : 'expenses') + '\',\'' + item.id + '\')" class="del-btn">✕</button>'
-        + '</div></div>';
-    }).join('');
-  }
-
-  /* Render fixed lists */
-  function renderFixedLists() {
-    $('fe-list').innerHTML = fixedExpenses.map(function(item) {
-      return '<div class="fixed-row"><span style="font-size:13px;font-weight:600">' + item.name + '</span>'
-        + '<div style="display:flex;align-items:center;gap:9px">'
-        + '<span class="mono" style="color:var(--red);font-weight:700;font-size:13px">' + fmt(item.amount) + '</span>'
-        + '<button onclick="delItem(\'fixed_settings\',\'' + item.id + '\')" class="del-btn">✕</button>'
-        + '</div></div>';
-    }).join('');
-    $('fi-list').innerHTML = fixedIncomes.map(function(item) {
-      return '<div class="fixed-row"><span style="font-size:13px;font-weight:600">' + item.name + '</span>'
-        + '<div style="display:flex;align-items:center;gap:9px">'
-        + '<span class="mono" style="color:var(--green);font-weight:700;font-size:13px">' + fmt(item.amount) + '</span>'
-        + '<button onclick="delItem(\'fixed_incomes\',\'' + item.id + '\')" class="del-btn">✕</button>'
-        + '</div></div>';
-    }).join('');
-  }
-
-  function renderAll() { renderStats(); renderTx(); }
-
-  /* Firestore listeners */
-  function startListeners() {
-    unsubs.forEach(function(u){ u(); });
-    unsubs = [];
-    var uRef = db.collection('users').doc(uid);
-    unsubs.push(uRef.onSnapshot(function(doc) {
-      if (doc.exists) {
-        if (doc.data().resetDay) { resetDay = doc.data().resetDay; $('reset-day-input').value = resetDay; }
-        if (doc.data().displayName) {
-          displayName = doc.data().displayName;
-          $('header-name').textContent = 'שלום, ' + displayName.split(' ')[0] + '!';
-          $('settings-name-input').value = displayName;
+        class ErrorBoundary extends React.Component {
+            constructor(props) { super(props); this.state = { hasError: false }; }
+            static getDerivedStateFromError() { return { hasError: true }; }
+            render() {
+                if (this.state.hasError) {
+                    return <div className="min-h-screen bg-dark-bg flex items-center justify-center p-8 text-center"><button onClick={() => window.location.reload()} className="bg-bank-balance p-4 rounded-xl text-dark-bg font-bold">משהו השתבש, לחץ לרענון</button></div>;
+                }
+                return this.props.children;
+            }
         }
-      }
-    }));
-    unsubs.push(uRef.collection('incomes').onSnapshot(function(s){ incomes = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); }));
-    unsubs.push(uRef.collection('expenses').onSnapshot(function(s){ expenses = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); }));
-    unsubs.push(uRef.collection('fixed_settings').onSnapshot(function(s){ fixedExpenses = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); renderFixedLists(); }));
-    unsubs.push(uRef.collection('fixed_incomes').onSnapshot(function(s){ fixedIncomes = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); renderFixedLists(); }));
-  }
 
-  /* Auth state */
-  auth.onAuthStateChanged(function(user) {
-    if (!user) { showScreen('screen-login'); return; }
-    uid = user.uid;
-    db.collection('users').doc(uid).get().then(function(snap) {
-      var savedName = snap.exists && snap.data().displayName;
-      var authName  = user.displayName;
-      if (!savedName && !authName) { showScreen('screen-setname'); return; }
-      displayName = savedName || authName || '';
-      showScreen('app');
-      $('header-name').textContent   = 'שלום, ' + displayName.split(' ')[0] + '!';
-      $('settings-name-input').value = displayName;
-      $('reset-day-input').value     = resetDay;
-      startListeners();
-    });
-  });
+        const LoginScreen = () => {
+            const [email, setEmail] = useState('');
+            const [password, setPassword] = useState('');
+            const [displayName, setDisplayName] = useState('');
+            const [isRegister, setIsRegister] = useState(false);
+            const [error, setError] = useState('');
 
-  /* Google login */
-  $('btn-google-login').onclick = function() {
-    auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function(e){ console.error(e); });
-  };
+            const handleAuth = async (e) => {
+                e.preventDefault();
+                try {
+                    if (isRegister) {
+                        const res = await auth.createUserWithEmailAndPassword(email, password);
+                        await res.user.updateProfile({ displayName });
+                        await db.collection('users').doc(res.user.uid).set({ displayName }, { merge: true });
+                    } else { await auth.signInWithEmailAndPassword(email, password); }
+                } catch (err) { setError('פרטי גישה לא תקינים'); }
+            };
 
-  /* Toggle register/login */
-  $('btn-toggle-mode').onclick = function() {
-    isRegMode = !isRegMode;
-    if (isRegMode) {
-      show('login-name-wrap');
-      $('btn-email-auth').textContent   = 'צור חשבון';
-      $('btn-toggle-mode').textContent  = '← חזרה לכניסה';
-    } else {
-      hide('login-name-wrap');
-      $('btn-email-auth').textContent   = 'כניסה לחשבון';
-      $('btn-toggle-mode').textContent  = 'עוד אין חשבון? הירשם עכשיו ←';
-    }
-    hide('login-err');
-  };
+            return (
+                <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-dark-bg text-center">
+                    <div className="w-full max-w-sm animate-rise">
+                        <div className="w-24 h-24 premium-logo-box mx-auto mb-6">
+                            <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" className="w-full h-full object-cover" />
+                        </div>
+                        <h1 className="text-3xl font-black mb-1">AO Banking</h1>
+                        <p className="text-slate-400 text-sm mb-10">התקציב האישי שלכם</p>
+                        <div className="bank-card p-8">
+                            <button onClick={() => auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())} className="hover-press w-full bg-white text-dark-bg p-4 rounded-2xl font-black flex items-center justify-center gap-3 mb-6 transition-all shadow-xl">
+                                <Icon name="chrome" className="text-blue-500" /> התחברות עם גוגל
+                            </button>
+                            <form onSubmit={handleAuth} className="space-y-4">
+                                {isRegister && <input placeholder="מה השם המלא שלך?" className="cyber-input" value={displayName} onChange={e => setDisplayName(e.target.value)} required />}
+                                <input type="email" placeholder="אימייל" className="cyber-input" value={email} onChange={e => setEmail(e.target.value)} required />
+                                <input type="password" placeholder="סיסמה" className="cyber-input" value={password} onChange={e => setPassword(e.target.value)} required />
+                                {error && <p className="text-bank-expense text-xs font-bold">{error}</p>}
+                                <button className="hover-press w-full bg-bank-balance text-dark-bg p-4 rounded-2xl font-black mt-2">
+                                    {isRegister ? 'להרשמה וכניסה לתקציב שלי' : 'כניסה לתקציב שלי'}
+                                </button>
+                            </form>
+                            <button onClick={() => setIsRegister(!isRegister)} className="text-slate-400 text-sm mt-6 hover:text-white transition-colors">
+                                {isRegister ? 'יש לך חשבון? התחבר כאן' : 'הרשמה מהירה לחשבון חדש'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
 
-  /* Email auth */
-  $('btn-email-auth').onclick = function() {
-    var email = $('login-email').value.trim();
-    var pass  = $('login-pass').value;
-    var name  = $('login-name').value.trim();
-    hide('login-err');
-    if (isRegMode) {
-      auth.createUserWithEmailAndPassword(email, pass).then(function(cred) {
-        var promises = [];
-        if (name) {
-          promises.push(cred.user.updateProfile({ displayName: name }));
-          promises.push(db.collection('users').doc(cred.user.uid).set({ displayName: name }, { merge: true }));
-        }
-        return Promise.all(promises);
-      }).catch(function() {
-        $('login-err').textContent = 'לא ניתן ליצור חשבון. בדוק את הפרטים.';
-        show('login-err');
-      });
-    } else {
-      auth.signInWithEmailAndPassword(email, pass).catch(function() {
-        $('login-err').textContent = 'אימייל או סיסמה שגויים.';
-        show('login-err');
-      });
-    }
-  };
+        const App = () => {
+            const [user, setUser] = useState(null);
+            const [loading, setLoading] = useState(true);
+            const [resetDay, setResetDay] = useState(1);
+            const [incomes, setIncomes] = useState([]);
+            const [expenses, setExpenses] = useState([]);
+            const [fixedExpenses, setFixedExpenses] = useState([]);
+            const [fixedIncomes, setFixedIncomes] = useState([]);
+            const [view, setView] = useState('dashboard');
+            const [isModalOpen, setIsModalOpen] = useState(false);
+            const [modalType, setModalType] = useState('income');
 
-  /* Set name */
-  $('btn-setname').onclick = function() {
-    var name = $('setname-input').value.trim();
-    if (!name) return;
-    auth.currentUser.updateProfile({ displayName: name }).then(function() {
-      return db.collection('users').doc(auth.currentUser.uid).set({ displayName: name }, { merge: true });
-    }).then(function() {
-      window.location.reload();
-    }).catch(function() {
-      $('setname-err').textContent = 'שגיאה, נסה שוב.';
-      show('setname-err');
-    });
-  };
+            useEffect(() => {
+                return auth.onAuthStateChanged(u => { setUser(u); setLoading(false); });
+            }, []);
 
-  /* Sign out */
-  $('btn-signout').onclick = function() { unsubs.forEach(function(u){ u(); }); auth.signOut(); };
+            useEffect(() => {
+                if (!user) return;
+                const userRef = db.collection('users').doc(user.uid);
+                const unsub1 = userRef.onSnapshot(doc => { if (doc.exists && doc.data().resetDay) setResetDay(doc.data().resetDay); });
+                const unsub2 = userRef.collection('incomes').onSnapshot(s => setIncomes(s.docs.map(d => ({id: d.id, ...d.data()}))));
+                const unsub3 = userRef.collection('expenses').onSnapshot(s => setExpenses(s.docs.map(d => ({id: d.id, ...d.data()}))));
+                const unsub4 = userRef.collection('fixed_settings').onSnapshot(s => setFixedExpenses(s.docs.map(d => ({id: d.id, ...d.data()}))));
+                const unsub5 = userRef.collection('fixed_incomes').onSnapshot(s => setFixedIncomes(s.docs.map(d => ({id: d.id, ...d.data()}))));
+                return () => { unsub1(); unsub2(); unsub3(); unsub4(); unsub5(); };
+            }, [user]);
 
-  /* Reset day */
-  $('reset-day-input').oninput = function() {
-    var v = parseInt(this.value);
-    if (v >= 1 && v <= 31) {
-      resetDay = v;
-      db.collection('users').doc(uid).set({ resetDay: v }, { merge: true });
-      renderAll();
-    }
-  };
+            const cycleData = useMemo(() => {
+                const now = new Date();
+                let startDate = new Date(now.getFullYear(), now.getMonth(), resetDay);
+                if (now.getDate() < resetDay) startDate.setMonth(startDate.getMonth() - 1);
+                const curInc = incomes.filter(i => new Date(i.date) >= startDate).reduce((s, i) => s + Number(i.amount), 0) + fixedIncomes.reduce((s, i) => s + Number(i.amount), 0);
+                const curExp = expenses.filter(i => new Date(i.date) >= startDate).reduce((s, i) => s + Number(i.amount), 0) + fixedExpenses.reduce((s, i) => s + Number(i.amount), 0);
+                const list = [...incomes, ...expenses].filter(i => new Date(i.date) >= startDate).sort((a,b) => new Date(b.date) - new Date(a.date));
+                return { balance: curInc - curExp, list };
+            }, [incomes, expenses, fixedExpenses, fixedIncomes, resetDay]);
 
-  /* Save name */
-  $('btn-save-name').onclick = function() {
-    var name = $('settings-name-input').value.trim();
-    if (!name) return;
-    auth.currentUser.updateProfile({ displayName: name }).then(function() {
-      return db.collection('users').doc(uid).set({ displayName: name }, { merge: true });
-    }).then(function() {
-      displayName = name;
-      $('header-name').textContent = 'שלום, ' + name.split(' ')[0] + '!';
-      show('name-saved');
-      setTimeout(function(){ hide('name-saved'); }, 2500);
-    }).catch(function(e){ console.error(e); });
-  };
+            const handleAddItem = async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const col = modalType === 'income' ? 'incomes' : 'expenses';
+                await db.collection('users').doc(user.uid).collection(col).add({ amount: Number(formData.get('amount')), description: formData.get('description'), date: new Date().toISOString() });
+                setIsModalOpen(false);
+            };
 
-  /* Modal */
-  $('btn-add-income').onclick  = function(){ openModal('income'); };
-  $('btn-add-expense').onclick = function(){ openModal('expense'); };
+            const handleAddFixed = async (e, type) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const col = type === 'income' ? 'fixed_incomes' : 'fixed_settings';
+                await db.collection('users').doc(user.uid).collection(col).add({ name: formData.get('name'), amount: Number(formData.get('amount')) });
+                e.target.reset();
+            };
 
-  function openModal(type) {
-    modalType = type;
-    $('modal-title').textContent = type === 'income' ? 'הוספת הפקדה' : 'הוספת הוצאה';
-    $('modal-amount').style.color       = type === 'income' ? 'var(--green)' : 'var(--text)';
-    $('modal-amount').style.borderColor = type === 'income' ? 'rgba(0,230,118,0.3)' : 'rgba(255,23,68,0.3)';
-    $('modal-sheet').style.borderTop    = '2px solid ' + (type === 'income' ? 'var(--green)' : 'var(--red)');
-    $('modal-submit').className = 'btn ' + (type === 'income' ? 'btn-green' : 'btn-red');
-    $('modal-amount').value = '';
-    $('modal-desc').value   = '';
-    show('modal-overlay');
-    setTimeout(function(){ $('modal-amount').focus(); }, 120);
-  }
+            const deleteItem = async (col, id) => await db.collection('users').doc(user.uid).collection(col).doc(id).delete();
 
-  window.handleOverlayClick = function(e) { hide('modal-overlay'); };
+            if (loading) return <div className="min-h-screen bg-dark-bg flex items-center justify-center text-bank-balance font-bold italic">מתחבר לכספת...</div>;
+            if (!user) return <LoginScreen />;
 
-  $('modal-submit').onclick = function() {
-    var amount = Number($('modal-amount').value);
-    var desc   = $('modal-desc').value.trim();
-    if (!amount || !desc) return;
-    db.collection('users').doc(uid).collection(modalType === 'income' ? 'incomes' : 'expenses')
-      .add({ amount: amount, description: desc, date: new Date().toISOString() })
-      .then(function(){ hide('modal-overlay'); });
-  };
+            const userName = user.displayName ? user.displayName.split(' ')[0] : (user.email ? user.email.split('@')[0] : 'משתמש');
 
-  /* Add fixed */
-  $('btn-add-fe').onclick = function() {
-    var name = $('fe-name').value.trim(), amount = Number($('fe-amount').value);
-    if (!name || !amount) return;
-    db.collection('users').doc(uid).collection('fixed_settings').add({ name: name, amount: amount })
-      .then(function(){ $('fe-name').value = ''; $('fe-amount').value = ''; });
-  };
-  $('btn-add-fi').onclick = function() {
-    var name = $('fi-name').value.trim(), amount = Number($('fi-amount').value);
-    if (!name || !amount) return;
-    db.collection('users').doc(uid).collection('fixed_incomes').add({ name: name, amount: amount })
-      .then(function(){ $('fi-name').value = ''; $('fi-amount').value = ''; });
-  };
+            return (
+                <div className="min-h-screen pb-32 bg-dark-bg relative">
+                    <header className="px-5 pt-10 pb-4 animate-rise">
+                        <div className="flex justify-between items-start mb-8">
+                            <div className="flex items-center gap-4">
+                                <div className="w-14 h-14 premium-logo-box"><img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" className="w-full h-full object-cover" /></div>
+                                <div>
+                                    <h1 className="text-xl font-bold tracking-tight">שלום, {userName}</h1>
+                                    <div className="flex items-center gap-2 mt-0.5"><div className="live-dot"></div><span className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Connected Live</span></div>
+                                </div>
+                            </div>
+                            <div className="flex gap-2">
+                                <button onClick={() => window.location.reload()} className="p-2.5 bank-card hover-press text-slate-400"><Icon name="refresh-cw" size={18}/></button>
+                                <button onClick={() => auth.signOut()} className="p-2.5 bank-card hover-press text-slate-400"><Icon name="log-out" size={18}/></button>
+                            </div>
+                        </div>
 
-  /* Delete */
-  window.delItem = function(col, id) {
-    db.collection('users').doc(uid).collection(col).doc(id).delete();
-  };
+                        <div className="bank-card bank-card-main p-10 text-center relative overflow-hidden">
+                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-bank-balance/40 to-transparent"></div>
+                             <p className="text-slate-500 text-xs font-black uppercase tracking-widest">יתרה פנויה לניצול</p>
+                             <h2 className={`text-6xl font-black mt-3 tracking-tighter ${cycleData.balance >= 0 ? 'text-bank-balance' : 'text-bank-expense'} drop-shadow-[0_0_20px_rgba(0,229,255,0.2)]`}>
+                                ₪ {cycleData.balance.toLocaleString()}
+                             </h2>
+                        </div>
+                    </header>
 
-})();
-</script>
+                    <main className="px-5 space-y-8 mt-6 animate-rise" style={{animationDelay: '0.1s'}}>
+                        {view === 'dashboard' ? (
+                            <>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <button onClick={() => { setModalType('income'); setIsModalOpen(true); }} className="hover-press bank-card p-6 flex flex-col items-center gap-2 border-b-2 border-b-bank-income/30">
+                                        <Icon name="arrow-up" className="text-bank-income" size={26} />
+                                        <span className="font-bold text-sm">הכנסה חדשה 💰</span>
+                                    </button>
+                                    <button onClick={() => { setModalType('expense'); setIsModalOpen(true); }} className="hover-press bank-card p-6 flex flex-col items-center gap-2 border-b-2 border-b-bank-expense/30">
+                                        <Icon name="arrow-down" className="text-bank-expense" size={26} />
+                                        <span className="font-bold text-sm">הוצאה חדשה 💸</span>
+                                    </button>
+                                </div>
+                                <div className="bank-card overflow-hidden">
+                                    <div className="p-4 border-b border-white/5 font-black text-[10px] uppercase text-slate-500 tracking-[0.2em]">תנועות אחרונות</div>
+                                    {cycleData.list.length === 0 ? <div className="p-14 text-center text-slate-600 italic">עוד לא הכנסת תנועות...</div> : cycleData.list.map((item, idx) => {
+                                        const isInc = incomes.some(i => i.id === item.id);
+                                        return (
+                                            <div key={item.id} className={`p-4 flex justify-between items-center ${idx !== cycleData.list.length-1 ? 'border-b border-white/[0.03]' : ''}`}>
+                                                <div className="flex items-center gap-4">
+                                                    <div className={`p-2.5 rounded-xl bg-dark-bg border ${isInc ? 'border-bank-income/20 text-bank-income' : 'border-slate-800 text-slate-500'}`}><Icon name={isInc ? "arrow-up-right" : "arrow-down-left"} size={16}/></div>
+                                                    <div><p className="text-sm font-bold">{item.description}</p><p className="text-[10px] text-slate-500 mt-0.5">{new Date(item.date).toLocaleDateString('he-IL')}</p></div>
+                                                </div>
+                                                <div className="flex items-center gap-4">
+                                                    <span className={`font-bold text-lg ${isInc ? 'text-bank-income' : 'text-white'}`}>₪{item.amount.toLocaleString()}</span>
+                                                    <button onClick={() => deleteItem(isInc ? 'incomes' : 'expenses', item.id)} className="text-slate-700 hover:text-bank-expense p-1 transition-all"><Icon name="trash-2" size={16}/></button>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </>
+                        ) : (
+                            <section className="space-y-8">
+                                <div className="bank-card p-6 border-t-2 border-t-bank-balance/20">
+                                    <h3 className="font-bold mb-2 flex items-center gap-2"><Icon name="calendar" className="text-bank-balance" size={18}/> יום איפוס חודשי</h3>
+                                    <p className="text-slate-400 text-xs mb-5">הגדר מתי התקציב שלך מתחיל ספירה מחדש.</p>
+                                    <input type="number" min="1" max="31" value={resetDay} onChange={e => db.collection('users').doc(user.uid).set({resetDay: Number(e.target.value)}, {merge:true})} className="cyber-input w-24 text-center text-2xl font-black text-bank-balance" />
+                                </div>
+                                <div className="space-y-4">
+                                    <h3 className="font-bold px-1 text-sm uppercase tracking-widest text-slate-400">הוראות קבע והכנסות קבועות</h3>
+                                    <form onSubmit={e => handleAddFixed(e, 'expense')} className="bank-card p-6 space-y-4 border-l-4 border-l-bank-expense/30">
+                                        <input name="name" required className="cyber-input" placeholder="שם החיוב (למשל: שכירות)" />
+                                        <input name="amount" type="number" required className="cyber-input" placeholder="סכום קבוע (₪)" />
+                                        <button className="w-full bg-bank-surface border border-white/5 p-4 rounded-2xl font-bold hover-press shadow-lg">הוסף הוצאה קבועה</button>
+                                    </form>
+                                    <div className="space-y-2">{fixedExpenses.map(item => (
+                                        <div key={item.id} className="bank-card p-4 flex justify-between items-center"><p className="text-sm font-bold text-slate-200">{item.name}</p><div className="flex gap-4 items-center"><span className="font-bold text-bank-expense">₪{item.amount.toLocaleString()}</span><button onClick={() => deleteItem('fixed_settings', item.id)} className="text-slate-600"><Icon name="x" size={16}/></button></div></div>
+                                    ))}</div>
+                                    <form onSubmit={e => handleAddFixed(e, 'income')} className="bank-card p-6 space-y-4 border-l-4 border-l-bank-income/30 pt-6">
+                                        <input name="name" required className="cyber-input" placeholder="מקור (למשל: משכורת בסיס)" />
+                                        <input name="amount" type="number" required className="cyber-input" placeholder="סכום קבוע (₪)" />
+                                        <button className="w-full bg-bank-surface border border-white/5 p-4 rounded-2xl font-bold hover-press shadow-lg">הוסף הכנסה קבועה</button>
+                                    </form>
+                                    <div className="space-y-2">{fixedIncomes.map(item => (
+                                        <div key={item.id} className="bank-card p-4 flex justify-between items-center"><p className="text-sm font-bold text-slate-200">{item.name}</p><div className="flex gap-4 items-center"><span className="font-bold text-bank-income">₪{item.amount.toLocaleString()}</span><button onClick={() => deleteItem('fixed_incomes', item.id)} className="text-slate-600"><Icon name="x" size={16}/></button></div></div>
+                                    ))}</div>
+                                </div>
+                            </section>
+                        )}
+                    </main>
+
+                    <nav className="fixed bottom-6 left-6 right-6 bank-card p-2 flex justify-around shadow-2xl z-50 border border-white/10">
+                        <button onClick={() => setView('dashboard')} className={`hover-press flex flex-col items-center px-10 py-3 rounded-2xl transition-all ${view === 'dashboard' ? 'bg-white/[0.04] text-bank-balance' : 'text-slate-500'}`}><Icon name="wallet" size={22} /><span className="text-[10px] font-black mt-1.5 uppercase tracking-wider">ראשי</span></button>
+                        <button onClick={() => setView('settings')} className={`hover-press flex flex-col items-center px-10 py-3 rounded-2xl transition-all ${view === 'settings' ? 'bg-white/[0.04] text-white' : 'text-slate-500'}`}><Icon name="settings-2" size={22} /><span className="text-[10px] font-black mt-1.5 uppercase tracking-wider">ניהול</span></button>
+                    </nav>
+
+                    {isModalOpen && (
+                        <div className="fixed inset-0 z-50 flex items-end justify-center">
+                            <div className="absolute inset-0 bg-black/85 backdrop-blur-md" onClick={() => setIsModalOpen(false)}></div>
+                            <div className={`relative w-full max-w-md bank-card rounded-b-none rounded-t-[3rem] p-10 animate-rise border-t-2 ${modalType === 'income' ? 'border-bank-income' : 'border-bank-expense'} shadow-[0_-20px_50px_rgba(0,0,0,0.5)]`}>
+                                <div className="w-12 h-1.5 bg-white/10 rounded-full mx-auto mb-8"></div>
+                                <h3 className="text-2xl font-black text-center mb-8">{modalType === 'income' ? 'הכנסה חדשה 💰' : 'הוצאה חדשה 💸'}</h3>
+                                <form onSubmit={handleAddItem} className="space-y-8">
+                                    <div className="relative">
+                                        <span className={`absolute left-6 top-1/2 -translate-y-1/2 text-2xl font-black opacity-30 ${modalType === 'income' ? 'text-bank-income' : 'text-white'}`}>₪</span>
+                                        <input name="amount" type="number" required autoFocus className="cyber-input text-6xl font-black text-center py-8 font-mono" placeholder="0" />
+                                    </div>
+                                    <input name="description" required className="cyber-input text-center text-xl" placeholder="עבור מה הפעולה?" />
+                                    <button className={`hover-press w-full p-6 rounded-2xl font-black text-xl text-dark-bg shadow-2xl ${modalType === 'income' ? 'bg-bank-income' : 'bg-white'}`}>אישור ועדכון יתרה</button>
+                                </form>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<ErrorBoundary><App /></ErrorBoundary>);
+    </script>
 </body>
-    </html>
+</html>
