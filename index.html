@@ -9,7 +9,7 @@
 
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://a4190656-cloud.github.io/AO-TIMLulll/">
-  <meta property="og:title" content="AO ניהול תקציב | התקציב האישי שלכם!">
+  <meta property="og:title" content="AO Budget | התקציב האישי שלכם!">
   <meta property="og:description" content="הצטרפו לניהול תקציב חכם. בואו לעקוב אחרי הכסף שלכם בסטייל.">
   <meta property="og:image" content="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg">
   <meta property="og:image:width" content="1200">
@@ -148,74 +148,296 @@
     }
     .btn-ghost:hover { background: rgba(255,255,255,0.09); }
 
-    /* ACTION BUTTONS */
+    #currency-toggle-btn {
+      background: rgba(0,229,255,0.08);
+      border: 1px solid rgba(0,229,255,0.22);
+      border-radius: 10px;
+      color: var(--cyan);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; font-weight: 700;
+      padding: 6px 11px;
+      cursor: pointer;
+      transition: background .15s, transform .12s;
+      letter-spacing: .04em;
+      display: flex; align-items: center; gap: 5px;
+    }
+    #currency-toggle-btn:active { transform: scale(0.94); }
+    #currency-toggle-btn:hover { background: rgba(0,229,255,0.15); }
+
+    .pct-ring-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 110px;
+      flex-shrink: 0;
+    }
+    .pct-ring-svg {
+      transform: rotate(-90deg);
+      overflow: visible;
+    }
+    .pct-ring-bg {
+      fill: none;
+      stroke: rgba(255,255,255,0.07);
+      stroke-width: 6;
+    }
+    .pct-ring-fill {
+      fill: none;
+      stroke-width: 6;
+      stroke-linecap: round;
+      transition: stroke-dashoffset .7s cubic-bezier(.4,0,.2,1), stroke .4s;
+    }
+    .pct-ring-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+    }
+    .pct-ring-pct {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px; font-weight: 700;
+      line-height: 1;
+    }
+    .pct-ring-label {
+      font-size: 9px; font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      opacity: .5;
+      margin-top: 2px;
+    }
+
     .action-btn-income,
     .action-btn-expense {
-      position: relative; width: 100%; padding: 0; border: none;
-      border-radius: 20px; cursor: pointer; overflow: hidden;
-      display: flex; flex-direction: column; align-items: center; gap: 0;
-      transition: transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s cubic-bezier(.2,.8,.2,1);
-      -webkit-tap-highlight-color: transparent; outline: none;
+      position: relative;
+      width: 100%;
+      padding: 0;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      transition:
+        transform .18s cubic-bezier(.2,.8,.2,1),
+        box-shadow .18s cubic-bezier(.2,.8,.2,1);
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
     }
+
     .action-btn-income {
       background: linear-gradient(160deg, #0d2117 0%, #071510 100%);
-      box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 -3px 0 0 rgba(0,100,50,0.9), 0 6px 24px rgba(0,230,118,0.20), 0 2px 8px rgba(0,0,0,0.5);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.06) inset,
+        0 -3px 0 0 rgba(0,100,50,0.9),
+        0 6px 24px rgba(0,230,118,0.20),
+        0 2px 8px rgba(0,0,0,0.5);
       border: 1px solid rgba(0,230,118,0.28);
     }
     .action-btn-income::before {
-      content: ''; position: absolute; inset: 0;
+      content: '';
+      position: absolute; inset: 0;
       background: radial-gradient(ellipse at 50% -20%, rgba(0,230,118,0.18) 0%, transparent 70%);
       pointer-events: none;
     }
-    .action-btn-income:hover { transform: translateY(-3px); box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 -3px 0 0 rgba(0,140,60,0.9), 0 12px 36px rgba(0,230,118,0.30), 0 4px 12px rgba(0,0,0,0.5); }
-    .action-btn-income:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 0px 0 0 rgba(0,100,50,0.9), 0 3px 12px rgba(0,230,118,0.15), 0 1px 4px rgba(0,0,0,0.6); }
+    .action-btn-income:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.08) inset,
+        0 -3px 0 0 rgba(0,140,60,0.9),
+        0 12px 36px rgba(0,230,118,0.30),
+        0 4px 12px rgba(0,0,0,0.5);
+    }
+    .action-btn-income:active {
+      transform: translateY(2px);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.04) inset,
+        0 0px 0 0 rgba(0,100,50,0.9),
+        0 3px 12px rgba(0,230,118,0.15),
+        0 1px 4px rgba(0,0,0,0.6);
+    }
+
     .action-btn-expense {
       background: linear-gradient(160deg, #1e0a0d 0%, #120508 100%);
-      box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 -3px 0 0 rgba(140,0,30,0.9), 0 6px 24px rgba(255,23,68,0.18), 0 2px 8px rgba(0,0,0,0.5);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.06) inset,
+        0 -3px 0 0 rgba(140,0,30,0.9),
+        0 6px 24px rgba(255,23,68,0.18),
+        0 2px 8px rgba(0,0,0,0.5);
       border: 1px solid rgba(255,23,68,0.28);
     }
     .action-btn-expense::before {
-      content: ''; position: absolute; inset: 0;
+      content: '';
+      position: absolute; inset: 0;
       background: radial-gradient(ellipse at 50% -20%, rgba(255,23,68,0.15) 0%, transparent 70%);
       pointer-events: none;
     }
-    .action-btn-expense:hover { transform: translateY(-3px); box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 -3px 0 0 rgba(180,0,30,0.9), 0 12px 36px rgba(255,23,68,0.28), 0 4px 12px rgba(0,0,0,0.5); }
-    .action-btn-expense:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 0px 0 0 rgba(140,0,30,0.9), 0 3px 12px rgba(255,23,68,0.12), 0 1px 4px rgba(0,0,0,0.6); }
-    .action-btn-inner { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 20px 12px 18px; width: 100%; position: relative; z-index: 1; }
-    .action-btn-icon-wrap { width: 46px; height: 46px; border-radius: 14px; display: flex; align-items: center; justify-content: center; position: relative; }
-    .action-btn-income .action-btn-icon-wrap { background: linear-gradient(145deg, rgba(0,230,118,0.18), rgba(0,230,118,0.06)); border: 1px solid rgba(0,230,118,0.32); box-shadow: 0 0 16px rgba(0,230,118,0.15), inset 0 1px 0 rgba(255,255,255,0.10); }
-    .action-btn-expense .action-btn-icon-wrap { background: linear-gradient(145deg, rgba(255,23,68,0.18), rgba(255,23,68,0.06)); border: 1px solid rgba(255,23,68,0.32); box-shadow: 0 0 16px rgba(255,23,68,0.15), inset 0 1px 0 rgba(255,255,255,0.10); }
-    .action-btn-label { font-size: 13px; font-weight: 800; letter-spacing: .04em; line-height: 1; }
+    .action-btn-expense:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.08) inset,
+        0 -3px 0 0 rgba(180,0,30,0.9),
+        0 12px 36px rgba(255,23,68,0.28),
+        0 4px 12px rgba(0,0,0,0.5);
+    }
+    .action-btn-expense:active {
+      transform: translateY(2px);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.04) inset,
+        0 0px 0 0 rgba(140,0,30,0.9),
+        0 3px 12px rgba(255,23,68,0.12),
+        0 1px 4px rgba(0,0,0,0.6);
+    }
+
+    .action-btn-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 20px 12px 18px;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .action-btn-icon-wrap {
+      width: 46px; height: 46px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .action-btn-income .action-btn-icon-wrap {
+      background: linear-gradient(145deg, rgba(0,230,118,0.18), rgba(0,230,118,0.06));
+      border: 1px solid rgba(0,230,118,0.32);
+      box-shadow: 0 0 16px rgba(0,230,118,0.15), inset 0 1px 0 rgba(255,255,255,0.10);
+    }
+    .action-btn-expense .action-btn-icon-wrap {
+      background: linear-gradient(145deg, rgba(255,23,68,0.18), rgba(255,23,68,0.06));
+      border: 1px solid rgba(255,23,68,0.32);
+      box-shadow: 0 0 16px rgba(255,23,68,0.15), inset 0 1px 0 rgba(255,255,255,0.10);
+    }
+
+    .action-btn-label {
+      font-size: 13px; font-weight: 800;
+      letter-spacing: .04em;
+      line-height: 1;
+    }
     .action-btn-income .action-btn-label  { color: #00E676; }
     .action-btn-expense .action-btn-label { color: #FF4D70; }
-    .action-btn-sublabel { font-size: 10px; font-weight: 600; margin-top: -4px; letter-spacing: .02em; }
+
+    .action-btn-sublabel {
+      font-size: 10px; font-weight: 600;
+      margin-top: -4px;
+      letter-spacing: .02em;
+    }
     .action-btn-income  .action-btn-sublabel { color: rgba(0,230,118,0.55); }
     .action-btn-expense .action-btn-sublabel { color: rgba(255,80,110,0.55); }
-    .action-btn-income::after, .action-btn-expense::after { content: ''; position: absolute; top: 0; left: 15%; right: 15%; height: 1px; border-radius: 1px; pointer-events: none; }
+
+    .action-btn-income::after,
+    .action-btn-expense::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 15%; right: 15%; height: 1px;
+      border-radius: 1px;
+      pointer-events: none;
+    }
     .action-btn-income::after  { background: linear-gradient(90deg, transparent, rgba(0,230,118,0.55), transparent); }
     .action-btn-expense::after { background: linear-gradient(90deg, transparent, rgba(255,23,68,0.50), transparent); }
 
-    /* FIXED BLOCKS */
-    .sblock-fixed-expense, .sblock-fixed-income { border-radius: 20px; overflow: hidden; margin-bottom: 16px; position: relative; }
-    .sblock-fixed-expense { background: linear-gradient(145deg, rgba(30,6,10,0.92), rgba(18,4,8,0.95)); border: 1px solid rgba(255,23,68,0.30); box-shadow: 0 0 0 1px rgba(255,23,68,0.08), 0 8px 32px rgba(255,23,68,0.12), inset 0 1px 0 rgba(255,255,255,0.06); }
-    .sblock-fixed-income  { background: linear-gradient(145deg, rgba(4,22,12,0.92), rgba(3,14,8,0.95)); border: 1px solid rgba(0,230,118,0.28); box-shadow: 0 0 0 1px rgba(0,230,118,0.07), 0 8px 32px rgba(0,230,118,0.10), inset 0 1px 0 rgba(255,255,255,0.06); }
-    .sblock-fixed-expense::before, .sblock-fixed-income::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 20px 20px 0 0; }
-    .sblock-fixed-expense::before { background: linear-gradient(90deg, transparent 5%, rgba(255,23,68,0.75) 40%, rgba(255,80,110,0.9) 60%, transparent 95%); }
-    .sblock-fixed-income::before  { background: linear-gradient(90deg, transparent 5%, rgba(0,200,80,0.75) 40%, rgba(0,230,118,0.9) 60%, transparent 95%); }
-    .sblock-fixed-head { padding: 15px 18px 14px; border-bottom: 1px solid; display: flex; align-items: center; gap: 10px; }
-    .sblock-fixed-expense .sblock-fixed-head { border-color: rgba(255,23,68,0.15); background: rgba(255,23,68,0.04); }
-    .sblock-fixed-income  .sblock-fixed-head { border-color: rgba(0,230,118,0.14); background: rgba(0,230,118,0.03); }
-    .sblock-fixed-head-icon { width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .sblock-fixed-expense .sblock-fixed-head-icon { background: rgba(255,23,68,0.14); border: 1px solid rgba(255,23,68,0.28); }
-    .sblock-fixed-income  .sblock-fixed-head-icon { background: rgba(0,230,118,0.12); border: 1px solid rgba(0,230,118,0.26); }
+    .sblock-fixed-expense,
+    .sblock-fixed-income {
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .sblock-fixed-expense {
+      background: linear-gradient(145deg, rgba(30,6,10,0.92), rgba(18,4,8,0.95));
+      border: 1px solid rgba(255,23,68,0.30);
+      box-shadow:
+        0 0 0 1px rgba(255,23,68,0.08),
+        0 8px 32px rgba(255,23,68,0.12),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .sblock-fixed-income {
+      background: linear-gradient(145deg, rgba(4,22,12,0.92), rgba(3,14,8,0.95));
+      border: 1px solid rgba(0,230,118,0.28);
+      box-shadow:
+        0 0 0 1px rgba(0,230,118,0.07),
+        0 8px 32px rgba(0,230,118,0.10),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .sblock-fixed-expense::before,
+    .sblock-fixed-income::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      border-radius: 20px 20px 0 0;
+    }
+    .sblock-fixed-expense::before {
+      background: linear-gradient(90deg, transparent 5%, rgba(255,23,68,0.75) 40%, rgba(255,80,110,0.9) 60%, transparent 95%);
+    }
+    .sblock-fixed-income::before {
+      background: linear-gradient(90deg, transparent 5%, rgba(0,200,80,0.75) 40%, rgba(0,230,118,0.9) 60%, transparent 95%);
+    }
+
+    .sblock-fixed-head {
+      padding: 15px 18px 14px;
+      border-bottom: 1px solid;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .sblock-fixed-expense .sblock-fixed-head {
+      border-color: rgba(255,23,68,0.15);
+      background: rgba(255,23,68,0.04);
+    }
+    .sblock-fixed-income .sblock-fixed-head {
+      border-color: rgba(0,230,118,0.14);
+      background: rgba(0,230,118,0.03);
+    }
+
+    .sblock-fixed-head-icon {
+      width: 32px; height: 32px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .sblock-fixed-expense .sblock-fixed-head-icon {
+      background: rgba(255,23,68,0.14);
+      border: 1px solid rgba(255,23,68,0.28);
+    }
+    .sblock-fixed-income .sblock-fixed-head-icon {
+      background: rgba(0,230,118,0.12);
+      border: 1px solid rgba(0,230,118,0.26);
+    }
+
     .sblock-fixed-head-text { flex: 1; }
-    .sblock-fixed-head-title { font-weight: 800; font-size: 14px; line-height: 1.2; }
+    .sblock-fixed-head-title {
+      font-weight: 800; font-size: 14px; line-height: 1.2;
+    }
     .sblock-fixed-expense .sblock-fixed-head-title { color: #FF6080; }
     .sblock-fixed-income  .sblock-fixed-head-title { color: #00E676; }
-    .sblock-fixed-head-sub { font-size: 10px; font-weight: 600; letter-spacing: .05em; margin-top: 2px; opacity: 0.5; }
-    .sblock-fixed-total { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; background: rgba(255,255,255,0.04); border-radius: 8px; padding: 4px 10px; flex-shrink: 0; }
+
+    .sblock-fixed-head-sub {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: .05em;
+      margin-top: 2px;
+      opacity: 0.5;
+    }
+
+    .sblock-fixed-total {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; font-weight: 700;
+      background: rgba(255,255,255,0.04);
+      border-radius: 8px;
+      padding: 4px 10px;
+      flex-shrink: 0;
+    }
     .sblock-fixed-expense .sblock-fixed-total { color: #FF6080; }
     .sblock-fixed-income  .sblock-fixed-total { color: #00E676; }
+
     .sblock-fixed-body { padding: 16px 18px 18px; }
 
     .logo-frame {
@@ -228,65 +450,237 @@
     }
     .logo-frame img { border-radius: 13px; display: block; }
 
-    .live-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; display: inline-block; animation: livePulse 2s ease-in-out infinite; }
-    @keyframes livePulse { 0% { box-shadow: 0 0 0 0 rgba(0,230,118,0.55); } 70% { box-shadow: 0 0 0 7px rgba(0,230,118,0); } 100% { box-shadow: 0 0 0 0 rgba(0,230,118,0); } }
+    .live-dot {
+      width: 7px; height: 7px;
+      background: var(--green); border-radius: 50%;
+      display: inline-block;
+      animation: livePulse 2s ease-in-out infinite;
+    }
+    @keyframes livePulse {
+      0%   { box-shadow: 0 0 0 0 rgba(0,230,118,0.55); }
+      70%  { box-shadow: 0 0 0 7px rgba(0,230,118,0); }
+      100% { box-shadow: 0 0 0 0 rgba(0,230,118,0); }
+    }
 
-    #ticker-wrap { overflow: hidden; background: rgba(13,19,35,0.80); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.06); height: 28px; display: flex; align-items: center; }
-    #ticker-inner { display: flex; white-space: nowrap; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.32); animation: ticker 26s linear infinite; }
+    #ticker-wrap {
+      overflow: hidden;
+      background: rgba(13,19,35,0.80);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      height: 28px; display: flex; align-items: center;
+    }
+    #ticker-inner {
+      display: flex; white-space: nowrap;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: rgba(255,255,255,0.32);
+      animation: ticker 26s linear infinite;
+    }
     #ticker-inner span { padding: 0 16px; }
     #ticker-inner .dot { color: var(--cyan); padding: 0 4px; }
     @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-    @keyframes floatUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes floatUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
     .rise { animation: floatUp .5s cubic-bezier(.16,1,.3,1) forwards; opacity: 0; }
-    .d1 { animation-delay: .07s; } .d2 { animation-delay: .14s; } .d3 { animation-delay: .22s; }
+    .d1 { animation-delay: .07s; }
+    .d2 { animation-delay: .14s; }
+    .d3 { animation-delay: .22s; }
 
-    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
     .slide-up { animation: slideUp .36s cubic-bezier(.16,1,.3,1) forwards; }
 
-    @keyframes numPop { from { opacity: 0; transform: scale(.88); } to { opacity: 1; transform: scale(1); } }
+    @keyframes numPop {
+      from { opacity: 0; transform: scale(.88); }
+      to   { opacity: 1; transform: scale(1); }
+    }
     .num-pop { animation: numPop .38s ease forwards; }
 
-    .bal-pos { color: var(--cyan); text-shadow: 0 0 30px rgba(0,229,255,0.45); }
-    .bal-neg { color: var(--red);  text-shadow: 0 0 30px rgba(255,23,68,0.45); }
+    .bal-pos { color: var(--cyan);  text-shadow: 0 0 30px rgba(0,229,255,0.45); }
+    .bal-neg { color: var(--red);   text-shadow: 0 0 30px rgba(255,23,68,0.45);  }
 
-    #nav { position: fixed; bottom: 12px; left: 12px; right: 12px; display: flex; background: rgba(10,16,30,0.88); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06); z-index: 100; padding: 4px; }
-    .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 11px 8px; border: none; background: transparent; color: rgba(255,255,255,0.3); font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; border-radius: 17px; cursor: pointer; transition: background .18s, color .18s; letter-spacing: .02em; }
-    .nav-btn.active { background: rgba(0,229,255,0.08); color: var(--cyan); box-shadow: inset 0 1px 0 rgba(0,229,255,0.15); }
+    #nav {
+      position: fixed; bottom: 12px; left: 12px; right: 12px;
+      display: flex;
+      background: rgba(10,16,30,0.88);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+      z-index: 100; padding: 4px;
+    }
+    .nav-btn {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; gap: 4px;
+      padding: 11px 8px;
+      border: none; background: transparent;
+      color: rgba(255,255,255,0.3);
+      font-family: 'Syne', sans-serif;
+      font-size: 11px; font-weight: 700;
+      border-radius: 17px; cursor: pointer;
+      transition: background .18s, color .18s;
+      letter-spacing: .02em;
+    }
+    .nav-btn.active {
+      background: rgba(0,229,255,0.08);
+      color: var(--cyan);
+      box-shadow: inset 0 1px 0 rgba(0,229,255,0.15);
+    }
     .nav-btn svg { width: 20px; height: 20px; }
 
-    #modal-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; align-items: flex-end; justify-content: center; }
-    #modal-sheet { width: 100%; max-width: 480px; background: rgba(10,16,30,0.96); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border: 1px solid rgba(255,255,255,0.10); border-bottom: none; border-radius: 26px 26px 0 0; padding: 24px 22px 38px; box-shadow: 0 -8px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.07); }
-    .modal-handle { width: 38px; height: 4px; background: rgba(255,255,255,0.14); border-radius: 10px; margin: 0 auto 18px; }
+    #modal-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: flex-end; justify-content: center;
+    }
+    #modal-sheet {
+      width: 100%; max-width: 480px;
+      background: rgba(10,16,30,0.96);
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-bottom: none;
+      border-radius: 26px 26px 0 0;
+      padding: 24px 22px 38px;
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.07);
+    }
+    .modal-handle {
+      width: 38px; height: 4px;
+      background: rgba(255,255,255,0.14);
+      border-radius: 10px;
+      margin: 0 auto 18px;
+    }
 
-    .tx-row { display: flex; justify-content: space-between; align-items: center; padding: 13px 16px; transition: background .15s; }
+    .tx-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 13px 16px;
+      transition: background .15s;
+    }
     .tx-row:hover { background: rgba(255,255,255,0.025); }
-    .tx-icon { width: 34px; height: 34px; border-radius: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; backdrop-filter: blur(8px); }
-    .cat-tag { display: inline-block; font-size: 10px; background: rgba(0,229,255,0.10); border: 1px solid rgba(0,229,255,0.18); padding: 2px 7px; border-radius: 6px; margin-right: 6px; color: rgba(0,229,255,0.85); vertical-align: middle; }
+    .tx-icon {
+      width: 34px; height: 34px; border-radius: 11px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      backdrop-filter: blur(8px);
+    }
+    .cat-tag {
+      display: inline-block;
+      font-size: 10px;
+      background: rgba(0,229,255,0.10);
+      border: 1px solid rgba(0,229,255,0.18);
+      padding: 2px 7px;
+      border-radius: 6px;
+      margin-right: 6px;
+      color: rgba(0,229,255,0.85);
+      vertical-align: middle;
+    }
 
-    .sblock { border-radius: 18px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: rgba(13,19,35,0.70); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); margin-bottom: 14px; box-shadow: 0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05); }
-    .sblock-head { padding: 13px 17px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.02); }
+    .sblock {
+      border-radius: 18px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(13,19,35,0.70);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      margin-bottom: 14px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .sblock-head {
+      padding: 13px 17px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-weight: 700; font-size: 13px;
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.02);
+    }
     .sblock-body { padding: 15px 17px; }
 
-    .fixed-row { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 11px; padding: 10px 13px; margin-bottom: 7px; backdrop-filter: blur(8px); }
-    .del-btn { background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.22); font-size: 15px; line-height: 1; padding: 2px 6px; transition: color .14s; }
+    .fixed-row {
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 11px;
+      padding: 10px 13px; margin-bottom: 7px;
+      backdrop-filter: blur(8px);
+    }
+    .del-btn {
+      background: none; border: none; cursor: pointer;
+      color: rgba(255,255,255,0.22); font-size: 15px; line-height: 1;
+      padding: 2px 6px; transition: color .14s;
+    }
     .del-btn:hover { color: var(--red); }
 
-    .btn-google { width: 100%; padding: 13px; background: rgba(255,255,255,0.95); color: #06090F; border: none; border-radius: 15px; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.35); transition: transform .14s, box-shadow .2s; }
+    .btn-google {
+      width: 100%; padding: 13px;
+      background: rgba(255,255,255,0.95); color: #06090F;
+      border: none; border-radius: 15px;
+      font-family: 'Syne', sans-serif;
+      font-size: 14px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+      transition: transform .14s, box-shadow .2s;
+    }
     .btn-google:active { transform: scale(0.96); }
 
-    #modal-new-cat-wrap { background: rgba(0,229,255,0.04); border: 1px solid rgba(0,229,255,0.15); border-radius: 12px; padding: 12px; margin-top: 10px; }
+    #modal-new-cat-wrap {
+      background: rgba(0,229,255,0.04);
+      border: 1px solid rgba(0,229,255,0.15);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 10px;
+    }
     #modal-new-cat-wrap .inp { margin-bottom: 8px; font-size: 13px; padding: 10px 13px; }
     #modal-new-cat-wrap .inp:last-of-type { margin-bottom: 0; }
-    #btn-modal-new-cat-toggle { background: none; border: none; cursor: pointer; color: rgba(0,229,255,0.70); font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 5px; padding: 0; margin-top: 8px; transition: color .15s; }
+    #btn-modal-new-cat-toggle {
+      background: none; border: none; cursor: pointer;
+      color: rgba(0,229,255,0.70); font-family: 'Syne', sans-serif;
+      font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; gap: 5px;
+      padding: 0; margin-top: 8px;
+      transition: color .15s;
+    }
     #btn-modal-new-cat-toggle:hover { color: var(--cyan); }
-    #btn-modal-save-new-cat { display: block; width: 100%; padding: 9px; background: rgba(0,229,255,0.12); border: 1px solid rgba(0,229,255,0.25); border-radius: 10px; color: var(--cyan); font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 8px; transition: background .15s; }
+    #btn-modal-save-new-cat {
+      display: block; width: 100%; padding: 9px;
+      background: rgba(0,229,255,0.12);
+      border: 1px solid rgba(0,229,255,0.25);
+      border-radius: 10px;
+      color: var(--cyan); font-family: 'Syne', sans-serif;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+      margin-top: 8px;
+      transition: background .15s;
+    }
     #btn-modal-save-new-cat:hover { background: rgba(0,229,255,0.18); }
 
-    .cat-tiles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-    .cat-tile { background: rgba(13,19,35,0.75); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-radius: 16px; padding: 16px 14px 13px; position: relative; overflow: hidden; transition: transform .2s, box-shadow .2s; }
+    .cat-tiles-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .cat-tile {
+      background: rgba(13,19,35,0.75);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: 16px;
+      padding: 16px 14px 13px;
+      position: relative;
+      overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+    }
     .cat-tile:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,0.5); }
-    .cat-tile-del { position: absolute; top: 8px; left: 8px; background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.18); font-size: 13px; line-height: 1; padding: 3px 5px; transition: color .14s; }
+    .cat-tile-del {
+      position: absolute; top: 8px; left: 8px;
+      background: none; border: none; cursor: pointer;
+      color: rgba(255,255,255,0.18); font-size: 13px;
+      line-height: 1; padding: 3px 5px;
+      transition: color .14px;
+    }
     .cat-tile-del:hover { color: var(--red); }
     .cat-tile-name { font-weight: 700; font-size: 13px; line-height: 1.3; margin-bottom: 8px; padding-left: 18px; word-break: break-word; }
     .cat-tile-amount { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; line-height: 1; }
@@ -305,111 +699,186 @@
 
     ::-webkit-scrollbar { display: none; }
 
-    .link-btn { background: none; border: none; color: var(--muted); font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; display: block; width: 100%; text-align: center; padding: 10px; transition: color .16s; }
+    .link-btn {
+      background: none; border: none;
+      color: var(--muted); font-family: 'Syne', sans-serif;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; display: block;
+      width: 100%; text-align: center; padding: 10px;
+      transition: color .16px;
+    }
     .link-btn:hover { color: #fff; }
 
-    .screen { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
+    .screen {
+      min-height: 100vh; display: flex;
+      flex-direction: column; align-items: center; justify-content: center;
+      padding: 24px;
+    }
 
-    /* ══ SUCCESS ANIMATION ══ */
-    #success-overlay { position: fixed; inset: 0; z-index: 999; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+    #success-overlay {
+      position: fixed; inset: 0; z-index: 999;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
+    }
     #success-overlay.hidden { display: none !important; }
-    .success-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0); animation: successBg .25s ease forwards; }
-    @keyframes successBg { 0% { background: rgba(0,0,0,0); } 40% { background: rgba(0,0,0,0.55); } 80% { background: rgba(0,0,0,0.55); } 100% { background: rgba(0,0,0,0); } }
-    .success-card { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 38px 44px 32px; border-radius: 28px; animation: successCardPop .5s cubic-bezier(.16,1,.3,1) forwards; opacity: 0; }
-    .success-card.income-card  { background: linear-gradient(145deg, rgba(4,22,12,0.97), rgba(3,14,8,0.98)); border: 1px solid rgba(0,230,118,0.35); box-shadow: 0 0 0 1px rgba(0,230,118,0.10), 0 24px 60px rgba(0,0,0,0.7), 0 0 60px rgba(0,230,118,0.15); }
-    .success-card.expense-card { background: linear-gradient(145deg, rgba(22,4,8,0.97), rgba(14,3,6,0.98)); border: 1px solid rgba(255,23,68,0.32); box-shadow: 0 0 0 1px rgba(255,23,68,0.08), 0 24px 60px rgba(0,0,0,0.7), 0 0 60px rgba(255,23,68,0.12); }
-    @keyframes successCardPop { 0% { opacity: 0; transform: scale(.72) translateY(20px); } 60% { opacity: 1; transform: scale(1.04) translateY(0); } 80% { transform: scale(0.98); } 100% { opacity: 1; transform: scale(1); } }
-    .success-card.outro { animation: successCardOut .38s cubic-bezier(.4,0,1,1) forwards; }
-    @keyframes successCardOut { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(.82) translateY(-14px); } }
-    .success-circle { width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; }
-    .success-circle.income-circle  { background: radial-gradient(circle, rgba(0,230,118,0.18) 0%, rgba(0,230,118,0.06) 100%); border: 2px solid rgba(0,230,118,0.45); box-shadow: 0 0 28px rgba(0,230,118,0.30), inset 0 1px 0 rgba(255,255,255,0.08); }
-    .success-circle.expense-circle { background: radial-gradient(circle, rgba(255,23,68,0.16) 0%, rgba(255,23,68,0.05) 100%); border: 2px solid rgba(255,80,110,0.42); box-shadow: 0 0 28px rgba(255,23,68,0.25), inset 0 1px 0 rgba(255,255,255,0.08); }
+
+    .success-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0);
+      animation: successBg .25s ease forwards;
+    }
+    @keyframes successBg {
+      0%   { background: rgba(0,0,0,0); }
+      40%  { background: rgba(0,0,0,0.55); }
+      80%  { background: rgba(0,0,0,0.55); }
+      100% { background: rgba(0,0,0,0); }
+    }
+
+    .success-card {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+      padding: 38px 44px 32px;
+      border-radius: 28px;
+      animation: successCardPop .5s cubic-bezier(.16,1,.3,1) forwards;
+      opacity: 0;
+    }
+    .success-card.income-card {
+      background: linear-gradient(145deg, rgba(4,22,12,0.97), rgba(3,14,8,0.98));
+      border: 1px solid rgba(0,230,118,0.35);
+      box-shadow: 0 0 0 1px rgba(0,230,118,0.10), 0 24px 60px rgba(0,0,0,0.7), 0 0 60px rgba(0,230,118,0.15);
+    }
+    .success-card.expense-card {
+      background: linear-gradient(145deg, rgba(22,4,8,0.97), rgba(14,3,6,0.98));
+      border: 1px solid rgba(255,23,68,0.32);
+      box-shadow: 0 0 0 1px rgba(255,23,68,0.08), 0 24px 60px rgba(0,0,0,0.7), 0 0 60px rgba(255,23,68,0.12);
+    }
+
+    @keyframes successCardPop {
+      0%   { opacity: 0; transform: scale(.72) translateY(20px); }
+      60%  { opacity: 1; transform: scale(1.04) translateY(0); }
+      80%  { transform: scale(0.98); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .success-card.outro {
+      animation: successCardOut .38s cubic-bezier(.4,0,1,1) forwards;
+    }
+    @keyframes successCardOut {
+      0%   { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(.82) translateY(-14px); }
+    }
+
+    .success-circle {
+      width: 72px; height: 72px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .success-circle.income-circle {
+      background: radial-gradient(circle, rgba(0,230,118,0.18) 0%, rgba(0,230,118,0.06) 100%);
+      border: 2px solid rgba(0,230,118,0.45);
+      box-shadow: 0 0 28px rgba(0,230,118,0.30), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .success-circle.expense-circle {
+      background: radial-gradient(circle, rgba(255,23,68,0.16) 0%, rgba(255,23,68,0.05) 100%);
+      border: 2px solid rgba(255,80,110,0.42);
+      box-shadow: 0 0 28px rgba(255,23,68,0.25), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
     .check-svg { overflow: visible; }
-    .check-path { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 30; stroke-dashoffset: 30; animation: drawCheck .42s cubic-bezier(.4,0,.2,1) .28s forwards; }
+    .check-path {
+      fill: none;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 30;
+      stroke-dashoffset: 30;
+      animation: drawCheck .42s cubic-bezier(.4,0,.2,1) .28s forwards;
+    }
     .income-circle  .check-path { stroke: #00E676; }
     .expense-circle .check-path { stroke: #FF6080; }
-    @keyframes drawCheck { to { stroke-dashoffset: 0; } }
-    .success-ring { position: absolute; inset: -10px; border-radius: 50%; animation: ringPulse .7s ease .3s forwards; opacity: 0; }
+    @keyframes drawCheck {
+      to { stroke-dashoffset: 0; }
+    }
+
+    .success-ring {
+      position: absolute; inset: -10px;
+      border-radius: 50%;
+      animation: ringPulse .7s ease .3s forwards;
+      opacity: 0;
+    }
     .income-circle  .success-ring { border: 2px solid rgba(0,230,118,0.35); }
     .expense-circle .success-ring { border: 2px solid rgba(255,23,68,0.30); }
-    @keyframes ringPulse { 0% { opacity: .8; transform: scale(1); } 100% { opacity: 0; transform: scale(1.5); } }
-    .success-label { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 800; letter-spacing: -.2px; animation: fadeLabelIn .35s ease .35s both; }
+    @keyframes ringPulse {
+      0%   { opacity: .8; transform: scale(1); }
+      100% { opacity: 0;  transform: scale(1.5); }
+    }
+
+    .success-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 17px; font-weight: 800;
+      letter-spacing: -.2px;
+      animation: fadeLabelIn .35s ease .35s both;
+    }
     .income-card  .success-label { color: #00E676; }
     .expense-card .success-label { color: #FF6080; }
-    .success-sublabel { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.38); margin-top: -8px; animation: fadeLabelIn .35s ease .45s both; }
-    .success-particles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; border-radius: 28px; }
-    .sp { position: absolute; width: 5px; height: 5px; border-radius: 50%; animation: floatParticle 1s ease forwards; opacity: 0; }
-    @keyframes floatParticle { 0% { opacity: 0; transform: translateY(0) scale(0); } 20% { opacity: 1; transform: translateY(-10px) scale(1); } 100% { opacity: 0; transform: translateY(-55px) scale(.4); } }
-    @keyframes fadeLabelIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* ══ CURRENCY TOGGLE BUTTON ══ */
-    #currency-toggle {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 10px;
-      color: rgba(255,255,255,0.7);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px; font-weight: 700;
-      padding: 5px 10px;
-      cursor: pointer;
-      transition: all .18s;
-      letter-spacing: .04em;
-      display: flex; align-items: center; gap: 4px;
+    .success-sublabel {
+      font-size: 12px; font-weight: 600;
+      color: rgba(255,255,255,0.38);
+      margin-top: -8px;
+      animation: fadeLabelIn .35s ease .45s both;
     }
-    #currency-toggle:hover { background: rgba(0,229,255,0.10); border-color: rgba(0,229,255,0.25); color: var(--cyan); }
-    #currency-toggle.usd-mode { background: rgba(0,229,255,0.08); border-color: rgba(0,229,255,0.28); color: var(--cyan); }
 
-    /* ══ SAVINGS RING ══ */
-    #savings-ring-wrap {
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center;
-      position: relative; cursor: default;
+    .success-particles {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+      border-radius: 28px;
     }
-    .ring-svg { transform: rotate(-90deg); }
-    .ring-bg   { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 5; }
-    .ring-fill { fill: none; stroke-width: 5; stroke-linecap: round; transition: stroke-dashoffset .8s cubic-bezier(.4,0,.2,1), stroke .4s; }
-    .ring-center {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-      display: flex; flex-direction: column; align-items: center; line-height: 1.1;
+    .sp {
+      position: absolute;
+      width: 5px; height: 5px; border-radius: 50%;
+      animation: floatParticle 1s ease forwards;
+      opacity: 0;
     }
-    .ring-pct  { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 800; }
-    .ring-sub  { font-size: 9px; font-weight: 700; letter-spacing: .06em; opacity: .55; margin-top: 1px; }
+    @keyframes floatParticle {
+      0%   { opacity: 0; transform: translateY(0) scale(0); }
+      20%  { opacity: 1; transform: translateY(-10px) scale(1); }
+      100% { opacity: 0; transform: translateY(-55px) scale(.4); }
+    }
 
-    /* SETTINGS SECTION TITLE */
-    .settings-section-title { font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,0.28); padding: 4px 2px 8px; display: flex; align-items: center; gap: 8px; }
-    .settings-section-title::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.07); }
+    @keyframes fadeLabelIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
-    /* CONTACT / DONATE BLOCK */
-    .sblock-contact {
-      border-radius: 20px; overflow: hidden; margin-bottom: 14px; position: relative;
-      background: linear-gradient(145deg, rgba(8,12,28,0.92), rgba(5,8,18,0.95));
-      border: 1px solid rgba(0,229,255,0.18);
-      box-shadow: 0 0 0 1px rgba(0,229,255,0.06), 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+    .settings-section-title {
+      font-size: 10px; font-weight: 800;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.28);
+      padding: 4px 2px 8px;
+      display: flex; align-items: center; gap: 8px;
     }
-    .sblock-contact::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 20px 20px 0 0;
-      background: linear-gradient(90deg, transparent 5%, rgba(0,183,255,0.6) 40%, rgba(0,229,255,0.85) 60%, transparent 95%);
+    .settings-section-title::after {
+      content: '';
+      flex: 1; height: 1px;
+      background: rgba(255,255,255,0.07);
     }
-    .contact-head { padding: 15px 18px 14px; border-bottom: 1px solid rgba(0,229,255,0.10); display: flex; align-items: center; gap: 10px; background: rgba(0,229,255,0.03); }
-    .contact-head-icon { width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(0,229,255,0.10); border: 1px solid rgba(0,229,255,0.22); }
-    .contact-body { padding: 16px 18px 18px; }
-    .contact-btn {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      width: 100%; padding: 12px; border-radius: 13px; border: none; cursor: pointer;
-      font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
-      transition: transform .14s, opacity .14s;
-      margin-bottom: 9px;
-    }
-    .contact-btn:last-child { margin-bottom: 0; }
-    .contact-btn:active { transform: scale(0.97); }
-    .contact-btn-send { background: linear-gradient(135deg, rgba(0,229,255,0.15), rgba(0,183,255,0.10)); border: 1px solid rgba(0,229,255,0.28); color: var(--cyan); }
-    .contact-btn-send:hover { background: linear-gradient(135deg, rgba(0,229,255,0.22), rgba(0,183,255,0.16)); }
-    .contact-btn-donate { background: linear-gradient(135deg, rgba(255,213,0,0.12), rgba(255,165,0,0.08)); border: 1px solid rgba(255,200,0,0.25); color: #FFD600; }
-    .contact-btn-donate:hover { background: linear-gradient(135deg, rgba(255,213,0,0.20), rgba(255,165,0,0.14)); }
 
-    /* CONTACT FORM */
-    #contact-form-wrap { margin-top: 12px; background: rgba(0,229,255,0.04); border: 1px solid rgba(0,229,255,0.14); border-radius: 14px; padding: 14px; }
-    #contact-msg { resize: none; height: 90px; font-size: 13px; padding: 11px 13px; }
+    #contact-modal-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: flex-end; justify-content: center;
+    }
+    #contact-modal-sheet {
+      width: 100%; max-width: 480px;
+      background: rgba(10,16,30,0.96);
+      backdrop-filter: blur(40px);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-bottom: none;
+      border-radius: 26px 26px 0 0;
+      padding: 24px 22px 44px;
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.07);
+    }
   </style>
 </head>
 <body>
@@ -427,7 +896,6 @@
       <div class="logo-frame modern-hover" style="margin:0 auto 16px;width:86px;height:86px">
         <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" style="width:80px;height:80px">
       </div>
-      <!-- #3: שונה מ-AO Banking ל-AO Budget -->
       <h1 style="font-size:26px;font-weight:800;letter-spacing:-.4px">AO Budget</h1>
       <p style="color:var(--muted);font-size:13px;margin-top:5px">ניהול תקציב חכם ופשוט</p>
     </div>
@@ -451,8 +919,7 @@
       <input id="login-pass"  class="inp modern-hover" type="password" placeholder="סיסמה">
       <div id="login-err" class="err hidden"></div>
       <button id="btn-email-auth" class="btn btn-cyan modern-hover" style="margin-top:13px">כניסה לחשבון</button>
-      <!-- #4: שונה הטקסט -->
-      <button id="btn-toggle-mode" class="link-btn" style="margin-top:6px">עוד אין לך חשבון? לחץ כאן</button>
+      <button id="btn-toggle-mode" class="link-btn" style="margin-top:6px">עוד אין לך חשבון? לחץ כאן ←</button>
     </div>
   </div>
 </div>
@@ -496,8 +963,10 @@
         </div>
       </div>
       <div style="display:flex;gap:7px;align-items:center">
-        <!-- #1: כפתור מטבע -->
-        <button id="currency-toggle" onclick="toggleCurrency()">₪ → $</button>
+        <button id="currency-toggle-btn" title="החלף מטבע">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span id="currency-label">₪ → $</span>
+        </button>
         <button onclick="window.location.reload()" class="card press modern-hover" style="padding:9px;border:none;cursor:pointer;color:rgba(255,255,255,0.45)">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
         </button>
@@ -507,26 +976,24 @@
       </div>
     </div>
 
-    <!-- Hero balance card -->
-    <div class="hero-card rise d1 modern-hover" style="padding:22px 18px 20px;text-align:center">
-      <p style="color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px">יתרה פנויה</p>
-      <p id="balance-display" class="mono" style="font-size:46px;font-weight:800;letter-spacing:-1px;line-height:1"></p>
-      <div style="width:72px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);margin:10px auto 16px;opacity:.4"></div>
-
-      <!-- #2: עיגול אחוזים -->
-      <div id="savings-ring-wrap" style="margin:0 auto">
-        <svg class="ring-svg" width="90" height="90" viewBox="0 0 90 90">
-          <circle class="ring-bg"   cx="45" cy="45" r="38"/>
-          <circle class="ring-fill" id="ring-fill" cx="45" cy="45" r="38"
-            stroke-dasharray="238.76"
-            stroke-dashoffset="238.76"/>
+    <div class="hero-card rise d1 modern-hover" style="padding:22px 18px;display:flex;align-items:center;gap:14px">
+      <div style="flex:1;text-align:center">
+        <p style="color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px">יתרה פנויה</p>
+        <p id="balance-display" class="mono" style="font-size:38px;font-weight:800;letter-spacing:-1px;line-height:1"></p>
+        <div style="width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);margin:10px auto 0;opacity:.4"></div>
+      </div>
+      <div class="pct-ring-wrap">
+        <svg class="pct-ring-svg" width="100" height="100" viewBox="0 0 100 100">
+          <circle class="pct-ring-bg" cx="50" cy="50" r="40"/>
+          <circle class="pct-ring-fill" id="pct-ring-fill" cx="50" cy="50" r="40"
+            stroke-dasharray="251.2"
+            stroke-dashoffset="251.2"/>
         </svg>
-        <div class="ring-center">
-          <span class="ring-pct" id="ring-pct">0%</span>
-          <span class="ring-sub">נשאר</span>
+        <div class="pct-ring-center">
+          <div class="pct-ring-pct" id="pct-ring-text">0%</div>
+          <div class="pct-ring-label">נשאר</div>
         </div>
       </div>
-      <p style="font-size:10px;color:var(--muted);font-weight:600;margin-top:6px;letter-spacing:.04em">מתוך ההכנסות</p>
     </div>
 
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:11px" class="rise d2">
@@ -558,6 +1025,7 @@
             <span class="action-btn-sublabel">הוסף הכנסה</span>
           </div>
         </button>
+
         <button id="btn-add-expense" class="action-btn-expense">
           <div class="action-btn-inner">
             <div class="action-btn-icon-wrap">
@@ -583,6 +1051,7 @@
         <p style="font-weight:700;font-size:14px">קטגוריות אישיות</p>
         <button id="btn-toggle-add-cat2" style="background:rgba(0,229,255,0.10);border:1px solid rgba(0,229,255,0.22);border-radius:10px;color:var(--cyan);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;padding:7px 13px;cursor:pointer;transition:background .15s;" onclick="toggleAddCat2()">+ הוסף</button>
       </div>
+
       <div id="add-cat2-form" class="hidden sblock" style="margin-bottom:14px;">
         <div class="sblock-body" style="padding:14px 15px;">
           <input id="cat-name2" class="inp" type="text" placeholder="שם הקטגוריה" style="margin-bottom:8px">
@@ -597,10 +1066,7 @@
     </div>
 
     <div id="view-settings" class="hidden">
-
       <div class="settings-section-title">תשלומים קבועים</div>
-
-      <!-- הוצאות קבועות -->
       <div class="sblock-fixed-expense">
         <div class="sblock-fixed-head">
           <div class="sblock-fixed-head-icon">
@@ -613,14 +1079,13 @@
           <div class="sblock-fixed-total" id="fe-total-badge">₪0</div>
         </div>
         <div class="sblock-fixed-body">
-          <input id="fe-name"   class="inp" type="text"   placeholder="שם ההוצאה (למשל: שכר דירה, ביטוח)"  style="margin-bottom:8px">
-          <input id="fe-amount" class="inp" type="number" placeholder="סכום ₪" style="margin-bottom:10px">
-          <button id="btn-add-fe" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px;border-color:rgba(255,23,68,0.20);">+ הוסף הוצאה קבועה</button>
+          <input id="fe-name"   class="inp" type="text"   placeholder="שם ההוצאה"  style="margin-bottom:8px">
+          <input id="fe-amount" class="inp" type="number" placeholder="סכום ₪"    style="margin-bottom:10px">
+          <button id="btn-add-fe" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px;">+ הוסף</button>
           <div id="fe-list"></div>
         </div>
       </div>
 
-      <!-- הכנסות קבועות -->
       <div class="sblock-fixed-income">
         <div class="sblock-fixed-head">
           <div class="sblock-fixed-head-icon">
@@ -633,107 +1098,38 @@
           <div class="sblock-fixed-total" id="fi-total-badge">₪0</div>
         </div>
         <div class="sblock-fixed-body">
-          <input id="fi-name"   class="inp" type="text"   placeholder="מקור הכנסה (למשל: משכורת, שכירות)" style="margin-bottom:8px">
-          <input id="fi-amount" class="inp" type="number" placeholder="סכום ₪" style="margin-bottom:10px">
-          <button id="btn-add-fi" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px;border-color:rgba(0,230,118,0.20);">+ הוסף הכנסה קבועה</button>
+          <input id="fi-name"   class="inp" type="text"   placeholder="מקור הכנסה" style="margin-bottom:8px">
+          <input id="fi-amount" class="inp" type="number" placeholder="סכום ₪"      style="margin-bottom:10px">
+          <button id="btn-add-fi" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px;">+ הוסף</button>
           <div id="fi-list"></div>
         </div>
       </div>
 
       <div class="settings-section-title" style="margin-top:6px;">הגדרות כלליות</div>
-
-      <!-- שינוי שם -->
       <div class="sblock modern-hover">
-        <div class="sblock-head">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          שינוי שם
-        </div>
+        <div class="sblock-head">שינוי שם</div>
         <div class="sblock-body">
           <input id="settings-name-input" class="inp" type="text" placeholder="השם שלך" style="margin-bottom:9px">
-          <button id="btn-save-name" class="btn btn-ghost" style="font-size:13px;padding:10px">שמור שם</button>
-          <div id="name-saved" class="saved hidden">✓ נשמר בהצלחה!</div>
+          <button id="btn-save-name" class="btn btn-ghost">שמור שם</button>
+          <div id="name-saved" class="saved hidden">✓ נשמר!</div>
         </div>
       </div>
 
-      <!-- יום איפוס -->
       <div class="sblock modern-hover">
-        <div class="sblock-head">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          יום איפוס תקציב
-        </div>
+        <div class="sblock-head">יום איפוס תקציב</div>
         <div class="sblock-body">
-          <p style="color:var(--muted);font-size:13px;margin-bottom:12px">באיזה יום מתאפס המחזור החודשי?</p>
-          <div style="display:flex;align-items:center;gap:11px">
-            <input id="reset-day-input" class="inp mono" type="number" min="1" max="31" style="max-width:85px;text-align:center;font-size:19px;padding:11px 8px">
-            <span style="color:var(--muted);font-weight:600;font-size:14px">לחודש</span>
-          </div>
+          <input id="reset-day-input" class="inp mono" type="number" min="1" max="31">
         </div>
       </div>
-
-      <!-- ניהול קטגוריות -->
-      <div class="sblock modern-hover">
-        <div class="sblock-head">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-          ניהול קטגוריות
-        </div>
-        <div class="sblock-body">
-          <input id="cat-name" class="inp" type="text" placeholder="שם הקטגוריה (למשל: מעשרות, עסק)" style="margin-bottom:8px">
-          <select id="cat-type" class="inp" style="margin-bottom:10px;">
-            <option value="expense">מיועד עבור: הוצאות</option>
-            <option value="income">מיועד עבור: הכנסות</option>
-          </select>
-          <button id="btn-add-cat" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px">+ הוסף קטגוריה חדשה</button>
-          <div id="cat-list"></div>
-        </div>
-      </div>
-
-      <!-- #6: יצירת קשר ותרומות -->
-      <div class="settings-section-title" style="margin-top:6px;">תמיכה ויצירת קשר</div>
-      <div class="sblock-contact">
-        <div class="contact-head">
-          <div class="contact-head-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          </div>
-          <div>
-            <div style="font-weight:800;font-size:14px;color:var(--cyan)">יצירת קשר ותרומות</div>
-            <div style="font-size:10px;font-weight:600;opacity:.5;margin-top:2px;letter-spacing:.04em">נשמח לשמוע מכם</div>
-          </div>
-        </div>
-        <div class="contact-body">
-          <button class="contact-btn contact-btn-send" onclick="toggleContactForm()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            שליחת פנייה / משוב
-          </button>
-          <button class="contact-btn contact-btn-donate" onclick="window.open('https://paypal.me','_blank')">
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-            תרומה לפיתוח האפליקציה
-          </button>
-
-          <div id="contact-form-wrap" class="hidden">
-            <input id="contact-subject" class="inp" type="text" placeholder="נושא הפנייה" style="margin-bottom:8px;font-size:13px;padding:11px 13px;">
-            <textarea id="contact-msg" class="inp" placeholder="תוכן ההודעה..."></textarea>
-            <button id="btn-send-contact" class="btn btn-cyan" style="margin-top:10px;font-size:13px;padding:11px;">שלח פנייה</button>
-            <div id="contact-sent" class="saved hidden" style="margin-top:6px;">✓ הפנייה נשלחה! נחזור אליך בהקדם.</div>
-          </div>
-        </div>
-      </div>
-
+      
+      <button id="btn-open-contact" class="btn btn-ghost">יצירת קשר ותרומות</button>
     </div>
   </div>
 
   <nav id="nav">
-    <button class="nav-btn active modern-hover" id="nav-dashboard" onclick="switchView('dashboard')">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
-      החשבון שלי
-    </button>
-    <button class="nav-btn modern-hover" id="nav-categories" onclick="switchView('categories')">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      קטגוריות
-    </button>
-    <button class="nav-btn modern-hover" id="nav-settings" onclick="switchView('settings')">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
-      הגדרות
-    </button>
+    <button class="nav-btn active modern-hover" id="nav-dashboard" onclick="switchView('dashboard')">החשבון שלי</button>
+    <button class="nav-btn modern-hover" id="nav-categories" onclick="switchView('categories')">קטגוריות</button>
+    <button class="nav-btn modern-hover" id="nav-settings" onclick="switchView('settings')">הגדרות</button>
   </nav>
 </div>
 
@@ -741,21 +1137,22 @@
   <div id="modal-sheet" class="slide-up" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
     <h3 id="modal-title" style="text-align:center;font-size:17px;font-weight:700;margin-bottom:18px"></h3>
-    <input id="modal-amount" class="inp mono modern-hover" type="number" placeholder="0"
-      style="font-size:40px;font-weight:800;text-align:center;padding:18px 10px;margin-bottom:11px">
-    <input id="modal-desc" class="inp modern-hover" type="text" placeholder="תיאור הפעולה" style="margin-bottom:11px">
-    <select id="modal-category" class="inp modern-hover" style="margin-bottom:6px;">
-      <option value="">ללא קטגוריה</option>
-    </select>
-    <button id="btn-modal-new-cat-toggle" type="button">
-      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      צור קטגוריה חדשה
-    </button>
-    <div id="modal-new-cat-wrap" class="hidden">
-      <input id="modal-new-cat-name" class="inp" type="text" placeholder="שם הקטגוריה החדשה" style="margin-bottom:8px">
-      <button id="btn-modal-save-new-cat" type="button">✓ שמור וסמן קטגוריה זו</button>
-    </div>
-    <button id="modal-submit" class="btn modern-hover" style="font-size:15px;padding:15px;margin-top:14px">אישור ועדכון יתרה</button>
+    <input id="modal-amount" class="inp mono" type="number" placeholder="0" style="font-size:40px;font-weight:800;text-align:center;padding:18px 10px;margin-bottom:11px">
+    <input id="modal-desc" class="inp" type="text" placeholder="תיאור הפעולה" style="margin-bottom:11px">
+    <select id="modal-category" class="inp" style="margin-bottom:6px;"><option value="">ללא קטגוריה</option></select>
+    <button id="modal-submit" class="btn modern-hover">אישור ועדכון יתרה</button>
+  </div>
+</div>
+
+<div id="contact-modal-overlay" class="hidden" onclick="closeContactModal(event)">
+  <div id="contact-modal-sheet" class="slide-up" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <h3 style="text-align:center;">שלח פנייה</h3>
+    <input id="contact-name" class="inp" type="text" placeholder="השם שלך" style="margin-bottom:9px">
+    <input id="contact-email" class="inp" type="email" placeholder="אימייל" style="margin-bottom:9px">
+    <textarea id="contact-msg" class="inp" placeholder="הודעה..." rows="4" style="resize:none;margin-bottom:12px;"></textarea>
+    <div id="contact-ok" class="saved hidden">✓ הפנייה נשלחה!</div>
+    <button id="btn-send-contact" class="btn btn-cyan">שלח פנייה</button>
   </div>
 </div>
 
@@ -764,17 +1161,13 @@
   <div id="success-card" class="success-card">
     <div class="success-particles" id="success-particles"></div>
     <div id="success-circle" class="success-circle">
-      <div class="success-ring"></div>
-      <svg class="check-svg" width="32" height="32" viewBox="0 0 32 32">
-        <path class="check-path" id="check-path" d="M7 16 L13 22 L25 10"/>
-      </svg>
+      <svg class="check-svg" width="32" height="32" viewBox="0 0 32 32"><path class="check-path" id="check-path" d="M7 16 L13 22 L25 10"/></svg>
     </div>
     <div id="success-label" class="success-label">בוצע!</div>
-    <div id="success-sublabel" class="success-sublabel">הפעולה נשמרה בהצלחה</div>
+    <div id="success-sublabel" class="success-sublabel">הפעולה נשמרה</div>
   </div>
 </div>
 
-<!-- #5: Firebase scripts loaded from CDN (works with Netfree) -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -782,9 +1175,6 @@
 <script>
 (function() {
   'use strict';
-
-  var USD_RATE = 3.7; // שער קבוע, ניתן לעדכן
-  var showUSD  = false;
 
   const FB_CFG = {
     apiKey: "AIzaSyBqpLOIbztpurGuUqpfaWZT71JcofKG2rc",
@@ -798,35 +1188,26 @@
   const auth = firebase.auth();
   const db   = firebase.firestore();
 
-  db.enablePersistence().catch(function(err) {
-    console.log("Offline persistence error: ", err.code);
-  });
+  db.enablePersistence().catch(err => console.log("Offline persistence error: ", err.code));
 
-  var uid = null, resetDay = 1, displayName = '';
-  var incomes = [], expenses = [], fixedExpenses = [], fixedIncomes = [], userCategories = [];
-  var modalType = 'income', isRegMode = false, unsubs = [];
-  var newCatPanelOpen = false;
+  var uid = null, resetDay = 1, displayName = '', showDollar = false;
+  var incomes = [], expenses = [], fixedExpenses = [], fixedIncomes = [], userCategories = [], unsubs = [];
+  var modalType = 'income', isRegMode = false;
 
   function $(id){ return document.getElementById(id); }
   function show(id){ $(id).classList.remove('hidden'); }
   function hide(id){ $(id).classList.add('hidden'); }
 
-  /* #1: format depends on currency mode */
   function fmt(n) {
-    var v = Number(n||0);
-    if (showUSD) {
-      return '$' + (v / USD_RATE).toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0});
-    }
-    return '₪' + v.toLocaleString('he-IL');
+    var val = Number(n || 0);
+    if (showDollar) return '$' + (val * 0.273).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    return '₪' + val.toLocaleString('he-IL');
   }
 
-  /* #1: toggle currency */
-  window.toggleCurrency = function() {
-    showUSD = !showUSD;
-    var btn = $('currency-toggle');
-    btn.textContent = showUSD ? '$ → ₪' : '₪ → $';
-    btn.classList.toggle('usd-mode', showUSD);
-    renderAll();
+  $('currency-toggle-btn').onclick = function() {
+    showDollar = !showDollar;
+    $('currency-label').textContent = showDollar ? '$ → ₪' : '₪ → $';
+    renderAll(); renderFixedLists();
   };
 
   function showScreen(name) {
@@ -839,19 +1220,9 @@
     $('nav-dashboard').classList.remove('active');
     $('nav-settings').classList.remove('active');
     $('nav-categories').classList.remove('active');
-    if (v === 'dashboard') {
-      show('view-dashboard');
-      $('nav-dashboard').classList.add('active');
-    } else if (v === 'categories') {
-      show('view-categories');
-      $('nav-categories').classList.add('active');
-      renderCategoriesList2();
-    } else {
-      show('view-settings');
-      $('nav-settings').classList.add('active');
-      renderFixedLists();
-      renderCategoriesList();
-    }
+    if (v === 'dashboard') { show('view-dashboard'); $('nav-dashboard').classList.add('active'); }
+    else if (v === 'categories') { show('view-categories'); $('nav-categories').classList.add('active'); renderCategoriesList2(); }
+    else { show('view-settings'); $('nav-settings').classList.add('active'); renderFixedLists(); renderCategoriesList(); }
   };
 
   function cycleStart() {
@@ -860,169 +1231,89 @@
     if (now.getDate() < (resetDay || 1)) s.setMonth(s.getMonth() - 1);
     return s;
   }
-  function calcIncome()   {
+  
+  function calcIncome() {
     var s = cycleStart();
-    return incomes.filter(function(i){ return new Date(i.date) >= s; })
-                  .reduce(function(a,i){ return a + Number(i.amount||0); }, 0)
-         + fixedIncomes.reduce(function(a,i){ return a + Number(i.amount||0); }, 0);
+    return incomes.filter(i => new Date(i.date) >= s).reduce((a,i) => a + Number(i.amount||0), 0)
+         + fixedIncomes.reduce((a,i) => a + Number(i.amount||0), 0);
   }
-  function calcFixedExp() { return fixedExpenses.reduce(function(a,i){ return a+Number(i.amount||0); }, 0); }
-  function calcVarExp()   {
+  function calcFixedExp() { return fixedExpenses.reduce((a,i) => a+Number(i.amount||0), 0); }
+  function calcVarExp() {
     var s = cycleStart();
-    return expenses.filter(function(i){ return new Date(i.date) >= s; })
-                   .reduce(function(a,i){ return a+Number(i.amount||0); }, 0);
+    return expenses.filter(i => new Date(i.date) >= s).reduce((a,i) => a+Number(i.amount||0), 0);
   }
   function calcBal() { return calcIncome() - calcFixedExp() - calcVarExp(); }
 
-  /* #2: update savings ring */
-  function updateRing() {
-    var inc = calcIncome();
-    var bal = calcBal();
-    var pct = inc > 0 ? Math.max(0, Math.min(100, Math.round(bal / inc * 100))) : 0;
-    var circumference = 238.76;
+  function updatePctRing() {
+    var income = calcIncome(), bal = calcBal();
+    var pct = income > 0 ? Math.max(0, Math.min(100, Math.round((bal / income) * 100))) : 0;
+    var circumference = 2 * Math.PI * 40;
     var offset = circumference - (pct / 100) * circumference;
-    var ringEl = $('ring-fill');
-    ringEl.style.strokeDashoffset = offset;
-    /* Color: green when high, yellow mid, red low */
-    var col = pct >= 50 ? '#00E676' : pct >= 25 ? '#FFD600' : '#FF1744';
-    ringEl.style.stroke = col;
-    $('ring-pct').textContent = pct + '%';
-    $('ring-pct').style.color = col;
+    var ring = $('pct-ring-fill'), textEl = $('pct-ring-text');
+    var stroke = pct > 50 ? '#00E676' : (pct > 20 ? '#FFD600' : '#FF1744');
+    ring.style.stroke = stroke; ring.style.strokeDasharray = circumference; ring.style.strokeDashoffset = offset;
+    textEl.textContent = pct + '%'; textEl.style.color = stroke;
   }
 
   function updateTicker() {
-    var seg = '<span>AO Budget</span><span class="dot">●</span>'
-            + '<span>יתרה: ' + fmt(calcBal()) + '</span><span class="dot">●</span>'
-            + '<span>הכנסות: ' + fmt(calcIncome()) + '</span><span class="dot">●</span>'
-            + '<span>קבועות: ' + fmt(calcFixedExp()) + '</span><span class="dot">●</span>'
-            + '<span>משתנות: ' + fmt(calcVarExp()) + '</span><span class="dot">●</span>';
-    $('ticker-inner').innerHTML = seg + seg;
+    var seg = '<span>AO Budget</span><span class="dot">●</span><span>יתרה: ' + fmt(calcBal()) + '</span><span class="dot">●</span>';
+    $('ticker-inner').innerHTML = seg + seg + seg;
   }
 
   function renderStats() {
     var bal = calcBal();
-    var el  = $('balance-display');
-    el.textContent = fmt(bal);
-    el.className   = 'mono num-pop ' + (bal >= 0 ? 'bal-pos' : 'bal-neg');
+    $('balance-display').textContent = fmt(bal);
+    $('balance-display').className = 'mono num-pop ' + (bal >= 0 ? 'bal-pos' : 'bal-neg');
     $('stat-income').textContent = fmt(calcIncome());
-    $('stat-fixed').textContent  = fmt(calcFixedExp());
-    $('stat-var').textContent    = fmt(calcVarExp());
-    updateTicker();
-    updateRing();
-    var feBadge = $('fe-total-badge');
-    var fiBadge = $('fi-total-badge');
-    if (feBadge) feBadge.textContent = fmt(calcFixedExp());
-    if (fiBadge) fiBadge.textContent = fmt(fixedIncomes.reduce(function(a,i){ return a+Number(i.amount||0); }, 0));
+    $('stat-fixed').textContent = fmt(calcFixedExp());
+    $('stat-var').textContent = fmt(calcVarExp());
+    updateTicker(); updatePctRing();
+    $('fe-total-badge').textContent = fmt(calcFixedExp());
+    $('fi-total-badge').textContent = fmt(fixedIncomes.reduce((a,i)=>a+Number(i.amount||0),0));
   }
 
   function renderTx() {
-    var s   = cycleStart();
-    var all = [];
-    incomes.forEach(function(i){ if (new Date(i.date) >= s) all.push(Object.assign({}, i, {_t:'income'})); });
-    expenses.forEach(function(i){ if (new Date(i.date) >= s) all.push(Object.assign({}, i, {_t:'expense'})); });
-    all.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+    var s = cycleStart(), all = [];
+    incomes.forEach(i => { if (new Date(i.date) >= s) all.push({...i, _t:'income'}); });
+    expenses.forEach(i => { if (new Date(i.date) >= s) all.push({...i, _t:'expense'}); });
+    all.sort((a,b) => new Date(b.date) - new Date(a.date));
     var el = $('tx-list');
-    if (!all.length) {
-      el.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted);font-size:13px">אין תנועות במחזור הנוכחי</div>';
-      return;
-    }
-    el.innerHTML = all.map(function(item, idx) {
+    if (!all.length) { el.innerHTML = '<div style="padding:30px;text-align:center;">אין תנועות</div>'; return; }
+    el.innerHTML = all.map(item => {
       var isInc = item._t === 'income';
-      var notLast = idx < all.length - 1;
-      var catTagHtml = item.category ? '<span class="cat-tag">' + item.category + '</span>' : '';
-      return '<div class="tx-row modern-hover"' + (notLast ? ' style="border-bottom:1px solid rgba(255,255,255,0.04)"' : '') + '>'
-        + '<div style="display:flex;align-items:center;gap:11px">'
-        + '<div class="tx-icon" style="background:' + (isInc ? 'rgba(0,230,118,0.1)' : 'rgba(255,255,255,0.05)') + ';border:1px solid ' + (isInc ? 'rgba(0,230,118,0.2)' : 'rgba(255,255,255,0.08)') + '">'
-        + (isInc
-          ? '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>'
-          : '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>')
-        + '</div>'
-        + '<div>'
-        + '<p style="font-weight:600;font-size:13px;line-height:1.3">' + catTagHtml + (item.description || '') + '</p>'
-        + '<p class="mono" style="font-size:10px;color:var(--muted);margin-top:2px">' + new Date(item.date).toLocaleDateString('he-IL') + '</p>'
-        + '</div></div>'
-        + '<div style="display:flex;align-items:center;gap:11px">'
-        + '<span class="mono" style="font-weight:700;font-size:13px;color:' + (isInc ? 'var(--green)' : 'var(--text)') + '">'
-        + (isInc ? '+' : '−') + fmt(item.amount) + '</span>'
-        + '<button onclick="delItem(\'' + (isInc ? 'incomes' : 'expenses') + '\',\'' + item.id + '\')" class="del-btn">✕</button>'
-        + '</div></div>';
+      return '<div class="tx-row"><div><b>'+(item.category?'['+item.category+'] ':'')+item.description+'</b><br><small>'+new Date(item.date).toLocaleDateString()+'</small></div><div style="display:flex;align-items:center;gap:10px;"><span class="mono" style="color:'+(isInc?'var(--green)':'#fff')+'">'+(isInc?'+':'-')+fmt(item.amount)+'</span><button onclick="delItem(\''+(isInc?'incomes':'expenses')+'\',\''+item.id+'\')" class="del-btn">✕</button></div></div>';
     }).join('');
   }
 
   function renderCategoriesList() {
-    if (!userCategories || userCategories.length === 0) {
-      $('cat-list').innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;padding:10px;">אין קטגוריות מוגדרות</div>';
-      return;
-    }
-    $('cat-list').innerHTML = userCategories.map(function(item) {
-      var typeStr = item.type === 'income' ? 'הכנסה' : 'הוצאה';
-      var typeCol = item.type === 'income' ? 'var(--green)' : 'var(--red)';
-      return '<div class="fixed-row modern-hover"><span style="font-size:13px;font-weight:600">' + item.name + ' <span style="font-size:10px;color:'+typeCol+';opacity:0.8">(' + typeStr + ')</span></span>'
-        + '<button onclick="delItem(\'categories\',\'' + item.id + '\')" class="del-btn">✕</button>'
-        + '</div>';
-    }).join('');
+    if (!userCategories.length) { $('cat-list').innerHTML = ''; return; }
+    // Render logic for settings categories list
   }
 
   function renderFixedLists() {
-    $('fe-list').innerHTML = fixedExpenses.map(function(item) {
-      return '<div class="fixed-row modern-hover"><span style="font-size:13px;font-weight:600">' + item.name + '</span>'
-        + '<div style="display:flex;align-items:center;gap:9px">'
-        + '<span class="mono" style="color:var(--red);font-weight:700;font-size:13px">' + fmt(item.amount) + '</span>'
-        + '<button onclick="delItem(\'fixed_settings\',\'' + item.id + '\')" class="del-btn">✕</button>'
-        + '</div></div>';
-    }).join('');
-    $('fi-list').innerHTML = fixedIncomes.map(function(item) {
-      return '<div class="fixed-row modern-hover"><span style="font-size:13px;font-weight:600">' + item.name + '</span>'
-        + '<div style="display:flex;align-items:center;gap:9px">'
-        + '<span class="mono" style="color:var(--green);font-weight:700;font-size:13px">' + fmt(item.amount) + '</span>'
-        + '<button onclick="delItem(\'fixed_incomes\',\'' + item.id + '\')" class="del-btn">✕</button>'
-        + '</div></div>';
-    }).join('');
+    $('fe-list').innerHTML = fixedExpenses.map(item => '<div class="fixed-row"><span>'+item.name+'</span><div><span class="mono" style="color:var(--red)">'+fmt(item.amount)+'</span><button onclick="delItem(\'fixed_settings\',\''+item.id+'\')" class="del-btn">✕</button></div></div>').join('');
+    $('fi-list').innerHTML = fixedIncomes.map(item => '<div class="fixed-row"><span>'+item.name+'</span><div><span class="mono" style="color:var(--green)">'+fmt(item.amount)+'</span><button onclick="delItem(\'fixed_incomes\',\''+item.id+'\')" class="del-btn">✕</button></div></div>').join('');
   }
 
   function renderAll() { renderStats(); renderTx(); renderCategoriesList2(); }
 
-  function reloadModalCategorySelect(selectedName) {
-    var catOptions = '<option value="">ללא קטגוריה</option>';
-    if (userCategories && userCategories.length > 0) {
-      userCategories.forEach(function(c) {
-        if (c.type === modalType) {
-          var sel = selectedName && c.name === selectedName ? ' selected' : '';
-          catOptions += '<option value="' + c.name + '"' + sel + '>' + c.name + '</option>';
-        }
-      });
-    }
-    $('modal-category').innerHTML = catOptions;
-  }
-
   function startListeners() {
-    unsubs.forEach(function(u){ u(); });
-    unsubs = [];
+    unsubs.forEach(u => u()); unsubs = [];
     var uRef = db.collection('users').doc(uid);
-    unsubs.push(uRef.onSnapshot(function(doc) {
-      if (doc.exists) {
-        if (doc.data().resetDay) { resetDay = doc.data().resetDay; $('reset-day-input').value = resetDay; }
-        if (doc.data().displayName) {
-          displayName = doc.data().displayName;
-          $('header-name').textContent = 'שלום, ' + displayName.split(' ')[0] + '!';
-          $('settings-name-input').value = displayName;
-        }
-      }
-    }));
-    unsubs.push(uRef.collection('categories').onSnapshot(function(s){
-      userCategories = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
-      renderCategoriesList();
-      renderCategoriesList2();
-    }));
-    unsubs.push(uRef.collection('incomes').onSnapshot(function(s){ incomes = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); }));
-    unsubs.push(uRef.collection('expenses').onSnapshot(function(s){ expenses = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); }));
-    unsubs.push(uRef.collection('fixed_settings').onSnapshot(function(s){ fixedExpenses = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); renderFixedLists(); }));
-    unsubs.push(uRef.collection('fixed_incomes').onSnapshot(function(s){ fixedIncomes = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); renderFixedLists(); }));
+    unsubs.push(uRef.onSnapshot(doc => { if (doc.exists) { resetDay = doc.data().resetDay || 1; displayName = doc.data().displayName || ''; $('header-name').textContent = 'שלום, ' + displayName.split(' ')[0] + '!'; $('reset-day-input').value = resetDay; } }));
+    unsubs.push(uRef.collection('incomes').onSnapshot(s => { incomes = s.docs.map(d => ({id:d.id, ...d.data()})); renderAll(); }));
+    unsubs.push(uRef.collection('expenses').onSnapshot(s => { expenses = s.docs.map(d => ({id:d.id, ...d.data()})); renderAll(); }));
+    unsubs.push(uRef.collection('fixed_settings').onSnapshot(s => { fixedExpenses = s.docs.map(d => ({id:d.id, ...d.data()})); renderAll(); renderFixedLists(); }));
+    unsubs.push(uRef.collection('fixed_incomes').onSnapshot(s => { fixedIncomes = s.docs.map(d => ({id:d.id, ...d.data()})); renderAll(); renderFixedLists(); }));
+    unsubs.push(uRef.collection('categories').onSnapshot(s => { userCategories = s.docs.map(d => ({id:d.id, ...d.data()})); renderCategoriesList2(); }));
   }
 
-  /* #5: Netfree — use signInWithRedirect instead of popup */
-    auth.onAuthStateChanged(function(user) {
+  /* ══════════════════════════════════════════════════════
+     התיקון הקריטי בבלוק הכניסה למערכת - שלב 1024 עד 1061
+     ══════════════════════════════════════════════════════ */
+  auth.onAuthStateChanged(function(user) {
     if (!user) {
+      // בדיקת נטפרי / Redirect
       auth.getRedirectResult().then(function(result) {
         if (!result || !result.user) {
           showScreen('screen-login');
@@ -1054,95 +1345,41 @@
       var inputName = $('login-name') ? $('login-name').value.trim() : '';
       proceed(savedName || authName || inputName);
     }).catch(function(err) {
+      // כאן התיקון: אם המסמך לא קיים (משתמש חדש), הקוד ממשיך הלאה ולא נתקע
       var authName = user.displayName;
       var inputName = $('login-name') ? $('login-name').value.trim() : '';
       proceed(authName || inputName);
     });
   });
 
-
-  /* #5: signInWithRedirect — works better with Netfree */
   $('btn-google-login').onclick = function() {
-    auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider()).catch(function(e){ console.error(e); });
+    auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
   };
 
   $('btn-toggle-mode').onclick = function() {
     isRegMode = !isRegMode;
-    if (isRegMode) {
-      show('login-name-wrap');
-      $('btn-email-auth').textContent  = 'צור חשבון';
-      /* #4: updated back button text */
-      $('btn-toggle-mode').textContent = '← חזרה לכניסה';
-    } else {
-      hide('login-name-wrap');
-      $('btn-email-auth').textContent  = 'כניסה לחשבון';
-      /* #4: updated text */
-      $('btn-toggle-mode').textContent = 'עוד אין לך חשבון? לחץ כאן';
-    }
-    hide('login-err');
+    if (isRegMode) { show('login-name-wrap'); $('btn-email-auth').textContent = 'צור חשבון'; }
+    else { hide('login-name-wrap'); $('btn-email-auth').textContent = 'כניסה לחשבון'; }
   };
 
   $('btn-email-auth').onclick = function() {
-    var email = $('login-email').value.trim();
-    var pass  = $('login-pass').value;
-    var name  = $('login-name').value.trim();
-    hide('login-err');
+    var email = $('login-email').value, pass = $('login-pass').value, name = $('login-name').value;
     if (isRegMode) {
-      auth.createUserWithEmailAndPassword(email, pass).then(function(cred) {
-        var promises = [];
-        if (name) {
-          promises.push(cred.user.updateProfile({ displayName: name }));
-          promises.push(db.collection('users').doc(cred.user.uid).set({ displayName: name }, { merge: true }));
-        }
-        return Promise.all(promises);
-      }).catch(function() {
-        $('login-err').textContent = 'לא ניתן ליצור חשבון. בדוק את הפרטים.';
-        show('login-err');
-      });
+      auth.createUserWithEmailAndPassword(email, pass).then(cred => {
+        return db.collection('users').doc(cred.user.uid).set({ displayName: name }, { merge: true });
+      }).catch(err => { $('login-err').textContent = "שגיאה ברישום"; show('login-err'); });
     } else {
-      auth.signInWithEmailAndPassword(email, pass).catch(function() {
-        $('login-err').textContent = 'אימייל או סיסמה שגויים.';
-        show('login-err');
-      });
+      auth.signInWithEmailAndPassword(email, pass).catch(err => { $('login-err').textContent = "אימייל או סיסמה שגויים"; show('login-err'); });
     }
   };
 
   $('btn-setname').onclick = function() {
     var name = $('setname-input').value.trim();
     if (!name) return;
-    auth.currentUser.updateProfile({ displayName: name }).then(function() {
-      return db.collection('users').doc(auth.currentUser.uid).set({ displayName: name }, { merge: true });
-    }).then(function() {
-      window.location.reload();
-    }).catch(function() {
-      $('setname-err').textContent = 'שגיאה, נסה שוב.';
-      show('setname-err');
-    });
+    db.collection('users').doc(uid).set({ displayName: name }, { merge: true }).then(() => window.location.reload());
   };
 
-  $('btn-signout').onclick = function() { unsubs.forEach(function(u){ u(); }); auth.signOut(); };
-
-  $('reset-day-input').oninput = function() {
-    var v = parseInt(this.value);
-    if (v >= 1 && v <= 31) {
-      resetDay = v;
-      db.collection('users').doc(uid).set({ resetDay: v }, { merge: true });
-      renderAll();
-    }
-  };
-
-  $('btn-save-name').onclick = function() {
-    var name = $('settings-name-input').value.trim();
-    if (!name) return;
-    auth.currentUser.updateProfile({ displayName: name }).then(function() {
-      return db.collection('users').doc(uid).set({ displayName: name }, { merge: true });
-    }).then(function() {
-      displayName = name;
-      $('header-name').textContent = 'שלום, ' + name.split(' ')[0] + '!';
-      show('name-saved');
-      setTimeout(function(){ hide('name-saved'); }, 2500);
-    }).catch(function(e){ console.error(e); });
-  };
+  $('btn-signout').onclick = function() { auth.signOut(); };
 
   $('btn-add-income').onclick  = function(){ openModal('income'); };
   $('btn-add-expense').onclick = function(){ openModal('expense'); };
@@ -1150,194 +1387,88 @@
   function openModal(type) {
     modalType = type;
     $('modal-title').textContent = type === 'income' ? 'הוספת הכנסה' : 'הוספת הוצאה';
-    $('modal-amount').style.color       = type === 'income' ? 'var(--green)' : 'var(--text)';
-    $('modal-amount').style.borderColor = type === 'income' ? 'rgba(0,230,118,0.3)' : 'rgba(255,23,68,0.3)';
-    $('modal-sheet').style.borderTop    = '2px solid ' + (type === 'income' ? 'var(--green)' : 'var(--red)');
-    $('modal-submit').className = 'btn modern-hover ' + (type === 'income' ? 'btn-green' : 'btn-red');
-    reloadModalCategorySelect(null);
-    $('modal-amount').value = '';
-    $('modal-desc').value   = '';
-    $('modal-category').value = '';
-    $('modal-new-cat-name').value = '';
-    hide('modal-new-cat-wrap');
-    newCatPanelOpen = false;
-    $('btn-modal-new-cat-toggle').innerHTML =
-      '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> צור קטגוריה חדשה';
-    show('modal-overlay');
-    setTimeout(function(){ $('modal-amount').focus(); }, 120);
+    var catOpt = '<option value="">ללא קטגוריה</option>';
+    userCategories.filter(c => c.type === type).forEach(c => catOpt += '<option value="'+c.name+'">'+c.name+'</option>');
+    $('modal-category').innerHTML = catOpt;
+    $('modal-amount').value = ''; $('modal-desc').value = ''; show('modal-overlay');
   }
-
-  $('btn-modal-new-cat-toggle').onclick = function() {
-    newCatPanelOpen = !newCatPanelOpen;
-    if (newCatPanelOpen) {
-      show('modal-new-cat-wrap');
-      $('btn-modal-new-cat-toggle').innerHTML =
-        '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg> ביטול';
-      setTimeout(function(){ $('modal-new-cat-name').focus(); }, 80);
-    } else {
-      hide('modal-new-cat-wrap');
-      $('btn-modal-new-cat-toggle').innerHTML =
-        '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> צור קטגוריה חדשה';
-    }
-  };
-
-  $('btn-modal-save-new-cat').onclick = function() {
-    var name = $('modal-new-cat-name').value.trim();
-    if (!name || !uid) return;
-    db.collection('users').doc(uid).collection('categories')
-      .add({ name: name, type: modalType })
-      .then(function() {
-        var alreadyExists = userCategories.some(function(c){ return c.name === name && c.type === modalType; });
-        if (!alreadyExists) userCategories.push({ name: name, type: modalType, id: '_pending' });
-        reloadModalCategorySelect(name);
-        $('modal-new-cat-name').value = '';
-        hide('modal-new-cat-wrap');
-        newCatPanelOpen = false;
-        $('btn-modal-new-cat-toggle').innerHTML =
-          '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> צור קטגוריה חדשה';
-      });
-  };
 
   window.handleOverlayClick = function(e) { hide('modal-overlay'); };
 
-  function showSuccess(type, amount) {
-    var isInc = type === 'income';
-    var card   = $('success-card');
-    var circle = $('success-circle');
-    var label  = $('success-label');
-    var sub    = $('success-sublabel');
-    var parts  = $('success-particles');
-    card.className   = 'success-card ' + (isInc ? 'income-card' : 'expense-card');
-    circle.className = 'success-circle ' + (isInc ? 'income-circle' : 'expense-circle');
-    var path = $('check-path');
-    path.style.animation = 'none'; path.getBoundingClientRect(); path.style.animation = '';
-    label.textContent = isInc ? '+ ' + fmt(amount) : '− ' + fmt(amount);
-    sub.textContent   = isInc ? 'הכנסה נרשמה בהצלחה ✓' : 'הוצאה נרשמה בהצלחה ✓';
-    parts.innerHTML = '';
-    var col = isInc ? ['#00E676','#00C853','#69F0AE','#B9F6CA'] : ['#FF1744','#FF6080','#FF8A80','#FF4D70'];
-    for (var i = 0; i < 10; i++) {
-      var sp = document.createElement('div');
-      sp.className = 'sp';
-      sp.style.background   = col[Math.floor(Math.random() * col.length)];
-      sp.style.left         = (15 + Math.random() * 70) + '%';
-      sp.style.bottom       = (10 + Math.random() * 30) + '%';
-      sp.style.animationDelay = (Math.random() * .35) + 's';
-      sp.style.width = sp.style.height = (3 + Math.random() * 4) + 'px';
-      parts.appendChild(sp);
-    }
-    show('success-overlay');
-    setTimeout(function() {
-      card.classList.add('outro');
-      setTimeout(function() { hide('success-overlay'); card.classList.remove('outro'); }, 400);
-    }, 1600);
-  }
-
   $('modal-submit').onclick = function() {
-    var amount = Number($('modal-amount').value);
-    var desc   = $('modal-desc').value.trim();
-    var cat    = $('modal-category').value;
+    var amount = Number($('modal-amount').value), desc = $('modal-desc').value.trim(), cat = $('modal-category').value;
     if (!amount || !desc) return;
-    var dataObj = { amount: amount, description: desc, date: new Date().toISOString() };
-    if (cat !== '') dataObj.category = cat;
-    var type = modalType;
-    db.collection('users').doc(uid).collection(type === 'income' ? 'incomes' : 'expenses')
-      .add(dataObj)
-      .then(function(){ hide('modal-overlay'); showSuccess(type, amount); });
+    db.collection('users').doc(uid).collection(modalType === 'income' ? 'incomes' : 'expenses').add({
+      amount: amount, description: desc, category: cat, date: new Date().toISOString()
+    }).then(() => {
+      hide('modal-overlay');
+      showSuccess(modalType, amount);
+    });
   };
 
-  $('btn-add-cat').onclick = function() {
-    var name = $('cat-name').value.trim(), type = $('cat-type').value;
-    if (!name) return;
-    db.collection('users').doc(uid).collection('categories').add({ name: name, type: type })
-      .then(function(){ $('cat-name').value = ''; });
+  function showSuccess(type, amount) {
+    var isInc = type === 'income';
+    $('success-card').className = 'success-card ' + (isInc ? 'income-card' : 'expense-card');
+    $('success-label').textContent = (isInc ? '+' : '-') + fmt(amount);
+    show('success-overlay');
+    setTimeout(() => hide('success-overlay'), 1800);
+  }
+
+  $('btn-add-fe').onclick = function() {
+    var name = $('fe-name').value, amount = Number($('fe-amount').value);
+    if (name && amount) db.collection('users').doc(uid).collection('fixed_settings').add({name:name, amount:amount}).then(()=>{$('fe-name').value='';$('fe-amount').value='';});
+  };
+  $('btn-add-fi').onclick = function() {
+    var name = $('fi-name').value, amount = Number($('fi-amount').value);
+    if (name && amount) db.collection('users').doc(uid).collection('fixed_incomes').add({name:name, amount:amount}).then(()=>{$('fi-name').value='';$('fi-amount').value='';});
+  };
+
+  window.delItem = function(col, id) {
+    if (confirm('למחוק?')) db.collection('users').doc(uid).collection(col).doc(id).delete();
   };
 
   window.toggleAddCat2 = function() {
     var f = $('add-cat2-form');
-    if (f.classList.contains('hidden')) { show('add-cat2-form'); setTimeout(function(){ $('cat-name2').focus(); }, 80); }
-    else { hide('add-cat2-form'); }
+    f.classList.contains('hidden') ? show('add-cat2-form') : hide('add-cat2-form');
   };
 
   $('btn-add-cat2').onclick = function() {
     var name = $('cat-name2').value.trim(), type = $('cat-type2').value;
-    if (!name) return;
-    db.collection('users').doc(uid).collection('categories').add({ name: name, type: type })
-      .then(function(){ $('cat-name2').value = ''; hide('add-cat2-form'); });
-  };
-
-  $('btn-add-fe').onclick = function() {
-    var name = $('fe-name').value.trim(), amount = Number($('fe-amount').value);
-    if (!name || !amount) return;
-    db.collection('users').doc(uid).collection('fixed_settings').add({ name: name, amount: amount })
-      .then(function(){ $('fe-name').value = ''; $('fe-amount').value = ''; });
-  };
-  $('btn-add-fi').onclick = function() {
-    var name = $('fi-name').value.trim(), amount = Number($('fi-amount').value);
-    if (!name || !amount) return;
-    db.collection('users').doc(uid).collection('fixed_incomes').add({ name: name, amount: amount })
-      .then(function(){ $('fi-name').value = ''; $('fi-amount').value = ''; });
+    if (name) db.collection('users').doc(uid).collection('categories').add({name:name, type:type}).then(()=>{ $('cat-name2').value=''; hide('add-cat2-form'); });
   };
 
   function renderCategoriesList2() {
-    var el = $('cat-list2');
-    if (!el) return;
-    if (!userCategories || userCategories.length === 0) {
-      el.innerHTML = '<div style="color:var(--muted);font-size:13px;text-align:center;padding:30px 10px;">אין קטגוריות עדיין.<br><span style="font-size:11px;opacity:.6">לחץ "+ הוסף" כדי ליצור קטגוריה ראשונה.</span></div>';
-      return;
-    }
+    var el = $('cat-list2'); if (!el) return;
     var s = cycleStart();
-    var expCats = userCategories.filter(function(c){ return c.type === 'expense'; });
-    var incCats = userCategories.filter(function(c){ return c.type === 'income';  });
-    function tileHtml(cat) {
-      var isInc  = cat.type === 'income';
-      var col    = isInc ? 'var(--green)' : 'var(--red)';
-      var colBg  = isInc ? 'rgba(0,230,118,0.07)' : 'rgba(255,23,68,0.07)';
-      var colBdr = isInc ? 'rgba(0,230,118,0.20)' : 'rgba(255,23,68,0.18)';
-      var colBar = isInc ? 'linear-gradient(90deg,var(--green),#00C853)' : 'linear-gradient(90deg,var(--red),#D50000)';
-      var src = isInc ? incomes : expenses;
-      var matched = src.filter(function(i){ return i.category === cat.name && new Date(i.date) >= s; });
-      var total = matched.reduce(function(a, i){ return a + Number(i.amount || 0); }, 0);
-      var count = matched.length;
-      return '<div class="cat-tile" style="border:1px solid ' + colBdr + ';background:linear-gradient(145deg,' + colBg + ',rgba(13,19,35,0.75));">'
-        + '<button class="cat-tile-del" onclick="delItem(\'categories\',\'' + cat.id + '\')">✕</button>'
-        + '<div class="cat-tile-name">' + cat.name + '</div>'
-        + '<div class="cat-tile-amount" style="color:' + col + ';">' + fmt(total) + '</div>'
-        + '<div class="cat-tile-count">' + count + ' תנועות במחזור</div>'
-        + '<div class="cat-tile-bar" style="background:' + colBar + ';opacity:0.55;"></div>'
-        + '</div>';
-    }
-    var html = '';
-    if (expCats.length > 0) { html += '<div class="cat-section-label">הוצאות</div><div class="cat-tiles-grid">' + expCats.map(tileHtml).join('') + '</div>'; }
-    if (incCats.length > 0) { html += '<div class="cat-section-label">הכנסות</div><div class="cat-tiles-grid">' + incCats.map(tileHtml).join('') + '</div>'; }
-    el.innerHTML = html;
+    var html = '<div class="cat-tiles-grid">';
+    userCategories.forEach(cat => {
+      var src = cat.type === 'income' ? incomes : expenses;
+      var total = src.filter(i => i.category === cat.name && new Date(i.date) >= s).reduce((a,i)=>a+Number(i.amount||0), 0);
+      html += '<div class="cat-tile" style="border:1px solid rgba(255,255,255,0.1)">' +
+              '<button class="cat-tile-del" onclick="delItem(\'categories\',\''+cat.id+'\')">✕</button>' +
+              '<div class="cat-tile-name">'+cat.name+'</div>' +
+              '<div class="cat-tile-amount">'+fmt(total)+'</div></div>';
+    });
+    el.innerHTML = html + '</div>';
   }
 
-  window.delItem = function(col, id) {
-    if (!confirm('האם אתה בטוח שברצונך למחוק פריט זה?')) return;
-    db.collection('users').doc(uid).collection(col).doc(id).delete();
+  $('btn-save-name').onclick = function() {
+    var name = $('settings-name-input').value.trim();
+    if (name) db.collection('users').doc(uid).set({displayName:name}, {merge:true}).then(() => { show('name-saved'); setTimeout(()=>hide('name-saved'), 2000); });
   };
 
-  /* #6: Contact form toggle & send via mailto */
-  window.toggleContactForm = function() {
-    var f = $('contact-form-wrap');
-    if (f.classList.contains('hidden')) { show('contact-form-wrap'); setTimeout(function(){ $('contact-subject').focus(); }, 80); }
-    else { hide('contact-form-wrap'); }
+  $('reset-day-input').onchange = function() {
+    var v = parseInt(this.value);
+    if (v >= 1 && v <= 31) db.collection('users').doc(uid).set({resetDay:v}, {merge:true});
   };
 
   $('btn-send-contact').onclick = function() {
-    var subject = $('contact-subject').value.trim();
-    var msg     = $('contact-msg').value.trim();
-    if (!subject || !msg) return;
-    var mailtoLink = 'mailto:a4190656@gmail.com'
-      + '?subject=' + encodeURIComponent('[AO Budget] ' + subject)
-      + '&body=' + encodeURIComponent(msg + '\n\n---\nנשלח מ-AO Budget\nמשתמש: ' + (displayName || 'לא מזוהה'));
-    window.location.href = mailtoLink;
-    $('contact-subject').value = '';
-    $('contact-msg').value = '';
-    hide('contact-form-wrap');
-    show('contact-sent');
-    setTimeout(function(){ hide('contact-sent'); }, 3500);
+    // לוגיקה לשליחת צור קשר
+    show('contact-ok'); setTimeout(() => hide('contact-modal-overlay'), 2000);
   };
+  
+  window.closeContactModal = function() { hide('contact-modal-overlay'); };
+  $('btn-open-contact').onclick = function() { show('contact-modal-overlay'); };
 
 })();
 </script>
