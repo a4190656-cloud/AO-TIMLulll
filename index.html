@@ -917,10 +917,21 @@
 
     <div class="hero-card rise d1 modern-hover" style="padding:28px 18px;text-align:center">
       <p style="color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px">יתרה פנויה</p>
+      
       <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
         <p id="balance-display" class="mono" style="font-size:46px;font-weight:800;letter-spacing:-1px;line-height:1"></p>
-        <div id="budget-percent" style="width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,229,255,0.02));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(0,229,255,0.3);box-shadow:0 0 15px rgba(0,229,255,0.2), inset 0 2px 4px rgba(255,255,255,0.1), inset 0 -2px 6px rgba(0,229,255,0.1);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono', monospace;font-size:16px;font-weight:800;color:var(--cyan);text-shadow:0 0 8px rgba(0,229,255,0.6);flex-shrink:0;">0%</div>
+        
+        <div style="position:relative; width:74px; height:74px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+          <svg width="74" height="74" style="position:absolute; top:0; left:0; transform:rotate(-90deg); overflow:visible;">
+            <circle cx="37" cy="37" r="34" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="4"></circle>
+            <circle id="budget-progress-ring" cx="37" cy="37" r="34" fill="none" stroke="var(--green)" stroke-width="4" stroke-dasharray="213.63" stroke-dashoffset="213.63" stroke-linecap="round" style="transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.4s ease, filter 0.4s ease; filter: drop-shadow(0 0 6px rgba(0,230,118,0.6));"></circle>
+          </svg>
+
+          <div id="budget-percent" style="position:relative; z-index:1; width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,230,118,0.02));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(0,230,118,0.3);box-shadow:0 0 15px rgba(0,230,118,0.2), inset 0 2px 4px rgba(255,255,255,0.1), inset 0 -2px 6px rgba(0,230,118,0.1);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono', monospace;font-size:16px;font-weight:800;color:var(--green);text-shadow:0 0 8px rgba(0,230,118,0.6);">0%</div>
+        </div>
+
       </div>
+
       <div style="width:72px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);margin:12px auto 0;opacity:.4"></div>
     </div>
 
@@ -1264,8 +1275,16 @@
     el.className   = 'mono num-pop ' + (bal >= 0 ? 'bal-pos' : 'bal-neg');
 
     var pct = inc > 0 ? Math.round((bal / inc) * 100) : 0;
+    
     var pctEl = $('budget-percent');
+    var ringEl = $('budget-progress-ring');
+    
     pctEl.textContent = pct + '%';
+    
+    var absPct = Math.max(0, Math.min(100, Math.abs(pct)));
+    var circumference = 213.63;
+    var offset = circumference - (absPct / 100) * circumference;
+    ringEl.style.strokeDashoffset = offset;
     
     if (bal < 0) {
       pctEl.style.borderColor = 'rgba(255,23,68,0.3)';
@@ -1273,12 +1292,18 @@
       pctEl.style.textShadow = '0 0 8px rgba(255,23,68,0.6)';
       pctEl.style.boxShadow = '0 0 15px rgba(255,23,68,0.2), inset 0 2px 4px rgba(255,255,255,0.1), inset 0 -2px 6px rgba(255,23,68,0.1)';
       pctEl.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,23,68,0.02))';
+      
+      ringEl.style.stroke = 'var(--red)';
+      ringEl.style.filter = 'drop-shadow(0 0 5px rgba(255,23,68,0.6))';
     } else {
-      pctEl.style.borderColor = 'rgba(0,229,255,0.3)';
-      pctEl.style.color = 'var(--cyan)';
-      pctEl.style.textShadow = '0 0 8px rgba(0,229,255,0.6)';
-      pctEl.style.boxShadow = '0 0 15px rgba(0,229,255,0.2), inset 0 2px 4px rgba(255,255,255,0.1), inset 0 -2px 6px rgba(0,229,255,0.1)';
-      pctEl.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,229,255,0.02))';
+      pctEl.style.borderColor = 'rgba(0,230,118,0.3)';
+      pctEl.style.color = 'var(--green)';
+      pctEl.style.textShadow = '0 0 8px rgba(0,230,118,0.6)';
+      pctEl.style.boxShadow = '0 0 15px rgba(0,230,118,0.2), inset 0 2px 4px rgba(255,255,255,0.1), inset 0 -2px 6px rgba(0,230,118,0.1)';
+      pctEl.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,230,118,0.02))';
+      
+      ringEl.style.stroke = 'var(--green)';
+      ringEl.style.filter = 'drop-shadow(0 0 5px rgba(0,230,118,0.6))';
     }
 
     $('stat-income').textContent = fmt(calcIncome());
@@ -1401,6 +1426,12 @@
 
   auth.onAuthStateChanged(function(user) {
     if (!user) { showScreen('screen-login'); return; }
+    
+    // מנגנון אימות אימייל: חסימת התחברות אוטומטית אם המייל לא אומת
+    if (!user.emailVerified && user.providerData.some(function(p){ return p.providerId === 'password'; })) {
+      return; 
+    }
+
     uid = user.uid;
     db.collection('users').doc(uid).get().then(function(snap) {
       var savedName = snap.exists && snap.data().displayName;
@@ -1438,6 +1469,8 @@
     var pass  = $('login-pass').value;
     var name  = $('login-name').value.trim();
     hide('login-err');
+    $('login-err').style.color = 'var(--red)';
+
     if (isRegMode) {
       auth.createUserWithEmailAndPassword(email, pass).then(function(cred) {
         var promises = [];
@@ -1445,13 +1478,37 @@
           promises.push(cred.user.updateProfile({ displayName: name }));
           promises.push(db.collection('users').doc(cred.user.uid).set({ displayName: name }, { merge: true }));
         }
-        return Promise.all(promises);
-      }).catch(function() {
-        $('login-err').textContent = 'לא ניתן ליצור חשבון. בדוק את הפרטים.';
+        
+        // שליחת מייל אימות מיד לאחר יצירת החשבון
+        promises.push(cred.user.sendEmailVerification());
+
+        return Promise.all(promises).then(function() {
+          auth.signOut(); // התנתקות עד שהמשתמש יאמת את המייל
+          $('login-err').style.color = 'var(--green)';
+          $('login-err').textContent = 'נשלח מייל אימות! אמת את חשבונך דרך הקישור במייל והתחבר.';
+          show('login-err');
+          
+          isRegMode = false;
+          hide('login-name-wrap');
+          $('btn-email-auth').textContent   = 'כניסה לחשבון';
+          $('btn-toggle-mode').textContent  = 'עוד אין לך חשבון? לחץ כאן ←';
+        });
+      }).catch(function(err) {
+        $('login-err').style.color = 'var(--red)';
+        $('login-err').textContent = 'לא ניתן ליצור חשבון. ודא שהאימייל תקין והסיסמה 6 תווים לפחות.';
         show('login-err');
       });
     } else {
-      auth.signInWithEmailAndPassword(email, pass).catch(function() {
+      auth.signInWithEmailAndPassword(email, pass).then(function(cred) {
+        // בדיקה האם המייל אומת
+        if (!cred.user.emailVerified) {
+          auth.signOut();
+          $('login-err').style.color = 'var(--red)';
+          $('login-err').textContent = 'חשבון זה טרם אומת. אנא בדוק את תיבת המייל שלך (גם בספאם).';
+          show('login-err');
+        }
+      }).catch(function() {
+        $('login-err').style.color = 'var(--red)';
         $('login-err').textContent = 'אימייל או סיסמה שגויים.';
         show('login-err');
       });
