@@ -42,7 +42,6 @@
       overflow-x: hidden;
     }
 
-    /* Glassmorphism background layers */
     body::before {
       content: '';
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
@@ -61,10 +60,8 @@
     }
 
     #app { position: relative; z-index: 1; padding-bottom: 110px; }
-
     .hidden { display: none !important; }
 
-    /* GLASSMORPHISM CARD */
     .card {
       background: var(--card);
       backdrop-filter: blur(20px);
@@ -73,7 +70,6 @@
       border-radius: 18px;
     }
 
-    /* HERO */
     .hero-card {
       background: linear-gradient(140deg, rgba(13,19,35,0.85) 0%, rgba(6,10,20,0.9) 100%);
       backdrop-filter: blur(32px);
@@ -98,7 +94,6 @@
     }
     @keyframes scanline { 0% { top: -2%; } 100% { top: 108%; } }
 
-    /* INPUTS */
     .inp {
       display: block; width: 100%;
       background: rgba(255,255,255,0.04);
@@ -118,13 +113,8 @@
       box-shadow: 0 0 0 3px rgba(0,229,255,0.08), inset 0 1px 0 rgba(255,255,255,0.06);
     }
     .inp::placeholder { color: rgba(255,255,255,0.22); }
+    select.inp option { background: var(--card-solid); color: var(--text); }
 
-    select.inp option {
-      background: var(--card-solid);
-      color: var(--text);
-    }
-
-    /* BUTTONS */
     .btn {
       display: block; width: 100%; padding: 14px;
       border-radius: 15px; border: none;
@@ -158,7 +148,250 @@
     }
     .btn-ghost:hover { background: rgba(255,255,255,0.09); }
 
-    /* LOGO */
+    /* ══════════════════════════════════════════
+       ACTION BUTTONS — Income / Expense
+       Modern 2027 tactile button design
+    ══════════════════════════════════════════ */
+    .action-btn-income,
+    .action-btn-expense {
+      position: relative;
+      width: 100%;
+      padding: 0;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      transition:
+        transform .18s cubic-bezier(.2,.8,.2,1),
+        box-shadow .18s cubic-bezier(.2,.8,.2,1);
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+    }
+
+    /* Income button */
+    .action-btn-income {
+      background: linear-gradient(160deg, #0d2117 0%, #071510 100%);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.06) inset,
+        0 -3px 0 0 rgba(0,100,50,0.9),
+        0 6px 24px rgba(0,230,118,0.20),
+        0 2px 8px rgba(0,0,0,0.5);
+      border: 1px solid rgba(0,230,118,0.28);
+    }
+    .action-btn-income::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% -20%, rgba(0,230,118,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .action-btn-income:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.08) inset,
+        0 -3px 0 0 rgba(0,140,60,0.9),
+        0 12px 36px rgba(0,230,118,0.30),
+        0 4px 12px rgba(0,0,0,0.5);
+    }
+    .action-btn-income:active {
+      transform: translateY(2px);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.04) inset,
+        0 0px 0 0 rgba(0,100,50,0.9),
+        0 3px 12px rgba(0,230,118,0.15),
+        0 1px 4px rgba(0,0,0,0.6);
+    }
+
+    /* Expense button */
+    .action-btn-expense {
+      background: linear-gradient(160deg, #1e0a0d 0%, #120508 100%);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.06) inset,
+        0 -3px 0 0 rgba(140,0,30,0.9),
+        0 6px 24px rgba(255,23,68,0.18),
+        0 2px 8px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,23,68,0.28);
+    }
+    .action-btn-expense::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% -20%, rgba(255,23,68,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .action-btn-expense:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.08) inset,
+        0 -3px 0 0 rgba(180,0,30,0.9),
+        0 12px 36px rgba(255,23,68,0.28),
+        0 4px 12px rgba(0,0,0,0.5);
+    }
+    .action-btn-expense:active {
+      transform: translateY(2px);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.04) inset,
+        0 0px 0 0 rgba(140,0,30,0.9),
+        0 3px 12px rgba(255,23,68,0.12),
+        0 1px 4px rgba(0,0,0,0.6);
+    }
+
+    .action-btn-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 20px 12px 18px;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .action-btn-icon-wrap {
+      width: 46px; height: 46px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .action-btn-income .action-btn-icon-wrap {
+      background: linear-gradient(145deg, rgba(0,230,118,0.18), rgba(0,230,118,0.06));
+      border: 1px solid rgba(0,230,118,0.32);
+      box-shadow: 0 0 16px rgba(0,230,118,0.15), inset 0 1px 0 rgba(255,255,255,0.10);
+    }
+    .action-btn-expense .action-btn-icon-wrap {
+      background: linear-gradient(145deg, rgba(255,23,68,0.18), rgba(255,23,68,0.06));
+      border: 1px solid rgba(255,23,68,0.32);
+      box-shadow: 0 0 16px rgba(255,23,68,0.15), inset 0 1px 0 rgba(255,255,255,0.10);
+    }
+
+    .action-btn-label {
+      font-size: 13px; font-weight: 800;
+      letter-spacing: .04em;
+      line-height: 1;
+    }
+    .action-btn-income .action-btn-label  { color: #00E676; }
+    .action-btn-expense .action-btn-label { color: #FF4D70; }
+
+    .action-btn-sublabel {
+      font-size: 10px; font-weight: 600;
+      opacity: 0.45;
+      margin-top: -4px;
+      letter-spacing: .02em;
+    }
+
+    /* Shimmer line at top of button */
+    .action-btn-income::after,
+    .action-btn-expense::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 15%; right: 15%; height: 1px;
+      border-radius: 1px;
+      pointer-events: none;
+    }
+    .action-btn-income::after  { background: linear-gradient(90deg, transparent, rgba(0,230,118,0.55), transparent); }
+    .action-btn-expense::after { background: linear-gradient(90deg, transparent, rgba(255,23,68,0.50), transparent); }
+
+    /* ══════════════════════════════════════════
+       FIXED INCOME / EXPENSE BLOCKS — prominent
+    ══════════════════════════════════════════ */
+    .sblock-fixed-expense,
+    .sblock-fixed-income {
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .sblock-fixed-expense {
+      background: linear-gradient(145deg, rgba(30,6,10,0.92), rgba(18,4,8,0.95));
+      border: 1px solid rgba(255,23,68,0.30);
+      box-shadow:
+        0 0 0 1px rgba(255,23,68,0.08),
+        0 8px 32px rgba(255,23,68,0.12),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .sblock-fixed-income {
+      background: linear-gradient(145deg, rgba(4,22,12,0.92), rgba(3,14,8,0.95));
+      border: 1px solid rgba(0,230,118,0.28);
+      box-shadow:
+        0 0 0 1px rgba(0,230,118,0.07),
+        0 8px 32px rgba(0,230,118,0.10),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .sblock-fixed-expense::before,
+    .sblock-fixed-income::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      border-radius: 20px 20px 0 0;
+    }
+    .sblock-fixed-expense::before {
+      background: linear-gradient(90deg, transparent 5%, rgba(255,23,68,0.75) 40%, rgba(255,80,110,0.9) 60%, transparent 95%);
+    }
+    .sblock-fixed-income::before {
+      background: linear-gradient(90deg, transparent 5%, rgba(0,200,80,0.75) 40%, rgba(0,230,118,0.9) 60%, transparent 95%);
+    }
+
+    .sblock-fixed-head {
+      padding: 15px 18px 14px;
+      border-bottom: 1px solid;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .sblock-fixed-expense .sblock-fixed-head {
+      border-color: rgba(255,23,68,0.15);
+      background: rgba(255,23,68,0.04);
+    }
+    .sblock-fixed-income .sblock-fixed-head {
+      border-color: rgba(0,230,118,0.14);
+      background: rgba(0,230,118,0.03);
+    }
+
+    .sblock-fixed-head-icon {
+      width: 32px; height: 32px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .sblock-fixed-expense .sblock-fixed-head-icon {
+      background: rgba(255,23,68,0.14);
+      border: 1px solid rgba(255,23,68,0.28);
+    }
+    .sblock-fixed-income .sblock-fixed-head-icon {
+      background: rgba(0,230,118,0.12);
+      border: 1px solid rgba(0,230,118,0.26);
+    }
+
+    .sblock-fixed-head-text { flex: 1; }
+    .sblock-fixed-head-title {
+      font-weight: 800; font-size: 14px; line-height: 1.2;
+    }
+    .sblock-fixed-expense .sblock-fixed-head-title { color: #FF6080; }
+    .sblock-fixed-income  .sblock-fixed-head-title { color: #00E676; }
+
+    .sblock-fixed-head-sub {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: .05em;
+      margin-top: 2px;
+      opacity: 0.5;
+    }
+
+    .sblock-fixed-total {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; font-weight: 700;
+      background: rgba(255,255,255,0.04);
+      border-radius: 8px;
+      padding: 4px 10px;
+      flex-shrink: 0;
+    }
+    .sblock-fixed-expense .sblock-fixed-total { color: #FF6080; }
+    .sblock-fixed-income  .sblock-fixed-total { color: #00E676; }
+
+    .sblock-fixed-body { padding: 16px 18px 18px; }
+
+    /* ══════════════════════════════════════════
+       Regular settings blocks (unchanged style)
+    ══════════════════════════════════════════ */
     .logo-frame {
       background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.04));
       backdrop-filter: blur(10px);
@@ -169,7 +402,6 @@
     }
     .logo-frame img { border-radius: 13px; display: block; }
 
-    /* LIVE DOT */
     .live-dot {
       width: 7px; height: 7px;
       background: var(--green); border-radius: 50%;
@@ -182,7 +414,6 @@
       100% { box-shadow: 0 0 0 0 rgba(0,230,118,0); }
     }
 
-    /* TICKER */
     #ticker-wrap {
       overflow: hidden;
       background: rgba(13,19,35,0.80);
@@ -200,7 +431,6 @@
     #ticker-inner .dot { color: var(--cyan); padding: 0 4px; }
     @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-    /* ANIMATIONS */
     @keyframes floatUp {
       from { opacity: 0; transform: translateY(18px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -222,11 +452,9 @@
     }
     .num-pop { animation: numPop .38s ease forwards; }
 
-    /* BALANCE */
     .bal-pos { color: var(--cyan);  text-shadow: 0 0 30px rgba(0,229,255,0.45); }
     .bal-neg { color: var(--red);   text-shadow: 0 0 30px rgba(255,23,68,0.45);  }
 
-    /* NAV */
     #nav {
       position: fixed; bottom: 12px; left: 12px; right: 12px;
       display: flex;
@@ -257,7 +485,6 @@
     }
     .nav-btn svg { width: 20px; height: 20px; }
 
-    /* MODAL */
     #modal-overlay {
       position: fixed; inset: 0; z-index: 200;
       background: rgba(0,0,0,0.75);
@@ -283,7 +510,6 @@
       margin: 0 auto 18px;
     }
 
-    /* TX ROWS */
     .tx-row {
       display: flex; justify-content: space-between; align-items: center;
       padding: 13px 16px;
@@ -307,7 +533,6 @@
       vertical-align: middle;
     }
 
-    /* SETTINGS */
     .sblock {
       border-radius: 18px; overflow: hidden;
       border: 1px solid rgba(255,255,255,0.08);
@@ -341,7 +566,6 @@
     }
     .del-btn:hover { color: var(--red); }
 
-    /* GOOGLE BTN */
     .btn-google {
       width: 100%; padding: 13px;
       background: rgba(255,255,255,0.95); color: #06090F;
@@ -355,7 +579,6 @@
     }
     .btn-google:active { transform: scale(0.96); }
 
-    /* INLINE NEW CATEGORY in modal */
     #modal-new-cat-wrap {
       background: rgba(0,229,255,0.04);
       border: 1px solid rgba(0,229,255,0.15);
@@ -363,11 +586,7 @@
       padding: 12px;
       margin-top: 10px;
     }
-    #modal-new-cat-wrap .inp {
-      margin-bottom: 8px;
-      font-size: 13px;
-      padding: 10px 13px;
-    }
+    #modal-new-cat-wrap .inp { margin-bottom: 8px; font-size: 13px; padding: 10px 13px; }
     #modal-new-cat-wrap .inp:last-of-type { margin-bottom: 0; }
     #btn-modal-new-cat-toggle {
       background: none; border: none; cursor: pointer;
@@ -390,7 +609,6 @@
     }
     #btn-modal-save-new-cat:hover { background: rgba(0,229,255,0.18); }
 
-    /* CATEGORY TILES */
     .cat-tiles-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -413,37 +631,15 @@
       background: none; border: none; cursor: pointer;
       color: rgba(255,255,255,0.18); font-size: 13px;
       line-height: 1; padding: 3px 5px;
-      transition: color .14s;
+      transition: color .14px;
     }
     .cat-tile-del:hover { color: var(--red); }
-    .cat-tile-name {
-      font-weight: 700; font-size: 13px;
-      line-height: 1.3; margin-bottom: 8px;
-      padding-left: 18px;
-      word-break: break-word;
-    }
-    .cat-tile-amount {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 18px; font-weight: 700; line-height: 1;
-    }
-    .cat-tile-count {
-      font-size: 10px; font-weight: 600;
-      margin-top: 4px;
-      opacity: 0.55;
-    }
-    .cat-tile-bar {
-      position: absolute; bottom: 0; right: 0; left: 0;
-      height: 2px;
-      border-radius: 0 0 16px 16px;
-    }
-    .cat-section-label {
-      font-size: 11px; font-weight: 700;
-      letter-spacing: .08em; text-transform: uppercase;
-      color: var(--muted);
-      margin: 14px 0 8px;
-    }
+    .cat-tile-name { font-weight: 700; font-size: 13px; line-height: 1.3; margin-bottom: 8px; padding-left: 18px; word-break: break-word; }
+    .cat-tile-amount { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; line-height: 1; }
+    .cat-tile-count { font-size: 10px; font-weight: 600; margin-top: 4px; opacity: 0.55; }
+    .cat-tile-bar { position: absolute; bottom: 0; right: 0; left: 0; height: 2px; border-radius: 0 0 16px 16px; }
+    .cat-section-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 14px 0 8px; }
 
-    /* MISC */
     .err   { color: var(--red);   font-size: 12px; font-weight: 700; text-align: center; margin-top: 6px; }
     .saved { color: var(--green); font-size: 12px; font-weight: 700; text-align: center; margin-top: 4px; }
     .muted { color: var(--muted); }
@@ -461,7 +657,7 @@
       font-size: 13px; font-weight: 600;
       cursor: pointer; display: block;
       width: 100%; text-align: center; padding: 10px;
-      transition: color .16s;
+      transition: color .16px;
     }
     .link-btn:hover { color: #fff; }
 
@@ -469,6 +665,20 @@
       min-height: 100vh; display: flex;
       flex-direction: column; align-items: center; justify-content: center;
       padding: 24px;
+    }
+
+    /* Section divider for settings */
+    .settings-section-title {
+      font-size: 10px; font-weight: 800;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.28);
+      padding: 4px 2px 8px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .settings-section-title::after {
+      content: '';
+      flex: 1; height: 1px;
+      background: rgba(255,255,255,0.07);
     }
   </style>
 </head>
@@ -588,19 +798,29 @@
   <div style="padding:16px 16px 0">
 
     <div id="view-dashboard">
+      <!-- ══ ACTION BUTTONS ══ -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:20px" class="rise d3">
-        <button id="btn-add-income" class="card press modern-hover" style="padding:18px 10px;border:1px solid rgba(0,230,118,0.26);background:linear-gradient(135deg,rgba(0,230,118,0.09),rgba(0,230,118,0.03));cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:9px;border-radius:17px">
-          <div style="width:38px;height:38px;border-radius:11px;background:rgba(0,230,118,0.11);border:1px solid rgba(0,230,118,0.24);display:flex;align-items:center;justify-content:center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+
+        <button id="btn-add-income" class="action-btn-income">
+          <div class="action-btn-inner">
+            <div class="action-btn-icon-wrap">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00E676" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <span class="action-btn-label">הכנסה</span>
+            <span class="action-btn-sublabel">הוסף הכנסה</span>
           </div>
-          <span style="color:var(--green);font-size:12px;font-weight:700">הכנסה</span>
         </button>
-        <button id="btn-add-expense" class="card press modern-hover" style="padding:18px 10px;border:1px solid rgba(255,23,68,0.26);background:linear-gradient(135deg,rgba(255,23,68,0.09),rgba(255,23,68,0.03));cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:9px;border-radius:17px">
-          <div style="width:38px;height:38px;border-radius:11px;background:rgba(255,23,68,0.11);border:1px solid rgba(255,23,68,0.24);display:flex;align-items:center;justify-content:center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+
+        <button id="btn-add-expense" class="action-btn-expense">
+          <div class="action-btn-inner">
+            <div class="action-btn-icon-wrap">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF4D70" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <span class="action-btn-label">הוצאה</span>
+            <span class="action-btn-sublabel">הוסף הוצאה</span>
           </div>
-          <span style="color:var(--red);font-size:12px;font-weight:700">הוצאה</span>
         </button>
+
       </div>
 
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
@@ -613,14 +833,11 @@
     </div>
 
     <div id="view-categories" class="hidden">
-
-      <!-- כותרת + כפתור הוספה -->
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
         <p style="font-weight:700;font-size:14px">קטגוריות אישיות</p>
         <button id="btn-toggle-add-cat2" style="background:rgba(0,229,255,0.10);border:1px solid rgba(0,229,255,0.22);border-radius:10px;color:var(--cyan);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;padding:7px 13px;cursor:pointer;transition:background .15s;" onclick="toggleAddCat2()">+ הוסף</button>
       </div>
 
-      <!-- טופס הוספה (מוסתר כברירת מחדל) -->
       <div id="add-cat2-form" class="hidden sblock" style="margin-bottom:14px;">
         <div class="sblock-body" style="padding:14px 15px;">
           <input id="cat-name2" class="inp" type="text" placeholder="שם הקטגוריה" style="margin-bottom:8px">
@@ -632,13 +849,60 @@
         </div>
       </div>
 
-      <!-- רשת משבצות קטגוריות -->
       <div id="cat-list2"></div>
-
     </div>
 
     <div id="view-settings" class="hidden">
 
+      <!-- ══════════════════════════════════════
+           PROMINENT FIXED BLOCKS — top of settings
+      ══════════════════════════════════════ -->
+
+      <div class="settings-section-title">תשלומים קבועים</div>
+
+      <!-- הוצאות קבועות -->
+      <div class="sblock-fixed-expense">
+        <div class="sblock-fixed-head">
+          <div class="sblock-fixed-head-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6080" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          </div>
+          <div class="sblock-fixed-head-text">
+            <div class="sblock-fixed-head-title">הוצאות קבועות</div>
+            <div class="sblock-fixed-head-sub">חיובים חוזרים מדי חודש</div>
+          </div>
+          <div class="sblock-fixed-total" id="fe-total-badge">₪0</div>
+        </div>
+        <div class="sblock-fixed-body">
+          <input id="fe-name"   class="inp" type="text"   placeholder="שם ההוצאה (למשל: שכר דירה, ביטוח)"  style="margin-bottom:8px">
+          <input id="fe-amount" class="inp" type="number" placeholder="סכום ₪"    style="margin-bottom:10px">
+          <button id="btn-add-fe" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px;border-color:rgba(255,23,68,0.20);">+ הוסף הוצאה קבועה</button>
+          <div id="fe-list"></div>
+        </div>
+      </div>
+
+      <!-- הכנסות קבועות -->
+      <div class="sblock-fixed-income">
+        <div class="sblock-fixed-head">
+          <div class="sblock-fixed-head-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00E676" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          </div>
+          <div class="sblock-fixed-head-text">
+            <div class="sblock-fixed-head-title">הכנסות קבועות</div>
+            <div class="sblock-fixed-head-sub">מקורות הכנסה חוזרים</div>
+          </div>
+          <div class="sblock-fixed-total" id="fi-total-badge">₪0</div>
+        </div>
+        <div class="sblock-fixed-body">
+          <input id="fi-name"   class="inp" type="text"   placeholder="מקור הכנסה (למשל: משכורת, שכירות)" style="margin-bottom:8px">
+          <input id="fi-amount" class="inp" type="number" placeholder="סכום ₪"      style="margin-bottom:10px">
+          <button id="btn-add-fi" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px;border-color:rgba(0,230,118,0.20);">+ הוסף הכנסה קבועה</button>
+          <div id="fi-list"></div>
+        </div>
+      </div>
+
+      <div class="settings-section-title" style="margin-top:6px;">הגדרות כלליות</div>
+
+      <!-- שינוי שם -->
       <div class="sblock modern-hover">
         <div class="sblock-head">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -651,6 +915,7 @@
         </div>
       </div>
 
+      <!-- יום איפוס -->
       <div class="sblock modern-hover">
         <div class="sblock-head">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -665,6 +930,7 @@
         </div>
       </div>
 
+      <!-- ניהול קטגוריות -->
       <div class="sblock modern-hover">
         <div class="sblock-head">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
@@ -678,32 +944,6 @@
           </select>
           <button id="btn-add-cat" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px">+ הוסף קטגוריה חדשה</button>
           <div id="cat-list"></div>
-        </div>
-      </div>
-
-      <div class="sblock modern-hover">
-        <div class="sblock-head">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-          הוראות קבע – הוצאות
-        </div>
-        <div class="sblock-body">
-          <input id="fe-name"   class="inp" type="text"   placeholder="שם החיוב"  style="margin-bottom:8px">
-          <input id="fe-amount" class="inp" type="number" placeholder="סכום ₪"    style="margin-bottom:10px">
-          <button id="btn-add-fe" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px">+ הוסף חיוב קבוע</button>
-          <div id="fe-list"></div>
-        </div>
-      </div>
-
-      <div class="sblock modern-hover">
-        <div class="sblock-head">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
-          הכנסות קבועות
-        </div>
-        <div class="sblock-body">
-          <input id="fi-name"   class="inp" type="text"   placeholder="מקור הכנסה" style="margin-bottom:8px">
-          <input id="fi-amount" class="inp" type="number" placeholder="סכום ₪"      style="margin-bottom:10px">
-          <button id="btn-add-fi" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px">+ הוסף הכנסה קבועה</button>
-          <div id="fi-list"></div>
         </div>
       </div>
 
@@ -734,18 +974,15 @@
       style="font-size:40px;font-weight:800;text-align:center;padding:18px 10px;margin-bottom:11px">
     <input id="modal-desc" class="inp modern-hover" type="text" placeholder="תיאור הפעולה" style="margin-bottom:11px">
 
-    <!-- Category selector -->
     <select id="modal-category" class="inp modern-hover" style="margin-bottom:6px;">
       <option value="">ללא קטגוריה</option>
     </select>
 
-    <!-- Toggle to create new category inline -->
     <button id="btn-modal-new-cat-toggle" type="button">
       <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       צור קטגוריה חדשה
     </button>
 
-    <!-- Inline new category form (hidden by default) -->
     <div id="modal-new-cat-wrap" class="hidden">
       <input id="modal-new-cat-name" class="inp" type="text" placeholder="שם הקטגוריה החדשה" style="margin-bottom:8px">
       <button id="btn-modal-save-new-cat" type="button">✓ שמור וסמן קטגוריה זו</button>
@@ -763,7 +1000,6 @@
 (function() {
   'use strict';
 
-  /* Init Firebase */
   const FB_CFG = {
     apiKey: "AIzaSyBqpLOIbztpurGuUqpfaWZT71JcofKG2rc",
     authDomain: "riki-aharele-budget.firebaseapp.com",
@@ -853,6 +1089,11 @@
     $('stat-fixed').textContent  = fmt(calcFixedExp());
     $('stat-var').textContent    = fmt(calcVarExp());
     updateTicker();
+    /* Update fixed total badges */
+    var feBadge = $('fe-total-badge');
+    var fiBadge = $('fi-total-badge');
+    if (feBadge) feBadge.textContent = fmt(calcFixedExp());
+    if (fiBadge) fiBadge.textContent = fmt(fixedIncomes.reduce(function(a,i){ return a+Number(i.amount||0); }, 0));
   }
 
   function renderTx() {
@@ -923,7 +1164,6 @@
 
   function renderAll() { renderStats(); renderTx(); renderCategoriesList2(); }
 
-  /* Reload modal category dropdown (called after adding new cat) */
   function reloadModalCategorySelect(selectedName) {
     var catOptions = '<option value="">ללא קטגוריה</option>';
     if (userCategories && userCategories.length > 0) {
@@ -937,7 +1177,6 @@
     $('modal-category').innerHTML = catOptions;
   }
 
-  /* Firestore listeners */
   function startListeners() {
     unsubs.forEach(function(u){ u(); });
     unsubs = [];
@@ -963,7 +1202,6 @@
     unsubs.push(uRef.collection('fixed_incomes').onSnapshot(function(s){ fixedIncomes = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); renderFixedLists(); }));
   }
 
-  /* Auth state */
   auth.onAuthStateChanged(function(user) {
     if (!user) { showScreen('screen-login'); return; }
     uid = user.uid;
@@ -1060,7 +1298,6 @@
     }).catch(function(e){ console.error(e); });
   };
 
-  /* Modal */
   $('btn-add-income').onclick  = function(){ openModal('income'); };
   $('btn-add-expense').onclick = function(){ openModal('expense'); };
 
@@ -1087,7 +1324,6 @@
     setTimeout(function(){ $('modal-amount').focus(); }, 120);
   }
 
-  /* Toggle inline new category panel */
   $('btn-modal-new-cat-toggle').onclick = function() {
     newCatPanelOpen = !newCatPanelOpen;
     if (newCatPanelOpen) {
@@ -1102,14 +1338,12 @@
     }
   };
 
-  /* Save new category from modal and auto-select it */
   $('btn-modal-save-new-cat').onclick = function() {
     var name = $('modal-new-cat-name').value.trim();
     if (!name || !uid) return;
     db.collection('users').doc(uid).collection('categories')
       .add({ name: name, type: modalType })
       .then(function() {
-        /* userCategories will update via snapshot listener, but we also add locally for immediate select */
         var alreadyExists = userCategories.some(function(c){ return c.name === name && c.type === modalType; });
         if (!alreadyExists) {
           userCategories.push({ name: name, type: modalType, id: '_pending' });
@@ -1139,7 +1373,6 @@
       .then(function(){ hide('modal-overlay'); });
   };
 
-  /* Add custom category from settings */
   $('btn-add-cat').onclick = function() {
     var name = $('cat-name').value.trim(), type = $('cat-type').value;
     if (!name) return;
@@ -1157,7 +1390,6 @@
     }
   };
 
-  /* Add custom category from categories view */
   $('btn-add-cat2').onclick = function() {
     var name = $('cat-name2').value.trim(), type = $('cat-type2').value;
     if (!name) return;
@@ -1189,7 +1421,6 @@
       return;
     }
 
-    /* חשב סכום לכל קטגוריה מהמחזור הנוכחי */
     var s = cycleStart();
     var expCats = userCategories.filter(function(c){ return c.type === 'expense'; });
     var incCats = userCategories.filter(function(c){ return c.type === 'income';  });
@@ -1201,7 +1432,6 @@
       var colBdr = isInc ? 'rgba(0,230,118,0.20)' : 'rgba(255,23,68,0.18)';
       var colBar = isInc ? 'linear-gradient(90deg,var(--green),#00C853)' : 'linear-gradient(90deg,var(--red),#D50000)';
 
-      /* מצא תנועות שמשוייכות לקטגוריה זו במחזור הנוכחי */
       var src = isInc ? incomes : expenses;
       var matched = src.filter(function(i){
         return i.category === cat.name && new Date(i.date) >= s;
