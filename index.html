@@ -1021,27 +1021,45 @@
   }
 
   /* #5: Netfree — use signInWithRedirect instead of popup */
-  auth.onAuthStateChanged(function(user) {
+    auth.onAuthStateChanged(function(user) {
     if (!user) {
-      /* Check if coming back from redirect */
       auth.getRedirectResult().then(function(result) {
-        if (!result || !result.user) { showScreen('screen-login'); }
-      }).catch(function() { showScreen('screen-login'); });
+        if (!result || !result.user) {
+          showScreen('screen-login');
+        }
+      }).catch(function() { 
+        showScreen('screen-login'); 
+      });
       return;
     }
+
     uid = user.uid;
+
+    function proceed(name) {
+      if (!name) {
+        showScreen('screen-setname');
+      } else {
+        displayName = name;
+        showScreen('app');
+        $('header-name').textContent = 'שלום, ' + displayName.split(' ')[0] + '!';
+        $('settings-name-input').value = displayName;
+        $('reset-day-input').value = resetDay;
+        startListeners();
+      }
+    }
+
     db.collection('users').doc(uid).get().then(function(snap) {
-      var savedName = snap.exists && snap.data().displayName;
-      var authName  = user.displayName;
-      if (!savedName && !authName) { showScreen('screen-setname'); return; }
-      displayName = savedName || authName || '';
-      showScreen('app');
-      $('header-name').textContent   = 'שלום, ' + displayName.split(' ')[0] + '!';
-      $('settings-name-input').value = displayName;
-      $('reset-day-input').value     = resetDay;
-      startListeners();
+      var savedName = snap.exists ? snap.data().displayName : null;
+      var authName = user.displayName;
+      var inputName = $('login-name') ? $('login-name').value.trim() : '';
+      proceed(savedName || authName || inputName);
+    }).catch(function(err) {
+      var authName = user.displayName;
+      var inputName = $('login-name') ? $('login-name').value.trim() : '';
+      proceed(authName || inputName);
     });
   });
+
 
   /* #5: signInWithRedirect — works better with Netfree */
   $('btn-google-login').onclick = function() {
