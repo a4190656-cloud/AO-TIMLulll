@@ -20,22 +20,28 @@
             theme: {
                 extend: {
                     colors: {
-                        light: {
-                            bg: '#F8FAFC',
-                            card: '#FFFFFF',
-                            text: '#0F172A',
-                            muted: '#64748B'
-                        },
+                        light: { bg: '#F8FAFC', text: '#0F172A', muted: '#64748B' },
                         brand: {
-                            turquoise: '#0D9488', // Deep turquoise for primary numbers
-                            gold: '#D4AF37',      // Brushed gold
-                            red: '#E11D48'        // Soft elegant red
+                            cyan: '#00F0FF',
+                            magenta: '#FF00AA',
+                            gold: '#FFD700'
                         }
                     },
-                    boxShadow: {
-                        'spatial': '0 20px 40px -15px rgba(0, 0, 0, 0.05)',
-                        'spatial-hover': '0 30px 60px -20px rgba(0, 0, 0, 0.1)',
-                        'inner-light': 'inset 0 2px 4px 0 rgba(255, 255, 255, 0.3)'
+                    animation: {
+                        blob: "blob 7s infinite",
+                        'gradient-x': 'gradient-x 3s ease infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            "0%": { transform: "translate(0px, 0px) scale(1)" },
+                            "33%": { transform: "translate(30px, -50px) scale(1.1)" },
+                            "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
+                            "100%": { transform: "translate(0px, 0px) scale(1)" },
+                        },
+                        'gradient-x': {
+                            '0%, 100%': { 'background-size': '200% 200%', 'background-position': 'left center' },
+                            '50%': { 'background-size': '200% 200%', 'background-position': 'right center' },
+                        }
                     }
                 }
             }
@@ -43,72 +49,81 @@
     </script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap');
         
         body { 
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #FFFFFF 0%, #F1F5F9 100%);
+            background-color: #F8FAFC;
             color: #0F172A;
             -webkit-tap-highlight-color: transparent;
             min-height: 100vh;
             overflow-x: hidden;
         }
-        
-        /* רקע נושם ונקי */
-        .ambient-light {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.8), transparent 60%);
-            z-index: -1;
-            pointer-events: none;
-        }
 
-        /* מודולים מרחפים (Spatial Modules) */
-        .spatial-module {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 1);
-            box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 1);
+        /* זכוכית קפואה (Frost-Glass) חלבית עם קצוות זוהרים */
+        .frost-glass {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.03), 
+                0 0 15px rgba(0, 240, 255, 0.1), 
+                inset 0 0 15px rgba(255, 0, 170, 0.05);
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .hover-float { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .hover-float:active { transform: scale(0.97) translateY(2px); box-shadow: 0 10px 20px -10px rgba(15, 23, 42, 0.05); }
-
-        /* כניסה חלקה */
-        @keyframes fadeInRise {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
+        .hover-float:active { 
+            transform: scale(0.96) translateY(2px); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05), 0 0 25px rgba(0, 240, 255, 0.2); 
         }
-        .animate-rise { animation: fadeInRise 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
 
-        /* שדות הזנה נקיים */
+        /* אנימציות דינמיות */
+        @keyframes fadeInRise {
+            from { opacity: 0; transform: translateY(20px); filter: blur(5px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+        .animate-rise { animation: fadeInRise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; }
+
+        /* כפתורים ואינפוטים אנרגטיים */
         .clean-input {
-            background: rgba(248, 250, 252, 0.8);
-            border: 1px solid #E2E8F0;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 0, 170, 0.1);
             border-radius: 1.5rem;
             padding: 1.25rem;
             width: 100%;
             outline: none;
             color: #0F172A;
-            font-weight: 500;
+            font-weight: 700;
             transition: all 0.3s ease;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
         }
         .clean-input:focus { 
-            border-color: #0D9488; 
+            border-color: #00F0FF; 
             background: #FFFFFF;
-            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.1), inset 0 2px 4px rgba(0,0,0,0.02); 
+            box-shadow: 0 0 0 4px rgba(0, 240, 255, 0.15); 
+        }
+
+        /* טקסט אירידסנטי (מחליף צבעים) */
+        .text-iridescent {
+            background: linear-gradient(135deg, #00F0FF, #FF00AA, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 200%;
+            animation: gradient-x 4s ease infinite;
         }
 
         ::-webkit-scrollbar { display: none; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useMemo } = React;
+        const { useState, useEffect, useMemo, useRef } = React;
 
         const firebaseConfig = {
             apiKey: "AIzaSyBqpLOIbztpurGuUqpfaWZT71JcofKG2rc",
@@ -123,10 +138,53 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         
+        // הגנה קריטית על האייקונים - מונע מסך לבן!
         const Icon = ({ name, size = 24, className = "" }) => {
-            useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [name]);
-            return <i data-lucide={name} style={{ width: size, height: size }} className={className}></i>;
+            const spanRef = useRef(null);
+            
+            useEffect(() => {
+                if (spanRef.current && window.lucide) {
+                    spanRef.current.innerHTML = `<i data-lucide="${name}" class="${className}"></i>`;
+                    window.lucide.createIcons({ root: spanRef.current });
+                    const svg = spanRef.current.querySelector('svg');
+                    if (svg) { svg.style.width = size + 'px'; svg.style.height = size + 'px'; }
+                }
+            }, [name, size, className]);
+            
+            return <span ref={spanRef} className="inline-flex items-center justify-center"></span>;
         };
+
+        // כרית אוויר מפני תקלות
+        class ErrorBoundary extends React.Component {
+            constructor(props) { super(props); this.state = { hasError: false }; }
+            static getDerivedStateFromError() { return { hasError: true }; }
+            render() {
+                if (this.state.hasError) {
+                    return (
+                        <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center bg-slate-50">
+                            <div className="bg-white p-8 rounded-[2.5rem] shadow-xl w-full max-w-sm border border-brand-magenta/20">
+                                <div className="text-brand-magenta mb-4 flex justify-center"><Icon name="zap" size={48} /></div>
+                                <h1 className="text-2xl font-black text-light-text mb-2">אופס, רענון קטן</h1>
+                                <p className="text-slate-500 mb-6 font-medium">המערכת עובדת מהר מדי. תן לחיצה קטנה פה למטה.</p>
+                                <button onClick={() => window.location.reload()} className="w-full bg-gradient-to-r from-brand-cyan to-brand-magenta text-white p-4 rounded-2xl font-black hover:opacity-90 transition-opacity">
+                                    רענן עכשיו
+                                </button>
+                            </div>
+                        </div>
+                    );
+                }
+                return this.props.children;
+            }
+        }
+
+        // אורות הרקע שזזים (הסוד לעיצוב ה-Iridescent 2026)
+        const AmbientBackground = () => (
+            <div className="fixed inset-0 w-full h-full z-[-1] overflow-hidden bg-slate-50">
+                <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-brand-cyan rounded-full mix-blend-multiply filter blur-[100px] opacity-20 animate-blob"></div>
+                <div className="absolute top-[-10%] right-[-10%] w-96 h-96 bg-brand-magenta rounded-full mix-blend-multiply filter blur-[100px] opacity-20 animate-blob animation-delay-2000"></div>
+                <div className="absolute bottom-[-20%] left-[20%] w-96 h-96 bg-brand-gold rounded-full mix-blend-multiply filter blur-[100px] opacity-20 animate-blob animation-delay-4000"></div>
+            </div>
+        );
 
         const LoginScreen = () => {
             const [email, setEmail] = useState('');
@@ -136,7 +194,7 @@
 
             const handleGoogleLogin = async () => {
                 try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } 
-                catch (err) { setError("אופס, הייתה בעיה בהתחברות לגוגל. נסה שוב."); }
+                catch (err) { setError("שגיאה בחיבור לגוגל. נסה שוב."); }
             };
 
             const handleEmailAuth = async (e) => {
@@ -150,35 +208,35 @@
 
             return (
                 <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center relative z-10">
-                    <div className="ambient-light"></div>
+                    <AmbientBackground />
                     <div className="animate-rise w-full max-w-sm">
-                        <div className="mx-auto w-32 h-32 rounded-[2.5rem] p-1 bg-white shadow-spatial mb-8 hover-float relative">
-                            <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" className="rounded-[2.2rem] w-full h-full object-cover" />
+                        <div className="mx-auto w-36 h-36 rounded-full p-1 bg-white shadow-[0_0_30px_rgba(0,240,255,0.3)] mb-8 relative">
+                            <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" className="rounded-full w-full h-full object-cover" />
                         </div>
-                        <h1 className="text-4xl font-bold text-light-text mb-2">AO ניהול תקציב</h1>
-                        <p className="text-light-muted font-medium mb-10">הדרך הפשוטה לנהל את הכסף</p>
+                        <h1 className="text-5xl font-black mb-2 text-iridescent">AO ניהול תקציב</h1>
+                        <p className="text-slate-500 font-bold mb-10 tracking-wide uppercase text-sm">Fintech 2026 Energy</p>
 
-                        <div className="space-y-6 spatial-module p-8 rounded-[2.5rem]">
-                            <button onClick={handleGoogleLogin} className="hover-float w-full bg-white border border-slate-200 text-light-text p-4 rounded-2xl font-bold flex items-center justify-center gap-3 shadow-sm">
+                        <div className="space-y-6 frost-glass p-8 rounded-[3rem]">
+                            <button onClick={handleGoogleLogin} className="hover-float w-full bg-white text-light-text border border-slate-200 p-4 rounded-2xl font-black flex items-center justify-center gap-3">
                                 <span className="text-xl">🚀</span> כניסה מהירה עם גוגל
                             </button>
                             
                             <div className="flex items-center gap-4 text-slate-400">
                                 <div className="h-px bg-slate-200 flex-1"></div>
-                                <span className="text-xs">או עם מייל וסיסמה</span>
+                                <span className="text-xs font-bold">או במייל</span>
                                 <div className="h-px bg-slate-200 flex-1"></div>
                             </div>
                             
                             <form onSubmit={handleEmailAuth} className="space-y-4">
                                 <input type="email" placeholder="אימייל" className="clean-input" value={email} onChange={e => setEmail(e.target.value)} required />
                                 <input type="password" placeholder="סיסמה" className="clean-input" value={password} onChange={e => setPassword(e.target.value)} required />
-                                {error && <p className="text-brand-red text-sm font-medium">{error}</p>}
-                                <button type="submit" className="hover-float w-full bg-brand-turquoise text-white p-4 rounded-2xl font-bold shadow-md shadow-teal-500/20">
-                                    {isRegister ? 'צור חשבון חדש' : 'היכנס למערכת'}
+                                {error && <p className="text-brand-magenta text-sm font-bold">{error}</p>}
+                                <button type="submit" className="hover-float w-full bg-gradient-to-r from-brand-cyan to-blue-500 text-white p-4 rounded-2xl font-black shadow-[0_10px_20px_rgba(0,240,255,0.2)]">
+                                    {isRegister ? 'יצירת חשבון' : 'היכנס פנימה'}
                                 </button>
                             </form>
-                            <button onClick={() => setIsRegister(!isRegister)} className="text-brand-gold text-sm font-medium underline mt-4">
-                                {isRegister ? 'כבר יש לך חשבון? התחבר' : 'לחץ כאן כדי להירשם'}
+                            <button onClick={() => setIsRegister(!isRegister)} className="text-brand-gold text-sm font-black underline mt-4 hover:opacity-80">
+                                {isRegister ? 'כבר יש חשבון? התחבר' : 'הרשמה מהירה'}
                             </button>
                         </div>
                     </div>
@@ -209,11 +267,7 @@
 
             useEffect(() => {
                 if (!user) return;
-                let unsubSettings = () => {};
-                let unsub1 = () => {};
-                let unsub2 = () => {};
-                let unsub3 = () => {};
-                let unsub4 = () => {};
+                let unsubSettings = () => {}; let unsub1 = () => {}; let unsub2 = () => {}; let unsub3 = () => {}; let unsub4 = () => {};
 
                 try {
                     const userRef = db.collection('users').doc(user.uid);
@@ -227,9 +281,7 @@
                     unsub2 = userRef.collection('expenses').onSnapshot(s => setExpenses(s.docs.map(d => ({id: d.id, ...d.data()}))));
                     unsub3 = userRef.collection('fixed_settings').onSnapshot(s => setFixedExpenses(s.docs.map(d => ({id: d.id, ...d.data()}))));
                     unsub4 = userRef.collection('fixed_incomes').onSnapshot(s => setFixedIncomes(s.docs.map(d => ({id: d.id, ...d.data()}))));
-                } catch (e) {
-                    console.error("Firebase Sync Error", e);
-                }
+                } catch (e) { console.error("Firebase Sync Error", e); }
                 
                 return () => { unsubSettings(); unsub1(); unsub2(); unsub3(); unsub4(); };
             }, [user]);
@@ -247,9 +299,7 @@
                     const totalVarExp = curVarExp.reduce((s, i) => s + Number(i.amount || 0), 0);
                     
                     return { totalIncome: totalInc, totalFixedExp, totalVarExp, balance: totalInc - totalFixedExp - totalVarExp, filteredIncomes: curVarInc, filteredExpenses: curVarExp };
-                } catch (e) {
-                    return { totalIncome: 0, totalFixedExp: 0, totalVarExp: 0, balance: 0, filteredIncomes: [], filteredExpenses: [] };
-                }
+                } catch (e) { return { totalIncome: 0, totalFixedExp: 0, totalVarExp: 0, balance: 0, filteredIncomes: [], filteredExpenses: [] }; }
             }, [incomes, expenses, fixedExpenses, fixedIncomes, resetDay]);
 
             const handleAddItem = async (e) => {
@@ -268,18 +318,14 @@
                 e.target.reset();
             };
 
-            const saveResetDay = async () => { 
-                if (localResetDay >= 1 && localResetDay <= 31) {
-                    await db.collection('users').doc(user.uid).set({ resetDay: localResetDay }, { merge: true });
-                }
-            };
-
+            const saveResetDay = async () => { if (localResetDay >= 1 && localResetDay <= 31) await db.collection('users').doc(user.uid).set({ resetDay: localResetDay }, { merge: true }); };
             const deleteItem = async (col, id) => await db.collection('users').doc(user.uid).collection(col).doc(id).delete();
 
             if (loading) return (
-                <div className="min-h-screen flex flex-col justify-center items-center gap-4 text-brand-turquoise">
-                    <Icon name="loader-2" className="animate-spin" size={40} />
-                    <span className="font-medium">טוען...</span>
+                <div className="min-h-screen flex flex-col justify-center items-center gap-4 bg-slate-50 relative z-10">
+                    <AmbientBackground />
+                    <Icon name="loader-2" className="animate-spin text-brand-cyan" size={48} />
+                    <span className="font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan to-brand-magenta animate-gradient-x text-xl">טוען נתונים...</span>
                 </div>
             );
             
@@ -287,84 +333,84 @@
 
             return (
                 <div className="min-h-screen pb-32 relative z-10">
-                    <div className="ambient-light"></div>
+                    <AmbientBackground />
                     
                     <header className="px-6 pt-10 pb-6 animate-rise">
                         <div className="flex justify-between items-center mb-8">
                             <div className="flex items-center gap-4">
-                                <div className="w-14 h-14 rounded-full p-[2px] bg-white shadow-sm border border-slate-100">
+                                <div className="w-14 h-14 rounded-full p-[2px] bg-white shadow-[0_0_15px_rgba(0,240,255,0.3)]">
                                     <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" className="rounded-full w-full h-full object-cover" />
                                 </div>
                                 <div>
-                                    <h1 className="text-xl font-bold text-light-text">שלום, {user.displayName ? user.displayName.split(' ')[0] : 'משתמש'}</h1>
-                                    <h2 className="text-sm font-medium text-light-muted">התקציב המשפחתי</h2>
+                                    <h1 className="text-2xl font-black text-light-text tracking-tight">שלום, {user.displayName ? user.displayName.split(' ')[0] : 'משתמש'}</h1>
+                                    <h2 className="text-sm font-bold text-slate-500">התקציב המשפחתי</h2>
                                 </div>
                             </div>
-                            <button onClick={() => auth.signOut()} className="hover-float bg-white border border-slate-200 p-3 rounded-full text-slate-400 shadow-sm"><Icon name="log-out" size={18}/></button>
+                            <button onClick={() => auth.signOut()} className="hover-float bg-white/50 border border-white p-3 rounded-full text-slate-500 shadow-sm"><Icon name="log-out" size={18}/></button>
                         </div>
 
-                        <div className="spatial-module p-8 rounded-[2.5rem] text-center relative overflow-hidden">
-                            <span className="text-brand-gold text-sm font-medium">יתרה פנויה לניצול</span>
-                            <h2 className={`text-6xl font-bold mt-2 ${cycleData.balance >= 0 ? 'text-brand-turquoise' : 'text-brand-red'}`}>
+                        <div className="frost-glass p-8 rounded-[3rem] text-center relative overflow-hidden">
+                            <span className="text-slate-500 text-sm font-black uppercase tracking-widest">יתרה פנויה לניצול</span>
+                            <h2 className={`text-6xl font-black mt-2 tracking-tighter ${cycleData.balance >= 0 ? 'text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan to-blue-600' : 'text-transparent bg-clip-text bg-gradient-to-r from-brand-magenta to-red-500'}`}>
                                 ₪{cycleData.balance.toLocaleString()}
                             </h2>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4 mt-6">
-                            <div className="spatial-module p-5 rounded-[2rem] text-center hover-float">
-                                <p className="text-xs text-light-muted font-medium mb-1">הכנסות</p>
-                                <p className="text-brand-turquoise font-bold text-lg">₪{cycleData.totalIncome}</p>
+                        <div className="grid grid-cols-3 gap-3 mt-6">
+                            <div className="frost-glass p-4 rounded-[2rem] text-center hover-float">
+                                <p className="text-[11px] text-slate-500 font-bold mb-1">הכנסות</p>
+                                <p className="text-brand-cyan font-black text-lg">₪{cycleData.totalIncome}</p>
                             </div>
-                            <div className="spatial-module p-5 rounded-[2rem] text-center hover-float">
-                                <p className="text-xs text-light-muted font-medium mb-1">קבועות</p>
-                                <p className="text-light-text font-bold text-lg">₪{cycleData.totalFixedExp}</p>
+                            <div className="frost-glass p-4 rounded-[2rem] text-center hover-float">
+                                <p className="text-[11px] text-slate-500 font-bold mb-1">קבועות</p>
+                                <p className="text-brand-gold font-black text-lg">₪{cycleData.totalFixedExp}</p>
                             </div>
-                            <div className="spatial-module p-5 rounded-[2rem] text-center hover-float">
-                                <p className="text-xs text-light-muted font-medium mb-1">משתנות</p>
-                                <p className="text-brand-red font-bold text-lg">₪{cycleData.totalVarExp}</p>
+                            <div className="frost-glass p-4 rounded-[2rem] text-center hover-float">
+                                <p className="text-[11px] text-slate-500 font-bold mb-1">משתנות</p>
+                                <p className="text-brand-magenta font-black text-lg">₪{cycleData.totalVarExp}</p>
                             </div>
                         </div>
                     </header>
 
-                    <main className="px-6 mt-4 space-y-10 animate-rise" style={{animationDelay: '0.1s'}}>
+                    <main className="px-6 mt-2 space-y-10 animate-rise" style={{animationDelay: '0.1s'}}>
                         {view === 'dashboard' ? (
                             <>
                                 <section>
-                                    <h3 className="font-bold text-lg text-light-text mb-4 ml-2">פעולות מהירות</h3>
+                                    <h3 className="font-black text-xl text-light-text mb-4">פעולות מהירות</h3>
                                     <div className="grid grid-cols-2 gap-4">
-                                        <button onClick={() => { setModalType('income'); setIsModalOpen(true); }} className="hover-float spatial-module rounded-[2rem] p-6 flex flex-col items-center justify-center gap-3">
-                                            <div className="bg-teal-50 text-brand-turquoise p-4 rounded-full"><Icon name="arrow-up" size={28} strokeWidth={2.5} /></div>
-                                            <span className="text-brand-turquoise font-bold text-lg">הכנסה</span>
+                                        <button onClick={() => { setModalType('income'); setIsModalOpen(true); }} className="hover-float frost-glass rounded-[2.5rem] p-6 flex flex-col items-center justify-center gap-3 border-l-4 border-l-brand-cyan">
+                                            <div className="bg-brand-cyan/10 text-brand-cyan p-4 rounded-full shadow-[0_0_15px_rgba(0,240,255,0.2)]"><Icon name="arrow-up-right" size={28} strokeWidth={3} /></div>
+                                            <span className="text-brand-cyan font-black text-lg">הכנסה</span>
                                         </button>
-                                        <button onClick={() => { setModalType('expense'); setIsModalOpen(true); }} className="hover-float spatial-module rounded-[2rem] p-6 flex flex-col items-center justify-center gap-3">
-                                            <div className="bg-rose-50 text-brand-red p-4 rounded-full"><Icon name="arrow-down" size={28} strokeWidth={2.5} /></div>
-                                            <span className="text-brand-red font-bold text-lg">הוצאה</span>
+                                        <button onClick={() => { setModalType('expense'); setIsModalOpen(true); }} className="hover-float frost-glass rounded-[2.5rem] p-6 flex flex-col items-center justify-center gap-3 border-r-4 border-r-brand-magenta">
+                                            <div className="bg-brand-magenta/10 text-brand-magenta p-4 rounded-full shadow-[0_0_15px_rgba(255,0,170,0.2)]"><Icon name="arrow-down-left" size={28} strokeWidth={3} /></div>
+                                            <span className="text-brand-magenta font-black text-lg">הוצאה</span>
                                         </button>
                                     </div>
                                 </section>
 
                                 <section>
-                                    <h3 className="font-bold text-lg text-light-text mb-4 ml-2">תנועות אחרונות</h3>
+                                    <h3 className="font-black text-xl text-light-text mb-4">תנועות אחרונות</h3>
                                     <div className="space-y-3">
                                         {(() => {
                                             const combined = [...cycleData.filteredIncomes, ...cycleData.filteredExpenses].sort((a,b) => new Date(b.date) - new Date(a.date));
-                                            if (combined.length === 0) return <div className="spatial-module p-6 text-center rounded-[2rem] text-slate-400 font-medium">אין תנועות עדיין החודש.</div>;
+                                            if (combined.length === 0) return <div className="frost-glass p-8 text-center rounded-[2.5rem] text-slate-500 font-bold">החודש עוד לא התחיל. יאללה, בלאגן!</div>;
                                             return combined.map(item => {
                                                 const isInc = incomes.some(i => i.id === item.id);
                                                 return (
-                                                    <div key={item.id} className="spatial-module p-4 rounded-[1.5rem] flex justify-between items-center hover-float">
+                                                    <div key={item.id} className="frost-glass p-4 rounded-[2rem] flex justify-between items-center hover-float">
                                                         <div className="flex items-center gap-4">
-                                                            <div className={`p-3 rounded-2xl ${isInc ? 'bg-teal-50 text-brand-turquoise' : 'bg-rose-50 text-brand-red'}`}>
-                                                                <Icon name={isInc ? "plus" : "minus"} size={18} strokeWidth={2.5} />
+                                                            <div className={`p-3 rounded-[1.2rem] ${isInc ? 'bg-brand-cyan/10 text-brand-cyan' : 'bg-brand-magenta/10 text-brand-magenta'}`}>
+                                                                <Icon name={isInc ? "plus" : "minus"} size={18} strokeWidth={3} />
                                                             </div>
                                                             <div>
                                                                 <p className="font-bold text-light-text">{item.description}</p>
-                                                                <p className="text-[11px] text-light-muted mt-0.5">{new Date(item.date).toLocaleDateString('he-IL')}</p>
+                                                                <p className="text-[11px] text-slate-400 font-medium mt-0.5">{new Date(item.date).toLocaleDateString('he-IL')}</p>
                                                             </div>
                                                         </div>
                                                         <div className="flex items-center gap-3">
-                                                            <span className={`font-bold text-lg ${isInc ? 'text-brand-turquoise' : 'text-light-text'}`}>₪{item.amount}</span>
-                                                            <button onClick={() => deleteItem(isInc ? 'incomes' : 'expenses', item.id)} className="text-slate-300 hover:text-brand-red transition-colors p-2"><Icon name="trash-2" size={18} /></button>
+                                                            <span className={`font-black text-xl ${isInc ? 'text-brand-cyan' : 'text-light-text'}`}>₪{item.amount}</span>
+                                                            <button onClick={() => deleteItem(isInc ? 'incomes' : 'expenses', item.id)} className="text-slate-300 hover:text-brand-magenta transition-colors p-2"><Icon name="trash-2" size={18} /></button>
                                                         </div>
                                                     </div>
                                                 );
@@ -375,60 +421,60 @@
                             </>
                         ) : (
                             <section className="space-y-8 animate-rise">
-                                <div className="spatial-module p-8 rounded-[2.5rem]">
-                                    <h3 className="font-bold text-xl text-light-text mb-2 flex items-center gap-2"><Icon name="calendar" className="text-brand-turquoise"/> מתי החודש מתחיל?</h3>
-                                    <p className="text-light-muted text-sm mb-6">באיזה יום בחודש תרצה שהתקציב יתאפס ויתחיל מחדש?</p>
-                                    <div className="flex items-center gap-4 bg-slate-50 p-2 rounded-2xl border border-slate-100 w-fit">
-                                        <input type="number" min="1" max="31" value={localResetDay} onChange={(e) => setLocalResetDay(Number(e.target.value))} onBlur={saveResetDay} className="bg-transparent text-center text-xl font-bold w-16 outline-none text-light-text" />
-                                        <span className="font-medium text-light-muted pl-4">לחודש</span>
+                                <div className="frost-glass p-8 rounded-[3rem]">
+                                    <h3 className="font-black text-xl text-light-text mb-2 flex items-center gap-2"><Icon name="calendar-days" className="text-brand-cyan"/> מתי החודש מתחיל?</h3>
+                                    <p className="text-slate-500 text-sm font-medium mb-6">הגדר מתי אתה מקבל משכורת והתקציב מתחיל ספירה מחדש.</p>
+                                    <div className="flex items-center gap-4 bg-white/50 p-2 rounded-2xl border border-white shadow-inner w-fit">
+                                        <input type="number" min="1" max="31" value={localResetDay} onChange={(e) => setLocalResetDay(Number(e.target.value))} onBlur={saveResetDay} className="bg-transparent text-center text-2xl font-black w-20 outline-none text-brand-cyan" />
+                                        <span className="font-bold text-slate-500 pl-4">לחודש</span>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <h3 className="font-bold text-lg text-brand-turquoise mb-4 ml-2">הכנסות קבועות</h3>
-                                    <form onSubmit={(e) => handleAddFixed(e, 'income')} className="spatial-module p-6 rounded-[2.5rem] space-y-4">
+                                    <h3 className="font-black text-xl text-brand-cyan mb-4">הכנסות קבועות</h3>
+                                    <form onSubmit={(e) => handleAddFixed(e, 'income')} className="frost-glass p-6 rounded-[2.5rem] space-y-4">
                                         <input name="name" required className="clean-input" placeholder="שם ההכנסה (למשל: משכורת)" />
-                                        <input name="amount" type="number" required className="clean-input" placeholder="סכום (₪)" />
-                                        <button type="submit" className="hover-float w-full bg-teal-50 text-brand-turquoise p-4 rounded-2xl font-bold">הוסף הכנסה</button>
+                                        <input name="amount" type="number" required className="clean-input" placeholder="סכום קבוע (₪)" />
+                                        <button type="submit" className="hover-float w-full bg-brand-cyan/10 border border-brand-cyan/20 text-brand-cyan p-4 rounded-2xl font-black shadow-[0_0_15px_rgba(0,240,255,0.1)]">הוסף הכנסה</button>
                                     </form>
                                     <div className="mt-4 space-y-3">{fixedIncomes.map(item => (
-                                        <div key={item.id} className="spatial-module p-4 rounded-2xl flex justify-between items-center"><p className="font-medium text-light-text">{item.name}</p><div className="flex gap-4"><span className="text-brand-turquoise font-bold">₪{item.amount}</span><button onClick={() => deleteItem('fixed_incomes', item.id)} className="text-slate-300 hover:text-brand-red"><Icon name="x" size={18}/></button></div></div>
+                                        <div key={item.id} className="frost-glass p-4 rounded-2xl flex justify-between items-center"><p className="font-bold text-light-text">{item.name}</p><div className="flex gap-4"><span className="text-brand-cyan font-black">₪{item.amount}</span><button onClick={() => deleteItem('fixed_incomes', item.id)} className="text-slate-400 hover:text-brand-magenta"><Icon name="x" size={18}/></button></div></div>
                                     ))}</div>
                                 </div>
 
                                 <div>
-                                    <h3 className="font-bold text-lg text-brand-red mb-4 ml-2">הוצאות קבועות</h3>
-                                    <form onSubmit={(e) => handleAddFixed(e, 'expense')} className="spatial-module p-6 rounded-[2.5rem] space-y-4">
+                                    <h3 className="font-black text-xl text-brand-magenta mb-4">הוצאות קבועות</h3>
+                                    <form onSubmit={(e) => handleAddFixed(e, 'expense')} className="frost-glass p-6 rounded-[2.5rem] space-y-4">
                                         <input name="name" required className="clean-input" placeholder="שם ההוצאה (למשל: שכירות)" />
-                                        <input name="amount" type="number" required className="clean-input" placeholder="סכום (₪)" />
-                                        <button type="submit" className="hover-float w-full bg-rose-50 text-brand-red p-4 rounded-2xl font-bold">הוסף הוצאה</button>
+                                        <input name="amount" type="number" required className="clean-input" placeholder="סכום קבוע (₪)" />
+                                        <button type="submit" className="hover-float w-full bg-brand-magenta/10 border border-brand-magenta/20 text-brand-magenta p-4 rounded-2xl font-black shadow-[0_0_15px_rgba(255,0,170,0.1)]">הוסף הוצאה</button>
                                     </form>
                                     <div className="mt-4 space-y-3">{fixedExpenses.map(item => (
-                                        <div key={item.id} className="spatial-module p-4 rounded-2xl flex justify-between items-center"><p className="font-medium text-light-text">{item.name}</p><div className="flex gap-4"><span className="font-bold">₪{item.amount}</span><button onClick={() => deleteItem('fixed_settings', item.id)} className="text-slate-300 hover:text-brand-red"><Icon name="x" size={18}/></button></div></div>
+                                        <div key={item.id} className="frost-glass p-4 rounded-2xl flex justify-between items-center"><p className="font-bold text-light-text">{item.name}</p><div className="flex gap-4"><span className="font-black">₪{item.amount}</span><button onClick={() => deleteItem('fixed_settings', item.id)} className="text-slate-400 hover:text-brand-magenta"><Icon name="x" size={18}/></button></div></div>
                                     ))}</div>
                                 </div>
                             </section>
                         )}
                     </main>
 
-                    <nav className="fixed bottom-6 left-6 right-6 spatial-module p-4 flex justify-around rounded-[2rem] z-40">
-                        <button onClick={() => setView('dashboard')} className={`hover-float flex flex-col items-center transition-all ${view === 'dashboard' ? 'text-brand-turquoise' : 'text-slate-400'}`}><Icon name="layout-grid" size={24} /><span className="text-xs font-bold mt-1">ראשי</span></button>
-                        <button onClick={() => setView('settings')} className={`hover-float flex flex-col items-center transition-all ${view === 'settings' ? 'text-brand-turquoise' : 'text-slate-400'}`}><Icon name="settings" size={24} /><span className="text-xs font-bold mt-1">הגדרות</span></button>
+                    <nav className="fixed bottom-6 left-6 right-6 frost-glass p-4 flex justify-around rounded-[2.5rem] z-40 border border-white/50">
+                        <button onClick={() => setView('dashboard')} className={`hover-float flex flex-col items-center transition-all ${view === 'dashboard' ? 'text-brand-cyan scale-110 drop-shadow-[0_0_10px_rgba(0,240,255,0.4)]' : 'text-slate-400'}`}><Icon name="layout-dashboard" size={24} /><span className="text-xs font-black mt-1">ראשי</span></button>
+                        <button onClick={() => setView('settings')} className={`hover-float flex flex-col items-center transition-all ${view === 'settings' ? 'text-brand-gold scale-110 drop-shadow-[0_0_10px_rgba(255,215,0,0.4)]' : 'text-slate-400'}`}><Icon name="sliders-horizontal" size={24} /><span className="text-xs font-black mt-1">הגדרות</span></button>
                     </nav>
 
                     {isModalOpen && (
                         <div className="fixed inset-0 z-50 flex items-end justify-center">
-                            <div className="absolute inset-0 bg-slate-900/20 backdrop-blur-sm" onClick={() => setIsModalOpen(false)}></div>
-                            <div className="relative w-full max-w-md bg-white rounded-t-[3rem] p-8 animate-rise shadow-[0_-20px_40px_rgba(0,0,0,0.1)]">
-                                <div className="w-16 h-1.5 bg-slate-200 rounded-full mx-auto mb-8"></div>
-                                <h3 className="text-2xl font-bold text-center mb-8 text-light-text">{modalType === 'income' ? 'הכנסה חדשה' : 'הוצאה חדשה'}</h3>
+                            <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" onClick={() => setIsModalOpen(false)}></div>
+                            <div className="relative w-full max-w-md bg-white/90 backdrop-blur-2xl rounded-t-[3.5rem] p-8 animate-rise shadow-[0_-20px_50px_rgba(0,0,0,0.1)] border-t-2 border-white">
+                                <div className="w-16 h-1.5 bg-slate-300 rounded-full mx-auto mb-8"></div>
+                                <h3 className="text-3xl font-black text-center mb-8 text-light-text">{modalType === 'income' ? 'הכנסה חדשה' : 'הוצאה חדשה'}</h3>
                                 <form onSubmit={handleAddItem} className="space-y-6">
                                     <div className="relative">
-                                        <span className={`absolute left-6 top-1/2 -translate-y-1/2 text-3xl font-bold ${modalType === 'income' ? 'text-brand-turquoise' : 'text-brand-red'}`}>₪</span>
-                                        <input name="amount" type="number" required autoFocus className={`w-full text-6xl font-bold text-center py-8 bg-slate-50 rounded-[2rem] border transition-all ${modalType === 'income' ? 'text-brand-turquoise border-teal-100 focus:border-brand-turquoise focus:bg-white' : 'text-brand-red border-rose-100 focus:border-brand-red focus:bg-white'} outline-none`} placeholder="0" />
+                                        <span className={`absolute left-8 top-1/2 -translate-y-1/2 text-4xl font-black ${modalType === 'income' ? 'text-brand-cyan' : 'text-brand-magenta'}`}>₪</span>
+                                        <input name="amount" type="number" required autoFocus className={`w-full text-7xl font-black text-center py-10 bg-slate-50/50 rounded-[2.5rem] border-2 transition-all ${modalType === 'income' ? 'text-brand-cyan border-brand-cyan/20 focus:border-brand-cyan focus:bg-white shadow-[inset_0_0_20px_rgba(0,240,255,0.05)]' : 'text-brand-magenta border-brand-magenta/20 focus:border-brand-magenta focus:bg-white shadow-[inset_0_0_20px_rgba(255,0,170,0.05)]'} outline-none`} placeholder="0" />
                                     </div>
-                                    <input name="description" required className="clean-input text-center text-lg" placeholder="על מה מדובר?" />
-                                    <button type="submit" className={`hover-float w-full p-6 rounded-[1.5rem] font-bold text-xl shadow-md ${modalType === 'income' ? 'bg-brand-turquoise text-white shadow-teal-500/30' : 'bg-brand-red text-white shadow-rose-500/30'}`}>שמור</button>
+                                    <input name="description" required className="clean-input text-center text-xl py-5" placeholder="על מה מדובר?" />
+                                    <button type="submit" className={`hover-float w-full p-6 rounded-[2rem] font-black text-2xl shadow-xl ${modalType === 'income' ? 'bg-gradient-to-r from-brand-cyan to-blue-500 text-white shadow-cyan-500/30' : 'bg-gradient-to-r from-brand-magenta to-red-500 text-white shadow-fuchsia-500/30'}`}>שמור תנועה</button>
                                 </form>
                             </div>
                         </div>
@@ -438,7 +484,7 @@
         };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        root.render(<ErrorBoundary><App /></ErrorBoundary>);
     </script>
 </body>
 </html>
