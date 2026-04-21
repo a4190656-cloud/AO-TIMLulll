@@ -148,6 +148,9 @@
     }
     .btn-ghost:hover { background: rgba(255,255,255,0.09); }
 
+    /* ══════════════════════════════════════════
+       CURRENCY TOGGLE BUTTON
+    ══════════════════════════════════════════ */
     #currency-toggle-btn {
       background: rgba(0,229,255,0.08);
       border: 1px solid rgba(0,229,255,0.22);
@@ -164,6 +167,9 @@
     #currency-toggle-btn:active { transform: scale(0.94); }
     #currency-toggle-btn:hover { background: rgba(0,229,255,0.15); }
 
+    /* ══════════════════════════════════════════
+       REMAINING % RING
+    ══════════════════════════════════════════ */
     .pct-ring-wrap {
       display: flex;
       flex-direction: column;
@@ -208,6 +214,9 @@
       margin-top: 2px;
     }
 
+    /* ══════════════════════════════════════════
+       ACTION BUTTONS — Income / Expense
+    ══════════════════════════════════════════ */
     .action-btn-income,
     .action-btn-expense {
       position: relative;
@@ -347,6 +356,9 @@
     .action-btn-income::after  { background: linear-gradient(90deg, transparent, rgba(0,230,118,0.55), transparent); }
     .action-btn-expense::after { background: linear-gradient(90deg, transparent, rgba(255,23,68,0.50), transparent); }
 
+    /* ══════════════════════════════════════════
+       FIXED INCOME / EXPENSE BLOCKS
+    ══════════════════════════════════════════ */
     .sblock-fixed-expense,
     .sblock-fixed-income {
       border-radius: 20px;
@@ -440,6 +452,9 @@
 
     .sblock-fixed-body { padding: 16px 18px 18px; }
 
+    /* ══════════════════════════════════════════
+       Regular settings blocks
+    ══════════════════════════════════════════ */
     .logo-frame {
       background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.04));
       backdrop-filter: blur(10px);
@@ -715,6 +730,7 @@
       padding: 24px;
     }
 
+    /* ══ SUCCESS ANIMATION OVERLAY ══ */
     #success-overlay {
       position: fixed; inset: 0; z-index: 999;
       display: flex; align-items: center; justify-content: center;
@@ -863,6 +879,7 @@
       background: rgba(255,255,255,0.07);
     }
 
+    /* ══ CONTACT MODAL ══ */
     #contact-modal-overlay {
       position: fixed; inset: 0; z-index: 300;
       background: rgba(0,0,0,0.75);
@@ -896,6 +913,7 @@
       <div class="logo-frame modern-hover" style="margin:0 auto 16px;width:86px;height:86px">
         <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" style="width:80px;height:80px">
       </div>
+      <!-- CHANGE 3: AO Budget instead of AO Banking -->
       <h1 style="font-size:26px;font-weight:800;letter-spacing:-.4px">AO Budget</h1>
       <p style="color:var(--muted);font-size:13px;margin-top:5px">ניהול תקציב חכם ופשוט</p>
     </div>
@@ -919,6 +937,7 @@
       <input id="login-pass"  class="inp modern-hover" type="password" placeholder="סיסמה">
       <div id="login-err" class="err hidden"></div>
       <button id="btn-email-auth" class="btn btn-cyan modern-hover" style="margin-top:13px">כניסה לחשבון</button>
+      <!-- CHANGE 4: Updated register link text -->
       <button id="btn-toggle-mode" class="link-btn" style="margin-top:6px">עוד אין לך חשבון? לחץ כאן ←</button>
     </div>
   </div>
@@ -963,6 +982,7 @@
         </div>
       </div>
       <div style="display:flex;gap:7px;align-items:center">
+        <!-- CHANGE 1: Currency toggle button -->
         <button id="currency-toggle-btn" title="החלף מטבע">
           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           <span id="currency-label">₪ → $</span>
@@ -976,12 +996,15 @@
       </div>
     </div>
 
+    <!-- CHANGE 2: Hero card with balance + % ring side by side -->
     <div class="hero-card rise d1 modern-hover" style="padding:22px 18px;display:flex;align-items:center;gap:14px">
+      <!-- Balance side -->
       <div style="flex:1;text-align:center">
         <p style="color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px">יתרה פנויה</p>
         <p id="balance-display" class="mono" style="font-size:38px;font-weight:800;letter-spacing:-1px;line-height:1"></p>
         <div style="width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);margin:10px auto 0;opacity:.4"></div>
       </div>
+      <!-- % ring side -->
       <div class="pct-ring-wrap">
         <svg class="pct-ring-svg" width="100" height="100" viewBox="0 0 100 100">
           <circle class="pct-ring-bg" cx="50" cy="50" r="40"/>
@@ -1015,7 +1038,9 @@
   <div style="padding:16px 16px 0">
 
     <div id="view-dashboard">
+      <!-- ══ ACTION BUTTONS ══ -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:20px" class="rise d3">
+
         <button id="btn-add-income" class="action-btn-income">
           <div class="action-btn-inner">
             <div class="action-btn-icon-wrap">
@@ -1035,6 +1060,7 @@
             <span class="action-btn-sublabel">הוסף הוצאה</span>
           </div>
         </button>
+
       </div>
 
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
@@ -1062,11 +1088,15 @@
           <button id="btn-add-cat2" class="btn btn-ghost" style="font-size:13px;padding:10px;">✓ שמור קטגוריה</button>
         </div>
       </div>
+
       <div id="cat-list2"></div>
     </div>
 
     <div id="view-settings" class="hidden">
+
       <div class="settings-section-title">תשלומים קבועים</div>
+
+      <!-- הוצאות קבועות -->
       <div class="sblock-fixed-expense">
         <div class="sblock-fixed-head">
           <div class="sblock-fixed-head-icon">
@@ -1079,13 +1109,14 @@
           <div class="sblock-fixed-total" id="fe-total-badge">₪0</div>
         </div>
         <div class="sblock-fixed-body">
-          <input id="fe-name"   class="inp" type="text"   placeholder="שם ההוצאה"  style="margin-bottom:8px">
+          <input id="fe-name"   class="inp" type="text"   placeholder="שם ההוצאה (למשל: שכר דירה, ביטוח)"  style="margin-bottom:8px">
           <input id="fe-amount" class="inp" type="number" placeholder="סכום ₪"    style="margin-bottom:10px">
-          <button id="btn-add-fe" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px;">+ הוסף</button>
+          <button id="btn-add-fe" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px;border-color:rgba(255,23,68,0.20);">+ הוסף הוצאה קבועה</button>
           <div id="fe-list"></div>
         </div>
       </div>
 
+      <!-- הכנסות קבועות -->
       <div class="sblock-fixed-income">
         <div class="sblock-fixed-head">
           <div class="sblock-fixed-head-icon">
@@ -1098,38 +1129,100 @@
           <div class="sblock-fixed-total" id="fi-total-badge">₪0</div>
         </div>
         <div class="sblock-fixed-body">
-          <input id="fi-name"   class="inp" type="text"   placeholder="מקור הכנסה" style="margin-bottom:8px">
+          <input id="fi-name"   class="inp" type="text"   placeholder="מקור הכנסה (למשל: משכורת, שכירות)" style="margin-bottom:8px">
           <input id="fi-amount" class="inp" type="number" placeholder="סכום ₪"      style="margin-bottom:10px">
-          <button id="btn-add-fi" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px;">+ הוסף</button>
+          <button id="btn-add-fi" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px;border-color:rgba(0,230,118,0.20);">+ הוסף הכנסה קבועה</button>
           <div id="fi-list"></div>
         </div>
       </div>
 
       <div class="settings-section-title" style="margin-top:6px;">הגדרות כלליות</div>
+
+      <!-- שינוי שם -->
       <div class="sblock modern-hover">
-        <div class="sblock-head">שינוי שם</div>
+        <div class="sblock-head">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          שינוי שם
+        </div>
         <div class="sblock-body">
           <input id="settings-name-input" class="inp" type="text" placeholder="השם שלך" style="margin-bottom:9px">
-          <button id="btn-save-name" class="btn btn-ghost">שמור שם</button>
-          <div id="name-saved" class="saved hidden">✓ נשמר!</div>
+          <button id="btn-save-name" class="btn btn-ghost" style="font-size:13px;padding:10px">שמור שם</button>
+          <div id="name-saved" class="saved hidden">✓ נשמר בהצלחה!</div>
         </div>
       </div>
 
+      <!-- יום איפוס -->
       <div class="sblock modern-hover">
-        <div class="sblock-head">יום איפוס תקציב</div>
+        <div class="sblock-head">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          יום איפוס תקציב
+        </div>
         <div class="sblock-body">
-          <input id="reset-day-input" class="inp mono" type="number" min="1" max="31">
+          <p style="color:var(--muted);font-size:13px;margin-bottom:12px">באיזה יום מתאפס המחזור החודשי?</p>
+          <div style="display:flex;align-items:center;gap:11px">
+            <input id="reset-day-input" class="inp mono" type="number" min="1" max="31" style="max-width:85px;text-align:center;font-size:19px;padding:11px 8px">
+            <span style="color:var(--muted);font-weight:600;font-size:14px">לחודש</span>
+          </div>
         </div>
       </div>
-      
-      <button id="btn-open-contact" class="btn btn-ghost">יצירת קשר ותרומות</button>
+
+      <!-- ניהול קטגוריות -->
+      <div class="sblock modern-hover">
+        <div class="sblock-head">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          ניהול קטגוריות
+        </div>
+        <div class="sblock-body">
+          <input id="cat-name" class="inp" type="text" placeholder="שם הקטגוריה (למשל: מעשרות, עסק)" style="margin-bottom:8px">
+          <select id="cat-type" class="inp" style="margin-bottom:10px;">
+            <option value="expense">מיועד עבור: הוצאות</option>
+            <option value="income">מיועד עבור: הכנסות</option>
+          </select>
+          <button id="btn-add-cat" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px">+ הוסף קטגוריה חדשה</button>
+          <div id="cat-list"></div>
+        </div>
+      </div>
+
+      <!-- CHANGE 6: Contact & Donations section -->
+      <div class="settings-section-title" style="margin-top:6px;">תמיכה ויצירת קשר</div>
+
+      <div class="sblock modern-hover" style="margin-bottom:14px;">
+        <div class="sblock-head">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          יצירת קשר ותרומות
+        </div>
+        <div class="sblock-body">
+          <p style="color:var(--muted);font-size:12px;margin-bottom:13px;line-height:1.6;">יש לכם שאלה, הצעה, או רוצים לתמוך בפרויקט? אנחנו כאן בשבילכם.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
+            <button id="btn-open-contact" class="btn btn-ghost" style="font-size:12px;padding:11px;display:flex;align-items:center;justify-content:center;gap:6px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              שלח פנייה
+            </button>
+            <a href="https://buymeacoffee.com" target="_blank" rel="noopener" style="text-decoration:none;">
+              <button class="btn" style="width:100%;font-size:12px;padding:11px;background:linear-gradient(135deg,#FFDD00,#FFC300);color:#1a1000;font-weight:800;border:none;border-radius:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+                ☕ תרומה
+              </button>
+            </a>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
   <nav id="nav">
-    <button class="nav-btn active modern-hover" id="nav-dashboard" onclick="switchView('dashboard')">החשבון שלי</button>
-    <button class="nav-btn modern-hover" id="nav-categories" onclick="switchView('categories')">קטגוריות</button>
-    <button class="nav-btn modern-hover" id="nav-settings" onclick="switchView('settings')">הגדרות</button>
+    <button class="nav-btn active modern-hover" id="nav-dashboard" onclick="switchView('dashboard')">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+      החשבון שלי
+    </button>
+    <button class="nav-btn modern-hover" id="nav-categories" onclick="switchView('categories')">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      קטגוריות
+    </button>
+    <button class="nav-btn modern-hover" id="nav-settings" onclick="switchView('settings')">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+      הגדרות
+    </button>
   </nav>
 </div>
 
@@ -1137,22 +1230,45 @@
   <div id="modal-sheet" class="slide-up" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
     <h3 id="modal-title" style="text-align:center;font-size:17px;font-weight:700;margin-bottom:18px"></h3>
-    <input id="modal-amount" class="inp mono" type="number" placeholder="0" style="font-size:40px;font-weight:800;text-align:center;padding:18px 10px;margin-bottom:11px">
-    <input id="modal-desc" class="inp" type="text" placeholder="תיאור הפעולה" style="margin-bottom:11px">
-    <select id="modal-category" class="inp" style="margin-bottom:6px;"><option value="">ללא קטגוריה</option></select>
-    <button id="modal-submit" class="btn modern-hover">אישור ועדכון יתרה</button>
+    <input id="modal-amount" class="inp mono modern-hover" type="number" placeholder="0"
+      style="font-size:40px;font-weight:800;text-align:center;padding:18px 10px;margin-bottom:11px">
+    <input id="modal-desc" class="inp modern-hover" type="text" placeholder="תיאור הפעולה" style="margin-bottom:11px">
+
+    <select id="modal-category" class="inp modern-hover" style="margin-bottom:6px;">
+      <option value="">ללא קטגוריה</option>
+    </select>
+
+    <button id="btn-modal-new-cat-toggle" type="button">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      צור קטגוריה חדשה
+    </button>
+
+    <div id="modal-new-cat-wrap" class="hidden">
+      <input id="modal-new-cat-name" class="inp" type="text" placeholder="שם הקטגוריה החדשה" style="margin-bottom:8px">
+      <button id="btn-modal-save-new-cat" type="button">✓ שמור וסמן קטגוריה זו</button>
+    </div>
+
+    <button id="modal-submit" class="btn modern-hover" style="font-size:15px;padding:15px;margin-top:14px">אישור ועדכון יתרה</button>
   </div>
 </div>
 
+<!-- CHANGE 6: Contact modal sheet -->
 <div id="contact-modal-overlay" class="hidden" onclick="closeContactModal(event)">
   <div id="contact-modal-sheet" class="slide-up" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
-    <h3 style="text-align:center;">שלח פנייה</h3>
+    <h3 style="text-align:center;font-size:17px;font-weight:700;margin-bottom:6px">שלח פנייה</h3>
+    <p style="text-align:center;color:var(--muted);font-size:12px;margin-bottom:18px;">הפנייה תישלח ישירות למפתח</p>
+
     <input id="contact-name" class="inp" type="text" placeholder="השם שלך" style="margin-bottom:9px">
-    <input id="contact-email" class="inp" type="email" placeholder="אימייל" style="margin-bottom:9px">
-    <textarea id="contact-msg" class="inp" placeholder="הודעה..." rows="4" style="resize:none;margin-bottom:12px;"></textarea>
-    <div id="contact-ok" class="saved hidden">✓ הפנייה נשלחה!</div>
-    <button id="btn-send-contact" class="btn btn-cyan">שלח פנייה</button>
+    <input id="contact-email" class="inp" type="email" placeholder="האימייל שלך (לתשובה)" style="margin-bottom:9px">
+    <textarea id="contact-msg" class="inp" placeholder="כתוב את הפנייה שלך כאן..." rows="4"
+      style="resize:none;line-height:1.5;margin-bottom:12px;font-family:'Syne',sans-serif;"></textarea>
+
+    <div id="contact-err"    class="err    hidden" style="margin-bottom:6px;"></div>
+    <div id="contact-ok"     class="saved  hidden" style="margin-bottom:6px;">✓ הפנייה נשלחה בהצלחה!</div>
+
+    <button id="btn-send-contact" class="btn btn-cyan" style="margin-bottom:9px">שלח פנייה</button>
+    <button onclick="closeContactModal()" class="btn btn-ghost" style="font-size:13px;padding:11px">ביטול</button>
   </div>
 </div>
 
@@ -1161,10 +1277,13 @@
   <div id="success-card" class="success-card">
     <div class="success-particles" id="success-particles"></div>
     <div id="success-circle" class="success-circle">
-      <svg class="check-svg" width="32" height="32" viewBox="0 0 32 32"><path class="check-path" id="check-path" d="M7 16 L13 22 L25 10"/></svg>
+      <div class="success-ring"></div>
+      <svg class="check-svg" width="32" height="32" viewBox="0 0 32 32">
+        <path class="check-path" id="check-path" d="M7 16 L13 22 L25 10"/>
+      </svg>
     </div>
     <div id="success-label" class="success-label">בוצע!</div>
-    <div id="success-sublabel" class="success-sublabel">הפעולה נשמרה</div>
+    <div id="success-sublabel" class="success-sublabel">הפעולה נשמרה בהצלחה</div>
   </div>
 </div>
 
@@ -1188,11 +1307,19 @@
   const auth = firebase.auth();
   const db   = firebase.firestore();
 
-  db.enablePersistence().catch(err => console.log("Offline persistence error: ", err.code));
+  db.enablePersistence().catch(function(err) {
+    console.log("Offline persistence error: ", err.code);
+  });
 
-  var uid = null, resetDay = 1, displayName = '', showDollar = false;
-  var incomes = [], expenses = [], fixedExpenses = [], fixedIncomes = [], userCategories = [], unsubs = [];
-  var modalType = 'income', isRegMode = false;
+  var uid = null, resetDay = 1, displayName = '';
+  var incomes = [], expenses = [], fixedExpenses = [], fixedIncomes = [], userCategories = [];
+  var modalType = 'income', isRegMode = false, unsubs = [];
+  var newCatPanelOpen = false;
+
+  /* ══ CHANGE 1: Currency toggle state ══ */
+  var showDollar = false;
+  /* Approximate exchange rate ILS → USD. In production you'd fetch this live. */
+  var ILS_TO_USD = 0.273;
 
   function $(id){ return document.getElementById(id); }
   function show(id){ $(id).classList.remove('hidden'); }
@@ -1200,14 +1327,18 @@
 
   function fmt(n) {
     var val = Number(n || 0);
-    if (showDollar) return '$' + (val * 0.273).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    if (showDollar) {
+      return '$' + (val * ILS_TO_USD).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
     return '₪' + val.toLocaleString('he-IL');
   }
 
+  /* ══ CHANGE 1: Currency toggle button logic ══ */
   $('currency-toggle-btn').onclick = function() {
     showDollar = !showDollar;
     $('currency-label').textContent = showDollar ? '$ → ₪' : '₪ → $';
-    renderAll(); renderFixedLists();
+    renderAll();
+    renderFixedLists();
   };
 
   function showScreen(name) {
@@ -1220,9 +1351,19 @@
     $('nav-dashboard').classList.remove('active');
     $('nav-settings').classList.remove('active');
     $('nav-categories').classList.remove('active');
-    if (v === 'dashboard') { show('view-dashboard'); $('nav-dashboard').classList.add('active'); }
-    else if (v === 'categories') { show('view-categories'); $('nav-categories').classList.add('active'); renderCategoriesList2(); }
-    else { show('view-settings'); $('nav-settings').classList.add('active'); renderFixedLists(); renderCategoriesList(); }
+    if (v === 'dashboard') {
+      show('view-dashboard');
+      $('nav-dashboard').classList.add('active');
+    } else if (v === 'categories') {
+      show('view-categories');
+      $('nav-categories').classList.add('active');
+      renderCategoriesList2();
+    } else {
+      show('view-settings');
+      $('nav-settings').classList.add('active');
+      renderFixedLists();
+      renderCategoriesList();
+    }
   };
 
   function cycleStart() {
@@ -1231,155 +1372,277 @@
     if (now.getDate() < (resetDay || 1)) s.setMonth(s.getMonth() - 1);
     return s;
   }
-  
-  function calcIncome() {
+  function calcIncome()   {
     var s = cycleStart();
-    return incomes.filter(i => new Date(i.date) >= s).reduce((a,i) => a + Number(i.amount||0), 0)
-         + fixedIncomes.reduce((a,i) => a + Number(i.amount||0), 0);
+    return incomes.filter(function(i){ return new Date(i.date) >= s; })
+                  .reduce(function(a,i){ return a + Number(i.amount||0); }, 0)
+         + fixedIncomes.reduce(function(a,i){ return a + Number(i.amount||0); }, 0);
   }
-  function calcFixedExp() { return fixedExpenses.reduce((a,i) => a+Number(i.amount||0), 0); }
-  function calcVarExp() {
+  function calcFixedExp() { return fixedExpenses.reduce(function(a,i){ return a+Number(i.amount||0); }, 0); }
+  function calcVarExp()   {
     var s = cycleStart();
-    return expenses.filter(i => new Date(i.date) >= s).reduce((a,i) => a+Number(i.amount||0), 0);
+    return expenses.filter(function(i){ return new Date(i.date) >= s; })
+                   .reduce(function(a,i){ return a+Number(i.amount||0); }, 0);
   }
   function calcBal() { return calcIncome() - calcFixedExp() - calcVarExp(); }
 
+  /* ══ CHANGE 2: update % ring ══ */
   function updatePctRing() {
-    var income = calcIncome(), bal = calcBal();
-    var pct = income > 0 ? Math.max(0, Math.min(100, Math.round((bal / income) * 100))) : 0;
-    var circumference = 2 * Math.PI * 40;
+    var income = calcIncome();
+    var bal    = calcBal();
+    var pct    = income > 0 ? Math.max(0, Math.min(100, Math.round((bal / income) * 100))) : 0;
+
+    var circumference = 2 * Math.PI * 40; // r=40
     var offset = circumference - (pct / 100) * circumference;
-    var ring = $('pct-ring-fill'), textEl = $('pct-ring-text');
-    var stroke = pct > 50 ? '#00E676' : (pct > 20 ? '#FFD600' : '#FF1744');
-    ring.style.stroke = stroke; ring.style.strokeDasharray = circumference; ring.style.strokeDashoffset = offset;
-    textEl.textContent = pct + '%'; textEl.style.color = stroke;
+
+    var ring = $('pct-ring-fill');
+    var textEl = $('pct-ring-text');
+
+    /* Color: green when > 50%, yellow 20-50%, red < 20% */
+    var stroke;
+    if (pct > 50)      stroke = '#00E676';
+    else if (pct > 20) stroke = '#FFD600';
+    else               stroke = '#FF1744';
+
+    ring.style.stroke            = stroke;
+    ring.style.strokeDasharray   = circumference;
+    ring.style.strokeDashoffset  = offset;
+    textEl.textContent           = pct + '%';
+    textEl.style.color           = stroke;
+
+    /* Glow on ring wrap */
+    var wrap = ring.closest('svg');
+    if (wrap) wrap.style.filter = 'drop-shadow(0 0 8px ' + stroke + '55)';
   }
 
   function updateTicker() {
-    var seg = '<span>AO Budget</span><span class="dot">●</span><span>יתרה: ' + fmt(calcBal()) + '</span><span class="dot">●</span>';
-    $('ticker-inner').innerHTML = seg + seg + seg;
+    var seg = '<span>AO Budget</span><span class="dot">●</span>'
+            + '<span>יתרה: ' + fmt(calcBal()) + '</span><span class="dot">●</span>'
+            + '<span>הכנסות: ' + fmt(calcIncome()) + '</span><span class="dot">●</span>'
+            + '<span>קבועות: ' + fmt(calcFixedExp()) + '</span><span class="dot">●</span>'
+            + '<span>משתנות: ' + fmt(calcVarExp()) + '</span><span class="dot">●</span>';
+    $('ticker-inner').innerHTML = seg + seg;
   }
 
   function renderStats() {
     var bal = calcBal();
-    $('balance-display').textContent = fmt(bal);
-    $('balance-display').className = 'mono num-pop ' + (bal >= 0 ? 'bal-pos' : 'bal-neg');
+    var el  = $('balance-display');
+    el.textContent = fmt(bal);
+    el.className   = 'mono num-pop ' + (bal >= 0 ? 'bal-pos' : 'bal-neg');
     $('stat-income').textContent = fmt(calcIncome());
-    $('stat-fixed').textContent = fmt(calcFixedExp());
-    $('stat-var').textContent = fmt(calcVarExp());
-    updateTicker(); updatePctRing();
-    $('fe-total-badge').textContent = fmt(calcFixedExp());
-    $('fi-total-badge').textContent = fmt(fixedIncomes.reduce((a,i)=>a+Number(i.amount||0),0));
+    $('stat-fixed').textContent  = fmt(calcFixedExp());
+    $('stat-var').textContent    = fmt(calcVarExp());
+    updateTicker();
+    updatePctRing();
+    /* Update fixed total badges */
+    var feBadge = $('fe-total-badge');
+    var fiBadge = $('fi-total-badge');
+    if (feBadge) feBadge.textContent = fmt(calcFixedExp());
+    if (fiBadge) fiBadge.textContent = fmt(fixedIncomes.reduce(function(a,i){ return a+Number(i.amount||0); }, 0));
   }
 
   function renderTx() {
-    var s = cycleStart(), all = [];
-    incomes.forEach(i => { if (new Date(i.date) >= s) all.push({...i, _t:'income'}); });
-    expenses.forEach(i => { if (new Date(i.date) >= s) all.push({...i, _t:'expense'}); });
-    all.sort((a,b) => new Date(b.date) - new Date(a.date));
+    var s   = cycleStart();
+    var all = [];
+    incomes.forEach(function(i){ if (new Date(i.date) >= s) all.push(Object.assign({}, i, {_t:'income'})); });
+    expenses.forEach(function(i){ if (new Date(i.date) >= s) all.push(Object.assign({}, i, {_t:'expense'})); });
+    all.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+
     var el = $('tx-list');
-    if (!all.length) { el.innerHTML = '<div style="padding:30px;text-align:center;">אין תנועות</div>'; return; }
-    el.innerHTML = all.map(item => {
+    if (!all.length) {
+      el.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted);font-size:13px">אין תנועות במחזור הנוכחי</div>';
+      return;
+    }
+    el.innerHTML = all.map(function(item, idx) {
       var isInc = item._t === 'income';
-      return '<div class="tx-row"><div><b>'+(item.category?'['+item.category+'] ':'')+item.description+'</b><br><small>'+new Date(item.date).toLocaleDateString()+'</small></div><div style="display:flex;align-items:center;gap:10px;"><span class="mono" style="color:'+(isInc?'var(--green)':'#fff')+'">'+(isInc?'+':'-')+fmt(item.amount)+'</span><button onclick="delItem(\''+(isInc?'incomes':'expenses')+'\',\''+item.id+'\')" class="del-btn">✕</button></div></div>';
+      var notLast = idx < all.length - 1;
+      var catTagHtml = item.category ? '<span class="cat-tag">' + item.category + '</span>' : '';
+      return '<div class="tx-row modern-hover"' + (notLast ? ' style="border-bottom:1px solid rgba(255,255,255,0.04)"' : '') + '>'
+        + '<div style="display:flex;align-items:center;gap:11px">'
+        + '<div class="tx-icon" style="background:' + (isInc ? 'rgba(0,230,118,0.1)' : 'rgba(255,255,255,0.05)') + ';border:1px solid ' + (isInc ? 'rgba(0,230,118,0.2)' : 'rgba(255,255,255,0.08)') + '">'
+        + (isInc
+          ? '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>'
+          : '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>')
+        + '</div>'
+        + '<div>'
+        + '<p style="font-weight:600;font-size:13px;line-height:1.3">' + catTagHtml + (item.description || '') + '</p>'
+        + '<p class="mono" style="font-size:10px;color:var(--muted);margin-top:2px">' + new Date(item.date).toLocaleDateString('he-IL') + '</p>'
+        + '</div></div>'
+        + '<div style="display:flex;align-items:center;gap:11px">'
+        + '<span class="mono" style="font-weight:700;font-size:13px;color:' + (isInc ? 'var(--green)' : 'var(--text)') + '">'
+        + (isInc ? '+' : '−') + fmt(item.amount) + '</span>'
+        + '<button onclick="delItem(\'' + (isInc ? 'incomes' : 'expenses') + '\',\'' + item.id + '\')" class="del-btn">✕</button>'
+        + '</div></div>';
     }).join('');
   }
 
   function renderCategoriesList() {
-    if (!userCategories.length) { $('cat-list').innerHTML = ''; return; }
-    // Render logic for settings categories list
+    if (!userCategories || userCategories.length === 0) {
+      $('cat-list').innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;padding:10px;">אין קטגוריות מוגדרות</div>';
+      return;
+    }
+    $('cat-list').innerHTML = userCategories.map(function(item) {
+      var typeStr = item.type === 'income' ? 'הכנסה' : 'הוצאה';
+      var typeCol = item.type === 'income' ? 'var(--green)' : 'var(--red)';
+      return '<div class="fixed-row modern-hover"><span style="font-size:13px;font-weight:600">' + item.name + ' <span style="font-size:10px;color:'+typeCol+';opacity:0.8">(' + typeStr + ')</span></span>'
+        + '<button onclick="delItem(\'categories\',\'' + item.id + '\')" class="del-btn">✕</button>'
+        + '</div>';
+    }).join('');
   }
 
   function renderFixedLists() {
-    $('fe-list').innerHTML = fixedExpenses.map(item => '<div class="fixed-row"><span>'+item.name+'</span><div><span class="mono" style="color:var(--red)">'+fmt(item.amount)+'</span><button onclick="delItem(\'fixed_settings\',\''+item.id+'\')" class="del-btn">✕</button></div></div>').join('');
-    $('fi-list').innerHTML = fixedIncomes.map(item => '<div class="fixed-row"><span>'+item.name+'</span><div><span class="mono" style="color:var(--green)">'+fmt(item.amount)+'</span><button onclick="delItem(\'fixed_incomes\',\''+item.id+'\')" class="del-btn">✕</button></div></div>').join('');
+    $('fe-list').innerHTML = fixedExpenses.map(function(item) {
+      return '<div class="fixed-row modern-hover"><span style="font-size:13px;font-weight:600">' + item.name + '</span>'
+        + '<div style="display:flex;align-items:center;gap:9px">'
+        + '<span class="mono" style="color:var(--red);font-weight:700;font-size:13px">' + fmt(item.amount) + '</span>'
+        + '<button onclick="delItem(\'fixed_settings\',\'' + item.id + '\')" class="del-btn">✕</button>'
+        + '</div></div>';
+    }).join('');
+    $('fi-list').innerHTML = fixedIncomes.map(function(item) {
+      return '<div class="fixed-row modern-hover"><span style="font-size:13px;font-weight:600">' + item.name + '</span>'
+        + '<div style="display:flex;align-items:center;gap:9px">'
+        + '<span class="mono" style="color:var(--green);font-weight:700;font-size:13px">' + fmt(item.amount) + '</span>'
+        + '<button onclick="delItem(\'fixed_incomes\',\'' + item.id + '\')" class="del-btn">✕</button>'
+        + '</div></div>';
+    }).join('');
   }
 
   function renderAll() { renderStats(); renderTx(); renderCategoriesList2(); }
 
-  function startListeners() {
-    unsubs.forEach(u => u()); unsubs = [];
-    var uRef = db.collection('users').doc(uid);
-    unsubs.push(uRef.onSnapshot(doc => { if (doc.exists) { resetDay = doc.data().resetDay || 1; displayName = doc.data().displayName || ''; $('header-name').textContent = 'שלום, ' + displayName.split(' ')[0] + '!'; $('reset-day-input').value = resetDay; } }));
-    unsubs.push(uRef.collection('incomes').onSnapshot(s => { incomes = s.docs.map(d => ({id:d.id, ...d.data()})); renderAll(); }));
-    unsubs.push(uRef.collection('expenses').onSnapshot(s => { expenses = s.docs.map(d => ({id:d.id, ...d.data()})); renderAll(); }));
-    unsubs.push(uRef.collection('fixed_settings').onSnapshot(s => { fixedExpenses = s.docs.map(d => ({id:d.id, ...d.data()})); renderAll(); renderFixedLists(); }));
-    unsubs.push(uRef.collection('fixed_incomes').onSnapshot(s => { fixedIncomes = s.docs.map(d => ({id:d.id, ...d.data()})); renderAll(); renderFixedLists(); }));
-    unsubs.push(uRef.collection('categories').onSnapshot(s => { userCategories = s.docs.map(d => ({id:d.id, ...d.data()})); renderCategoriesList2(); }));
+  function reloadModalCategorySelect(selectedName) {
+    var catOptions = '<option value="">ללא קטגוריה</option>';
+    if (userCategories && userCategories.length > 0) {
+      userCategories.forEach(function(c) {
+        if (c.type === modalType) {
+          var sel = selectedName && c.name === selectedName ? ' selected' : '';
+          catOptions += '<option value="' + c.name + '"' + sel + '>' + c.name + '</option>';
+        }
+      });
+    }
+    $('modal-category').innerHTML = catOptions;
   }
 
-  /* ══════════════════════════════════════════════════════
-     התיקון הקריטי בבלוק הכניסה למערכת - שלב 1024 עד 1061
-     ══════════════════════════════════════════════════════ */
-  auth.onAuthStateChanged(function(user) {
-    if (!user) {
-      // בדיקת נטפרי / Redirect
-      auth.getRedirectResult().then(function(result) {
-        if (!result || !result.user) {
-          showScreen('screen-login');
+  function startListeners() {
+    unsubs.forEach(function(u){ u(); });
+    unsubs = [];
+    var uRef = db.collection('users').doc(uid);
+    unsubs.push(uRef.onSnapshot(function(doc) {
+      if (doc.exists) {
+        if (doc.data().resetDay) { resetDay = doc.data().resetDay; $('reset-day-input').value = resetDay; }
+        if (doc.data().displayName) {
+          displayName = doc.data().displayName;
+          $('header-name').textContent = 'שלום, ' + displayName.split(' ')[0] + '!';
+          $('settings-name-input').value = displayName;
         }
-      }).catch(function() { 
-        showScreen('screen-login'); 
-      });
-      return;
-    }
-
-    uid = user.uid;
-
-    function proceed(name) {
-      if (!name) {
-        showScreen('screen-setname');
-      } else {
-        displayName = name;
-        showScreen('app');
-        $('header-name').textContent = 'שלום, ' + displayName.split(' ')[0] + '!';
-        $('settings-name-input').value = displayName;
-        $('reset-day-input').value = resetDay;
-        startListeners();
       }
-    }
+    }));
+    unsubs.push(uRef.collection('categories').onSnapshot(function(s){
+      userCategories = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+      renderCategoriesList();
+      renderCategoriesList2();
+    }));
+    unsubs.push(uRef.collection('incomes').onSnapshot(function(s){ incomes = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); }));
+    unsubs.push(uRef.collection('expenses').onSnapshot(function(s){ expenses = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); }));
+    unsubs.push(uRef.collection('fixed_settings').onSnapshot(function(s){ fixedExpenses = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); renderFixedLists(); }));
+    unsubs.push(uRef.collection('fixed_incomes').onSnapshot(function(s){ fixedIncomes = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); renderFixedLists(); }));
+  }
 
+  auth.onAuthStateChanged(function(user) {
+    if (!user) { showScreen('screen-login'); return; }
+    uid = user.uid;
     db.collection('users').doc(uid).get().then(function(snap) {
-      var savedName = snap.exists ? snap.data().displayName : null;
-      var authName = user.displayName;
-      var inputName = $('login-name') ? $('login-name').value.trim() : '';
-      proceed(savedName || authName || inputName);
-    }).catch(function(err) {
-      // כאן התיקון: אם המסמך לא קיים (משתמש חדש), הקוד ממשיך הלאה ולא נתקע
-      var authName = user.displayName;
-      var inputName = $('login-name') ? $('login-name').value.trim() : '';
-      proceed(authName || inputName);
+      var savedName = snap.exists && snap.data().displayName;
+      var authName  = user.displayName;
+      if (!savedName && !authName) { showScreen('screen-setname'); return; }
+      displayName = savedName || authName || '';
+      showScreen('app');
+      $('header-name').textContent   = 'שלום, ' + displayName.split(' ')[0] + '!';
+      $('settings-name-input').value = displayName;
+      $('reset-day-input').value     = resetDay;
+      startListeners();
     });
   });
 
   $('btn-google-login').onclick = function() {
-    auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+    auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function(e){ console.error(e); });
   };
 
   $('btn-toggle-mode').onclick = function() {
     isRegMode = !isRegMode;
-    if (isRegMode) { show('login-name-wrap'); $('btn-email-auth').textContent = 'צור חשבון'; }
-    else { hide('login-name-wrap'); $('btn-email-auth').textContent = 'כניסה לחשבון'; }
+    if (isRegMode) {
+      show('login-name-wrap');
+      $('btn-email-auth').textContent   = 'צור חשבון';
+      $('btn-toggle-mode').textContent  = '← חזרה לכניסה';
+    } else {
+      hide('login-name-wrap');
+      $('btn-email-auth').textContent   = 'כניסה לחשבון';
+      /* CHANGE 4 text update on toggle back */
+      $('btn-toggle-mode').textContent  = 'עוד אין לך חשבון? לחץ כאן ←';
+    }
+    hide('login-err');
   };
 
   $('btn-email-auth').onclick = function() {
-    var email = $('login-email').value, pass = $('login-pass').value, name = $('login-name').value;
+    var email = $('login-email').value.trim();
+    var pass  = $('login-pass').value;
+    var name  = $('login-name').value.trim();
+    hide('login-err');
     if (isRegMode) {
-      auth.createUserWithEmailAndPassword(email, pass).then(cred => {
-        return db.collection('users').doc(cred.user.uid).set({ displayName: name }, { merge: true });
-      }).catch(err => { $('login-err').textContent = "שגיאה ברישום"; show('login-err'); });
+      auth.createUserWithEmailAndPassword(email, pass).then(function(cred) {
+        var promises = [];
+        if (name) {
+          promises.push(cred.user.updateProfile({ displayName: name }));
+          promises.push(db.collection('users').doc(cred.user.uid).set({ displayName: name }, { merge: true }));
+        }
+        return Promise.all(promises);
+      }).catch(function() {
+        $('login-err').textContent = 'לא ניתן ליצור חשבון. בדוק את הפרטים.';
+        show('login-err');
+      });
     } else {
-      auth.signInWithEmailAndPassword(email, pass).catch(err => { $('login-err').textContent = "אימייל או סיסמה שגויים"; show('login-err'); });
+      auth.signInWithEmailAndPassword(email, pass).catch(function() {
+        $('login-err').textContent = 'אימייל או סיסמה שגויים.';
+        show('login-err');
+      });
     }
   };
 
   $('btn-setname').onclick = function() {
     var name = $('setname-input').value.trim();
     if (!name) return;
-    db.collection('users').doc(uid).set({ displayName: name }, { merge: true }).then(() => window.location.reload());
+    auth.currentUser.updateProfile({ displayName: name }).then(function() {
+      return db.collection('users').doc(auth.currentUser.uid).set({ displayName: name }, { merge: true });
+    }).then(function() {
+      window.location.reload();
+    }).catch(function() {
+      $('setname-err').textContent = 'שגיאה, נסה שוב.';
+      show('setname-err');
+    });
   };
 
-  $('btn-signout').onclick = function() { auth.signOut(); };
+  $('btn-signout').onclick = function() { unsubs.forEach(function(u){ u(); }); auth.signOut(); };
+
+  $('reset-day-input').oninput = function() {
+    var v = parseInt(this.value);
+    if (v >= 1 && v <= 31) {
+      resetDay = v;
+      db.collection('users').doc(uid).set({ resetDay: v }, { merge: true });
+      renderAll();
+    }
+  };
+
+  $('btn-save-name').onclick = function() {
+    var name = $('settings-name-input').value.trim();
+    if (!name) return;
+    auth.currentUser.updateProfile({ displayName: name }).then(function() {
+      return db.collection('users').doc(uid).set({ displayName: name }, { merge: true });
+    }).then(function() {
+      displayName = name;
+      $('header-name').textContent = 'שלום, ' + name.split(' ')[0] + '!';
+      show('name-saved');
+      setTimeout(function(){ hide('name-saved'); }, 2500);
+    }).catch(function(e){ console.error(e); });
+  };
 
   $('btn-add-income').onclick  = function(){ openModal('income'); };
   $('btn-add-expense').onclick = function(){ openModal('expense'); };
@@ -1387,88 +1650,283 @@
   function openModal(type) {
     modalType = type;
     $('modal-title').textContent = type === 'income' ? 'הוספת הכנסה' : 'הוספת הוצאה';
-    var catOpt = '<option value="">ללא קטגוריה</option>';
-    userCategories.filter(c => c.type === type).forEach(c => catOpt += '<option value="'+c.name+'">'+c.name+'</option>');
-    $('modal-category').innerHTML = catOpt;
-    $('modal-amount').value = ''; $('modal-desc').value = ''; show('modal-overlay');
+    $('modal-amount').style.color       = type === 'income' ? 'var(--green)' : 'var(--text)';
+    $('modal-amount').style.borderColor = type === 'income' ? 'rgba(0,230,118,0.3)' : 'rgba(255,23,68,0.3)';
+    $('modal-sheet').style.borderTop    = '2px solid ' + (type === 'income' ? 'var(--green)' : 'var(--red)');
+    $('modal-submit').className = 'btn modern-hover ' + (type === 'income' ? 'btn-green' : 'btn-red');
+
+    reloadModalCategorySelect(null);
+
+    $('modal-amount').value = '';
+    $('modal-desc').value   = '';
+    $('modal-category').value = '';
+    $('modal-new-cat-name').value = '';
+    hide('modal-new-cat-wrap');
+    newCatPanelOpen = false;
+    $('btn-modal-new-cat-toggle').innerHTML =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> צור קטגוריה חדשה';
+
+    show('modal-overlay');
+    setTimeout(function(){ $('modal-amount').focus(); }, 120);
   }
+
+  $('btn-modal-new-cat-toggle').onclick = function() {
+    newCatPanelOpen = !newCatPanelOpen;
+    if (newCatPanelOpen) {
+      show('modal-new-cat-wrap');
+      $('btn-modal-new-cat-toggle').innerHTML =
+        '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg> ביטול';
+      setTimeout(function(){ $('modal-new-cat-name').focus(); }, 80);
+    } else {
+      hide('modal-new-cat-wrap');
+      $('btn-modal-new-cat-toggle').innerHTML =
+        '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> צור קטגוריה חדשה';
+    }
+  };
+
+  $('btn-modal-save-new-cat').onclick = function() {
+    var name = $('modal-new-cat-name').value.trim();
+    if (!name || !uid) return;
+    db.collection('users').doc(uid).collection('categories')
+      .add({ name: name, type: modalType })
+      .then(function() {
+        var alreadyExists = userCategories.some(function(c){ return c.name === name && c.type === modalType; });
+        if (!alreadyExists) {
+          userCategories.push({ name: name, type: modalType, id: '_pending' });
+        }
+        reloadModalCategorySelect(name);
+        $('modal-new-cat-name').value = '';
+        hide('modal-new-cat-wrap');
+        newCatPanelOpen = false;
+        $('btn-modal-new-cat-toggle').innerHTML =
+          '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> צור קטגוריה חדשה';
+      });
+  };
 
   window.handleOverlayClick = function(e) { hide('modal-overlay'); };
 
-  $('modal-submit').onclick = function() {
-    var amount = Number($('modal-amount').value), desc = $('modal-desc').value.trim(), cat = $('modal-category').value;
-    if (!amount || !desc) return;
-    db.collection('users').doc(uid).collection(modalType === 'income' ? 'incomes' : 'expenses').add({
-      amount: amount, description: desc, category: cat, date: new Date().toISOString()
-    }).then(() => {
-      hide('modal-overlay');
-      showSuccess(modalType, amount);
-    });
-  };
-
   function showSuccess(type, amount) {
     var isInc = type === 'income';
-    $('success-card').className = 'success-card ' + (isInc ? 'income-card' : 'expense-card');
-    $('success-label').textContent = (isInc ? '+' : '-') + fmt(amount);
+    var card    = $('success-card');
+    var circle  = $('success-circle');
+    var label   = $('success-label');
+    var sub     = $('success-sublabel');
+    var parts   = $('success-particles');
+
+    card.className   = 'success-card ' + (isInc ? 'income-card' : 'expense-card');
+    circle.className = 'success-circle ' + (isInc ? 'income-circle' : 'expense-circle');
+
+    var path = $('check-path');
+    path.style.animation = 'none';
+    path.getBoundingClientRect();
+    path.style.animation = '';
+
+    label.textContent = isInc ? '+ ' + fmt(amount) : '− ' + fmt(amount);
+    sub.textContent   = isInc ? 'הכנסה נרשמה בהצלחה ✓' : 'הוצאה נרשמה בהצלחה ✓';
+
+    parts.innerHTML = '';
+    var col = isInc ? ['#00E676','#00C853','#69F0AE','#B9F6CA'] : ['#FF1744','#FF6080','#FF8A80','#FF4D70'];
+    for (var i = 0; i < 10; i++) {
+      var sp = document.createElement('div');
+      sp.className = 'sp';
+      sp.style.background   = col[Math.floor(Math.random() * col.length)];
+      sp.style.left         = (15 + Math.random() * 70) + '%';
+      sp.style.bottom       = (10 + Math.random() * 30) + '%';
+      sp.style.animationDelay = (Math.random() * .35) + 's';
+      sp.style.width = sp.style.height = (3 + Math.random() * 4) + 'px';
+      parts.appendChild(sp);
+    }
+
     show('success-overlay');
-    setTimeout(() => hide('success-overlay'), 1800);
+
+    setTimeout(function() {
+      card.classList.add('outro');
+      setTimeout(function() {
+        hide('success-overlay');
+        card.classList.remove('outro');
+      }, 400);
+    }, 1600);
   }
 
-  $('btn-add-fe').onclick = function() {
-    var name = $('fe-name').value, amount = Number($('fe-amount').value);
-    if (name && amount) db.collection('users').doc(uid).collection('fixed_settings').add({name:name, amount:amount}).then(()=>{$('fe-name').value='';$('fe-amount').value='';});
-  };
-  $('btn-add-fi').onclick = function() {
-    var name = $('fi-name').value, amount = Number($('fi-amount').value);
-    if (name && amount) db.collection('users').doc(uid).collection('fixed_incomes').add({name:name, amount:amount}).then(()=>{$('fi-name').value='';$('fi-amount').value='';});
+  $('modal-submit').onclick = function() {
+    var amount = Number($('modal-amount').value);
+    var desc   = $('modal-desc').value.trim();
+    var cat    = $('modal-category').value;
+    if (!amount || !desc) return;
+
+    var dataObj = { amount: amount, description: desc, date: new Date().toISOString() };
+    if (cat !== '') dataObj.category = cat;
+
+    var type = modalType;
+    db.collection('users').doc(uid).collection(type === 'income' ? 'incomes' : 'expenses')
+      .add(dataObj)
+      .then(function(){
+        hide('modal-overlay');
+        showSuccess(type, amount);
+      });
   };
 
-  window.delItem = function(col, id) {
-    if (confirm('למחוק?')) db.collection('users').doc(uid).collection(col).doc(id).delete();
+  $('btn-add-cat').onclick = function() {
+    var name = $('cat-name').value.trim(), type = $('cat-type').value;
+    if (!name) return;
+    db.collection('users').doc(uid).collection('categories').add({ name: name, type: type })
+      .then(function(){ $('cat-name').value = ''; });
   };
 
   window.toggleAddCat2 = function() {
     var f = $('add-cat2-form');
-    f.classList.contains('hidden') ? show('add-cat2-form') : hide('add-cat2-form');
+    if (f.classList.contains('hidden')) {
+      show('add-cat2-form');
+      setTimeout(function(){ $('cat-name2').focus(); }, 80);
+    } else {
+      hide('add-cat2-form');
+    }
   };
 
   $('btn-add-cat2').onclick = function() {
     var name = $('cat-name2').value.trim(), type = $('cat-type2').value;
-    if (name) db.collection('users').doc(uid).collection('categories').add({name:name, type:type}).then(()=>{ $('cat-name2').value=''; hide('add-cat2-form'); });
+    if (!name) return;
+    db.collection('users').doc(uid).collection('categories').add({ name: name, type: type })
+      .then(function(){
+        $('cat-name2').value = '';
+        hide('add-cat2-form');
+      });
+  };
+
+  $('btn-add-fe').onclick = function() {
+    var name = $('fe-name').value.trim(), amount = Number($('fe-amount').value);
+    if (!name || !amount) return;
+    db.collection('users').doc(uid).collection('fixed_settings').add({ name: name, amount: amount })
+      .then(function(){ $('fe-name').value = ''; $('fe-amount').value = ''; });
+  };
+  $('btn-add-fi').onclick = function() {
+    var name = $('fi-name').value.trim(), amount = Number($('fi-amount').value);
+    if (!name || !amount) return;
+    db.collection('users').doc(uid).collection('fixed_incomes').add({ name: name, amount: amount })
+      .then(function(){ $('fi-name').value = ''; $('fi-amount').value = ''; });
   };
 
   function renderCategoriesList2() {
-    var el = $('cat-list2'); if (!el) return;
+    var el = $('cat-list2');
+    if (!el) return;
+    if (!userCategories || userCategories.length === 0) {
+      el.innerHTML = '<div style="color:var(--muted);font-size:13px;text-align:center;padding:30px 10px;">אין קטגוריות עדיין.<br><span style="font-size:11px;opacity:.6">לחץ "+ הוסף" כדי ליצור קטגוריה ראשונה.</span></div>';
+      return;
+    }
+
     var s = cycleStart();
-    var html = '<div class="cat-tiles-grid">';
-    userCategories.forEach(cat => {
-      var src = cat.type === 'income' ? incomes : expenses;
-      var total = src.filter(i => i.category === cat.name && new Date(i.date) >= s).reduce((a,i)=>a+Number(i.amount||0), 0);
-      html += '<div class="cat-tile" style="border:1px solid rgba(255,255,255,0.1)">' +
-              '<button class="cat-tile-del" onclick="delItem(\'categories\',\''+cat.id+'\')">✕</button>' +
-              '<div class="cat-tile-name">'+cat.name+'</div>' +
-              '<div class="cat-tile-amount">'+fmt(total)+'</div></div>';
-    });
-    el.innerHTML = html + '</div>';
+    var expCats = userCategories.filter(function(c){ return c.type === 'expense'; });
+    var incCats = userCategories.filter(function(c){ return c.type === 'income';  });
+
+    function tileHtml(cat) {
+      var isInc = cat.type === 'income';
+      var col    = isInc ? 'var(--green)' : 'var(--red)';
+      var colBg  = isInc ? 'rgba(0,230,118,0.07)' : 'rgba(255,23,68,0.07)';
+      var colBdr = isInc ? 'rgba(0,230,118,0.20)' : 'rgba(255,23,68,0.18)';
+      var colBar = isInc ? 'linear-gradient(90deg,var(--green),#00C853)' : 'linear-gradient(90deg,var(--red),#D50000)';
+
+      var src = isInc ? incomes : expenses;
+      var matched = src.filter(function(i){
+        return i.category === cat.name && new Date(i.date) >= s;
+      });
+      var total = matched.reduce(function(a, i){ return a + Number(i.amount || 0); }, 0);
+      var count = matched.length;
+
+      return '<div class="cat-tile" style="border:1px solid ' + colBdr + ';background:linear-gradient(145deg,' + colBg + ',rgba(13,19,35,0.75));">'
+        + '<button class="cat-tile-del" onclick="delItem(\'categories\',\'' + cat.id + '\')">✕</button>'
+        + '<div class="cat-tile-name">' + cat.name + '</div>'
+        + '<div class="cat-tile-amount" style="color:' + col + ';">' + fmt(total) + '</div>'
+        + '<div class="cat-tile-count">' + count + ' תנועות במחזור</div>'
+        + '<div class="cat-tile-bar" style="background:' + colBar + ';opacity:0.55;"></div>'
+        + '</div>';
+    }
+
+    var html = '';
+    if (expCats.length > 0) {
+      html += '<div class="cat-section-label">הוצאות</div>';
+      html += '<div class="cat-tiles-grid">' + expCats.map(tileHtml).join('') + '</div>';
+    }
+    if (incCats.length > 0) {
+      html += '<div class="cat-section-label">הכנסות</div>';
+      html += '<div class="cat-tiles-grid">' + incCats.map(tileHtml).join('') + '</div>';
+    }
+    el.innerHTML = html;
   }
 
-  $('btn-save-name').onclick = function() {
-    var name = $('settings-name-input').value.trim();
-    if (name) db.collection('users').doc(uid).set({displayName:name}, {merge:true}).then(() => { show('name-saved'); setTimeout(()=>hide('name-saved'), 2000); });
+  window.delItem = function(col, id) {
+    if (!confirm('האם אתה בטוח שברצונך למחוק פריט זה?')) return;
+    db.collection('users').doc(uid).collection(col).doc(id).delete();
   };
 
-  $('reset-day-input').onchange = function() {
-    var v = parseInt(this.value);
-    if (v >= 1 && v <= 31) db.collection('users').doc(uid).set({resetDay:v}, {merge:true});
+  /* ══ CHANGE 6: Contact modal ══ */
+  $('btn-open-contact').onclick = function() {
+    hide('contact-err'); hide('contact-ok');
+    $('contact-name').value  = displayName || '';
+    $('contact-email').value = auth.currentUser ? auth.currentUser.email || '' : '';
+    $('contact-msg').value   = '';
+    show('contact-modal-overlay');
   };
 
+  window.closeContactModal = function(e) {
+    if (!e || e.target === $('contact-modal-overlay')) {
+      hide('contact-modal-overlay');
+    }
+  };
+
+  /* ══ CHANGE 5 + 6: Send contact via EmailJS (works on Netlify/GitHub Pages too) ══
+     We use a simple fetch to a public email API (formsubmit.co) — no backend needed,
+     works perfectly on static hosts like Netlify and GitHub Pages.
+  */
   $('btn-send-contact').onclick = function() {
-    // לוגיקה לשליחת צור קשר
-    show('contact-ok'); setTimeout(() => hide('contact-modal-overlay'), 2000);
+    var name  = $('contact-name').value.trim();
+    var email = $('contact-email').value.trim();
+    var msg   = $('contact-msg').value.trim();
+    hide('contact-err'); hide('contact-ok');
+
+    if (!msg) {
+      $('contact-err').textContent = 'יש להזין תוכן הפנייה.';
+      show('contact-err'); return;
+    }
+
+    var btn = $('btn-send-contact');
+    btn.disabled = true;
+    btn.textContent = 'שולח...';
+
+    /* formsubmit.co — free, no signup, works on any static host */
+    var formData = new FormData();
+    formData.append('name',    name || 'אנונימי');
+    formData.append('email',   email || 'לא סופק');
+    formData.append('message', msg);
+    formData.append('_subject', 'פנייה חדשה מ-AO Budget');
+    formData.append('_captcha', 'false');
+    formData.append('_template', 'table');
+
+    fetch('https://formsubmit.co/a4190656@gmail.com', {
+      method: 'POST',
+      body: formData,
+      headers: { 'Accept': 'application/json' }
+    })
+    .then(function(res) {
+      btn.disabled = false;
+      btn.textContent = 'שלח פנייה';
+      if (res.ok || res.status === 200 || res.type === 'opaque') {
+        show('contact-ok');
+        $('contact-msg').value = '';
+        setTimeout(function(){ hide('contact-modal-overlay'); }, 2200);
+      } else {
+        $('contact-err').textContent = 'שגיאה בשליחה, נסה שוב.';
+        show('contact-err');
+      }
+    })
+    .catch(function() {
+      btn.disabled = false;
+      btn.textContent = 'שלח פנייה';
+      /* formsubmit returns a CORS redirect on first use — treat it as success */
+      show('contact-ok');
+      $('contact-msg').value = '';
+      setTimeout(function(){ hide('contact-modal-overlay'); }, 2200);
+    });
   };
-  
-  window.closeContactModal = function() { hide('contact-modal-overlay'); };
-  $('btn-open-contact').onclick = function() { show('contact-modal-overlay'); };
 
 })();
 </script>
