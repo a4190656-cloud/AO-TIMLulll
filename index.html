@@ -29,8 +29,6 @@
                     },
                     boxShadow: {
                         'glow-balance': '0 0 25px -5px rgba(0, 229, 255, 0.3)',
-                        'glow-income': '0 0 20px -5px rgba(0, 230, 118, 0.3)',
-                        'glow-expense': '0 0 20px -5px rgba(255, 23, 68, 0.3)',
                     }
                 }
             }
@@ -88,7 +86,7 @@
             transition: all 0.3s ease;
             text-align: right;
         }
-        .cyber-input:focus { border-color: #00E5FF; box-shadow: 0 0 20px rgba(0, 229, 255, 0.1); background: rgba(17, 23, 36, 1); }
+        .cyber-input:focus { border-color: #00E5FF; box-shadow: 0 0 20px rgba(0, 229, 255, 0.1); }
 
         @keyframes fadeInRise {
             from { opacity: 0; transform: translateY(12px); filter: blur(4px); }
@@ -97,9 +95,9 @@
         .animate-rise { animation: fadeInRise 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
 
         @keyframes livePulse {
-            0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.4); transform: scale(1); }
-            70% { box-shadow: 0 0 0 8px rgba(0, 230, 118, 0); transform: scale(1.1); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); transform: scale(1); }
+            0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(0, 230, 118, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
         }
         .live-dot {
             width: 7px; height: 7px;
@@ -163,6 +161,7 @@
         const LoginScreen = () => {
             const [email, setEmail] = useState('');
             const [password, setPassword] = useState('');
+            const [displayName, setDisplayName] = useState('');
             const [isRegister, setIsRegister] = useState(false);
             const [error, setError] = useState('');
 
@@ -170,8 +169,15 @@
                 e.preventDefault();
                 setError('');
                 try {
-                    if (isRegister) await auth.createUserWithEmailAndPassword(email, password);
-                    else await auth.signInWithEmailAndPassword(email, password);
+                    if (isRegister) {
+                        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                        // שמירת השם בפרופיל המשתמש
+                        await userCredential.user.updateProfile({ displayName: displayName });
+                        // שמירת השם גם ב-Firestore ליתר ביטחון
+                        await db.collection('users').doc(userCredential.user.uid).set({ displayName: displayName }, { merge: true });
+                    } else {
+                        await auth.signInWithEmailAndPassword(email, password);
+                    }
                 } catch (err) { setError('שגיאה בחיבור. בדוק את הפרטים.'); }
             };
 
@@ -193,7 +199,7 @@
 
                         <div className="bank-card p-8 shadow-2xl">
                             <button onClick={handleGoogleLogin} className="hover-press w-full bg-white text-dark-bg p-4 rounded-2xl font-black flex items-center justify-center gap-3 mb-6 transition-all shadow-xl">
-                                <Icon name="chrome" className="text-blue-500" /> כניסה מהירה עם גוגל
+                                <Icon name="chrome" className="text-blue-500" /> התחברות עם גוגל
                             </button>
 
                             <div className="flex items-center gap-4 text-slate-600 mb-6">
@@ -203,11 +209,14 @@
                             </div>
                             
                             <form onSubmit={handleEmailAuth} className="space-y-4">
+                                {isRegister && (
+                                    <input type="text" placeholder="איך קוראים לך?" className="cyber-input" value={displayName} onChange={e => setDisplayName(e.target.value)} required />
+                                )}
                                 <input type="email" placeholder="אימייל" className="cyber-input" value={email} onChange={e => setEmail(e.target.value)} required />
                                 <input type="password" placeholder="סיסמא" className="cyber-input" value={password} onChange={e => setPassword(e.target.value)} required />
                                 {error && <p className="text-bank-expense text-xs font-bold text-center">{error}</p>}
                                 <button type="submit" className="hover-press w-full bg-bank-balance text-dark-bg p-4 rounded-2xl font-black transition-all mt-2 shadow-glow-balance">
-                                    {isRegister ? 'צור חשבון בנקאי' : 'כניסה למערכת'}
+                                    {isRegister ? 'להרשמה וכניסה לתקציב שלי' : 'כניסה לתקציב שלי'}
                                 </button>
                             </form>
                             <button onClick={() => setIsRegister(!isRegister)} className="text-slate-400 text-sm font-bold mt-6 hover:text-white transition-colors">
@@ -243,7 +252,9 @@
                 let unsubSettings = () => {}; let unsub1 = () => {}; let unsub2 = () => {}; let unsub3 = () => {}; let unsub4 = () => {};
                 try {
                     const userRef = db.collection('users').doc(user.uid);
-                    unsubSettings = userRef.onSnapshot(doc => { if (doc.exists && doc.data().resetDay) setResetDay(doc.data().resetDay); });
+                    unsubSettings = userRef.onSnapshot(doc => { 
+                        if (doc.exists && doc.data().resetDay) setResetDay(doc.data().resetDay); 
+                    });
                     unsub1 = userRef.collection('incomes').onSnapshot(s => setIncomes(s.docs.map(d => ({id: d.id, ...d.data()}))));
                     unsub2 = userRef.collection('expenses').onSnapshot(s => setExpenses(s.docs.map(d => ({id: d.id, ...d.data()}))));
                     unsub3 = userRef.collection('fixed_settings').onSnapshot(s => setFixedExpenses(s.docs.map(d => ({id: d.id, ...d.data()}))));
@@ -292,6 +303,8 @@
             );
             
             if (!user) return <LoginScreen />;
+
+            // חילוץ שם: עדיפות לשם תצוגה (גוגל או הרשמה), אחר כך תחילת המייל
             const userName = user.displayName ? user.displayName.split(' ')[0] : (user.email ? user.email.split('@')[0] : 'משתמש');
 
             return (
