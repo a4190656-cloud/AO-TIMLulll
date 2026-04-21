@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AO ניהול תקציב!</title>
+    <title>AO ניהול תקציב</title>
     
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -20,17 +20,22 @@
             theme: {
                 extend: {
                     colors: {
-                        obsidian: '#02040A',
-                        void: '#050810',
-                        turquoise: '#00F0FF',
-                        goldEmber: '#FFB800',
-                        neonRed: '#FF2A55',
-                        glass: 'rgba(255, 255, 255, 0.02)'
+                        light: {
+                            bg: '#F8FAFC',
+                            card: '#FFFFFF',
+                            text: '#0F172A',
+                            muted: '#64748B'
+                        },
+                        brand: {
+                            turquoise: '#0D9488', // Deep turquoise for primary numbers
+                            gold: '#D4AF37',      // Brushed gold
+                            red: '#E11D48'        // Soft elegant red
+                        }
                     },
                     boxShadow: {
-                        'liquid-glow': '0 8px 32px 0 rgba(0, 240, 255, 0.1)',
-                        'gold-glow': '0 8px 32px 0 rgba(255, 184, 0, 0.15)',
-                        'red-glow': '0 8px 32px 0 rgba(255, 42, 85, 0.15)'
+                        'spatial': '0 20px 40px -15px rgba(0, 0, 0, 0.05)',
+                        'spatial-hover': '0 30px 60px -20px rgba(0, 0, 0, 0.1)',
+                        'inner-light': 'inset 0 2px 4px 0 rgba(255, 255, 255, 0.3)'
                     }
                 }
             }
@@ -38,74 +43,63 @@
     </script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;700&display=swap');
         
         body { 
             font-family: 'Inter', sans-serif;
-            background-color: #02040A;
-            color: #FFFFFF;
+            background: linear-gradient(135deg, #FFFFFF 0%, #F1F5F9 100%);
+            color: #0F172A;
             -webkit-tap-highlight-color: transparent;
+            min-height: 100vh;
             overflow-x: hidden;
         }
         
-        /* רקע דינמי זוהר */
-        .ambient-bg {
+        /* רקע נושם ונקי */
+        .ambient-light {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle at 15% 50%, rgba(0, 240, 255, 0.08), transparent 40%),
-                        radial-gradient(circle at 85% 30%, rgba(255, 184, 0, 0.05), transparent 40%);
+            background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.8), transparent 60%);
             z-index: -1;
             pointer-events: none;
         }
 
-        /* זכוכית נוזלית - Liquid Glass */
-        .liquid-glass {
-            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 -1px 0 rgba(0, 240, 255, 0.1);
-            transform-style: preserve-3d;
+        /* מודולים מרחפים (Spatial Modules) */
+        .spatial-module {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 1);
+            box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 1);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* אפקט רחף תלת מימדי (Parallax) */
-        .hover-3d { transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .hover-3d:active { transform: scale(0.96) translateZ(-10px); }
+        .hover-float { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .hover-float:active { transform: scale(0.97) translateY(2px); box-shadow: 0 10px 20px -10px rgba(15, 23, 42, 0.05); }
 
-        /* טקסט זוהר ביולומינסנטי */
-        .text-glow-turquoise { text-shadow: 0 0 20px rgba(0, 240, 255, 0.6); color: #00F0FF; }
-        .text-glow-gold { text-shadow: 0 0 20px rgba(255, 184, 0, 0.6); color: #FFB800; }
-        .text-glow-red { text-shadow: 0 0 20px rgba(255, 42, 85, 0.6); color: #FF2A55; }
-
-        /* אנימציות כניסה */
-        @keyframes floatingObj {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+        /* כניסה חלקה */
+        @keyframes fadeInRise {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes cinematicFade {
-            from { opacity: 0; transform: translateY(30px) scale(0.95); filter: blur(10px); }
-            to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-        }
+        .animate-rise { animation: fadeInRise 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
 
-        .animate-float { animation: floatingObj 6s ease-in-out infinite; }
-        .animate-cinematic { animation: cinematicFade 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; }
-
-        /* אינפוטים פרימיום */
-        .cyber-input {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255,255,255,0.08);
+        /* שדות הזנה נקיים */
+        .clean-input {
+            background: rgba(248, 250, 252, 0.8);
+            border: 1px solid #E2E8F0;
             border-radius: 1.5rem;
             padding: 1.25rem;
             width: 100%;
             outline: none;
-            color: #00F0FF;
-            font-weight: 900;
+            color: #0F172A;
+            font-weight: 500;
             transition: all 0.3s ease;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
-        .cyber-input:focus { border-color: #00F0FF; box-shadow: 0 0 15px rgba(0, 240, 255, 0.2), inset 0 2px 10px rgba(0,0,0,0.5); }
-        .cyber-input::placeholder { color: rgba(255,255,255,0.3); font-weight: normal; }
+        .clean-input:focus { 
+            border-color: #0D9488; 
+            background: #FFFFFF;
+            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.1), inset 0 2px 4px rgba(0,0,0,0.02); 
+        }
 
         ::-webkit-scrollbar { display: none; }
     </style>
@@ -128,7 +122,7 @@
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
-
+        
         const Icon = ({ name, size = 24, className = "" }) => {
             useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [name]);
             return <i data-lucide={name} style={{ width: size, height: size }} className={className}></i>;
@@ -142,7 +136,7 @@
 
             const handleGoogleLogin = async () => {
                 try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } 
-                catch (err) { setError("שגיאה בחיבור לגוגל."); }
+                catch (err) { setError("אופס, הייתה בעיה בהתחברות לגוגל. נסה שוב."); }
             };
 
             const handleEmailAuth = async (e) => {
@@ -151,35 +145,40 @@
                 try {
                     if (isRegister) await auth.createUserWithEmailAndPassword(email, password);
                     else await auth.signInWithEmailAndPassword(email, password);
-                } catch (err) { setError('שגיאה בפרטי ההתחברות.'); }
+                } catch (err) { setError('המייל או הסיסמה לא נכונים.'); }
             };
 
             return (
-                <div className="min-h-screen bg-obsidian flex flex-col items-center justify-center p-8 text-center relative z-10">
-                    <div className="ambient-bg"></div>
-                    <div className="animate-cinematic w-full max-w-sm">
-                        <div className="mx-auto w-36 h-36 rounded-full border border-turquoise/30 p-1 bg-void shadow-liquid-glow mb-8 animate-float relative">
-                            <div className="absolute inset-0 rounded-full bg-turquoise/10 blur-xl"></div>
-                            <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" className="relative z-10 rounded-full w-full h-full object-cover" />
+                <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center relative z-10">
+                    <div className="ambient-light"></div>
+                    <div className="animate-rise w-full max-w-sm">
+                        <div className="mx-auto w-32 h-32 rounded-[2.5rem] p-1 bg-white shadow-spatial mb-8 hover-float relative">
+                            <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" className="rounded-[2.2rem] w-full h-full object-cover" />
                         </div>
-                        <h1 className="text-5xl font-black italic tracking-tighter mb-2 bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">AO ניהול תקציב</h1>
-                        <p className="text-turquoise/70 font-medium mb-12 text-sm uppercase tracking-widest">Hyper-Spatial Finance</p>
+                        <h1 className="text-4xl font-bold text-light-text mb-2">AO ניהול תקציב</h1>
+                        <p className="text-light-muted font-medium mb-10">הדרך הפשוטה לנהל את הכסף</p>
 
-                        <div className="space-y-6 liquid-glass p-6 rounded-[2.5rem]">
-                            <button onClick={handleGoogleLogin} className="hover-3d w-full bg-white text-obsidian p-4 rounded-[1.5rem] font-black flex items-center justify-center gap-3 shadow-lg">
-                                <span className="text-xl">🚀</span> התחברות עם גוגל
+                        <div className="space-y-6 spatial-module p-8 rounded-[2.5rem]">
+                            <button onClick={handleGoogleLogin} className="hover-float w-full bg-white border border-slate-200 text-light-text p-4 rounded-2xl font-bold flex items-center justify-center gap-3 shadow-sm">
+                                <span className="text-xl">🚀</span> כניסה מהירה עם גוגל
                             </button>
-                            <div className="flex items-center gap-4 text-slate-600"><div className="h-px bg-slate-800 flex-1"></div><span className="text-[10px] uppercase tracking-widest text-slate-500">או גישת סייבר</span><div className="h-px bg-slate-800 flex-1"></div></div>
+                            
+                            <div className="flex items-center gap-4 text-slate-400">
+                                <div className="h-px bg-slate-200 flex-1"></div>
+                                <span className="text-xs">או עם מייל וסיסמה</span>
+                                <div className="h-px bg-slate-200 flex-1"></div>
+                            </div>
+                            
                             <form onSubmit={handleEmailAuth} className="space-y-4">
-                                <input type="email" placeholder="אימייל" className="cyber-input" value={email} onChange={e => setEmail(e.target.value)} required />
-                                <input type="password" placeholder="סיסמה" className="cyber-input" value={password} onChange={e => setPassword(e.target.value)} required />
-                                {error && <p className="text-neonRed text-xs font-bold">{error}</p>}
-                                <button type="submit" className="hover-3d w-full bg-turquoise text-obsidian p-4 rounded-[1.5rem] font-black shadow-liquid-glow">
-                                    {isRegister ? 'יצירת חשבון תלת-ממד' : 'כניסה למערכת'}
+                                <input type="email" placeholder="אימייל" className="clean-input" value={email} onChange={e => setEmail(e.target.value)} required />
+                                <input type="password" placeholder="סיסמה" className="clean-input" value={password} onChange={e => setPassword(e.target.value)} required />
+                                {error && <p className="text-brand-red text-sm font-medium">{error}</p>}
+                                <button type="submit" className="hover-float w-full bg-brand-turquoise text-white p-4 rounded-2xl font-bold shadow-md shadow-teal-500/20">
+                                    {isRegister ? 'צור חשבון חדש' : 'היכנס למערכת'}
                                 </button>
                             </form>
-                            <button onClick={() => setIsRegister(!isRegister)} className="text-goldEmber/80 text-sm font-medium underline mt-4 hover:text-goldEmber transition-colors">
-                                {isRegister ? 'חזור להתחברות' : 'הרשמה לחשבון חדש'}
+                            <button onClick={() => setIsRegister(!isRegister)} className="text-brand-gold text-sm font-medium underline mt-4">
+                                {isRegister ? 'כבר יש לך חשבון? התחבר' : 'לחץ כאן כדי להירשם'}
                             </button>
                         </div>
                     </div>
@@ -191,6 +190,8 @@
             const [user, setUser] = useState(null);
             const [loading, setLoading] = useState(true);
             const [resetDay, setResetDay] = useState(1);
+            const [localResetDay, setLocalResetDay] = useState(1);
+            
             const [incomes, setIncomes] = useState([]);
             const [expenses, setExpenses] = useState([]);
             const [fixedExpenses, setFixedExpenses] = useState([]);
@@ -208,25 +209,47 @@
 
             useEffect(() => {
                 if (!user) return;
-                const userRef = db.collection('users').doc(user.uid);
-                const unsubSettings = userRef.onSnapshot(doc => { if (doc.exists && doc.data().resetDay) setResetDay(doc.data().resetDay); });
-                const unsub1 = userRef.collection('incomes').onSnapshot(s => setIncomes(s.docs.map(d => ({id: d.id, ...d.data()}))));
-                const unsub2 = userRef.collection('expenses').onSnapshot(s => setExpenses(s.docs.map(d => ({id: d.id, ...d.data()}))));
-                const unsub3 = userRef.collection('fixed_settings').onSnapshot(s => setFixedExpenses(s.docs.map(d => ({id: d.id, ...d.data()}))));
-                const unsub4 = userRef.collection('fixed_incomes').onSnapshot(s => setFixedIncomes(s.docs.map(d => ({id: d.id, ...d.data()}))));
+                let unsubSettings = () => {};
+                let unsub1 = () => {};
+                let unsub2 = () => {};
+                let unsub3 = () => {};
+                let unsub4 = () => {};
+
+                try {
+                    const userRef = db.collection('users').doc(user.uid);
+                    unsubSettings = userRef.onSnapshot(doc => { 
+                        if (doc.exists && doc.data().resetDay) {
+                            setResetDay(doc.data().resetDay);
+                            setLocalResetDay(doc.data().resetDay);
+                        }
+                    });
+                    unsub1 = userRef.collection('incomes').onSnapshot(s => setIncomes(s.docs.map(d => ({id: d.id, ...d.data()}))));
+                    unsub2 = userRef.collection('expenses').onSnapshot(s => setExpenses(s.docs.map(d => ({id: d.id, ...d.data()}))));
+                    unsub3 = userRef.collection('fixed_settings').onSnapshot(s => setFixedExpenses(s.docs.map(d => ({id: d.id, ...d.data()}))));
+                    unsub4 = userRef.collection('fixed_incomes').onSnapshot(s => setFixedIncomes(s.docs.map(d => ({id: d.id, ...d.data()}))));
+                } catch (e) {
+                    console.error("Firebase Sync Error", e);
+                }
+                
                 return () => { unsubSettings(); unsub1(); unsub2(); unsub3(); unsub4(); };
             }, [user]);
 
             const cycleData = useMemo(() => {
-                const now = new Date();
-                let startDate = new Date(now.getFullYear(), now.getMonth(), resetDay);
-                if (now.getDate() < resetDay) startDate.setMonth(startDate.getMonth() - 1);
-                const curVarInc = incomes.filter(i => new Date(i.date) >= startDate);
-                const curVarExp = expenses.filter(i => new Date(i.date) >= startDate);
-                const totalInc = curVarInc.reduce((s, i) => s + Number(i.amount || 0), 0) + fixedIncomes.reduce((s, i) => s + Number(i.amount || 0), 0);
-                const totalFixedExp = fixedExpenses.reduce((s, i) => s + Number(i.amount || 0), 0);
-                const totalVarExp = curVarExp.reduce((s, i) => s + Number(i.amount || 0), 0);
-                return { totalIncome: totalInc, totalFixedExp, totalVarExp, balance: totalInc - totalFixedExp - totalVarExp, filteredIncomes: curVarInc, filteredExpenses: curVarExp };
+                try {
+                    const now = new Date();
+                    let startDate = new Date(now.getFullYear(), now.getMonth(), resetDay || 1);
+                    if (now.getDate() < (resetDay || 1)) startDate.setMonth(startDate.getMonth() - 1);
+                    
+                    const curVarInc = incomes.filter(i => new Date(i.date) >= startDate);
+                    const curVarExp = expenses.filter(i => new Date(i.date) >= startDate);
+                    const totalInc = curVarInc.reduce((s, i) => s + Number(i.amount || 0), 0) + fixedIncomes.reduce((s, i) => s + Number(i.amount || 0), 0);
+                    const totalFixedExp = fixedExpenses.reduce((s, i) => s + Number(i.amount || 0), 0);
+                    const totalVarExp = curVarExp.reduce((s, i) => s + Number(i.amount || 0), 0);
+                    
+                    return { totalIncome: totalInc, totalFixedExp, totalVarExp, balance: totalInc - totalFixedExp - totalVarExp, filteredIncomes: curVarInc, filteredExpenses: curVarExp };
+                } catch (e) {
+                    return { totalIncome: 0, totalFixedExp: 0, totalVarExp: 0, balance: 0, filteredIncomes: [], filteredExpenses: [] };
+                }
             }, [incomes, expenses, fixedExpenses, fixedIncomes, resetDay]);
 
             const handleAddItem = async (e) => {
@@ -245,96 +268,103 @@
                 e.target.reset();
             };
 
-            const saveResetDay = async (newDay) => { if (newDay >= 1 && newDay <= 31) await db.collection('users').doc(user.uid).set({ resetDay: newDay }, { merge: true }); };
+            const saveResetDay = async () => { 
+                if (localResetDay >= 1 && localResetDay <= 31) {
+                    await db.collection('users').doc(user.uid).set({ resetDay: localResetDay }, { merge: true });
+                }
+            };
+
             const deleteItem = async (col, id) => await db.collection('users').doc(user.uid).collection(col).doc(id).delete();
 
-            if (loading) return <div className="min-h-screen bg-obsidian flex justify-center items-center"><Icon name="loader-2" className="animate-spin text-turquoise" size={40} /></div>;
+            if (loading) return (
+                <div className="min-h-screen flex flex-col justify-center items-center gap-4 text-brand-turquoise">
+                    <Icon name="loader-2" className="animate-spin" size={40} />
+                    <span className="font-medium">טוען...</span>
+                </div>
+            );
+            
             if (!user) return <LoginScreen />;
 
             return (
-                <div className="min-h-screen pb-32 bg-obsidian relative z-10">
-                    <div className="ambient-bg"></div>
+                <div className="min-h-screen pb-32 relative z-10">
+                    <div className="ambient-light"></div>
                     
-                    {/* Header Liquid Glass */}
-                    <header className="liquid-glass rounded-b-[3rem] relative z-20 pb-10 pt-12 px-6 animate-cinematic">
-                        <div className="flex justify-between items-start mb-8">
+                    <header className="px-6 pt-10 pb-6 animate-rise">
+                        <div className="flex justify-between items-center mb-8">
                             <div className="flex items-center gap-4">
-                                <div className="w-14 h-14 rounded-full p-[1px] bg-gradient-to-tr from-turquoise to-goldEmber shadow-liquid-glow animate-float">
-                                    <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" className="rounded-full w-full h-full object-cover border-2 border-obsidian" />
+                                <div className="w-14 h-14 rounded-full p-[2px] bg-white shadow-sm border border-slate-100">
+                                    <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" className="rounded-full w-full h-full object-cover" />
                                 </div>
                                 <div>
-                                    <h1 className="text-2xl font-black tracking-tight text-white">שלום, {user.displayName ? user.displayName.split(' ')[0] : 'משתמש'}</h1>
-                                    <p className="text-turquoise/70 text-[10px] uppercase tracking-[0.2em] mt-1 font-bold">מחזור מתאפס: {resetDay} לחודש</p>
+                                    <h1 className="text-xl font-bold text-light-text">שלום, {user.displayName ? user.displayName.split(' ')[0] : 'משתמש'}</h1>
+                                    <h2 className="text-sm font-medium text-light-muted">התקציב המשפחתי</h2>
                                 </div>
                             </div>
-                            <button onClick={() => auth.signOut()} className="hover-3d bg-white/5 border border-white/10 p-3 rounded-full text-slate-300 backdrop-blur-md"><Icon name="log-out" size={18}/></button>
+                            <button onClick={() => auth.signOut()} className="hover-float bg-white border border-slate-200 p-3 rounded-full text-slate-400 shadow-sm"><Icon name="log-out" size={18}/></button>
                         </div>
 
-                        <div className="text-center mb-10 relative">
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-turquoise/20 blur-[50px] rounded-full pointer-events-none"></div>
-                            <span className="text-goldEmber text-xs font-black uppercase tracking-widest drop-shadow-md">יתרה זמינה</span>
-                            <h2 className={`text-7xl font-black tracking-tighter mt-2 ${cycleData.balance >= 0 ? 'text-glow-turquoise' : 'text-glow-red'} relative z-10`} style={{lineHeight: '1'}}>
+                        <div className="spatial-module p-8 rounded-[2.5rem] text-center relative overflow-hidden">
+                            <span className="text-brand-gold text-sm font-medium">יתרה פנויה לניצול</span>
+                            <h2 className={`text-6xl font-bold mt-2 ${cycleData.balance >= 0 ? 'text-brand-turquoise' : 'text-brand-red'}`}>
                                 ₪{cycleData.balance.toLocaleString()}
                             </h2>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4">
-                            <div className="liquid-glass p-4 rounded-[1.5rem] text-center hover-3d">
-                                <p className="text-[9px] uppercase tracking-wider text-turquoise/70 mb-2 font-bold">הכנסות</p>
-                                <p className="text-turquoise font-black text-xl">₪{cycleData.totalIncome}</p>
+                        <div className="grid grid-cols-3 gap-4 mt-6">
+                            <div className="spatial-module p-5 rounded-[2rem] text-center hover-float">
+                                <p className="text-xs text-light-muted font-medium mb-1">הכנסות</p>
+                                <p className="text-brand-turquoise font-bold text-lg">₪{cycleData.totalIncome}</p>
                             </div>
-                            <div className="liquid-glass p-4 rounded-[1.5rem] text-center hover-3d">
-                                <p className="text-[9px] uppercase tracking-wider text-goldEmber/70 mb-2 font-bold">קבועות</p>
-                                <p className="text-goldEmber font-black text-xl">₪{cycleData.totalFixedExp}</p>
+                            <div className="spatial-module p-5 rounded-[2rem] text-center hover-float">
+                                <p className="text-xs text-light-muted font-medium mb-1">קבועות</p>
+                                <p className="text-light-text font-bold text-lg">₪{cycleData.totalFixedExp}</p>
                             </div>
-                            <div className="liquid-glass p-4 rounded-[1.5rem] text-center hover-3d">
-                                <p className="text-[9px] uppercase tracking-wider text-neonRed/70 mb-2 font-bold">משתנות</p>
-                                <p className="text-neonRed font-black text-xl">₪{cycleData.totalVarExp}</p>
+                            <div className="spatial-module p-5 rounded-[2rem] text-center hover-float">
+                                <p className="text-xs text-light-muted font-medium mb-1">משתנות</p>
+                                <p className="text-brand-red font-bold text-lg">₪{cycleData.totalVarExp}</p>
                             </div>
                         </div>
                     </header>
 
-                    <main className="px-6 mt-10 space-y-12 animate-cinematic" style={{animationDelay: '0.2s'}}>
+                    <main className="px-6 mt-4 space-y-10 animate-rise" style={{animationDelay: '0.1s'}}>
                         {view === 'dashboard' ? (
                             <>
                                 <section>
-                                    <h3 className="font-black text-sm text-slate-400 uppercase tracking-widest mb-5 ml-2">רכיבי פעולה</h3>
-                                    <div className="grid grid-cols-2 gap-5">
-                                        <button onClick={() => { setModalType('income'); setIsModalOpen(true); }} className="hover-3d liquid-glass rounded-[2rem] p-6 flex flex-col items-center justify-center gap-4 relative overflow-hidden group">
-                                            <div className="absolute inset-0 bg-turquoise/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                            <div className="bg-turquoise/10 border border-turquoise/30 p-4 rounded-full text-turquoise shadow-liquid-glow"><Icon name="arrow-up-right" size={28} strokeWidth={3} /></div>
-                                            <span className="text-turquoise font-black text-lg tracking-wide">הכנסה</span>
+                                    <h3 className="font-bold text-lg text-light-text mb-4 ml-2">פעולות מהירות</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <button onClick={() => { setModalType('income'); setIsModalOpen(true); }} className="hover-float spatial-module rounded-[2rem] p-6 flex flex-col items-center justify-center gap-3">
+                                            <div className="bg-teal-50 text-brand-turquoise p-4 rounded-full"><Icon name="arrow-up" size={28} strokeWidth={2.5} /></div>
+                                            <span className="text-brand-turquoise font-bold text-lg">הכנסה</span>
                                         </button>
-                                        <button onClick={() => { setModalType('expense'); setIsModalOpen(true); }} className="hover-3d liquid-glass rounded-[2rem] p-6 flex flex-col items-center justify-center gap-4 relative overflow-hidden group">
-                                            <div className="absolute inset-0 bg-neonRed/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                            <div className="bg-neonRed/10 border border-neonRed/30 p-4 rounded-full text-neonRed shadow-red-glow"><Icon name="arrow-down-left" size={28} strokeWidth={3} /></div>
-                                            <span className="text-neonRed font-black text-lg tracking-wide">הוצאה</span>
+                                        <button onClick={() => { setModalType('expense'); setIsModalOpen(true); }} className="hover-float spatial-module rounded-[2rem] p-6 flex flex-col items-center justify-center gap-3">
+                                            <div className="bg-rose-50 text-brand-red p-4 rounded-full"><Icon name="arrow-down" size={28} strokeWidth={2.5} /></div>
+                                            <span className="text-brand-red font-bold text-lg">הוצאה</span>
                                         </button>
                                     </div>
                                 </section>
 
                                 <section>
-                                    <h3 className="font-black text-sm text-slate-400 uppercase tracking-widest mb-5 ml-2">יומן מערכת</h3>
-                                    <div className="space-y-4">
+                                    <h3 className="font-bold text-lg text-light-text mb-4 ml-2">תנועות אחרונות</h3>
+                                    <div className="space-y-3">
                                         {(() => {
                                             const combined = [...cycleData.filteredIncomes, ...cycleData.filteredExpenses].sort((a,b) => new Date(b.date) - new Date(a.date));
-                                            if (combined.length === 0) return <div className="liquid-glass p-8 text-center rounded-[2rem] text-slate-500 font-bold">המערכת ממתינה לנתונים...</div>;
+                                            if (combined.length === 0) return <div className="spatial-module p-6 text-center rounded-[2rem] text-slate-400 font-medium">אין תנועות עדיין החודש.</div>;
                                             return combined.map(item => {
                                                 const isInc = incomes.some(i => i.id === item.id);
                                                 return (
-                                                    <div key={item.id} className="liquid-glass p-5 rounded-[1.5rem] flex justify-between items-center hover-3d">
+                                                    <div key={item.id} className="spatial-module p-4 rounded-[1.5rem] flex justify-between items-center hover-float">
                                                         <div className="flex items-center gap-4">
-                                                            <div className={`p-3 rounded-[1rem] border ${isInc ? 'bg-turquoise/5 border-turquoise/20 text-turquoise' : 'bg-neonRed/5 border-neonRed/20 text-neonRed'}`}>
-                                                                <Icon name={isInc ? "plus" : "minus"} size={18} strokeWidth={3} />
+                                                            <div className={`p-3 rounded-2xl ${isInc ? 'bg-teal-50 text-brand-turquoise' : 'bg-rose-50 text-brand-red'}`}>
+                                                                <Icon name={isInc ? "plus" : "minus"} size={18} strokeWidth={2.5} />
                                                             </div>
                                                             <div>
-                                                                <p className="font-bold text-white tracking-wide">{item.description}</p>
-                                                                <p className="text-[10px] text-slate-500 tracking-wider mt-1">{new Date(item.date).toLocaleDateString('he-IL')}</p>
+                                                                <p className="font-bold text-light-text">{item.description}</p>
+                                                                <p className="text-[11px] text-light-muted mt-0.5">{new Date(item.date).toLocaleDateString('he-IL')}</p>
                                                             </div>
                                                         </div>
-                                                        <div className="flex items-center gap-4">
-                                                            <span className={`font-black text-xl ${isInc ? 'text-glow-turquoise' : 'text-white'}`}>₪{item.amount}</span>
-                                                            <button onClick={() => deleteItem(isInc ? 'incomes' : 'expenses', item.id)} className="text-slate-600 hover:text-neonRed transition-colors bg-void p-2 rounded-full"><Icon name="trash-2" size={16} /></button>
+                                                        <div className="flex items-center gap-3">
+                                                            <span className={`font-bold text-lg ${isInc ? 'text-brand-turquoise' : 'text-light-text'}`}>₪{item.amount}</span>
+                                                            <button onClick={() => deleteItem(isInc ? 'incomes' : 'expenses', item.id)} className="text-slate-300 hover:text-brand-red transition-colors p-2"><Icon name="trash-2" size={18} /></button>
                                                         </div>
                                                     </div>
                                                 );
@@ -344,61 +374,61 @@
                                 </section>
                             </>
                         ) : (
-                            <section className="space-y-8 animate-cinematic">
-                                <div className="liquid-glass p-6 rounded-[2rem]">
-                                    <h3 className="font-black text-lg text-white mb-2 flex items-center gap-3"><Icon name="calendar-sync" className="text-turquoise"/> מנגנון איפוס סייבר</h3>
-                                    <p className="text-slate-400 text-xs mb-6">תזמן את האיפוס הקוונטי של המשתנות בכל חודש.</p>
-                                    <div className="flex items-center gap-4">
-                                        <input type="number" min="1" max="31" value={resetDay} onChange={(e) => saveResetDay(Number(e.target.value))} className="cyber-input text-center text-2xl w-28" />
-                                        <span className="font-bold text-turquoise uppercase tracking-widest text-xs">לחודש</span>
+                            <section className="space-y-8 animate-rise">
+                                <div className="spatial-module p-8 rounded-[2.5rem]">
+                                    <h3 className="font-bold text-xl text-light-text mb-2 flex items-center gap-2"><Icon name="calendar" className="text-brand-turquoise"/> מתי החודש מתחיל?</h3>
+                                    <p className="text-light-muted text-sm mb-6">באיזה יום בחודש תרצה שהתקציב יתאפס ויתחיל מחדש?</p>
+                                    <div className="flex items-center gap-4 bg-slate-50 p-2 rounded-2xl border border-slate-100 w-fit">
+                                        <input type="number" min="1" max="31" value={localResetDay} onChange={(e) => setLocalResetDay(Number(e.target.value))} onBlur={saveResetDay} className="bg-transparent text-center text-xl font-bold w-16 outline-none text-light-text" />
+                                        <span className="font-medium text-light-muted pl-4">לחודש</span>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <h3 className="font-black text-sm text-turquoise uppercase tracking-widest mb-4 ml-2">הכנסות מערכת קבועות</h3>
-                                    <form onSubmit={(e) => handleAddFixed(e, 'income')} className="liquid-glass p-6 rounded-[2rem] space-y-4">
-                                        <input name="name" required className="cyber-input text-white" placeholder="מקור ההזרמה..." />
-                                        <input name="amount" type="number" required className="cyber-input" placeholder="נפח ההזרמה (₪)" />
-                                        <button type="submit" className="hover-3d w-full bg-turquoise/10 border border-turquoise/50 text-turquoise p-4 rounded-xl font-black shadow-liquid-glow">קבע הזרמה קבועה</button>
+                                    <h3 className="font-bold text-lg text-brand-turquoise mb-4 ml-2">הכנסות קבועות</h3>
+                                    <form onSubmit={(e) => handleAddFixed(e, 'income')} className="spatial-module p-6 rounded-[2.5rem] space-y-4">
+                                        <input name="name" required className="clean-input" placeholder="שם ההכנסה (למשל: משכורת)" />
+                                        <input name="amount" type="number" required className="clean-input" placeholder="סכום (₪)" />
+                                        <button type="submit" className="hover-float w-full bg-teal-50 text-brand-turquoise p-4 rounded-2xl font-bold">הוסף הכנסה</button>
                                     </form>
                                     <div className="mt-4 space-y-3">{fixedIncomes.map(item => (
-                                        <div key={item.id} className="liquid-glass p-4 rounded-xl flex justify-between items-center"><p className="font-bold text-slate-200">{item.name}</p><div className="flex gap-4"><span className="text-glow-turquoise font-black">₪{item.amount}</span><button onClick={() => deleteItem('fixed_incomes', item.id)} className="text-slate-500 hover:text-neonRed"><Icon name="x" size={18}/></button></div></div>
+                                        <div key={item.id} className="spatial-module p-4 rounded-2xl flex justify-between items-center"><p className="font-medium text-light-text">{item.name}</p><div className="flex gap-4"><span className="text-brand-turquoise font-bold">₪{item.amount}</span><button onClick={() => deleteItem('fixed_incomes', item.id)} className="text-slate-300 hover:text-brand-red"><Icon name="x" size={18}/></button></div></div>
                                     ))}</div>
                                 </div>
 
                                 <div>
-                                    <h3 className="font-black text-sm text-neonRed uppercase tracking-widest mb-4 ml-2">זליגות מערכת קבועות</h3>
-                                    <form onSubmit={(e) => handleAddFixed(e, 'expense')} className="liquid-glass p-6 rounded-[2rem] space-y-4">
-                                        <input name="name" required className="cyber-input text-white focus:border-neonRed" placeholder="יעד הזליגה..." />
-                                        <input name="amount" type="number" required className="cyber-input focus:border-neonRed text-neonRed" placeholder="נפח הזליגה (₪)" />
-                                        <button type="submit" className="hover-3d w-full bg-neonRed/10 border border-neonRed/50 text-neonRed p-4 rounded-xl font-black shadow-red-glow">קבע זליגה קבועה</button>
+                                    <h3 className="font-bold text-lg text-brand-red mb-4 ml-2">הוצאות קבועות</h3>
+                                    <form onSubmit={(e) => handleAddFixed(e, 'expense')} className="spatial-module p-6 rounded-[2.5rem] space-y-4">
+                                        <input name="name" required className="clean-input" placeholder="שם ההוצאה (למשל: שכירות)" />
+                                        <input name="amount" type="number" required className="clean-input" placeholder="סכום (₪)" />
+                                        <button type="submit" className="hover-float w-full bg-rose-50 text-brand-red p-4 rounded-2xl font-bold">הוסף הוצאה</button>
                                     </form>
                                     <div className="mt-4 space-y-3">{fixedExpenses.map(item => (
-                                        <div key={item.id} className="liquid-glass p-4 rounded-xl flex justify-between items-center"><p className="font-bold text-slate-200">{item.name}</p><div className="flex gap-4"><span className="text-white font-black">₪{item.amount}</span><button onClick={() => deleteItem('fixed_settings', item.id)} className="text-slate-500 hover:text-neonRed"><Icon name="x" size={18}/></button></div></div>
+                                        <div key={item.id} className="spatial-module p-4 rounded-2xl flex justify-between items-center"><p className="font-medium text-light-text">{item.name}</p><div className="flex gap-4"><span className="font-bold">₪{item.amount}</span><button onClick={() => deleteItem('fixed_settings', item.id)} className="text-slate-300 hover:text-brand-red"><Icon name="x" size={18}/></button></div></div>
                                     ))}</div>
                                 </div>
                             </section>
                         )}
                     </main>
 
-                    <nav className="fixed bottom-6 left-6 right-6 liquid-glass p-4 flex justify-around rounded-[2.5rem] z-40">
-                        <button onClick={() => setView('dashboard')} className={`hover-3d flex flex-col items-center transition-all ${view === 'dashboard' ? 'text-turquoise scale-110 drop-shadow-[0_0_10px_rgba(0,240,255,0.8)]' : 'text-slate-600'}`}><Icon name="layers" size={24} /><span className="text-[10px] font-black uppercase tracking-wider mt-1">לוח בקרה</span></button>
-                        <button onClick={() => setView('settings')} className={`hover-3d flex flex-col items-center transition-all ${view === 'settings' ? 'text-goldEmber scale-110 drop-shadow-[0_0_10px_rgba(255,184,0,0.8)]' : 'text-slate-600'}`}><Icon name="cpu" size={24} /><span className="text-[10px] font-black uppercase tracking-wider mt-1">ליבת מערכת</span></button>
+                    <nav className="fixed bottom-6 left-6 right-6 spatial-module p-4 flex justify-around rounded-[2rem] z-40">
+                        <button onClick={() => setView('dashboard')} className={`hover-float flex flex-col items-center transition-all ${view === 'dashboard' ? 'text-brand-turquoise' : 'text-slate-400'}`}><Icon name="layout-grid" size={24} /><span className="text-xs font-bold mt-1">ראשי</span></button>
+                        <button onClick={() => setView('settings')} className={`hover-float flex flex-col items-center transition-all ${view === 'settings' ? 'text-brand-turquoise' : 'text-slate-400'}`}><Icon name="settings" size={24} /><span className="text-xs font-bold mt-1">הגדרות</span></button>
                     </nav>
 
                     {isModalOpen && (
                         <div className="fixed inset-0 z-50 flex items-end justify-center">
-                            <div className="absolute inset-0 bg-obsidian/90 backdrop-blur-xl" onClick={() => setIsModalOpen(false)}></div>
-                            <div className="relative w-full max-w-md liquid-glass border-b-0 rounded-t-[3rem] p-8 animate-cinematic border-t border-white/20">
-                                <div className="w-16 h-1.5 bg-white/20 rounded-full mx-auto mb-10"></div>
-                                <h3 className="text-3xl font-black text-center mb-8 tracking-tight text-white">{modalType === 'income' ? 'הזרמת נתונים' : 'רישום זליגה'}</h3>
-                                <form onSubmit={handleAddItem} className="space-y-8">
+                            <div className="absolute inset-0 bg-slate-900/20 backdrop-blur-sm" onClick={() => setIsModalOpen(false)}></div>
+                            <div className="relative w-full max-w-md bg-white rounded-t-[3rem] p-8 animate-rise shadow-[0_-20px_40px_rgba(0,0,0,0.1)]">
+                                <div className="w-16 h-1.5 bg-slate-200 rounded-full mx-auto mb-8"></div>
+                                <h3 className="text-2xl font-bold text-center mb-8 text-light-text">{modalType === 'income' ? 'הכנסה חדשה' : 'הוצאה חדשה'}</h3>
+                                <form onSubmit={handleAddItem} className="space-y-6">
                                     <div className="relative">
-                                        <span className={`absolute left-8 top-1/2 -translate-y-1/2 text-4xl font-black ${modalType === 'income' ? 'text-glow-turquoise' : 'text-glow-red'}`}>₪</span>
-                                        <input name="amount" type="number" required autoFocus className={`w-full text-7xl font-black text-center py-10 bg-void rounded-[2.5rem] outline-none border-2 transition-all shadow-inner ${modalType === 'income' ? 'text-turquoise border-turquoise/30 focus:border-turquoise' : 'text-neonRed border-neonRed/30 focus:border-neonRed'}`} placeholder="0" />
+                                        <span className={`absolute left-6 top-1/2 -translate-y-1/2 text-3xl font-bold ${modalType === 'income' ? 'text-brand-turquoise' : 'text-brand-red'}`}>₪</span>
+                                        <input name="amount" type="number" required autoFocus className={`w-full text-6xl font-bold text-center py-8 bg-slate-50 rounded-[2rem] border transition-all ${modalType === 'income' ? 'text-brand-turquoise border-teal-100 focus:border-brand-turquoise focus:bg-white' : 'text-brand-red border-rose-100 focus:border-brand-red focus:bg-white'} outline-none`} placeholder="0" />
                                     </div>
-                                    <input name="description" required className="cyber-input text-center text-xl py-6" placeholder="מהות הפעולה..." />
-                                    <button type="submit" className={`hover-3d w-full p-6 rounded-[2rem] font-black text-2xl tracking-wide ${modalType === 'income' ? 'bg-turquoise text-obsidian shadow-liquid-glow' : 'bg-neonRed text-white shadow-red-glow'}`}>החל נתונים</button>
+                                    <input name="description" required className="clean-input text-center text-lg" placeholder="על מה מדובר?" />
+                                    <button type="submit" className={`hover-float w-full p-6 rounded-[1.5rem] font-bold text-xl shadow-md ${modalType === 'income' ? 'bg-brand-turquoise text-white shadow-teal-500/30' : 'bg-brand-red text-white shadow-rose-500/30'}`}>שמור</button>
                                 </form>
                             </div>
                         </div>
