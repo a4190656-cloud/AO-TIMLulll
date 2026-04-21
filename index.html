@@ -3,8 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AO ניהול תקציב</title>
     
+    <title>AO ניהול תקציב | התקציב האישי שלכם</title>
+    <meta name="description" content="הדרך החכמה, המקצועית והיוקרתית לניהול הכסף שלכם.">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://a4190656-cloud.github.io/AO-TIMLulll/">
+    <meta property="og:title" content="AO ניהול תקציב | Smart Finance">
+    <meta property="og:description" content="הדרך המקצועית לניהול הכסף. כנסו עכשיו לעדכון התקציב האישי שלכם.">
+    <meta property="og:image" content="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://a4190656-cloud.github.io/AO-TIMLulll/">
+    <meta property="twitter:title" content="AO ניהול תקציב">
+    <meta property="twitter:description" content="הדרך החכמה והיוקרתית לניהול הכסף שלכם.">
+    <meta property="twitter:image" content="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg">
+
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -21,15 +37,9 @@
                 extend: {
                     colors: {
                         dark: { bg: '#06090F', card: '#111724', surface: '#161D2D' },
-                        bank: {
-                            balance: '#00E5FF',
-                            income: '#00E676',
-                            expense: '#FF1744'
-                        }
+                        bank: { balance: '#00E5FF', income: '#00E676', expense: '#FF1744' }
                     },
-                    boxShadow: {
-                        'glow-balance': '0 0 25px -5px rgba(0, 229, 255, 0.3)',
-                    }
+                    boxShadow: { 'glow-balance': '0 0 25px -5px rgba(0, 229, 255, 0.3)' }
                 }
             }
         }
@@ -37,75 +47,18 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-        
-        body { 
-            font-family: 'Inter', sans-serif;
-            background-color: #06090F;
-            color: #FFFFFF;
-            -webkit-tap-highlight-color: transparent;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        .bank-card {
-            background: linear-gradient(145deg, rgba(28, 37, 56, 0.8) 0%, rgba(15, 21, 33, 0.98) 100%);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-radius: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 12px 35px -12px rgba(0,0,0,0.6);
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .bank-card-main {
-            background: linear-gradient(135deg, #0F1521 0%, #06090F 100%);
-            border-top: 1px solid rgba(0, 229, 255, 0.4);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 1px 25px rgba(0, 229, 255, 0.05);
-        }
-
-        .premium-logo-box {
-            background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
-            border: 1px solid rgba(255,255,255,0.18);
-            border-radius: 1.2rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            padding: 3px;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #06090F; color: #FFFFFF; -webkit-tap-highlight-color: transparent; min-height: 100vh; overflow-x: hidden; }
+        .bank-card { background: linear-gradient(145deg, rgba(28, 37, 56, 0.8) 0%, rgba(15, 21, 33, 0.98) 100%); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-radius: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.06); box-shadow: 0 12px 35px -12px rgba(0,0,0,0.6); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .bank-card-main { background: linear-gradient(135deg, #0F1521 0%, #06090F 100%); border-top: 1px solid rgba(0, 229, 255, 0.4); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 1px 25px rgba(0, 229, 255, 0.05); }
+        .premium-logo-box { background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03)); border: 1px solid rgba(255,255,255,0.18); border-radius: 1.2rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); padding: 3px; }
         .premium-logo-box img { border-radius: 1rem; }
-
         .hover-press:active { transform: scale(0.96); opacity: 0.9; }
-
-        .cyber-input {
-            background: rgba(6, 9, 15, 0.85);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 1.25rem;
-            padding: 1.25rem;
-            width: 100%;
-            outline: none;
-            color: #FFFFFF;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-align: right;
-        }
+        .cyber-input { background: rgba(6, 9, 15, 0.85); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.25rem; padding: 1.25rem; width: 100%; outline: none; color: #FFFFFF; font-weight: 600; transition: all 0.3s ease; text-align: right; }
         .cyber-input:focus { border-color: #00E5FF; box-shadow: 0 0 20px rgba(0, 229, 255, 0.1); }
-
-        @keyframes fadeInRise {
-            from { opacity: 0; transform: translateY(12px); filter: blur(4px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
-        }
+        @keyframes fadeInRise { from { opacity: 0; transform: translateY(12px); filter: blur(4px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
         .animate-rise { animation: fadeInRise 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-
-        @keyframes livePulse {
-            0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.4); }
-            70% { box-shadow: 0 0 0 8px rgba(0, 230, 118, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
-        }
-        .live-dot {
-            width: 7px; height: 7px;
-            background-color: #00E676;
-            border-radius: 50%;
-            animation: livePulse 2.5s infinite;
-        }
-
+        @keyframes livePulse { 0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.4); } 70% { box-shadow: 0 0 0 8px rgba(0, 230, 118, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); } }
+        .live-dot { width: 7px; height: 7px; background-color: #00E676; border-radius: 50%; animation: livePulse 2.5s infinite; }
         ::-webkit-scrollbar { display: none; }
     </style>
 </head>
@@ -150,7 +103,7 @@
                         <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center bg-dark-bg">
                             <Icon name="shield-alert" className="text-bank-expense mb-4" size={48} />
                             <h1 className="text-2xl font-bold text-white mb-4">המערכת מסתנכרנת...</h1>
-                            <button onClick={() => window.location.reload()} className="bg-bank-balance text-dark-bg px-8 py-3 rounded-2xl font-bold shadow-glow-balance">טען מחדש</button>
+                            <button onClick={() => window.location.reload()} className="bg-bank-balance text-dark-bg px-8 py-3 rounded-2xl font-bold">טען מחדש</button>
                         </div>
                     );
                 }
@@ -171,9 +124,7 @@
                 try {
                     if (isRegister) {
                         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                        // שמירת השם בפרופיל המשתמש
                         await userCredential.user.updateProfile({ displayName: displayName });
-                        // שמירת השם גם ב-Firestore ליתר ביטחון
                         await db.collection('users').doc(userCredential.user.uid).set({ displayName: displayName }, { merge: true });
                     } else {
                         await auth.signInWithEmailAndPassword(email, password);
@@ -198,13 +149,13 @@
                         </div>
 
                         <div className="bank-card p-8 shadow-2xl">
-                            <button onClick={handleGoogleLogin} className="hover-press w-full bg-white text-dark-bg p-4 rounded-2xl font-black flex items-center justify-center gap-3 mb-6 transition-all shadow-xl">
+                            <button onClick={handleGoogleLogin} className="hover-press w-full bg-white text-dark-bg p-4 rounded-2xl font-black flex items-center justify-center gap-3 mb-6 shadow-xl">
                                 <Icon name="chrome" className="text-blue-500" /> התחברות עם גוגל
                             </button>
 
                             <div className="flex items-center gap-4 text-slate-600 mb-6">
                                 <div className="h-px bg-slate-800 flex-1"></div>
-                                <span className="text-[10px] font-black uppercase tracking-widest">או במייל</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">או במייל</span>
                                 <div className="h-px bg-slate-800 flex-1"></div>
                             </div>
                             
@@ -215,7 +166,7 @@
                                 <input type="email" placeholder="אימייל" className="cyber-input" value={email} onChange={e => setEmail(e.target.value)} required />
                                 <input type="password" placeholder="סיסמא" className="cyber-input" value={password} onChange={e => setPassword(e.target.value)} required />
                                 {error && <p className="text-bank-expense text-xs font-bold text-center">{error}</p>}
-                                <button type="submit" className="hover-press w-full bg-bank-balance text-dark-bg p-4 rounded-2xl font-black transition-all mt-2 shadow-glow-balance">
+                                <button type="submit" className="hover-press w-full bg-bank-balance text-dark-bg p-4 rounded-2xl font-black transition-all mt-2 shadow-lg">
                                     {isRegister ? 'להרשמה וכניסה לתקציב שלי' : 'כניסה לתקציב שלי'}
                                 </button>
                             </form>
@@ -252,9 +203,7 @@
                 let unsubSettings = () => {}; let unsub1 = () => {}; let unsub2 = () => {}; let unsub3 = () => {}; let unsub4 = () => {};
                 try {
                     const userRef = db.collection('users').doc(user.uid);
-                    unsubSettings = userRef.onSnapshot(doc => { 
-                        if (doc.exists && doc.data().resetDay) setResetDay(doc.data().resetDay); 
-                    });
+                    unsubSettings = userRef.onSnapshot(doc => { if (doc.exists && doc.data().resetDay) setResetDay(doc.data().resetDay); });
                     unsub1 = userRef.collection('incomes').onSnapshot(s => setIncomes(s.docs.map(d => ({id: d.id, ...d.data()}))));
                     unsub2 = userRef.collection('expenses').onSnapshot(s => setExpenses(s.docs.map(d => ({id: d.id, ...d.data()}))));
                     unsub3 = userRef.collection('fixed_settings').onSnapshot(s => setFixedExpenses(s.docs.map(d => ({id: d.id, ...d.data()}))));
@@ -297,14 +246,12 @@
 
             if (loading) return (
                 <div className="min-h-screen flex flex-col items-center justify-center bg-dark-bg">
-                    <Icon name="loader-2" className="animate-spin text-bank-balance mb-5" size={44} />
+                    <Icon name="loader-2" className="animate-spin text-bank-balance mb-4" size={44} />
                     <span className="text-slate-500 font-bold tracking-widest uppercase text-xs">Accessing Vault...</span>
                 </div>
             );
             
             if (!user) return <LoginScreen />;
-
-            // חילוץ שם: עדיפות לשם תצוגה (גוגל או הרשמה), אחר כך תחילת המייל
             const userName = user.displayName ? user.displayName.split(' ')[0] : (user.email ? user.email.split('@')[0] : 'משתמש');
 
             return (
@@ -316,7 +263,7 @@
                                     <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" className="w-full h-full object-cover" />
                                 </div>
                                 <div>
-                                    <h1 className="text-xl font-bold text-white tracking-tight">שלום, {userName}</h1>
+                                    <h1 className="text-xl font-bold text-white">שלום, {userName}</h1>
                                     <div className="flex items-center gap-1.5 mt-0.5 opacity-80">
                                         <div className="live-dot"></div>
                                         <h2 className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">התקציב האישי שלכם</h2>
