@@ -99,6 +99,12 @@
     }
     .inp::placeholder { color: rgba(255,255,255,0.24); }
 
+    /* תיקון עבור תפריט נפתח (Select) בסגנון אחיד */
+    select.inp option {
+      background: var(--card);
+      color: var(--text);
+    }
+
     /* BUTTONS */
     .btn {
       display: block; width: 100%; padding: 14px;
@@ -239,6 +245,16 @@
       width: 34px; height: 34px; border-radius: 11px;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
+    .cat-tag {
+      display: inline-block;
+      font-size: 10px;
+      background: rgba(255,255,255,0.1);
+      padding: 2px 6px;
+      border-radius: 6px;
+      margin-right: 6px;
+      color: rgba(255,255,255,0.7);
+      vertical-align: middle;
+    }
 
     /* SETTINGS */
     .sblock {
@@ -290,10 +306,9 @@
     .mono  { font-family: 'JetBrains Mono', monospace; }
     .press:active { transform: scale(0.96); }
     
-    /* התחלת אנימציות מודרניות (נוסף לבקשתך) */
+    /* אנימציות מודרניות */
     .modern-hover { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
     .modern-hover:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 10; }
-    /* סיום אנימציות */
     
     ::-webkit-scrollbar { display: none; }
 
@@ -484,6 +499,22 @@
 
       <div class="sblock modern-hover">
         <div class="sblock-head">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          ניהול קטגוריות
+        </div>
+        <div class="sblock-body">
+          <input id="cat-name" class="inp" type="text" placeholder="שם הקטגוריה (למשל: מעשרות, עסק)" style="margin-bottom:8px">
+          <select id="cat-type" class="inp" style="margin-bottom:10px;">
+            <option value="expense">מיועד עבור: הוצאות</option>
+            <option value="income">מיועד עבור: הכנסות</option>
+          </select>
+          <button id="btn-add-cat" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px">+ הוסף קטגוריה חדשה</button>
+          <div id="cat-list"></div>
+        </div>
+      </div>
+
+      <div class="sblock modern-hover">
+        <div class="sblock-head">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
           הוראות קבע – הוצאות
         </div>
@@ -530,6 +561,11 @@
     <input id="modal-amount" class="inp mono modern-hover" type="number" placeholder="0"
       style="font-size:40px;font-weight:800;text-align:center;padding:18px 10px;margin-bottom:11px">
     <input id="modal-desc" class="inp modern-hover" type="text" placeholder="תיאור הפעולה" style="margin-bottom:14px">
+    
+    <select id="modal-category" class="inp modern-hover" style="margin-bottom:14px;">
+      <option value="">ללא קטגוריה</option>
+    </select>
+    
     <button id="modal-submit" class="btn modern-hover" style="font-size:15px;padding:15px">אישור ועדכון יתרה</button>
   </div>
 </div>
@@ -555,15 +591,14 @@
   const auth = firebase.auth();
   const db   = firebase.firestore();
 
-  /* התחלת הפעלת אופליין (נוסף לבקשתך) */
+  /* הפעלת אופליין */
   db.enablePersistence().catch(function(err) {
     console.log("Offline persistence error: ", err.code);
   });
-  /* סיום הפעלת אופליין */
 
   /* State */
   var uid = null, resetDay = 1, displayName = '';
-  var incomes = [], expenses = [], fixedExpenses = [], fixedIncomes = [];
+  var incomes = [], expenses = [], fixedExpenses = [], fixedIncomes = [], userCategories = [];
   var modalType = 'income', isRegMode = false, unsubs = [];
 
   /* Helpers */
@@ -588,6 +623,7 @@
       $('nav-settings').classList.add('active');
       $('nav-dashboard').classList.remove('active');
       renderFixedLists();
+      renderCategoriesList();
     }
   };
 
@@ -650,6 +686,8 @@
     el.innerHTML = all.map(function(item, idx) {
       var isInc = item._t === 'income';
       var notLast = idx < all.length - 1;
+      var catTagHtml = item.category ? '<span class="cat-tag">' + item.category + '</span>' : '';
+      
       return '<div class="tx-row modern-hover"' + (notLast ? ' style="border-bottom:1px solid rgba(255,255,255,0.04)"' : '') + '>'
         + '<div style="display:flex;align-items:center;gap:11px">'
         + '<div class="tx-icon" style="background:' + (isInc ? 'rgba(0,230,118,0.1)' : 'rgba(255,255,255,0.05)') + ';border:1px solid ' + (isInc ? 'rgba(0,230,118,0.2)' : 'rgba(255,255,255,0.08)') + '">'
@@ -658,7 +696,7 @@
           : '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>')
         + '</div>'
         + '<div>'
-        + '<p style="font-weight:600;font-size:13px;line-height:1.3">' + (item.description || '') + '</p>'
+        + '<p style="font-weight:600;font-size:13px;line-height:1.3">' + catTagHtml + (item.description || '') + '</p>'
         + '<p class="mono" style="font-size:10px;color:var(--muted);margin-top:2px">' + new Date(item.date).toLocaleDateString('he-IL') + '</p>'
         + '</div></div>'
         + '<div style="display:flex;align-items:center;gap:11px">'
@@ -666,6 +704,21 @@
         + (isInc ? '+' : '−') + fmt(item.amount) + '</span>'
         + '<button onclick="delItem(\'' + (isInc ? 'incomes' : 'expenses') + '\',\'' + item.id + '\')" class="del-btn">✕</button>'
         + '</div></div>';
+    }).join('');
+  }
+
+  /* Render Categories list in Settings */
+  function renderCategoriesList() {
+    if (!userCategories || userCategories.length === 0) {
+      $('cat-list').innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;padding:10px;">אין קטגוריות מוגדרות</div>';
+      return;
+    }
+    $('cat-list').innerHTML = userCategories.map(function(item) {
+      var typeStr = item.type === 'income' ? 'הכנסה' : 'הוצאה';
+      var typeCol = item.type === 'income' ? 'var(--green)' : 'var(--red)';
+      return '<div class="fixed-row modern-hover"><span style="font-size:13px;font-weight:600">' + item.name + ' <span style="font-size:10px;color:'+typeCol+';opacity:0.8">(' + typeStr + ')</span></span>'
+        + '<button onclick="delItem(\'categories\',\'' + item.id + '\')" class="del-btn">✕</button>'
+        + '</div>';
     }).join('');
   }
 
@@ -704,6 +757,7 @@
         }
       }
     }));
+    unsubs.push(uRef.collection('categories').onSnapshot(function(s){ userCategories = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderCategoriesList(); }));
     unsubs.push(uRef.collection('incomes').onSnapshot(function(s){ incomes = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); }));
     unsubs.push(uRef.collection('expenses').onSnapshot(function(s){ expenses = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); }));
     unsubs.push(uRef.collection('fixed_settings').onSnapshot(function(s){ fixedExpenses = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); renderFixedLists(); }));
@@ -825,8 +879,21 @@
     $('modal-amount').style.borderColor = type === 'income' ? 'rgba(0,230,118,0.3)' : 'rgba(255,23,68,0.3)';
     $('modal-sheet').style.borderTop    = '2px solid ' + (type === 'income' ? 'var(--green)' : 'var(--red)');
     $('modal-submit').className = 'btn modern-hover ' + (type === 'income' ? 'btn-green' : 'btn-red');
+    
+    /* טעינת הקטגוריות הרלוונטיות לחלון הבחירה */
+    var catOptions = '<option value="">ללא קטגוריה</option>';
+    if (userCategories && userCategories.length > 0) {
+      userCategories.forEach(function(c) {
+        if (c.type === type) {
+          catOptions += '<option value="' + c.name + '">' + c.name + '</option>';
+        }
+      });
+    }
+    $('modal-category').innerHTML = catOptions;
+
     $('modal-amount').value = '';
     $('modal-desc').value   = '';
+    $('modal-category').value = '';
     show('modal-overlay');
     setTimeout(function(){ $('modal-amount').focus(); }, 120);
   }
@@ -836,10 +903,23 @@
   $('modal-submit').onclick = function() {
     var amount = Number($('modal-amount').value);
     var desc   = $('modal-desc').value.trim();
+    var cat    = $('modal-category').value;
     if (!amount || !desc) return;
+    
+    var dataObj = { amount: amount, description: desc, date: new Date().toISOString() };
+    if (cat !== '') dataObj.category = cat;
+
     db.collection('users').doc(uid).collection(modalType === 'income' ? 'incomes' : 'expenses')
-      .add({ amount: amount, description: desc, date: new Date().toISOString() })
+      .add(dataObj)
       .then(function(){ hide('modal-overlay'); });
+  };
+
+  /* Add custom category */
+  $('btn-add-cat').onclick = function() {
+    var name = $('cat-name').value.trim(), type = $('cat-type').value;
+    if (!name) return;
+    db.collection('users').doc(uid).collection('categories').add({ name: name, type: type })
+      .then(function(){ $('cat-name').value = ''; });
   };
 
   /* Add fixed */
