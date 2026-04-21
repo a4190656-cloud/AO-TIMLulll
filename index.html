@@ -559,6 +559,27 @@
       </div>
     </div>
 
+    <div id="view-categories" class="hidden">
+
+      <div class="sblock modern-hover">
+        <div class="sblock-head">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          קטגוריות אישיות
+        </div>
+        <div class="sblock-body">
+          <p style="color:var(--muted);font-size:12px;margin-bottom:14px;line-height:1.6">הוסף קטגוריות שיופיעו בבחירה בעת הוספת הכנסה או הוצאה.</p>
+          <input id="cat-name2" class="inp" type="text" placeholder="שם הקטגוריה (למשל: מעשרות, עסק)" style="margin-bottom:8px">
+          <select id="cat-type2" class="inp" style="margin-bottom:10px;">
+            <option value="expense">מיועד עבור: הוצאות</option>
+            <option value="income">מיועד עבור: הכנסות</option>
+          </select>
+          <button id="btn-add-cat2" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:16px">+ הוסף קטגוריה חדשה</button>
+          <div id="cat-list2"></div>
+        </div>
+      </div>
+
+    </div>
+
     <div id="view-settings" class="hidden">
 
       <div class="sblock modern-hover">
@@ -637,6 +658,10 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
       החשבון שלי
     </button>
+    <button class="nav-btn modern-hover" id="nav-categories" onclick="switchView('categories')">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      קטגוריות
+    </button>
     <button class="nav-btn modern-hover" id="nav-settings" onclick="switchView('settings')">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
       הגדרות
@@ -714,14 +739,20 @@
   }
 
   window.switchView = function(v) {
+    hide('view-dashboard'); hide('view-settings'); hide('view-categories');
+    $('nav-dashboard').classList.remove('active');
+    $('nav-settings').classList.remove('active');
+    $('nav-categories').classList.remove('active');
     if (v === 'dashboard') {
-      show('view-dashboard'); hide('view-settings');
+      show('view-dashboard');
       $('nav-dashboard').classList.add('active');
-      $('nav-settings').classList.remove('active');
+    } else if (v === 'categories') {
+      show('view-categories');
+      $('nav-categories').classList.add('active');
+      renderCategoriesList2();
     } else {
-      hide('view-dashboard'); show('view-settings');
+      show('view-settings');
       $('nav-settings').classList.add('active');
-      $('nav-dashboard').classList.remove('active');
       renderFixedLists();
       renderCategoriesList();
     }
@@ -867,6 +898,7 @@
     unsubs.push(uRef.collection('categories').onSnapshot(function(s){
       userCategories = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
       renderCategoriesList();
+      renderCategoriesList2();
     }));
     unsubs.push(uRef.collection('incomes').onSnapshot(function(s){ incomes = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); }));
     unsubs.push(uRef.collection('expenses').onSnapshot(function(s){ expenses = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); }));
@@ -1058,6 +1090,14 @@
       .then(function(){ $('cat-name').value = ''; });
   };
 
+  /* Add custom category from categories view */
+  $('btn-add-cat2').onclick = function() {
+    var name = $('cat-name2').value.trim(), type = $('cat-type2').value;
+    if (!name) return;
+    db.collection('users').doc(uid).collection('categories').add({ name: name, type: type })
+      .then(function(){ $('cat-name2').value = ''; });
+  };
+
   $('btn-add-fe').onclick = function() {
     var name = $('fe-name').value.trim(), amount = Number($('fe-amount').value);
     if (!name || !amount) return;
@@ -1071,7 +1111,26 @@
       .then(function(){ $('fi-name').value = ''; $('fi-amount').value = ''; });
   };
 
+  function renderCategoriesList2() {
+    var el = $('cat-list2');
+    if (!el) return;
+    if (!userCategories || userCategories.length === 0) {
+      el.innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;padding:10px;">אין קטגוריות מוגדרות</div>';
+      return;
+    }
+    el.innerHTML = userCategories.map(function(item) {
+      var typeStr = item.type === 'income' ? 'הכנסה' : 'הוצאה';
+      var typeCol = item.type === 'income' ? 'var(--green)' : 'var(--red)';
+      return '<div class="fixed-row modern-hover"><span style="font-size:13px;font-weight:600">' + item.name + ' <span style="font-size:10px;color:'+typeCol+';opacity:0.8">(' + typeStr + ')</span></span>'
+        + '<button onclick="delItem(\'categories\',\'' + item.id + '\')" class="del-btn">✕</button>'
+        + '</div>';
+    }).join('');
+  }
+
   window.delItem = function(col, id) {
+    if (col === 'incomes' || col === 'expenses') {
+      if (!confirm('האם אתה בטוח שברצונך למחוק פריט זה?')) return;
+    }
     db.collection('users').doc(uid).collection(col).doc(id).delete();
   };
 
