@@ -668,6 +668,146 @@
       padding: 24px;
     }
 
+    /* ══ SUCCESS ANIMATION OVERLAY ══ */
+    #success-overlay {
+      position: fixed; inset: 0; z-index: 999;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
+    }
+    #success-overlay.hidden { display: none !important; }
+
+    .success-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0);
+      animation: successBg .25s ease forwards;
+    }
+    @keyframes successBg {
+      0%   { background: rgba(0,0,0,0); }
+      40%  { background: rgba(0,0,0,0.55); }
+      80%  { background: rgba(0,0,0,0.55); }
+      100% { background: rgba(0,0,0,0); }
+    }
+
+    .success-card {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+      padding: 38px 44px 32px;
+      border-radius: 28px;
+      animation: successCardPop .5s cubic-bezier(.16,1,.3,1) forwards;
+      opacity: 0;
+    }
+    .success-card.income-card {
+      background: linear-gradient(145deg, rgba(4,22,12,0.97), rgba(3,14,8,0.98));
+      border: 1px solid rgba(0,230,118,0.35);
+      box-shadow: 0 0 0 1px rgba(0,230,118,0.10), 0 24px 60px rgba(0,0,0,0.7), 0 0 60px rgba(0,230,118,0.15);
+    }
+    .success-card.expense-card {
+      background: linear-gradient(145deg, rgba(22,4,8,0.97), rgba(14,3,6,0.98));
+      border: 1px solid rgba(255,23,68,0.32);
+      box-shadow: 0 0 0 1px rgba(255,23,68,0.08), 0 24px 60px rgba(0,0,0,0.7), 0 0 60px rgba(255,23,68,0.12);
+    }
+
+    @keyframes successCardPop {
+      0%   { opacity: 0; transform: scale(.72) translateY(20px); }
+      60%  { opacity: 1; transform: scale(1.04) translateY(0); }
+      80%  { transform: scale(0.98); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .success-card.outro {
+      animation: successCardOut .38s cubic-bezier(.4,0,1,1) forwards;
+    }
+    @keyframes successCardOut {
+      0%   { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(.82) translateY(-14px); }
+    }
+
+    /* Circle with checkmark */
+    .success-circle {
+      width: 72px; height: 72px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .success-circle.income-circle {
+      background: radial-gradient(circle, rgba(0,230,118,0.18) 0%, rgba(0,230,118,0.06) 100%);
+      border: 2px solid rgba(0,230,118,0.45);
+      box-shadow: 0 0 28px rgba(0,230,118,0.30), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .success-circle.expense-circle {
+      background: radial-gradient(circle, rgba(255,23,68,0.16) 0%, rgba(255,23,68,0.05) 100%);
+      border: 2px solid rgba(255,80,110,0.42);
+      box-shadow: 0 0 28px rgba(255,23,68,0.25), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    /* SVG checkmark path animation */
+    .check-svg { overflow: visible; }
+    .check-path {
+      fill: none;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 30;
+      stroke-dashoffset: 30;
+      animation: drawCheck .42s cubic-bezier(.4,0,.2,1) .28s forwards;
+    }
+    .income-circle  .check-path { stroke: #00E676; }
+    .expense-circle .check-path { stroke: #FF6080; }
+    @keyframes drawCheck {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* Ripple ring */
+    .success-ring {
+      position: absolute; inset: -10px;
+      border-radius: 50%;
+      animation: ringPulse .7s ease .3s forwards;
+      opacity: 0;
+    }
+    .income-circle  .success-ring { border: 2px solid rgba(0,230,118,0.35); }
+    .expense-circle .success-ring { border: 2px solid rgba(255,23,68,0.30); }
+    @keyframes ringPulse {
+      0%   { opacity: .8; transform: scale(1); }
+      100% { opacity: 0;  transform: scale(1.5); }
+    }
+
+    .success-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 17px; font-weight: 800;
+      letter-spacing: -.2px;
+      animation: fadeLabelIn .35s ease .35s both;
+    }
+    .income-card  .success-label { color: #00E676; }
+    .expense-card .success-label { color: #FF6080; }
+
+    .success-sublabel {
+      font-size: 12px; font-weight: 600;
+      color: rgba(255,255,255,0.38);
+      margin-top: -8px;
+      animation: fadeLabelIn .35s ease .45s both;
+    }
+
+    /* Floating particles */
+    .success-particles {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+      border-radius: 28px;
+    }
+    .sp {
+      position: absolute;
+      width: 5px; height: 5px; border-radius: 50%;
+      animation: floatParticle 1s ease forwards;
+      opacity: 0;
+    }
+    @keyframes floatParticle {
+      0%   { opacity: 0; transform: translateY(0) scale(0); }
+      20%  { opacity: 1; transform: translateY(-10px) scale(1); }
+      100% { opacity: 0; transform: translateY(-55px) scale(.4); }
+    }
+
+    @keyframes fadeLabelIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
     /* Section divider for settings */
     .settings-section-title {
       font-size: 10px; font-weight: 800;
@@ -990,6 +1130,21 @@
     </div>
 
     <button id="modal-submit" class="btn modern-hover" style="font-size:15px;padding:15px;margin-top:14px">אישור ועדכון יתרה</button>
+  </div>
+</div>
+
+<div id="success-overlay" class="hidden">
+  <div class="success-backdrop"></div>
+  <div id="success-card" class="success-card">
+    <div class="success-particles" id="success-particles"></div>
+    <div id="success-circle" class="success-circle">
+      <div class="success-ring"></div>
+      <svg class="check-svg" width="32" height="32" viewBox="0 0 32 32">
+        <path class="check-path" id="check-path" d="M7 16 L13 22 L25 10"/>
+      </svg>
+    </div>
+    <div id="success-label" class="success-label">בוצע!</div>
+    <div id="success-sublabel" class="success-sublabel">הפעולה נשמרה בהצלחה</div>
   </div>
 </div>
 
@@ -1360,6 +1515,54 @@
 
   window.handleOverlayClick = function(e) { hide('modal-overlay'); };
 
+  function showSuccess(type, amount) {
+    var isInc = type === 'income';
+    var card    = $('success-card');
+    var circle  = $('success-circle');
+    var label   = $('success-label');
+    var sub     = $('success-sublabel');
+    var parts   = $('success-particles');
+
+    /* Reset classes */
+    card.className   = 'success-card ' + (isInc ? 'income-card' : 'expense-card');
+    circle.className = 'success-circle ' + (isInc ? 'income-circle' : 'expense-circle');
+
+    /* Reset check path animation */
+    var path = $('check-path');
+    path.style.animation = 'none';
+    path.getBoundingClientRect();
+    path.style.animation = '';
+
+    /* Labels */
+    label.textContent = isInc ? '+ ' + fmt(amount) : '− ' + fmt(amount);
+    sub.textContent   = isInc ? 'הכנסה נרשמה בהצלחה ✓' : 'הוצאה נרשמה בהצלחה ✓';
+
+    /* Particles */
+    parts.innerHTML = '';
+    var col = isInc ? ['#00E676','#00C853','#69F0AE','#B9F6CA'] : ['#FF1744','#FF6080','#FF8A80','#FF4D70'];
+    for (var i = 0; i < 10; i++) {
+      var sp = document.createElement('div');
+      sp.className = 'sp';
+      sp.style.background   = col[Math.floor(Math.random() * col.length)];
+      sp.style.left         = (15 + Math.random() * 70) + '%';
+      sp.style.bottom       = (10 + Math.random() * 30) + '%';
+      sp.style.animationDelay = (Math.random() * .35) + 's';
+      sp.style.width = sp.style.height = (3 + Math.random() * 4) + 'px';
+      parts.appendChild(sp);
+    }
+
+    show('success-overlay');
+
+    /* Auto-dismiss after 1.6s */
+    setTimeout(function() {
+      card.classList.add('outro');
+      setTimeout(function() {
+        hide('success-overlay');
+        card.classList.remove('outro');
+      }, 400);
+    }, 1600);
+  }
+
   $('modal-submit').onclick = function() {
     var amount = Number($('modal-amount').value);
     var desc   = $('modal-desc').value.trim();
@@ -1369,9 +1572,13 @@
     var dataObj = { amount: amount, description: desc, date: new Date().toISOString() };
     if (cat !== '') dataObj.category = cat;
 
-    db.collection('users').doc(uid).collection(modalType === 'income' ? 'incomes' : 'expenses')
+    var type = modalType;
+    db.collection('users').doc(uid).collection(type === 'income' ? 'incomes' : 'expenses')
       .add(dataObj)
-      .then(function(){ hide('modal-overlay'); });
+      .then(function(){
+        hide('modal-overlay');
+        showSuccess(type, amount);
+      });
   };
 
   $('btn-add-cat').onclick = function() {
