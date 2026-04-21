@@ -919,7 +919,7 @@
       <p style="color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px">יתרה פנויה</p>
       <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
         <p id="balance-display" class="mono" style="font-size:46px;font-weight:800;letter-spacing:-1px;line-height:1"></p>
-        <div id="budget-percent" style="width:44px;height:44px;border-radius:50%;background:rgba(0,229,255,0.08);border:2px solid var(--cyan);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--cyan);box-shadow:0 0 12px rgba(0,229,255,0.25);flex-shrink:0;">0%</div>
+        <div id="budget-percent" style="width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,229,255,0.02));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(0,229,255,0.3);box-shadow:0 0 15px rgba(0,229,255,0.2), inset 0 2px 4px rgba(255,255,255,0.1), inset 0 -2px 6px rgba(0,229,255,0.1);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono', monospace;font-size:16px;font-weight:800;color:var(--cyan);text-shadow:0 0 8px rgba(0,229,255,0.6);flex-shrink:0;">0%</div>
       </div>
       <div style="width:72px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);margin:12px auto 0;opacity:.4"></div>
     </div>
@@ -1268,15 +1268,17 @@
     pctEl.textContent = pct + '%';
     
     if (bal < 0) {
-      pctEl.style.borderColor = 'var(--red)';
+      pctEl.style.borderColor = 'rgba(255,23,68,0.3)';
       pctEl.style.color = 'var(--red)';
-      pctEl.style.background = 'rgba(255,23,68,0.08)';
-      pctEl.style.boxShadow = '0 0 12px rgba(255,23,68,0.25)';
+      pctEl.style.textShadow = '0 0 8px rgba(255,23,68,0.6)';
+      pctEl.style.boxShadow = '0 0 15px rgba(255,23,68,0.2), inset 0 2px 4px rgba(255,255,255,0.1), inset 0 -2px 6px rgba(255,23,68,0.1)';
+      pctEl.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,23,68,0.02))';
     } else {
-      pctEl.style.borderColor = 'var(--cyan)';
+      pctEl.style.borderColor = 'rgba(0,229,255,0.3)';
       pctEl.style.color = 'var(--cyan)';
-      pctEl.style.background = 'rgba(0,229,255,0.08)';
-      pctEl.style.boxShadow = '0 0 12px rgba(0,229,255,0.25)';
+      pctEl.style.textShadow = '0 0 8px rgba(0,229,255,0.6)';
+      pctEl.style.boxShadow = '0 0 15px rgba(0,229,255,0.2), inset 0 2px 4px rgba(255,255,255,0.1), inset 0 -2px 6px rgba(0,229,255,0.1)';
+      pctEl.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,229,255,0.02))';
     }
 
     $('stat-income').textContent = fmt(calcIncome());
