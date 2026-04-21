@@ -390,6 +390,59 @@
     }
     #btn-modal-save-new-cat:hover { background: rgba(0,229,255,0.18); }
 
+    /* CATEGORY TILES */
+    .cat-tiles-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .cat-tile {
+      background: rgba(13,19,35,0.75);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: 16px;
+      padding: 16px 14px 13px;
+      position: relative;
+      overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .cat-tile:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,0.5); }
+    .cat-tile-del {
+      position: absolute; top: 8px; left: 8px;
+      background: none; border: none; cursor: pointer;
+      color: rgba(255,255,255,0.18); font-size: 13px;
+      line-height: 1; padding: 3px 5px;
+      transition: color .14s;
+    }
+    .cat-tile-del:hover { color: var(--red); }
+    .cat-tile-name {
+      font-weight: 700; font-size: 13px;
+      line-height: 1.3; margin-bottom: 8px;
+      padding-left: 18px;
+      word-break: break-word;
+    }
+    .cat-tile-amount {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px; font-weight: 700; line-height: 1;
+    }
+    .cat-tile-count {
+      font-size: 10px; font-weight: 600;
+      margin-top: 4px;
+      opacity: 0.55;
+    }
+    .cat-tile-bar {
+      position: absolute; bottom: 0; right: 0; left: 0;
+      height: 2px;
+      border-radius: 0 0 16px 16px;
+    }
+    .cat-section-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--muted);
+      margin: 14px 0 8px;
+    }
+
     /* MISC */
     .err   { color: var(--red);   font-size: 12px; font-weight: 700; text-align: center; margin-top: 6px; }
     .saved { color: var(--green); font-size: 12px; font-weight: 700; text-align: center; margin-top: 4px; }
@@ -559,6 +612,31 @@
       </div>
     </div>
 
+    <div id="view-categories" class="hidden">
+
+      <!-- כותרת + כפתור הוספה -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <p style="font-weight:700;font-size:14px">קטגוריות אישיות</p>
+        <button id="btn-toggle-add-cat2" style="background:rgba(0,229,255,0.10);border:1px solid rgba(0,229,255,0.22);border-radius:10px;color:var(--cyan);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;padding:7px 13px;cursor:pointer;transition:background .15s;" onclick="toggleAddCat2()">+ הוסף</button>
+      </div>
+
+      <!-- טופס הוספה (מוסתר כברירת מחדל) -->
+      <div id="add-cat2-form" class="hidden sblock" style="margin-bottom:14px;">
+        <div class="sblock-body" style="padding:14px 15px;">
+          <input id="cat-name2" class="inp" type="text" placeholder="שם הקטגוריה" style="margin-bottom:8px">
+          <select id="cat-type2" class="inp" style="margin-bottom:10px;">
+            <option value="expense">הוצאה</option>
+            <option value="income">הכנסה</option>
+          </select>
+          <button id="btn-add-cat2" class="btn btn-ghost" style="font-size:13px;padding:10px;">✓ שמור קטגוריה</button>
+        </div>
+      </div>
+
+      <!-- רשת משבצות קטגוריות -->
+      <div id="cat-list2"></div>
+
+    </div>
+
     <div id="view-settings" class="hidden">
 
       <div class="sblock modern-hover">
@@ -637,6 +715,10 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
       החשבון שלי
     </button>
+    <button class="nav-btn modern-hover" id="nav-categories" onclick="switchView('categories')">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      קטגוריות
+    </button>
     <button class="nav-btn modern-hover" id="nav-settings" onclick="switchView('settings')">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
       הגדרות
@@ -714,14 +796,20 @@
   }
 
   window.switchView = function(v) {
+    hide('view-dashboard'); hide('view-settings'); hide('view-categories');
+    $('nav-dashboard').classList.remove('active');
+    $('nav-settings').classList.remove('active');
+    $('nav-categories').classList.remove('active');
     if (v === 'dashboard') {
-      show('view-dashboard'); hide('view-settings');
+      show('view-dashboard');
       $('nav-dashboard').classList.add('active');
-      $('nav-settings').classList.remove('active');
+    } else if (v === 'categories') {
+      show('view-categories');
+      $('nav-categories').classList.add('active');
+      renderCategoriesList2();
     } else {
-      hide('view-dashboard'); show('view-settings');
+      show('view-settings');
       $('nav-settings').classList.add('active');
-      $('nav-dashboard').classList.remove('active');
       renderFixedLists();
       renderCategoriesList();
     }
@@ -833,7 +921,7 @@
     }).join('');
   }
 
-  function renderAll() { renderStats(); renderTx(); }
+  function renderAll() { renderStats(); renderTx(); renderCategoriesList2(); }
 
   /* Reload modal category dropdown (called after adding new cat) */
   function reloadModalCategorySelect(selectedName) {
@@ -867,6 +955,7 @@
     unsubs.push(uRef.collection('categories').onSnapshot(function(s){
       userCategories = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
       renderCategoriesList();
+      renderCategoriesList2();
     }));
     unsubs.push(uRef.collection('incomes').onSnapshot(function(s){ incomes = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); }));
     unsubs.push(uRef.collection('expenses').onSnapshot(function(s){ expenses = s.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); }); renderAll(); }));
@@ -1058,6 +1147,27 @@
       .then(function(){ $('cat-name').value = ''; });
   };
 
+  window.toggleAddCat2 = function() {
+    var f = $('add-cat2-form');
+    if (f.classList.contains('hidden')) {
+      show('add-cat2-form');
+      setTimeout(function(){ $('cat-name2').focus(); }, 80);
+    } else {
+      hide('add-cat2-form');
+    }
+  };
+
+  /* Add custom category from categories view */
+  $('btn-add-cat2').onclick = function() {
+    var name = $('cat-name2').value.trim(), type = $('cat-type2').value;
+    if (!name) return;
+    db.collection('users').doc(uid).collection('categories').add({ name: name, type: type })
+      .then(function(){
+        $('cat-name2').value = '';
+        hide('add-cat2-form');
+      });
+  };
+
   $('btn-add-fe').onclick = function() {
     var name = $('fe-name').value.trim(), amount = Number($('fe-amount').value);
     if (!name || !amount) return;
@@ -1071,7 +1181,57 @@
       .then(function(){ $('fi-name').value = ''; $('fi-amount').value = ''; });
   };
 
+  function renderCategoriesList2() {
+    var el = $('cat-list2');
+    if (!el) return;
+    if (!userCategories || userCategories.length === 0) {
+      el.innerHTML = '<div style="color:var(--muted);font-size:13px;text-align:center;padding:30px 10px;">אין קטגוריות עדיין.<br><span style="font-size:11px;opacity:.6">לחץ "+ הוסף" כדי ליצור קטגוריה ראשונה.</span></div>';
+      return;
+    }
+
+    /* חשב סכום לכל קטגוריה מהמחזור הנוכחי */
+    var s = cycleStart();
+    var expCats = userCategories.filter(function(c){ return c.type === 'expense'; });
+    var incCats = userCategories.filter(function(c){ return c.type === 'income';  });
+
+    function tileHtml(cat) {
+      var isInc = cat.type === 'income';
+      var col    = isInc ? 'var(--green)' : 'var(--red)';
+      var colBg  = isInc ? 'rgba(0,230,118,0.07)' : 'rgba(255,23,68,0.07)';
+      var colBdr = isInc ? 'rgba(0,230,118,0.20)' : 'rgba(255,23,68,0.18)';
+      var colBar = isInc ? 'linear-gradient(90deg,var(--green),#00C853)' : 'linear-gradient(90deg,var(--red),#D50000)';
+
+      /* מצא תנועות שמשוייכות לקטגוריה זו במחזור הנוכחי */
+      var src = isInc ? incomes : expenses;
+      var matched = src.filter(function(i){
+        return i.category === cat.name && new Date(i.date) >= s;
+      });
+      var total = matched.reduce(function(a, i){ return a + Number(i.amount || 0); }, 0);
+      var count = matched.length;
+
+      return '<div class="cat-tile" style="border:1px solid ' + colBdr + ';background:linear-gradient(145deg,' + colBg + ',rgba(13,19,35,0.75));">'
+        + '<button class="cat-tile-del" onclick="delItem(\'categories\',\'' + cat.id + '\')">✕</button>'
+        + '<div class="cat-tile-name">' + cat.name + '</div>'
+        + '<div class="cat-tile-amount" style="color:' + col + ';">' + fmt(total) + '</div>'
+        + '<div class="cat-tile-count">' + count + ' תנועות במחזור</div>'
+        + '<div class="cat-tile-bar" style="background:' + colBar + ';opacity:0.55;"></div>'
+        + '</div>';
+    }
+
+    var html = '';
+    if (expCats.length > 0) {
+      html += '<div class="cat-section-label">הוצאות</div>';
+      html += '<div class="cat-tiles-grid">' + expCats.map(tileHtml).join('') + '</div>';
+    }
+    if (incCats.length > 0) {
+      html += '<div class="cat-section-label">הכנסות</div>';
+      html += '<div class="cat-tiles-grid">' + incCats.map(tileHtml).join('') + '</div>';
+    }
+    el.innerHTML = html;
+  }
+
   window.delItem = function(col, id) {
+    if (!confirm('האם אתה בטוח שברצונך למחוק פריט זה?')) return;
     db.collection('users').doc(uid).collection(col).doc(id).delete();
   };
 
