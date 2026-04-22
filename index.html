@@ -4,9 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>AO Budget</title>
-  <!-- Circular favicon using SVG with clipPath -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CclipPath id='c'%3E%3Ccircle cx='32' cy='32' r='32'/%3E%3C/clipPath%3E%3C/defs%3E%3Cimage href='https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg' width='64' height='64' clip-path='url(%23c)'/%3E%3C/svg%3E">
+  <link id="favicon-link" rel="icon" type="image/png" href="">
   <link rel="apple-touch-icon" href="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg">
+  <script>
+    (function(){
+      function setCircularFavicon(){
+        var img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function(){
+          var c = document.createElement('canvas');
+          c.width = c.height = 64;
+          var ctx = c.getContext('2d');
+          ctx.beginPath();
+          ctx.arc(32, 32, 32, 0, Math.PI * 2);
+          ctx.closePath();
+          ctx.clip();
+          ctx.drawImage(img, 0, 0, 64, 64);
+          var link = document.getElementById('favicon-link');
+          if(link) link.href = c.toDataURL('image/png');
+        };
+        img.onerror = function(){
+          var link = document.getElementById('favicon-link');
+          if(link){ link.type='image/jpeg'; link.href='https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg'; }
+        };
+        img.src = 'https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg';
+      }
+      if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', setCircularFavicon); }
+      else { setCircularFavicon(); }
+    })();
+  </script>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://a4190656-cloud.github.io/AO-TIMLulll/">
@@ -558,7 +584,7 @@
 
       <!-- Password field with show/hide toggle -->
       <div class="pass-wrap" style="margin-bottom:0">
-        <input id="login-pass" class="inp modern-hover" type="password" placeholder="סיסמה" autocomplete="current-password">
+        <input id="login-pass" class="inp modern-hover" type="password" placeholder="סיסמה" autocomplete="new-password" data-lpignore="true" data-form-type="other">
         <button type="button" class="pass-eye" id="btn-pass-eye" aria-label="הצג/הסתר סיסמה">
           <svg id="eye-icon-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           <svg id="eye-icon-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -1267,7 +1293,7 @@
           return Promise.all(promises).then(function(){
             auth.signOut();
             $('login-err').style.color='var(--green)';
-            $('login-err').textContent='✓ נשלח אימייל לכתובת '+email+' — לחץ על הקישור ואז התחבר. | Verification sent to '+email+' — click the link then sign in.';
+            $('login-err').innerHTML='✓ נשלח אימייל לכתובת <strong>'+email+'</strong> — לחץ על הקישור כדי לאמת ואז התחבר. <span style="color:var(--green);">(ייתכן שהמייל בספאם!)</span>';
             show('login-err');
             isRegMode=false;
             hide('login-name-wrap');
@@ -1286,7 +1312,7 @@
       auth.signInWithEmailAndPassword(email,pass).then(function(cred){
         if(!cred.user.emailVerified){
           auth.signOut();
-          $('login-err').textContent='המייל טרם אומת — בדוק את תיבת הדואר (כולל ספאם). | Email not verified — check inbox (incl. spam).';
+          $('login-err').textContent='המייל טרם אומת — בדוק את תיבת הדואר (כולל ספאם).';
           show('login-err');
         }
       }).catch(function(){
