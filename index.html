@@ -1295,6 +1295,10 @@
     if(!user){
       authResolved = true;
       appBooted    = false;
+      uid          = null;
+      /* Reset Google button so it works again after sign-out */
+      var gBtn = $('btn-google-login');
+      if(gBtn){ gBtn.disabled=false; gBtn.style.opacity='1'; }
       showScreen('screen-login');
       return;
     }
@@ -1302,7 +1306,7 @@
     /* Mark resolved so timeout doesn't fire */
     authResolved = true;
 
-    /* Don't boot twice for the same user */
+    /* Don't boot twice for the same user session */
     if(appBooted && uid === user.uid) return;
 
     /* Email/password users must verify email */
@@ -1338,7 +1342,8 @@
     provider.setCustomParameters({ prompt: 'select_account' });
 
     auth.signInWithPopup(provider).then(function(){
-      /* onAuthStateChanged handles the rest */
+      /* onAuthStateChanged handles the rest — button re-enabled on signout or after boot */
+      btn.disabled=false; btn.style.opacity='1';
     }).catch(function(e){
       if(e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request'){
         /* Popup blocked — fall back to redirect (works on Netfree, mobile, etc.) */
@@ -1359,6 +1364,7 @@
             auth.signInWithEmailAndPassword(email, pass).then(function(cred){
               return cred.user.linkWithCredential(pendingCred);
             }).then(function(){
+              btn.disabled=false; btn.style.opacity='1';
               /* linked — onAuthStateChanged fires */
             }).catch(function(){
               btn.disabled=false; btn.style.opacity='1';
@@ -1519,9 +1525,25 @@
   $('btn-setname').onclick=function(){
     var name=$('setname-input').value.trim();
     if(!name) return;
-    auth.currentUser.updateProfile({displayName:name}).then(function(){
-      return db.collection('users').doc(auth.currentUser.uid).set({displayName:name},{merge:true});
-    }).then(function(){ window.location.reload(); }).catch(function(){
+    var user = auth.currentUser;
+    if(!user) return;
+    var btn = $('btn-setname');
+    btn.disabled=true; btn.style.opacity='0.6';
+
+    user.updateProfile({displayName:name}).then(function(){
+      return db.collection('users').doc(user.uid).set({displayName:name},{merge:true}).catch(function(){});
+    }).then(function(){
+      /* Boot the app directly — no page reload needed */
+      displayName = name;
+      appBooted = true;
+      uid = user.uid;
+      showScreen('app');
+      var hn=$('header-name'); if(hn) hn.textContent='שלום, '+name.split(' ')[0]+'!';
+      var si=$('settings-name-input'); if(si) si.value=name;
+      var ri=$('reset-day-input'); if(ri) ri.value=resetDay;
+      startListeners();
+    }).catch(function(){
+      btn.disabled=false; btn.style.opacity='1';
       $('setname-err').textContent='שגיאה, נסה שוב.'; show('setname-err');
     });
   };
