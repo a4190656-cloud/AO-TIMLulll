@@ -551,7 +551,23 @@
   <div class="logo-frame" style="width:62px;height:62px;margin-bottom:18px">
     <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" style="width:56px;height:56px">
   </div>
-  <p style="color:var(--muted);font-size:13px;font-weight:600">מתחבר לחשבון...</p>
+  <p id="loading-msg" style="color:var(--muted);font-size:13px;font-weight:600">מתחבר לחשבון<span id="loading-dots">...</span></p>
+  <button id="btn-loading-manual" class="hidden" onclick="window.location.reload()" style="margin-top:16px;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:12px;color:rgba(255,255,255,0.5);font-family:Syne,sans-serif;font-size:12px;font-weight:700;padding:8px 18px;cursor:pointer;">לחץ לנסות שוב</button>
+  <script>
+    /* Animated dots */
+    var _d=0, _di=setInterval(function(){
+      var el=document.getElementById('loading-dots');
+      if(el){ _d=(_d+1)%4; el.textContent='.'.repeat(_d||1); }
+    },500);
+    /* After 5s show retry button */
+    setTimeout(function(){
+      clearInterval(_di);
+      var b=document.getElementById('btn-loading-manual');
+      var m=document.getElementById('loading-msg');
+      if(b){ b.classList.remove('hidden'); }
+      if(m){ m.textContent='לקח יותר מדי זמן...'; }
+    },5000);
+  </script>
 </div>
 
 <!-- ═══════════════ LOGIN ═══════════════ -->
@@ -1179,75 +1195,204 @@
     $('modal-category').innerHTML=opts;
   }
 
-  /* ── Firestore listeners ── */
+  /* ══════════════════════════════════════════════
+     FIRESTORE LISTENERS — get() fallback first,
+     then onSnapshot for live updates
+  ══════════════════════════════════════════════ */
   function startListeners(){
-    unsubs.forEach(function(u){ u(); }); unsubs=[];
-    var uRef=db.collection('users').doc(uid);
-    unsubs.push(uRef.onSnapshot(function(doc){
-      if(doc.exists){
-        if(doc.data().resetDay){ resetDay=doc.data().resetDay; $('reset-day-input').value=resetDay; }
-        if(doc.data().displayName){
-          displayName=doc.data().displayName;
-          $('header-name').textContent='שלום, '+displayName.split(' ')[0]+'!';
-          $('settings-name-input').value=displayName;
-        }
+    unsubs.forEach(function(u){ try{ u(); }catch(e){} }); unsubs=[];
+    var uRef = db.collection('users').doc(uid);
+
+    /* User profile — silent fail on snapshot, just use get() data */
+    unsubs.push(uRef.onSnapshot({ includeMetadataChanges: false }, function(doc){
+      if(!doc.exists) return;
+      var d = doc.data();
+      if(d.resetDay){ resetDay=d.resetDay; var ri=$('reset-day-input'); if(ri) ri.value=resetDay; }
+      if(d.displayName){
+        displayName=d.displayName;
+        var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
+        var si=$('settings-name-input'); if(si) si.value=displayName;
       }
-    }));
-    unsubs.push(uRef.collection('categories').onSnapshot(function(s){
-      userCategories=s.docs.map(function(d){ return Object.assign({id:d.id},d.data()); });
-      renderCategoriesList(); renderCategoriesList2();
-    }));
-    unsubs.push(uRef.collection('incomes').onSnapshot(function(s){ incomes=s.docs.map(function(d){ return Object.assign({id:d.id},d.data()); }); renderAll(); }));
-    unsubs.push(uRef.collection('expenses').onSnapshot(function(s){ expenses=s.docs.map(function(d){ return Object.assign({id:d.id},d.data()); }); renderAll(); }));
-    unsubs.push(uRef.collection('fixed_settings').onSnapshot(function(s){ fixedExpenses=s.docs.map(function(d){ return Object.assign({id:d.id},d.data()); }); renderAll(); renderFixedLists(); }));
-    unsubs.push(uRef.collection('fixed_incomes').onSnapshot(function(s){ fixedIncomes=s.docs.map(function(d){ return Object.assign({id:d.id},d.data()); }); renderAll(); renderFixedLists(); }));
+    }, function(){ /* ignore permission errors silently */ }));
+
+    function snapCol(name, assign, extra){
+      unsubs.push(uRef.collection(name).onSnapshot(function(s){
+        assign(s.docs.map(function(d){ return Object.assign({id:d.id},d.data()); }));
+        renderAll(); if(extra) extra();
+      }, function(){ /* if blocked, fallback to get() once */
+        uRef.collection(name).get().then(function(s){
+          assign(s.docs.map(function(d){ return Object.assign({id:d.id},d.data()); }));
+          renderAll(); if(extra) extra();
+        }).catch(function(){});
+      }));
+    }
+
+    snapCol('categories', function(v){ userCategories=v; renderCategoriesList(); renderCategoriesList2(); });
+    snapCol('incomes',    function(v){ incomes=v; });
+    snapCol('expenses',   function(v){ expenses=v; });
+    snapCol('fixed_settings', function(v){ fixedExpenses=v; }, renderFixedLists);
+    snapCol('fixed_incomes',  function(v){ fixedIncomes=v; },  renderFixedLists);
   }
 
-  /* ── Auth state ── */
-  auth.onAuthStateChanged(function(user){
-    if(!user){ showScreen('screen-login'); return; }
-    if(!user.emailVerified && user.providerData.some(function(p){ return p.providerId==='password'; })){ return; }
-    uid=user.uid;
+  /* ══════════════════════════════════════════════
+     BOOT — called once we know the user is valid.
+     Handles name setup, then launches the app.
+  ══════════════════════════════════════════════ */
+  function bootApp(user){
+    uid = user.uid;
+    /* Try Firestore profile first, fall back gracefully */
     db.collection('users').doc(uid).get().then(function(snap){
-      var savedName=snap.exists&&snap.data().displayName;
-      var authName=user.displayName;
-      if(!savedName&&!authName){ showScreen('screen-setname'); return; }
-      displayName=savedName||authName||'';
+      var savedName = snap.exists ? snap.data().displayName : null;
+      var authName  = user.displayName || null;
+      var name      = savedName || authName || null;
+      if(!name){
+        showScreen('screen-setname');
+        return;
+      }
+      displayName = name;
       showScreen('app');
-      $('header-name').textContent='שלום, '+displayName.split(' ')[0]+'!';
-      $('settings-name-input').value=displayName;
-      $('reset-day-input').value=resetDay;
+      var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
+      var si=$('settings-name-input'); if(si) si.value=displayName;
+      var ri=$('reset-day-input'); if(ri) ri.value=resetDay;
+      startListeners();
+    }).catch(function(){
+      /* Firestore blocked (e.g. NextDNS/Netfree) — still show app with auth name */
+      var name = user.displayName || user.email.split('@')[0];
+      displayName = name;
+      showScreen('app');
+      var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
+      var si=$('settings-name-input'); if(si) si.value=displayName;
       startListeners();
     });
+  }
+
+  /* ══════════════════════════════════════════════
+     AUTH STATE — with 4s timeout safety net
+  ══════════════════════════════════════════════ */
+  var authResolved = false;
+  var authTimeout  = setTimeout(function(){
+    if(!authResolved){
+      /* Firebase took too long (probably blocked) — show login */
+      authResolved = true;
+      showScreen('screen-login');
+    }
+  }, 4000);
+
+  auth.onAuthStateChanged(function(user){
+    if(authResolved && user) return; /* already handled */
+    clearTimeout(authTimeout);
+    authResolved = true;
+
+    if(!user){
+      showScreen('screen-login');
+      return;
+    }
+
+    /* Email/password users must verify email */
+    var isEmailProvider = user.providerData.some(function(p){ return p.providerId==='password'; });
+    if(isEmailProvider && !user.emailVerified){
+      /* Not verified — sign out and show friendly message */
+      auth.signOut();
+      showScreen('screen-login');
+      /* Show the unverified notice after a tick */
+      setTimeout(function(){
+        var el=$('login-err');
+        if(el){
+          el.style.color='var(--red)';
+          el.textContent='המייל טרם אומת — בדוק את תיבת הדואר (כולל ספאם).';
+          show('login-err');
+        }
+      }, 300);
+      return;
+    }
+
+    bootApp(user);
   });
 
-  /* ── Google login ── */
-  $('btn-google-login').onclick=function(){
-    auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(function(result){
-      /* If Google user wants to also link email/password later — handled in settings */
+  /* ══════════════════════════════════════════════
+     GOOGLE LOGIN
+     — tries popup first, falls back to redirect
+       (redirect is needed for some mobile browsers
+       and privacy-focused DNS filters like Netfree)
+  ══════════════════════════════════════════════ */
+  $('btn-google-login').onclick = function(){
+    var btn = this;
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+    var provider = new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+
+    auth.signInWithPopup(provider).then(function(){
+      /* onAuthStateChanged handles the rest */
     }).catch(function(e){
-      /* If error is account-exists-with-different-credential,
-         the user registered with email before. Try to sign in with email instead. */
-      if(e.code==='auth/account-exists-with-different-credential'){
-        var pending=e.credential;
-        var email=e.email;
-        /* Sign in with email/pass and then link Google credential */
-        auth.fetchSignInMethodsForEmail(email).then(function(methods){
-          if(methods.indexOf('password')>=0){
-            var pass=prompt('כבר קיים חשבון עם מייל זה.\nהזן את הסיסמה שלך כדי לקשר את חשבון גוגל:');
-            if(!pass) return;
-            auth.signInWithEmailAndPassword(email,pass).then(function(cred){
-              return cred.user.linkWithCredential(pending);
-            }).catch(function(e2){ console.error(e2); });
-          }
+      if(e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request'){
+        /* Popup blocked — fall back to redirect (works on Netfree, mobile, etc.) */
+        auth.signInWithRedirect(provider).catch(function(e2){
+          btn.disabled=false; btn.style.opacity='1';
+          showLoginErr('לא ניתן לפתוח חלון כניסה. נסה דפדפן אחר.');
         });
-      } else {
-        console.error(e);
+        return;
+      }
+      if(e.code === 'auth/account-exists-with-different-credential'){
+        /* User already has email/password account — sign in with email and link */
+        var pendingCred = e.credential;
+        var email       = e.email;
+        auth.fetchSignInMethodsForEmail(email).then(function(methods){
+          if(methods.indexOf('password') >= 0){
+            var pass = prompt('חשבון עם מייל זה כבר קיים.\nהזן את הסיסמה שלך כדי לקשר את חשבון גוגל:');
+            if(!pass){ btn.disabled=false; btn.style.opacity='1'; return; }
+            auth.signInWithEmailAndPassword(email, pass).then(function(cred){
+              return cred.user.linkWithCredential(pendingCred);
+            }).then(function(){
+              /* linked — onAuthStateChanged fires */
+            }).catch(function(){
+              btn.disabled=false; btn.style.opacity='1';
+              showLoginErr('שגיאה בקישור החשבונות. נסה שוב.');
+            });
+          } else {
+            btn.disabled=false; btn.style.opacity='1';
+            showLoginErr('שגיאה בכניסה עם גוגל. נסה שוב.');
+          }
+        }).catch(function(){ btn.disabled=false; btn.style.opacity='1'; });
+        return;
+      }
+      btn.disabled=false; btn.style.opacity='1';
+      if(e.code !== 'auth/popup-closed-by-user'){
+        showLoginErr('שגיאה בכניסה עם גוגל. נסה שוב.');
       }
     });
   };
 
-  /* ── Toggle register/login ── */
+  /* Handle redirect result on page load (for Netfree / popup-blocked fallback) */
+  auth.getRedirectResult().then(function(result){
+    /* If redirect login succeeded — onAuthStateChanged handles it */
+  }).catch(function(e){
+    if(e.code === 'auth/account-exists-with-different-credential'){
+      showLoginErr('חשבון עם מייל זה כבר קיים. השתמש בכניסה עם מייל וסיסמה.');
+    }
+  });
+
+  /* ══════════════════════════════════════════════
+     HELPER — show login error
+  ══════════════════════════════════════════════ */
+  function showLoginErr(msg){
+    var el=$('login-err');
+    if(!el) return;
+    el.style.color='var(--red)';
+    el.textContent=msg;
+    show('login-err');
+  }
+  function showLoginOk(html){
+    var el=$('login-err');
+    if(!el) return;
+    el.style.color='var(--green)';
+    el.innerHTML=html;
+    show('login-err');
+  }
+
+  /* ══════════════════════════════════════════════
+     TOGGLE REGISTER / LOGIN
+  ══════════════════════════════════════════════ */
   $('btn-toggle-mode').onclick=function(){
     isRegMode=!isRegMode;
     if(isRegMode){
@@ -1262,64 +1407,97 @@
     hide('login-err');
   };
 
-  /* ── Email auth ── */
-  $('btn-email-auth').onclick=function(){
-    var email=$('login-email').value.trim();
-    var pass=$('login-pass').value;
-    var name=$('login-name').value.trim();
+  /* ══════════════════════════════════════════════
+     EMAIL AUTH — login + register
+  ══════════════════════════════════════════════ */
+  $('btn-email-auth').onclick = function(){
+    var email = $('login-email').value.trim();
+    var pass  = $('login-pass').value;
+    var name  = $('login-name').value.trim();
     hide('login-err');
-    $('login-err').style.color='var(--red)';
+
+    if(!email || !pass){ showLoginErr('נא למלא אימייל וסיסמה.'); return; }
+
+    var btn = $('btn-email-auth');
+    btn.disabled = true; btn.style.opacity='0.6';
+
+    function resetBtn(){ btn.disabled=false; btn.style.opacity='1'; }
 
     if(isRegMode){
-      /* Check if this email was previously used with Google — if so, link */
-      auth.fetchSignInMethodsForEmail(email).then(function(methods){
-        if(methods.length>0 && methods.indexOf('password')<0 && methods.indexOf('google.com')>=0){
-          /* Google account exists — sign in with Google and then link email/pass */
-          $('login-err').textContent='מייל זה משויך לחשבון גוגל. כנס עם גוגל תחילה, ואז תוכל להוסיף סיסמא בהגדרות.';
-          show('login-err');
-          return;
+      /* ─── REGISTER ─── */
+      if(pass.length < 6){ showLoginErr('הסיסמה חייבת להכיל לפחות 6 תווים.'); resetBtn(); return; }
+
+      auth.createUserWithEmailAndPassword(email, pass).then(function(cred){
+        var jobs = [];
+        if(name){
+          jobs.push(cred.user.updateProfile({displayName: name}));
+          jobs.push(db.collection('users').doc(cred.user.uid).set({displayName: name},{merge:true}).catch(function(){}));
         }
-        auth.createUserWithEmailAndPassword(email,pass).then(function(cred){
-          var promises=[];
-          if(name){
-            promises.push(cred.user.updateProfile({displayName:name}));
-            promises.push(db.collection('users').doc(cred.user.uid).set({displayName:name},{merge:true}));
-          }
-          var actionSettings = {
-            url: 'https://a4190656-cloud.github.io/AO-TIMLulll/',
-            handleCodeInApp: false
-          };
-          promises.push(cred.user.sendEmailVerification(actionSettings));
-          return Promise.all(promises).then(function(){
-            auth.signOut();
-            $('login-err').style.color='var(--green)';
-            $('login-err').innerHTML='✓ נשלח אימייל לכתובת <strong>'+email+'</strong> — לחץ על הקישור כדי לאמת ואז התחבר. <span style="color:var(--green);">(ייתכן שהמייל בספאם!)</span>';
-            show('login-err');
-            isRegMode=false;
-            hide('login-name-wrap');
-            $('btn-email-auth').textContent='כניסה לחשבון';
-            $('btn-toggle-mode').textContent='עוד אין לך חשבון? לחץ כאן ←';
-          });
-        }).catch(function(){
-          $('login-err').textContent='לא ניתן ליצור חשבון. בדוק שהאימייל תקין והסיסמה לפחות 6 תווים.';
-          show('login-err');
-        });
-      }).catch(function(){
-        $('login-err').textContent='שגיאה, נסה שוב.';
-        show('login-err');
+        var actionSettings = { url:'https://a4190656-cloud.github.io/AO-TIMLulll/', handleCodeInApp:false };
+        jobs.push(cred.user.sendEmailVerification(actionSettings).catch(function(){}));
+        return Promise.all(jobs).then(function(){ return auth.signOut(); });
+      }).then(function(){
+        resetBtn();
+        isRegMode=false;
+        hide('login-name-wrap');
+        $('btn-email-auth').textContent='כניסה לחשבון';
+        $('btn-toggle-mode').textContent='עוד אין לך חשבון? לחץ כאן ←';
+        showLoginOk('✓ נשלח אימייל לכתובת <strong>'+email+'</strong> — לחץ על הקישור ואז התחבר. <span style="color:var(--green);">(ייתכן שהמייל בספאם!)</span>');
+      }).catch(function(e){
+        resetBtn();
+        if(e.code==='auth/email-already-in-use'){
+          /* Maybe they registered with Google first — try linking */
+          auth.fetchSignInMethodsForEmail(email).then(function(methods){
+            if(methods.indexOf('google.com')>=0 && methods.indexOf('password')<0){
+              showLoginErr('מייל זה משויך לחשבון גוגל. כנס עם גוגל תחילה.');
+            } else {
+              showLoginErr('כתובת מייל זו כבר רשומה. נסה להתחבר.');
+            }
+          }).catch(function(){ showLoginErr('כתובת מייל זו כבר רשומה. נסה להתחבר.'); });
+        } else if(e.code==='auth/invalid-email'){
+          showLoginErr('כתובת מייל לא תקינה.');
+        } else if(e.code==='auth/weak-password'){
+          showLoginErr('הסיסמה חלשה מדי — לפחות 6 תווים.');
+        } else {
+          showLoginErr('שגיאה ביצירת חשבון. נסה שוב.');
+        }
       });
+
     } else {
-      auth.signInWithEmailAndPassword(email,pass).then(function(cred){
+      /* ─── LOGIN ─── */
+      auth.signInWithEmailAndPassword(email, pass).then(function(cred){
+        resetBtn();
         if(!cred.user.emailVerified){
           auth.signOut();
-          $('login-err').textContent='המייל טרם אומת — בדוק את תיבת הדואר (כולל ספאם).';
-          show('login-err');
+          /* Offer to resend verification */
+          showLoginOk('המייל טרם אומת. <button onclick="resendVerif(\''+email+'\',\''+pass+'\')" style="background:none;border:none;color:var(--cyan);font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-decoration:underline;padding:0;">שלח שוב</button> <span style="color:rgba(255,255,255,0.4)">(כולל ספאם)</span>');
         }
-      }).catch(function(){
-        $('login-err').textContent='אימייל או סיסמה שגויים.';
-        show('login-err');
+        /* else: onAuthStateChanged fires and calls bootApp */
+      }).catch(function(e){
+        resetBtn();
+        if(e.code==='auth/user-not-found' || e.code==='auth/wrong-password' || e.code==='auth/invalid-credential'){
+          showLoginErr('אימייל או סיסמה שגויים.');
+        } else if(e.code==='auth/invalid-email'){
+          showLoginErr('כתובת מייל לא תקינה.');
+        } else if(e.code==='auth/too-many-requests'){
+          showLoginErr('יותר מדי ניסיונות. המתן מספר דקות ונסה שוב.');
+        } else if(e.code==='auth/network-request-failed'){
+          showLoginErr('שגיאת רשת — בדוק חיבור לאינטרנט.');
+        } else {
+          showLoginErr('שגיאה בכניסה. נסה שוב.');
+        }
       });
     }
+  };
+
+  /* Resend verification email */
+  window.resendVerif = function(email, pass){
+    auth.signInWithEmailAndPassword(email, pass).then(function(cred){
+      var actionSettings = { url:'https://a4190656-cloud.github.io/AO-TIMLulll/', handleCodeInApp:false };
+      return cred.user.sendEmailVerification(actionSettings).then(function(){ return auth.signOut(); });
+    }).then(function(){
+      showLoginOk('✓ נשלח מחדש לכתובת <strong>'+email+'</strong> <span style="color:var(--green);">(בדוק גם ספאם!)</span>');
+    }).catch(function(){ showLoginErr('שגיאה בשליחה. נסה שוב.'); });
   };
 
   /* ── Set name ── */
