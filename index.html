@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>AO Budget</title>
-  <link rel="icon" type="image/jpeg" href="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg">
+  <!-- Circular favicon using SVG with clipPath -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CclipPath id='c'%3E%3Ccircle cx='32' cy='32' r='32'/%3E%3C/clipPath%3E%3C/defs%3E%3Cimage href='https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg' width='64' height='64' clip-path='url(%23c)'/%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://a4190656-cloud.github.io/AO-TIMLulll/">
@@ -496,6 +498,24 @@
     .sp { position:absolute; width:5px; height:5px; border-radius:50%; animation:floatParticle 1s ease forwards; opacity:0; }
     @keyframes floatParticle { 0%{opacity:0;transform:translateY(0) scale(0)} 20%{opacity:1;transform:translateY(-10px) scale(1)} 100%{opacity:0;transform:translateY(-55px) scale(.4)} }
     @keyframes fadeLabelIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── DELETE ACCOUNT confirm modal ── */
+    #delete-confirm-overlay {
+      position:fixed; inset:0; z-index:300;
+      background:rgba(0,0,0,0.80); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+      display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+    #delete-confirm-sheet {
+      width:100%; max-width:380px;
+      background:rgba(14,5,8,0.97); backdrop-filter:blur(40px); -webkit-backdrop-filter:blur(40px);
+      border:1px solid rgba(255,23,68,0.30); border-radius:24px; padding:28px 24px 24px;
+      box-shadow:0 0 0 1px rgba(255,23,68,0.08),0 24px 60px rgba(0,0,0,0.8),0 0 60px rgba(255,23,68,0.08);
+      position:relative;
+    }
+    #delete-confirm-sheet::before {
+      content:''; position:absolute; top:0; left:10%; right:10%; height:2px; border-radius:24px 24px 0 0;
+      background:linear-gradient(90deg,transparent,rgba(255,23,68,0.8),transparent);
+    }
   </style>
 </head>
 <body>
@@ -532,13 +552,13 @@
       </div>
 
       <div id="login-name-wrap" class="hidden" style="margin-bottom:9px">
-        <input id="login-name" class="inp modern-hover" type="text" placeholder="השם המלא שלך">
+        <input id="login-name" class="inp modern-hover" type="text" placeholder="השם המלא שלך" autocomplete="name">
       </div>
-      <input id="login-email" class="inp modern-hover" type="email" placeholder="כתובת אימייל" style="margin-bottom:9px">
+      <input id="login-email" class="inp modern-hover" type="email" placeholder="כתובת אימייל" autocomplete="email" style="margin-bottom:9px">
 
       <!-- Password field with show/hide toggle -->
       <div class="pass-wrap" style="margin-bottom:0">
-        <input id="login-pass" class="inp modern-hover" type="password" placeholder="סיסמה">
+        <input id="login-pass" class="inp modern-hover" type="password" placeholder="סיסמה" autocomplete="current-password">
         <button type="button" class="pass-eye" id="btn-pass-eye" aria-label="הצג/הסתר סיסמה">
           <svg id="eye-icon-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           <svg id="eye-icon-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -563,7 +583,7 @@
       <p style="color:var(--muted);font-size:13px;margin-top:5px">איך לקרוא לך?</p>
     </div>
     <div class="card rise d1" style="padding:22px">
-      <input id="setname-input" class="inp" type="text" placeholder="השם שלך" style="margin-bottom:11px">
+      <input id="setname-input" class="inp" type="text" placeholder="השם שלך" autocomplete="name" style="margin-bottom:11px">
       <div id="setname-err" class="err hidden"></div>
       <button id="btn-setname" class="btn btn-cyan">המשך לחשבון</button>
     </div>
@@ -602,13 +622,11 @@
       </div>
     </div>
 
-    <!-- Hero balance card — smaller ring -->
+    <!-- Hero balance card -->
     <div class="hero-card rise d1 modern-hover" style="padding:24px 18px;text-align:center">
       <p style="color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px">יתרה פנויה</p>
       <div style="display:flex;align-items:center;justify-content:center;gap:14px;">
         <p id="balance-display" class="mono" style="font-size:42px;font-weight:800;letter-spacing:-1px;line-height:1"></p>
-
-        <!-- ◌ Smaller ring (54px instead of 74px) -->
         <div style="position:relative;width:54px;height:54px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="54" height="54" style="position:absolute;top:0;left:0;transform:rotate(-90deg);overflow:visible;">
             <circle cx="27" cy="27" r="24" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3.5"></circle>
@@ -689,7 +707,7 @@
       </div>
       <div id="add-cat2-form" class="hidden sblock" style="margin-bottom:14px;">
         <div class="sblock-body" style="padding:14px 15px;">
-          <input id="cat-name2" class="inp" type="text" placeholder="שם הקטגוריה" style="margin-bottom:8px">
+          <input id="cat-name2" class="inp" type="text" placeholder="שם הקטגוריה" autocomplete="off" style="margin-bottom:8px">
           <select id="cat-type2" class="inp" style="margin-bottom:10px;">
             <option value="expense">הוצאה</option>
             <option value="income">הכנסה</option>
@@ -717,8 +735,8 @@
           <div class="sblock-fixed-total" id="fe-total-badge">₪0</div>
         </div>
         <div class="sblock-fixed-body">
-          <input id="fe-name"   class="inp" type="text"   placeholder="שם ההוצאה (למשל: שכר דירה, ביטוח)" style="margin-bottom:8px">
-          <input id="fe-amount" class="inp" type="number" placeholder="סכום ₪" style="margin-bottom:10px">
+          <input id="fe-name"   class="inp" type="text"   placeholder="שם ההוצאה (למשל: שכר דירה, ביטוח)" autocomplete="off" style="margin-bottom:8px">
+          <input id="fe-amount" class="inp" type="number" placeholder="סכום ₪" autocomplete="off" style="margin-bottom:10px">
           <button id="btn-add-fe" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px;border-color:rgba(255,23,68,0.20);">+ הוסף הוצאה קבועה</button>
           <div id="fe-list"></div>
         </div>
@@ -736,8 +754,8 @@
           <div class="sblock-fixed-total" id="fi-total-badge">₪0</div>
         </div>
         <div class="sblock-fixed-body">
-          <input id="fi-name"   class="inp" type="text"   placeholder="מקור הכנסה (למשל: משכורת, שכירות)" style="margin-bottom:8px">
-          <input id="fi-amount" class="inp" type="number" placeholder="סכום ₪" style="margin-bottom:10px">
+          <input id="fi-name"   class="inp" type="text"   placeholder="מקור הכנסה (למשל: משכורת, שכירות)" autocomplete="off" style="margin-bottom:8px">
+          <input id="fi-amount" class="inp" type="number" placeholder="סכום ₪" autocomplete="off" style="margin-bottom:10px">
           <button id="btn-add-fi" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px;border-color:rgba(0,230,118,0.20);">+ הוסף הכנסה קבועה</button>
           <div id="fi-list"></div>
         </div>
@@ -751,7 +769,7 @@
           שינוי שם
         </div>
         <div class="sblock-body">
-          <input id="settings-name-input" class="inp" type="text" placeholder="השם שלך" style="margin-bottom:9px">
+          <input id="settings-name-input" class="inp" type="text" placeholder="השם שלך" autocomplete="name" style="margin-bottom:9px">
           <button id="btn-save-name" class="btn btn-ghost" style="font-size:13px;padding:10px">שמור שם</button>
           <div id="name-saved" class="saved hidden">✓ נשמר בהצלחה!</div>
         </div>
@@ -765,7 +783,7 @@
         <div class="sblock-body">
           <p style="color:var(--muted);font-size:13px;margin-bottom:12px">באיזה יום מתאפס המחזור החודשי?</p>
           <div style="display:flex;align-items:center;gap:11px">
-            <input id="reset-day-input" class="inp mono" type="number" min="1" max="31" style="max-width:85px;text-align:center;font-size:19px;padding:11px 8px">
+            <input id="reset-day-input" class="inp mono" type="number" min="1" max="31" autocomplete="off" style="max-width:85px;text-align:center;font-size:19px;padding:11px 8px">
             <span style="color:var(--muted);font-weight:600;font-size:14px">לחודש</span>
           </div>
         </div>
@@ -777,7 +795,7 @@
           ניהול קטגוריות
         </div>
         <div class="sblock-body">
-          <input id="cat-name" class="inp" type="text" placeholder="שם הקטגוריה (למשל: מעשרות, עסק)" style="margin-bottom:8px">
+          <input id="cat-name" class="inp" type="text" placeholder="שם הקטגוריה (למשל: מעשרות, עסק)" autocomplete="off" style="margin-bottom:8px">
           <select id="cat-type" class="inp" style="margin-bottom:10px;">
             <option value="expense">מיועד עבור: הוצאות</option>
             <option value="income">מיועד עבור: הכנסות</option>
@@ -787,7 +805,7 @@
         </div>
       </div>
 
-      <!-- ── ACCOUNT DISCONNECT ── -->
+      <!-- ── ACCOUNT SECTION ── -->
       <div class="settings-section-title" style="margin-top:6px;">חשבון</div>
 
       <div class="sblock modern-hover">
@@ -800,6 +818,23 @@
           <button id="btn-disconnect" class="btn btn-danger-ghost" style="font-size:13px;padding:11px;display:flex;align-items:center;justify-content:center;gap:8px;">
             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             התנתק מהחשבון
+          </button>
+        </div>
+      </div>
+
+      <!-- ── DELETE ACCOUNT ── -->
+      <div class="sblock modern-hover" style="border-color:rgba(255,23,68,0.15);">
+        <div class="sblock-head" style="border-bottom-color:rgba(255,23,68,0.10);background:rgba(255,23,68,0.03);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          <span style="color:#FF4060;">מחיקת חשבון לצמיתות</span>
+        </div>
+        <div class="sblock-body">
+          <p style="color:rgba(255,255,255,0.38);font-size:12px;margin-bottom:12px;line-height:1.6">
+            מחיקה מוחלטת של החשבון וכל הנתונים — <strong style="color:#FF6080;">פעולה בלתי הפיכה.</strong><br>לא ניתן לשחזר את החשבון או הנתונים לאחר מחיקה.
+          </p>
+          <button id="btn-delete-account" class="btn btn-red" style="font-size:13px;padding:11px;display:flex;align-items:center;justify-content:center;gap:8px;opacity:0.85;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            מחק את החשבון לצמיתות
           </button>
         </div>
       </div>
@@ -840,14 +875,19 @@
   </nav>
 </div>
 
-<!-- ═══════════════ MODAL ═══════════════ -->
+<!-- ═══════════════ MODAL (income/expense) ═══════════════ -->
 <div id="modal-overlay" class="hidden" onclick="handleOverlayClick(event)">
   <div id="modal-sheet" class="slide-up" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
     <h3 id="modal-title" style="text-align:center;font-size:17px;font-weight:700;margin-bottom:18px"></h3>
-    <input id="modal-amount" class="inp mono modern-hover" type="number" placeholder="0"
-      style="font-size:40px;font-weight:800;text-align:center;padding:18px 10px;margin-bottom:11px">
-    <input id="modal-desc" class="inp modern-hover" type="text" placeholder="תיאור הפעולה" style="margin-bottom:11px">
+    <!-- autocomplete="off" + role="presentation" prevents Chrome from treating this as a login form -->
+    <form autocomplete="off" role="presentation" style="display:contents">
+      <input id="modal-amount" class="inp mono modern-hover" type="text" inputmode="decimal"
+        placeholder="0" autocomplete="off" name="budget-amount" role="presentation"
+        style="font-size:40px;font-weight:800;text-align:center;padding:18px 10px;margin-bottom:11px">
+      <input id="modal-desc" class="inp modern-hover" type="text" placeholder="תיאור הפעולה"
+        autocomplete="off" name="budget-description" role="presentation" style="margin-bottom:11px">
+    </form>
     <select id="modal-category" class="inp modern-hover" style="margin-bottom:6px;">
       <option value="">ללא קטגוריה</option>
     </select>
@@ -856,10 +896,38 @@
       צור קטגוריה חדשה
     </button>
     <div id="modal-new-cat-wrap" class="hidden">
-      <input id="modal-new-cat-name" class="inp" type="text" placeholder="שם הקטגוריה החדשה" style="margin-bottom:8px">
+      <input id="modal-new-cat-name" class="inp" type="text" placeholder="שם הקטגוריה החדשה" autocomplete="off">
       <button id="btn-modal-save-new-cat" type="button">✓ שמור וסמן קטגוריה זו</button>
     </div>
     <button id="modal-submit" class="btn modern-hover" style="font-size:15px;padding:15px;margin-top:14px">אישור ועדכון יתרה</button>
+  </div>
+</div>
+
+<!-- ═══════════════ DELETE ACCOUNT CONFIRM MODAL ═══════════════ -->
+<div id="delete-confirm-overlay" class="hidden">
+  <div id="delete-confirm-sheet">
+    <!-- Icon -->
+    <div style="text-align:center;margin-bottom:18px;">
+      <div style="width:58px;height:58px;border-radius:50%;background:rgba(255,23,68,0.12);border:2px solid rgba(255,23,68,0.35);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 0 24px rgba(255,23,68,0.20);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF4060" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+      </div>
+      <h3 style="font-size:18px;font-weight:800;color:#FF6080;margin-bottom:6px;">מחיקת חשבון לצמיתות</h3>
+      <p style="color:rgba(255,255,255,0.45);font-size:12px;line-height:1.7;">כל הנתונים, ההיסטוריה, הקטגוריות<br>וההגדרות שלך יימחקו לצמיתות.<br><strong style="color:#FF8080;">פעולה זו בלתי הפיכה לחלוטין.</strong></p>
+    </div>
+
+    <!-- Confirm input -->
+    <p style="font-size:12px;color:rgba(255,255,255,0.40);margin-bottom:6px;text-align:center;">הקלד <strong style="color:#FF6080;font-family:'JetBrains Mono',monospace;">מחק</strong> לאישור</p>
+    <input id="delete-confirm-input" class="inp" type="text" placeholder="הקלד: מחק"
+      autocomplete="off" name="delete-confirm"
+      style="text-align:center;margin-bottom:14px;border-color:rgba(255,23,68,0.25);font-size:16px;font-weight:700;letter-spacing:.05em;">
+
+    <button id="btn-confirm-delete" class="btn btn-red" disabled style="font-size:14px;padding:13px;margin-bottom:10px;opacity:0.4;transition:opacity .2s;">
+      אני מבין — מחק את החשבון לצמיתות
+    </button>
+    <button id="btn-cancel-delete" class="btn btn-ghost" style="font-size:13px;padding:11px;">
+      ביטול — שמור את החשבון
+    </button>
+    <div id="delete-err" class="err hidden" style="margin-top:8px;"></div>
   </div>
 </div>
 
@@ -989,7 +1057,6 @@
     var pctEl=$('budget-percent'), ringEl=$('budget-progress-ring');
     pctEl.textContent=pct+'%';
 
-    /* Ring: r=24, circumference=2π×24≈150.8 */
     var circ=150.8;
     var absPct=Math.max(0,Math.min(100,Math.abs(pct)));
     ringEl.style.strokeDashoffset=circ-(absPct/100)*circ;
@@ -1130,7 +1197,28 @@
 
   /* ── Google login ── */
   $('btn-google-login').onclick=function(){
-    auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function(e){ console.error(e); });
+    auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(function(result){
+      /* If Google user wants to also link email/password later — handled in settings */
+    }).catch(function(e){
+      /* If error is account-exists-with-different-credential,
+         the user registered with email before. Try to sign in with email instead. */
+      if(e.code==='auth/account-exists-with-different-credential'){
+        var pending=e.credential;
+        var email=e.email;
+        /* Sign in with email/pass and then link Google credential */
+        auth.fetchSignInMethodsForEmail(email).then(function(methods){
+          if(methods.indexOf('password')>=0){
+            var pass=prompt('כבר קיים חשבון עם מייל זה.\nהזן את הסיסמה שלך כדי לקשר את חשבון גוגל:');
+            if(!pass) return;
+            auth.signInWithEmailAndPassword(email,pass).then(function(cred){
+              return cred.user.linkWithCredential(pending);
+            }).catch(function(e2){ console.error(e2); });
+          }
+        });
+      } else {
+        console.error(e);
+      }
+    });
   };
 
   /* ── Toggle register/login ── */
@@ -1157,34 +1245,41 @@
     $('login-err').style.color='var(--red)';
 
     if(isRegMode){
-      auth.createUserWithEmailAndPassword(email,pass).then(function(cred){
-        var promises=[];
-        if(name){
-          promises.push(cred.user.updateProfile({displayName:name}));
-          promises.push(db.collection('users').doc(cred.user.uid).set({displayName:name},{merge:true}));
-        }
-        /* ── Custom verification email action code settings ──
-           Firebase sends the email — we customise the subject/body via
-           Firebase Console > Authentication > Templates. Here we just
-           pass actionCodeSettings so the link lands back on our app. */
-        var actionSettings = {
-          url: 'https://a4190656-cloud.github.io/AO-TIMLulll/',
-          handleCodeInApp: false
-        };
-        promises.push(cred.user.sendEmailVerification(actionSettings));
-        return Promise.all(promises).then(function(){
-          auth.signOut();
-          $('login-err').style.color='var(--green)';
-          /* Short, friendly confirmation — Hebrew + English */
-          $('login-err').textContent='✓ נשלח אימייל לכתובת '+email+' — לחץ על הקישור ואז התחבר. | Verification sent to '+email+' — click the link then sign in.';
+      /* Check if this email was previously used with Google — if so, link */
+      auth.fetchSignInMethodsForEmail(email).then(function(methods){
+        if(methods.length>0 && methods.indexOf('password')<0 && methods.indexOf('google.com')>=0){
+          /* Google account exists — sign in with Google and then link email/pass */
+          $('login-err').textContent='מייל זה משויך לחשבון גוגל. כנס עם גוגל תחילה, ואז תוכל להוסיף סיסמא בהגדרות.';
           show('login-err');
-          isRegMode=false;
-          hide('login-name-wrap');
-          $('btn-email-auth').textContent='כניסה לחשבון';
-          $('btn-toggle-mode').textContent='עוד אין לך חשבון? לחץ כאן ←';
+          return;
+        }
+        auth.createUserWithEmailAndPassword(email,pass).then(function(cred){
+          var promises=[];
+          if(name){
+            promises.push(cred.user.updateProfile({displayName:name}));
+            promises.push(db.collection('users').doc(cred.user.uid).set({displayName:name},{merge:true}));
+          }
+          var actionSettings = {
+            url: 'https://a4190656-cloud.github.io/AO-TIMLulll/',
+            handleCodeInApp: false
+          };
+          promises.push(cred.user.sendEmailVerification(actionSettings));
+          return Promise.all(promises).then(function(){
+            auth.signOut();
+            $('login-err').style.color='var(--green)';
+            $('login-err').textContent='✓ נשלח אימייל לכתובת '+email+' — לחץ על הקישור ואז התחבר. | Verification sent to '+email+' — click the link then sign in.';
+            show('login-err');
+            isRegMode=false;
+            hide('login-name-wrap');
+            $('btn-email-auth').textContent='כניסה לחשבון';
+            $('btn-toggle-mode').textContent='עוד אין לך חשבון? לחץ כאן ←';
+          });
+        }).catch(function(){
+          $('login-err').textContent='לא ניתן ליצור חשבון. בדוק שהאימייל תקין והסיסמה לפחות 6 תווים.';
+          show('login-err');
         });
       }).catch(function(){
-        $('login-err').textContent='לא ניתן ליצור חשבון. בדוק שהאימייל תקין והסיסמה לפחות 6 תווים.';
+        $('login-err').textContent='שגיאה, נסה שוב.';
         show('login-err');
       });
     } else {
@@ -1220,6 +1315,73 @@
     if(!confirm('להתנתק מהחשבון?')) return;
     unsubs.forEach(function(u){ u(); });
     auth.signOut();
+  };
+
+  /* ── DELETE ACCOUNT ── */
+  $('btn-delete-account').onclick=function(){
+    $('delete-confirm-input').value='';
+    $('btn-confirm-delete').disabled=true;
+    $('btn-confirm-delete').style.opacity='0.4';
+    hide('delete-err');
+    show('delete-confirm-overlay');
+    setTimeout(function(){ $('delete-confirm-input').focus(); },150);
+  };
+
+  $('delete-confirm-input').oninput=function(){
+    var val=this.value.trim();
+    var ok=(val==='מחק');
+    $('btn-confirm-delete').disabled=!ok;
+    $('btn-confirm-delete').style.opacity=ok?'1':'0.4';
+  };
+
+  $('btn-cancel-delete').onclick=function(){
+    hide('delete-confirm-overlay');
+  };
+
+  $('btn-confirm-delete').onclick=function(){
+    if($('delete-confirm-input').value.trim()!=='מחק') return;
+    var btn=this;
+    btn.disabled=true; btn.textContent='מוחק...';
+    hide('delete-err');
+
+    var user=auth.currentUser;
+    if(!user){ hide('delete-confirm-overlay'); return; }
+    var userUid=user.uid;
+
+    /* Delete all subcollections then user doc then Firebase Auth account */
+    function deleteCollection(colName){
+      return db.collection('users').doc(userUid).collection(colName).get().then(function(snap){
+        var batch=db.batch();
+        snap.docs.forEach(function(d){ batch.delete(d.ref); });
+        return snap.docs.length>0?batch.commit():Promise.resolve();
+      });
+    }
+
+    Promise.all([
+      deleteCollection('incomes'),
+      deleteCollection('expenses'),
+      deleteCollection('fixed_settings'),
+      deleteCollection('fixed_incomes'),
+      deleteCollection('categories')
+    ]).then(function(){
+      return db.collection('users').doc(userUid).delete();
+    }).then(function(){
+      unsubs.forEach(function(u){ u(); });
+      return user.delete();
+    }).then(function(){
+      hide('delete-confirm-overlay');
+      showScreen('screen-login');
+    }).catch(function(e){
+      /* If requires-recent-login, re-authenticate first */
+      if(e.code==='auth/requires-recent-login'){
+        $('delete-err').textContent='נדרשת התחברות מחדש. התנתק והתחבר שוב, ואז נסה שוב.';
+        show('delete-err');
+      } else {
+        $('delete-err').textContent='שגיאה במחיקה, נסה שוב.';
+        show('delete-err');
+      }
+      btn.disabled=false; btn.textContent='אני מבין — מחק את החשבון לצמיתות';
+    });
   };
 
   /* ── Reset day ── */
@@ -1322,7 +1484,7 @@
     },1600);
   }
 
-  /* ── INSTANT submit: show success + close modal immediately, then save to Firebase ── */
+  /* ── Submit modal ── */
   $('modal-submit').onclick=function(){
     var amount=Number($('modal-amount').value);
     var desc=$('modal-desc').value.trim();
@@ -1334,11 +1496,9 @@
 
     var type=modalType;
 
-    /* 1. Close modal & show success animation IMMEDIATELY */
     hide('modal-overlay');
     showSuccess(type,amount);
 
-    /* 2. Save to Firebase in background */
     db.collection('users').doc(uid).collection(type==='income'?'incomes':'expenses').add(dataObj)
       .catch(function(e){ console.error('Save failed:',e); });
   };
