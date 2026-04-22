@@ -581,29 +581,26 @@
       <p style="color:var(--muted);font-size:13px;margin-top:5px">ניהול תקציב חכם ופשוט</p>
     </div>
 
-    <div class="card rise d1" style="padding:26px 22px">
+    <div class="card rise d1" style="padding:24px 20px">
 
-      <!-- הודעה למשתמשי אפליקציה -->
-      <div style="background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.18);border-radius:12px;padding:11px 14px;margin-bottom:18px;display:flex;align-items:flex-start;gap:9px;">
-        <span style="font-size:16px;flex-shrink:0;margin-top:1px;">📱</span>
-        <p style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);line-height:1.6;text-align:right;">
-          <strong style="color:var(--cyan);font-size:12px;">נכנסים מהאפליקציה?</strong><br>
-          עקב מדיניות גוגל, כניסה עם גוגל מחייבת שימוש בדפדפן. מהאפליקציה — השתמשו <strong style="color:#fff;">במייל וסיסמה</strong> בלבד.
-        </p>
-      </div>
-
+      <!-- Google login -->
       <button id="btn-google-login" class="btn-google modern-hover" style="margin-bottom:8px">
         <svg width="19" height="19" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
         כניסה עם גוגל
       </button>
-      <button onclick="window.location.reload()" style="width:100%;padding:10px;margin-bottom:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.10);border-radius:13px;color:rgba(255,255,255,0.45);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .15s,color .15s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='rgba(255,255,255,0.7)'" onmouseout="this.style.background='rgba(255,255,255,0.04)';this.style.color='rgba(255,255,255,0.45)'">
-        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
-        רענון הדף
-      </button>
 
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <!-- Reload + App notice — in one compact row -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:8px;">
+        <button onclick="window.location.reload()" style="display:flex;align-items:center;gap:5px;background:none;border:none;color:rgba(255,255,255,0.35);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;padding:4px 0;transition:color .15s;" onmouseover="this.style.color='rgba(255,255,255,0.7)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+          רענון הדף
+        </button>
+        <p style="font-size:10px;color:rgba(255,255,255,0.28);font-weight:600;text-align:left;line-height:1.4;">📱 מאפליקציה — השתמש במייל וסיסמה</p>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
         <div style="flex:1;height:1px;background:rgba(255,255,255,0.06)"></div>
-        <span style="font-size:11px;color:rgba(255,255,255,0.28);font-weight:700;letter-spacing:.1em">או עם אימייל</span>
+        <span style="font-size:11px;color:rgba(255,255,255,0.25);font-weight:700;letter-spacing:.1em">או עם אימייל</span>
         <div style="flex:1;height:1px;background:rgba(255,255,255,0.06)"></div>
       </div>
 
@@ -612,7 +609,7 @@
       </div>
       <input id="login-email" class="inp modern-hover" type="email" placeholder="כתובת אימייל" autocomplete="email" style="margin-bottom:9px">
 
-      <!-- Password field with show/hide toggle -->
+      <!-- Password + forgot in one row -->
       <div class="pass-wrap" style="margin-bottom:0">
         <input id="login-pass" class="inp modern-hover" type="password" placeholder="סיסמה" autocomplete="new-password" data-lpignore="true" data-form-type="other">
         <button type="button" class="pass-eye" id="btn-pass-eye" aria-label="הצג/הסתר סיסמה">
@@ -620,13 +617,13 @@
           <svg id="eye-icon-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
         </button>
       </div>
-      <div style="text-align:left;margin-top:6px">
-        <button id="btn-forgot-pass" type="button" style="background:none;border:none;color:rgba(0,229,255,0.65);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;padding:0;transition:color .15s;" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='rgba(0,229,255,0.65)'">שכחת סיסמה?</button>
+      <div style="text-align:left;margin-top:5px;margin-bottom:2px;">
+        <button id="btn-forgot-pass" type="button" style="background:none;border:none;color:rgba(0,229,255,0.55);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;padding:0;transition:color .15s;" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='rgba(0,229,255,0.55)'">שכחת סיסמה?</button>
       </div>
 
-      <div id="login-err" class="err hidden" style="margin-top:8px"></div>
-      <button id="btn-email-auth" class="btn btn-cyan modern-hover" style="margin-top:13px">כניסה לחשבון</button>
-      <button id="btn-toggle-mode" class="link-btn" style="margin-top:6px">עוד אין לך חשבון? לחץ כאן ←</button>
+      <div id="login-err" class="err hidden" style="margin-top:8px;line-height:1.5;"></div>
+      <button id="btn-email-auth" class="btn btn-cyan modern-hover" style="margin-top:12px">כניסה לחשבון</button>
+      <button id="btn-toggle-mode" class="link-btn" style="margin-top:4px">עוד אין לך חשבון? לחץ כאן ←</button>
     </div>
   </div>
 </div>
@@ -1502,7 +1499,7 @@
         hide('login-name-wrap');
         $('btn-email-auth').textContent='כניסה לחשבון';
         $('btn-toggle-mode').textContent='עוד אין לך חשבון? לחץ כאן ←';
-        showLoginOk('✓ נשלח אימייל לכתובת <strong>'+email+'</strong> — לחץ על הקישור ואז התחבר. <span style="color:var(--green);">(ייתכן שהמייל בספאם!)</span>');
+        showLoginOk('✓ נשלח אימייל לכתובת <strong>'+email+'</strong><br>לחץ על הקישור לאימות, ואז <strong>רענן את הדף</strong> והתחבר.<br><span style="color:rgba(255,255,255,0.45);font-size:11px;">(בדוק גם בספאם)</span>');
       }).catch(function(e){
         resetBtn();
         if(e.code==='auth/email-already-in-use'){
