@@ -620,6 +620,9 @@
           <svg id="eye-icon-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
         </button>
       </div>
+      <div style="text-align:left;margin-top:6px">
+        <button id="btn-forgot-pass" type="button" style="background:none;border:none;color:rgba(0,229,255,0.65);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;padding:0;transition:color .15s;" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='rgba(0,229,255,0.65)'">שכחת סיסמה?</button>
+      </div>
 
       <div id="login-err" class="err hidden" style="margin-top:8px"></div>
       <button id="btn-email-auth" class="btn btn-cyan modern-hover" style="margin-top:13px">כניסה לחשבון</button>
@@ -1053,6 +1056,38 @@
     inp.type = isText ? 'password' : 'text';
     $('eye-icon-open').style.display  = isText ? 'block' : 'none';
     $('eye-icon-closed').style.display= isText ? 'none'  : 'block';
+  };
+
+  /* ── Forgot password ── */
+  $('btn-forgot-pass').onclick = function(){
+    var email = $('login-email').value.trim();
+    if(!email){
+      showLoginErr('הזן את כתובת האימייל שלך בשדה למעלה ולחץ שוב.');
+      return;
+    }
+    var btn = this;
+    btn.textContent = 'שולח...';
+    btn.style.pointerEvents = 'none';
+    auth.sendPasswordResetEmail(email, {
+      url: 'https://a4190656-cloud.github.io/AO-TIMLulll/',
+      handleCodeInApp: false
+    }).then(function(){
+      btn.textContent = 'שכחת סיסמה?';
+      btn.style.pointerEvents = 'auto';
+      showLoginOk('✓ נשלח מייל לאיפוס סיסמה לכתובת <strong>' + email + '</strong> — בדוק גם ספאם.');
+    }).catch(function(e){
+      btn.textContent = 'שכחת סיסמה?';
+      btn.style.pointerEvents = 'auto';
+      if(e.code === 'auth/user-not-found'){
+        showLoginErr('לא נמצא חשבון עם מייל זה.');
+      } else if(e.code === 'auth/invalid-email'){
+        showLoginErr('כתובת מייל לא תקינה.');
+      } else if(e.code === 'auth/too-many-requests'){
+        showLoginErr('יותר מדי ניסיונות. המתן מספר דקות ונסה שוב.');
+      } else {
+        showLoginErr('שגיאה בשליחה. נסה שוב.');
+      }
+    });
   };
 
   /* ── Nav ── */
