@@ -546,7 +546,6 @@
 </head>
 <body>
 
-<!-- ═══════════════ LOADING ═══════════════ -->
 <div id="screen-loading" class="screen">
   <div class="logo-frame" style="width:62px;height:62px;margin-bottom:18px">
     <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" style="width:56px;height:56px">
@@ -570,7 +569,6 @@
   </script>
 </div>
 
-<!-- ═══════════════ LOGIN ═══════════════ -->
 <div id="screen-login" class="screen hidden">
   <div style="width:100%;max-width:370px">
     <div style="text-align:center;margin-bottom:30px" class="rise">
@@ -583,13 +581,11 @@
 
     <div class="card rise d1" style="padding:24px 20px">
 
-      <!-- Google login -->
       <button id="btn-google-login" class="btn-google modern-hover" style="margin-bottom:8px">
         <svg width="19" height="19" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
         כניסה עם גוגל
       </button>
 
-      <!-- Reload + App notice — in one compact row -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:8px;">
         <button onclick="window.location.reload()" style="display:flex;align-items:center;gap:5px;background:none;border:none;color:rgba(255,255,255,0.35);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;padding:4px 0;transition:color .15s;" onmouseover="this.style.color='rgba(255,255,255,0.7)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">
           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
@@ -609,7 +605,6 @@
       </div>
       <input id="login-email" class="inp modern-hover" type="email" placeholder="כתובת אימייל" autocomplete="email" style="margin-bottom:9px">
 
-      <!-- Password + forgot in one row -->
       <div class="pass-wrap" style="margin-bottom:0">
         <input id="login-pass" class="inp modern-hover" type="password" placeholder="סיסמה" autocomplete="new-password" data-lpignore="true" data-form-type="other">
         <button type="button" class="pass-eye" id="btn-pass-eye" aria-label="הצג/הסתר סיסמה">
@@ -628,7 +623,6 @@
   </div>
 </div>
 
-<!-- ═══════════════ SET NAME ═══════════════ -->
 <div id="screen-setname" class="screen hidden">
   <div style="width:100%;max-width:340px">
     <div style="text-align:center;margin-bottom:26px" class="rise">
@@ -646,13 +640,11 @@
   </div>
 </div>
 
-<!-- ═══════════════ APP ═══════════════ -->
 <div id="app" class="hidden">
 
   <div id="ticker-wrap"><div id="ticker-inner"></div></div>
 
   <div style="padding:20px 16px 0">
-    <!-- Header -->
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px" class="rise">
       <div style="display:flex;align-items:center;gap:11px">
         <div class="logo-frame modern-hover" style="width:42px;height:42px">
@@ -678,7 +670,6 @@
       </div>
     </div>
 
-    <!-- Hero balance card -->
     <div class="hero-card rise d1 modern-hover" style="padding:24px 18px;text-align:center">
       <p style="color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px">יתרה פנויה</p>
       <div style="display:flex;align-items:center;justify-content:center;gap:14px;">
@@ -704,7 +695,6 @@
       <div style="width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);margin:10px auto 0;opacity:.4"></div>
     </div>
 
-    <!-- Stats row -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:11px" class="rise d2">
       <div class="card modern-hover" style="padding:11px 8px;text-align:center;border-top:1px solid rgba(0,230,118,0.22)">
         <p style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.06em;margin-bottom:3px">הכנסות</p>
@@ -723,7 +713,6 @@
 
   <div style="padding:16px 16px 0">
 
-    <!-- ── DASHBOARD VIEW ── -->
     <div id="view-dashboard">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:20px" class="rise d3">
         <button id="btn-add-income" class="action-btn-income">
@@ -755,7 +744,6 @@
       </div>
     </div>
 
-    <!-- ── CATEGORIES VIEW ── -->
     <div id="view-categories" class="hidden">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
         <p style="font-weight:700;font-size:14px">קטגוריות אישיות</p>
@@ -774,7 +762,6 @@
       <div id="cat-list2"></div>
     </div>
 
-    <!-- ── SETTINGS VIEW ── -->
     <div id="view-settings" class="hidden">
 
       <div class="settings-section-title">תשלומים קבועים</div>
@@ -861,7 +848,6 @@
         </div>
       </div>
 
-      <!-- ── ACCOUNT SECTION ── -->
       <div class="settings-section-title" style="margin-top:6px;">חשבון</div>
 
       <div class="sblock modern-hover">
@@ -878,7 +864,6 @@
         </div>
       </div>
 
-      <!-- ── DELETE ACCOUNT ── -->
       <div class="sblock modern-hover" style="border-color:rgba(255,23,68,0.15);">
         <div class="sblock-head" style="border-bottom-color:rgba(255,23,68,0.10);background:rgba(255,23,68,0.03);">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
@@ -931,12 +916,10 @@
   </nav>
 </div>
 
-<!-- ═══════════════ MODAL (income/expense) ═══════════════ -->
 <div id="modal-overlay" class="hidden" onclick="handleOverlayClick(event)">
   <div id="modal-sheet" class="slide-up" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
     <h3 id="modal-title" style="text-align:center;font-size:17px;font-weight:700;margin-bottom:18px"></h3>
-    <!-- autocomplete="off" + role="presentation" prevents Chrome from treating this as a login form -->
     <form autocomplete="off" role="presentation" style="display:contents">
       <input id="modal-amount" class="inp mono modern-hover" type="text" inputmode="decimal"
         placeholder="0" autocomplete="off" name="budget-amount" role="presentation"
@@ -959,10 +942,8 @@
   </div>
 </div>
 
-<!-- ═══════════════ DELETE ACCOUNT CONFIRM MODAL ═══════════════ -->
 <div id="delete-confirm-overlay" class="hidden">
   <div id="delete-confirm-sheet">
-    <!-- Icon -->
     <div style="text-align:center;margin-bottom:18px;">
       <div style="width:58px;height:58px;border-radius:50%;background:rgba(255,23,68,0.12);border:2px solid rgba(255,23,68,0.35);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 0 24px rgba(255,23,68,0.20);">
         <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF4060" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
@@ -971,7 +952,6 @@
       <p style="color:rgba(255,255,255,0.45);font-size:12px;line-height:1.7;">כל הנתונים, ההיסטוריה, הקטגוריות<br>וההגדרות שלך יימחקו לצמיתות.<br><strong style="color:#FF8080;">פעולה זו בלתי הפיכה לחלוטין.</strong></p>
     </div>
 
-    <!-- Confirm input -->
     <p style="font-size:12px;color:rgba(255,255,255,0.40);margin-bottom:6px;text-align:center;">הקלד <strong style="color:#FF6080;font-family:'JetBrains Mono',monospace;">מחק</strong> לאישור</p>
     <input id="delete-confirm-input" class="inp" type="text" placeholder="הקלד: מחק"
       autocomplete="off" name="delete-confirm"
@@ -987,7 +967,6 @@
   </div>
 </div>
 
-<!-- ═══════════════ SUCCESS OVERLAY ═══════════════ -->
 <div id="success-overlay" class="hidden">
   <div class="success-backdrop"></div>
   <div id="success-card" class="success-card">
@@ -1071,7 +1050,7 @@
     }).then(function(){
       btn.textContent = 'שכחת סיסמה?';
       btn.style.pointerEvents = 'auto';
-      showLoginOk('✓ נשלח מייל לאיפוס סיסמה לכתובת <strong>' + email + '</strong> — בדוק גם ספאם.<br><a onclick="window.location.reload()" style="color:#00BFFF;font-size:12px;font-weight:700;cursor:pointer;text-decoration:underline;">רעננו את הדף לאחר האימות!</a>');
+      showLoginOk('✓ נשלח מייל לאיפוס סיסמה לכתובת <strong>' + email + '</strong> — בדוק גם ספאם.<br><button onclick="window.location.reload()" style="background:none;border:none;color:#4285F4;text-decoration:underline;cursor:pointer;font-weight:bold;font-family:\'Syne\',sans-serif;font-size:13px;padding:0;margin-top:4px;">רעננו את הדף לאחר האימות!</button>');
     }).catch(function(e){
       btn.textContent = 'שכחת סיסמה?';
       btn.style.pointerEvents = 'auto';
@@ -1499,7 +1478,7 @@
         hide('login-name-wrap');
         $('btn-email-auth').textContent='כניסה לחשבון';
         $('btn-toggle-mode').textContent='עוד אין לך חשבון? לחץ כאן ←';
-        showLoginOk('✓ נשלח אימייל לכתובת <strong>'+email+'</strong><br>לחץ על הקישור לאימות, ואז <strong>רענן את הדף</strong> והתחבר.<br><span style="color:rgba(255,255,255,0.45);font-size:11px;">(בדוק גם בספאם)</span><br><a onclick="window.location.reload()" style="color:#00BFFF;font-size:12px;font-weight:700;cursor:pointer;text-decoration:underline;">רעננו את הדף לאחר האימות!</a>');
+        showLoginOk('✓ נשלח אימייל לכתובת <strong>'+email+'</strong><br>לחץ על הקישור לאימות, ואז <strong>רענן את הדף</strong> והתחבר.<br><span style="color:rgba(255,255,255,0.45);font-size:11px;">(בדוק גם בספאם)</span><br><button onclick="window.location.reload()" style="background:none;border:none;color:#4285F4;text-decoration:underline;cursor:pointer;font-weight:bold;font-family:\'Syne\',sans-serif;font-size:13px;padding:0;margin-top:4px;">רעננו את הדף לאחר האימות!</button>');
       }).catch(function(e){
         resetBtn();
         if(e.code==='auth/email-already-in-use'){
@@ -1527,7 +1506,7 @@
         if(!cred.user.emailVerified){
           auth.signOut();
           /* Offer to resend verification */
-          showLoginOk('המייל טרם אומת. <button onclick="resendVerif(\''+email+'\',\''+pass+'\')" style="background:none;border:none;color:var(--cyan);font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-decoration:underline;padding:0;">שלח שוב</button> <span style="color:rgba(255,255,255,0.4)">(כולל ספאם)</span>');
+          showLoginOk('המייל טרם אומת. <button onclick="resendVerif(\''+email+'\',\''+pass+'\')" style="background:none;border:none;color:var(--cyan);font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-decoration:underline;padding:0;">שלח שוב</button> <span style="color:rgba(255,255,255,0.4)">(כולל ספאם)</span><br><button onclick="window.location.reload()" style="background:none;border:none;color:#4285F4;text-decoration:underline;cursor:pointer;font-weight:bold;font-family:\'Syne\',sans-serif;font-size:13px;padding:0;margin-top:4px;">רעננו את הדף לאחר האימות!</button>');
         }
         /* else: onAuthStateChanged fires and calls bootApp */
       }).catch(function(e){
@@ -1553,7 +1532,7 @@
       var actionSettings = { url:'https://a4190656-cloud.github.io/AO-TIMLulll/', handleCodeInApp:false };
       return cred.user.sendEmailVerification(actionSettings).then(function(){ return auth.signOut(); });
     }).then(function(){
-      showLoginOk('✓ נשלח מחדש לכתובת <strong>'+email+'</strong> <span style="color:var(--green);">(בדוק גם ספאם!)</span><br><a onclick="window.location.reload()" style="color:#00BFFF;font-size:12px;font-weight:700;cursor:pointer;text-decoration:underline;">רעננו את הדף לאחר האימות!</a>');
+      showLoginOk('✓ נשלח מחדש לכתובת <strong>'+email+'</strong> <span style="color:var(--green);">(בדוק גם ספאם!)</span><br><button onclick="window.location.reload()" style="background:none;border:none;color:#4285F4;text-decoration:underline;cursor:pointer;font-weight:bold;font-family:\'Syne\',sans-serif;font-size:13px;padding:0;margin-top:4px;">רעננו את הדף לאחר האימות!</button>');
     }).catch(function(){ showLoginErr('שגיאה בשליחה. נסה שוב.'); });
   };
 
