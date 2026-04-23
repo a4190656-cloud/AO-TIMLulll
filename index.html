@@ -364,7 +364,7 @@
     }
     .modal-handle { width:38px; height:4px; background:rgba(255,255,255,0.14); border-radius:10px; margin:0 auto 18px; }
 
-    /* ── TX ROWS ── */
+    /* ── TX ROWS & WA TAG ── */
     .tx-row { display:flex; justify-content:space-between; align-items:center; padding:13px 16px; transition:background .15s; }
     .tx-row:hover { background:rgba(255,255,255,0.025); }
     .tx-icon { width:34px; height:34px; border-radius:11px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
@@ -372,6 +372,11 @@
       display:inline-block; font-size:10px;
       background:rgba(0,229,255,0.10); border:1px solid rgba(0,229,255,0.18);
       padding:2px 7px; border-radius:6px; margin-right:6px; color:rgba(0,229,255,0.85); vertical-align:middle;
+    }
+    .wa-tag {
+      display:inline-flex; align-items:center; gap:3px; font-size:9px; font-weight:700;
+      color:#25D366; background:rgba(37,211,102,0.1); border:1px solid rgba(37,211,102,0.25);
+      padding:2px 6px; border-radius:6px; margin-right:6px; vertical-align:middle;
     }
 
     /* ── SETTINGS BLOCKS ── */
@@ -1065,6 +1070,16 @@
     show(name);
   }
 
+  /* פונקציית פענוח תאריכים חכמה שתומכת ב-Timestamp מהבוט */
+  function parseDate(d) {
+    if (!d) return new Date();
+    // אם הבוט שמר Firestore Timestamp
+    if (d.toDate) return d.toDate();
+    if (d.seconds) return new Date(d.seconds * 1000);
+    // ברירת מחדל
+    return new Date(d);
+  }
+
   /* ── Format Phone Number to 972... ── */
   window.formatPhone = function(p) {
     var c = p.replace(/\D/g, '');
@@ -1140,14 +1155,14 @@
   }
   function calcIncome(){
     var s = cycleStart();
-    return incomes.filter(function(i){ return new Date(i.date)>=s; })
+    return incomes.filter(function(i){ return parseDate(i.date)>=s; })
                   .reduce(function(a,i){ return a+Number(i.amount||0); },0)
          + fixedIncomes.reduce(function(a,i){ return a+Number(i.amount||0); },0);
   }
   function calcFixedExp(){ return fixedExpenses.reduce(function(a,i){ return a+Number(i.amount||0); },0); }
   function calcVarExp(){
     var s = cycleStart();
-    return expenses.filter(function(i){ return new Date(i.date)>=s; })
+    return expenses.filter(function(i){ return parseDate(i.date)>=s; })
                    .reduce(function(a,i){ return a+Number(i.amount||0); },0);
   }
   function calcBal(){ return calcIncome()-calcFixedExp()-calcVarExp(); }
@@ -1200,14 +1215,15 @@
   /* ── Render TX ── */
   function renderTx(){
     var s=cycleStart(), all=[];
-    incomes.forEach(function(i){ if(new Date(i.date)>=s) all.push(Object.assign({},i,{_t:'income'})); });
-    expenses.forEach(function(i){ if(new Date(i.date)>=s) all.push(Object.assign({},i,{_t:'expense'})); });
-    all.sort(function(a,b){ return new Date(b.date)-new Date(a.date); });
+    incomes.forEach(function(i){ if(parseDate(i.date)>=s) all.push(Object.assign({},i,{_t:'income'})); });
+    expenses.forEach(function(i){ if(parseDate(i.date)>=s) all.push(Object.assign({},i,{_t:'expense'})); });
+    all.sort(function(a,b){ return parseDate(b.date)-parseDate(a.date); });
     var el=$('tx-list');
     if(!all.length){ el.innerHTML='<div style="padding:30px;text-align:center;color:var(--muted);font-size:13px">אין תנועות במחזור הנוכחי</div>'; return; }
     el.innerHTML=all.map(function(item,idx){
       var isInc=item._t==='income', notLast=idx<all.length-1;
       var catHtml=item.category?'<span class="cat-tag">'+item.category+'</span>':'';
+      var waHtml = item.source === 'WhatsApp' ? '<span class="wa-tag"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> התעדכן מהוואטסאפ</span>' : '';
       return '<div class="tx-row modern-hover"'+(notLast?' style="border-bottom:1px solid rgba(255,255,255,0.04)"':'')+'>'+
         '<div style="display:flex;align-items:center;gap:11px">'+
         '<div class="tx-icon" style="background:'+(isInc?'rgba(0,230,118,0.1)':'rgba(255,255,255,0.05)')+';border:1px solid '+(isInc?'rgba(0,230,118,0.2)':'rgba(255,255,255,0.08)')+'">'+
@@ -1215,8 +1231,8 @@
           ?'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>'
           :'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>')+
         '</div>'+
-        '<div><p style="font-weight:600;font-size:13px;line-height:1.3">'+catHtml+(item.description||'')+'</p>'+
-        '<p class="mono" style="font-size:10px;color:var(--muted);margin-top:2px">'+new Date(item.date).toLocaleDateString('he-IL')+'</p></div></div>'+
+        '<div><p style="font-weight:600;font-size:13px;line-height:1.3;display:flex;align-items:center;flex-wrap:wrap;gap:4px;">'+catHtml+(item.description||'')+waHtml+'</p>'+
+        '<p class="mono" style="font-size:10px;color:var(--muted);margin-top:2px">'+parseDate(item.date).toLocaleDateString('he-IL')+'</p></div></div>'+
         '<div style="display:flex;align-items:center;gap:11px">'+
         '<span class="mono" style="font-weight:700;font-size:13px;color:'+(isInc?'var(--green)':'var(--text)')+'">'+
         (isInc?'+':'−')+fmt(item.amount)+'</span>'+
@@ -1269,12 +1285,14 @@
   }
 
   /* ══════════════════════════════════════════════
-     FIRESTORE LISTENERS
+     FIRESTORE LISTENERS — get() fallback first,
+     then onSnapshot for live updates
   ══════════════════════════════════════════════ */
   function startListeners(){
     unsubs.forEach(function(u){ try{ u(); }catch(e){} }); unsubs=[];
     var uRef = db.collection('users').doc(uid);
 
+    /* User profile — silent fail on snapshot, just use get() data */
     unsubs.push(uRef.onSnapshot({ includeMetadataChanges: false }, function(doc){
       if(!doc.exists) return;
       var d = doc.data();
@@ -1284,16 +1302,13 @@
         var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
         var si=$('settings-name-input'); if(si) si.value=displayName;
       }
-      if(d.phone !== undefined) {
-        var pi=$('settings-phone-input'); if(pi && document.activeElement !== pi) pi.value = d.phone;
-      }
-    }, function(){ /* ignore */ }));
+    }, function(){ /* ignore permission errors silently */ }));
 
     function snapCol(name, assign, extra){
       unsubs.push(uRef.collection(name).onSnapshot(function(s){
         assign(s.docs.map(function(d){ return Object.assign({id:d.id},d.data()); }));
         renderAll(); if(extra) extra();
-      }, function(){
+      }, function(){ /* if blocked, fallback to get() once */
         uRef.collection(name).get().then(function(s){
           assign(s.docs.map(function(d){ return Object.assign({id:d.id},d.data()); }));
           renderAll(); if(extra) extra();
@@ -1309,37 +1324,28 @@
   }
 
   /* ══════════════════════════════════════════════
-     BOOT
+     BOOT — called once we know the user is valid.
+     Handles name setup, then launches the app.
   ══════════════════════════════════════════════ */
   function bootApp(user){
     uid = user.uid;
+    /* Try Firestore profile first, fall back gracefully */
     db.collection('users').doc(uid).get().then(function(snap){
-      var d = snap.exists ? snap.data() : {};
-      var name = d.displayName || user.displayName || null;
-      
+      var savedName = snap.exists ? snap.data().displayName : null;
+      var authName  = user.displayName || null;
+      var name      = savedName || authName || null;
       if(!name){
         showScreen('screen-setname');
         return;
       }
       displayName = name;
-
+      showScreen('app');
       var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
       var si=$('settings-name-input'); if(si) si.value=displayName;
-      var ri=$('reset-day-input'); if(ri) ri.value=d.resetDay || resetDay;
-
-      // טיפול במספר פלאפון ובחלון קופץ
-      var phone = d.phone || '';
-      var pi=$('settings-phone-input'); if(pi) pi.value=phone;
-
-      if(!phone && !d.phonePrompted){
-        showScreen('app'); // נראה את האפליקציה מאחור
-        show('phone-modal-overlay');
-      } else {
-        showScreen('app');
-      }
-
+      var ri=$('reset-day-input'); if(ri) ri.value=resetDay;
       startListeners();
     }).catch(function(){
+      /* Firestore blocked (e.g. NextDNS/Netfree) — still show app with auth name */
       var name = user.displayName || user.email.split('@')[0];
       displayName = name;
       showScreen('app');
@@ -1350,10 +1356,10 @@
   }
 
   /* ══════════════════════════════════════════════
-     AUTH STATE
+     AUTH STATE — with 4s timeout safety net
   ══════════════════════════════════════════════ */
   var authResolved = false;
-  var appBooted    = false;
+  var appBooted    = false; /* prevent double-boot */
   var authTimeout  = setTimeout(function(){
     if(!authResolved){
       authResolved = true;
@@ -1362,31 +1368,37 @@
   }, 4000);
 
   auth.onAuthStateChanged(function(user){
+    /* Clear the timeout whenever auth responds */
     clearTimeout(authTimeout);
 
     if(!user){
       authResolved = true;
       appBooted    = false;
       uid          = null;
+      /* Reset Google button so it works again after sign-out */
       var gBtn = $('btn-google-login');
       if(gBtn){ gBtn.disabled=false; gBtn.style.opacity='1'; }
       showScreen('screen-login');
       return;
     }
 
+    /* Mark resolved so timeout doesn't fire */
     authResolved = true;
+
+    /* Don't boot twice for the same user session */
     if(appBooted && uid === user.uid) return;
 
+    /* Email/password users must verify email */
     var isEmailProvider = user.providerData.some(function(p){ return p.providerId==='password'; });
     if(isEmailProvider && !user.emailVerified){
-      auth.signOut();
+      auth.signOut(); /* triggers onAuthStateChanged again with user=null */
       setTimeout(function(){
-        var el=$('login-err');
-        if(el){
-          el.style.color='var(--green)';
-          el.innerHTML='✓ נשלח אימייל אימות — בדוק את תיבת הדואר (כולל ספאם) ולחץ על הקישור.<br><button type="button" onclick="window.location.reload()" style="background:none; border:none; color:#00BFFF; text-decoration:underline; cursor:pointer; font-weight:bold; font-family:\'Syne\', sans-serif; font-size:14px; padding:0; margin-top:12px;">רעננו את הדף לאחר האימות!</button>';
-          show('login-err');
-        }
+     var el=$('login-err');
+  if(el){
+      el.style.color='var(--green)';
+      el.innerHTML='✓ נשלח אימייל אימות — בדוק את תיבת הדואר (כולל ספאם) ולחץ על הקישור.<br><button type="button" onclick="window.location.reload()" style="background:none; border:none; color:#00BFFF; text-decoration:underline; cursor:pointer; font-weight:bold; font-family:\'Syne\', sans-serif; font-size:14px; padding:0; margin-top:12px;">רעננו את הדף לאחר האימות!</button>';
+      show('login-err');
+  }
       }, 300);
       return;
     }
@@ -1397,6 +1409,9 @@
 
   /* ══════════════════════════════════════════════
      GOOGLE LOGIN
+     — tries popup first, falls back to redirect
+       (redirect is needed for some mobile browsers
+       and privacy-focused DNS filters like Netfree)
   ══════════════════════════════════════════════ */
   $('btn-google-login').onclick = function(){
     var btn = this;
@@ -1406,9 +1421,11 @@
     provider.setCustomParameters({ prompt: 'select_account' });
 
     auth.signInWithPopup(provider).then(function(){
+      /* onAuthStateChanged handles the rest — button re-enabled on signout or after boot */
       btn.disabled=false; btn.style.opacity='1';
     }).catch(function(e){
       if(e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request'){
+        /* Popup blocked — fall back to redirect (works on Netfree, mobile, etc.) */
         auth.signInWithRedirect(provider).catch(function(e2){
           btn.disabled=false; btn.style.opacity='1';
           showLoginErr('לא ניתן לפתוח חלון כניסה. נסה דפדפן אחר.');
@@ -1416,6 +1433,7 @@
         return;
       }
       if(e.code === 'auth/account-exists-with-different-credential'){
+        /* User already has email/password account — sign in with email and link */
         var pendingCred = e.credential;
         var email       = e.email;
         auth.fetchSignInMethodsForEmail(email).then(function(methods){
@@ -1426,6 +1444,7 @@
               return cred.user.linkWithCredential(pendingCred);
             }).then(function(){
               btn.disabled=false; btn.style.opacity='1';
+              /* linked — onAuthStateChanged fires */
             }).catch(function(){
               btn.disabled=false; btn.style.opacity='1';
               showLoginErr('שגיאה בקישור החשבונות. נסה שוב.');
@@ -1444,7 +1463,10 @@
     });
   };
 
-  auth.getRedirectResult().then(function(result){}).catch(function(e){
+  /* Handle redirect result on page load (for Netfree / popup-blocked fallback) */
+  auth.getRedirectResult().then(function(result){
+    /* If redirect login succeeded — onAuthStateChanged handles it */
+  }).catch(function(e){
     if(e.code === 'auth/account-exists-with-different-credential'){
       showLoginErr('חשבון עם מייל זה כבר קיים. השתמש בכניסה עם מייל וסיסמה.');
     }
@@ -1486,7 +1508,7 @@
   };
 
   /* ══════════════════════════════════════════════
-     EMAIL AUTH
+     EMAIL AUTH — login + register
   ══════════════════════════════════════════════ */
   $('btn-email-auth').onclick = function(){
     var email = $('login-email').value.trim();
@@ -1502,6 +1524,7 @@
     function resetBtn(){ btn.disabled=false; btn.style.opacity='1'; }
 
     if(isRegMode){
+      /* ─── REGISTER ─── */
       if(pass.length < 6){ showLoginErr('הסיסמה חייבת להכיל לפחות 6 תווים.'); resetBtn(); return; }
 
       auth.createUserWithEmailAndPassword(email, pass).then(function(cred){
@@ -1523,6 +1546,7 @@
       }).catch(function(e){
         resetBtn();
         if(e.code==='auth/email-already-in-use'){
+          /* Maybe they registered with Google first — try linking */
           auth.fetchSignInMethodsForEmail(email).then(function(methods){
             if(methods.indexOf('google.com')>=0 && methods.indexOf('password')<0){
               showLoginErr('מייל זה משויך לחשבון גוגל. כנס עם גוגל תחילה.');
@@ -1540,12 +1564,15 @@
       });
 
     } else {
+      /* ─── LOGIN ─── */
       auth.signInWithEmailAndPassword(email, pass).then(function(cred){
         resetBtn();
         if(!cred.user.emailVerified){
           auth.signOut();
+          /* Offer to resend verification */
           showLoginOk('המייל טרם אומת. <button onclick="resendVerif(\''+email+'\',\''+pass+'\')" style="background:none;border:none;color:var(--cyan);font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-decoration:underline;padding:0;">שלח שוב</button> <span style="color:rgba(255,255,255,0.4)">(כולל ספאם)</span><br><button onclick="window.location.reload()" style="background:none;border:none;color:#4285F4;text-decoration:underline;cursor:pointer;font-weight:bold;font-family:\'Syne\',sans-serif;font-size:13px;padding:0;margin-top:4px;">רעננו את הדף לאחר האימות!</button>');
         }
+        /* else: onAuthStateChanged fires and calls bootApp */
       }).catch(function(e){
         resetBtn();
         if(e.code==='auth/user-not-found' || e.code==='auth/wrong-password' || e.code==='auth/invalid-credential'){
@@ -1563,6 +1590,7 @@
     }
   };
 
+  /* Resend verification email */
   window.resendVerif = function(email, pass){
     auth.signInWithEmailAndPassword(email, pass).then(function(cred){
       var actionSettings = { url:'https://a4190656-cloud.github.io/AO-TIMLulll/', handleCodeInApp:false };
@@ -1584,6 +1612,7 @@
     user.updateProfile({displayName:name}).then(function(){
       return db.collection('users').doc(user.uid).set({displayName:name},{merge:true}).catch(function(){});
     }).then(function(){
+      /* Boot the app directly — no page reload needed */
       displayName = name;
       appBooted = true;
       uid = user.uid;
@@ -1598,9 +1627,10 @@
     });
   };
 
-  /* ── Sign out ── */
+  /* ── Sign out (header) ── */
   $('btn-signout').onclick=function(){ unsubs.forEach(function(u){ u(); }); auth.signOut(); };
 
+  /* ── Disconnect button in settings ── */
   $('btn-disconnect').onclick=function(){
     if(!confirm('להתנתק מהחשבון?')) return;
     unsubs.forEach(function(u){ u(); });
@@ -1624,7 +1654,9 @@
     $('btn-confirm-delete').style.opacity=ok?'1':'0.4';
   };
 
-  $('btn-cancel-delete').onclick=function(){ hide('delete-confirm-overlay'); };
+  $('btn-cancel-delete').onclick=function(){
+    hide('delete-confirm-overlay');
+  };
 
   $('btn-confirm-delete').onclick=function(){
     if($('delete-confirm-input').value.trim()!=='מחק') return;
@@ -1636,6 +1668,7 @@
     if(!user){ hide('delete-confirm-overlay'); return; }
     var userUid=user.uid;
 
+    /* Delete all subcollections then user doc then Firebase Auth account */
     function deleteCollection(colName){
       return db.collection('users').doc(userUid).collection(colName).get().then(function(snap){
         var batch=db.batch();
@@ -1659,6 +1692,7 @@
       hide('delete-confirm-overlay');
       showScreen('screen-login');
     }).catch(function(e){
+      /* If requires-recent-login, re-authenticate first */
       if(e.code==='auth/requires-recent-login'){
         $('delete-err').textContent='נדרשת התחברות מחדש. התנתק והתחבר שוב, ואז נסה שוב.';
         show('delete-err');
@@ -1843,7 +1877,7 @@
       var colBdr=isInc?'rgba(0,230,118,0.20)':'rgba(255,23,68,0.18)';
       var colBar=isInc?'linear-gradient(90deg,var(--green),#00C853)':'linear-gradient(90deg,var(--red),#D50000)';
       var src=isInc?incomes:expenses;
-      var matched=src.filter(function(i){ return i.category===cat.name&&new Date(i.date)>=s; });
+      var matched=src.filter(function(i){ return i.category===cat.name&&parseDate(i.date)>=s; });
       var total=matched.reduce(function(a,i){ return a+Number(i.amount||0); },0);
       var count=matched.length;
       return '<div class="cat-tile" style="border:1px solid '+colBdr+';background:linear-gradient(145deg,'+colBg+',rgba(13,19,35,0.75));">'+
@@ -1896,11 +1930,13 @@
 })();
 
 /* --- לוגיקה לאיפוס סיסמה --- */
+
+// פונקציות עזר להצגת הודעות (תואם למבנה הקיים שלך)
 window.showLoginOk = function(message) {
     var msgElement = document.getElementById('message-box');
     if (msgElement) {
         msgElement.innerHTML = message;
-        msgElement.className = 'auth-msg success'; 
+        msgElement.className = 'auth-msg success'; // אם יש לך CSS כזה, או פשוט עיצוב ישיר:
         msgElement.style.cssText = "display:block; padding:10px; background:#d4edda; color:#155724; border-radius:5px; margin-bottom:10px; text-align:center;";
     } else {
         alert("המייל נשלח! בדוק את תיבת הדואר שלך.");
@@ -1917,7 +1953,10 @@ window.showLoginErr = function(message) {
     }
 };
 
+// פונקציה לשליחת המייל
 window.sendResetEmail = function() {
+    // מנסה למצוא את המייל מתוך ה-Input הקיים בדף שלך
+    // ודא של-input של המייל יש id="email" או שנה כאן ל-id המתאים
     var emailInput = document.getElementById('email'); 
     var email = emailInput ? emailInput.value : "";
     var btn = event.target;
