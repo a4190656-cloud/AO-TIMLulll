@@ -1360,11 +1360,13 @@
       });
   };
 
-  window.deletePhoneIdx = function(i) {
-    if(confirm('האם להסיר מספר זה מחיבור לבוט?')) {
+window.deletePhoneIdx = function(i) {
+    if(confirm('האם להסיר מספר זה מחיבור לבוט? לאחר ההסרה, המספר יהיה פנוי לחיבור בחשבון אחר.')) {
         var newArr = userPhones.slice();
+        // הסרת המספר מהמערך המקומי
         newArr.splice(i, 1);
-        updatePhonesInDB(newArr);
+        // עדכון המאגר ב-Firebase (משחרר את המספר)
+        updatePhonesInDB(newArr); 
     }
   };
 
