@@ -1837,6 +1837,64 @@
   };
 
 })();
+/* --- לוגיקה לאיפוס סיסמה --- */
+
+// פונקציות עזר להצגת הודעות (תואם למבנה הקיים שלך)
+window.showLoginOk = function(message) {
+    var msgElement = document.getElementById('message-box');
+    if (msgElement) {
+        msgElement.innerHTML = message;
+        msgElement.className = 'auth-msg success'; // אם יש לך CSS כזה, או פשוט עיצוב ישיר:
+        msgElement.style.cssText = "display:block; padding:10px; background:#d4edda; color:#155724; border-radius:5px; margin-bottom:10px; text-align:center;";
+    } else {
+        alert("המייל נשלח! בדוק את תיבת הדואר שלך.");
+    }
+};
+
+window.showLoginErr = function(message) {
+    var msgElement = document.getElementById('message-box');
+    if (msgElement) {
+        msgElement.innerHTML = message;
+        msgElement.style.cssText = "display:block; padding:10px; background:#f8d7da; color:#721c24; border-radius:5px; margin-bottom:10px; text-align:center;";
+    } else {
+        alert(message);
+    }
+};
+
+// פונקציה לשליחת המייל
+window.sendResetEmail = function() {
+    // מנסה למצוא את המייל מתוך ה-Input הקיים בדף שלך
+    // ודא של-input של המייל יש id="email" או שנה כאן ל-id המתאים
+    var emailInput = document.getElementById('email'); 
+    var email = emailInput ? emailInput.value : "";
+    var btn = event.target;
+
+    if (!email) {
+        showLoginErr('אנא הזן כתובת אימייל בתיבה למעלה.');
+        return;
+    }
+
+    var originalText = btn.textContent;
+    btn.textContent = 'שולח...';
+    btn.style.pointerEvents = 'none';
+
+    auth.sendPasswordResetEmail(email, {
+        url: 'https://a4190656-cloud.github.io/AO-TIMLulll/',
+        handleCodeInApp: false
+    }).then(function() {
+        btn.textContent = originalText;
+        btn.style.pointerEvents = 'auto';
+        
+        var successMsg = '✓ נשלח מייל לאיפוס סיסמה לכתובת <strong>' + email + '</strong>.<br>' +
+                         '<a onclick="window.location.reload()" style="color:#00BFFF; font-weight:bold; cursor:pointer; text-decoration:underline;">רעננו את הדף לאחר האימות!</a>';
+        showLoginOk(successMsg);
+    }).catch(function(e) {
+        btn.textContent = originalText;
+        btn.style.pointerEvents = 'auto';
+        if(e.code === 'auth/user-not-found') showLoginErr('לא נמצא חשבון עם מייל זה.');
+        else showLoginErr('שגיאה: ' + e.message);
+    });
+};
 </script>
 </body>
 </html>
