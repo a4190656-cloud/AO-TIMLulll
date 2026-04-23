@@ -1323,14 +1323,41 @@
     var p = input.value;
     if(!p) return;
     var fmtP = window.formatPhone(p);
+    
     if(userPhones && userPhones.includes(fmtP)) {
-        alert('מספר זה כבר קיים ברשימה המחוברת.');
+        alert('מספר זה כבר קיים ברשימה שלך.');
         return;
     }
-    var newArr = (userPhones || []).slice();
-    newArr.push(fmtP);
-    updatePhonesInDB(newArr);
-    input.value = '';
+
+    var msgEl = $('phone-action-msg');
+    msgEl.style.background = 'rgba(255,255,255,0.05)';
+    msgEl.style.color = 'rgba(255,255,255,0.7)';
+    msgEl.textContent = 'מוודא שהמספר פנוי...';
+    show('phone-action-msg');
+
+    // בדיקה במסד הנתונים האם המספר כבר מקושר לחשבון אחר
+    db.collection('users').where('phones', 'array-contains', fmtP).get()
+      .then(function(querySnapshot) {
+          if (!querySnapshot.empty) {
+              // המספר נמצא אצל מישהו אחר
+              msgEl.style.background = 'rgba(255,23,68,0.1)';
+              msgEl.style.color = 'var(--red)';
+              msgEl.textContent = '✗ המספר הזה כבר רשום בחשבון אחר במערכת!';
+              return;
+          }
+
+          // המספר פנוי - שומרים
+          var newArr = (userPhones || []).slice();
+          newArr.push(fmtP);
+          updatePhonesInDB(newArr);
+          input.value = '';
+      })
+      .catch(function(e) {
+          console.error('Error checking phone uniqueness:', e);
+          msgEl.style.background = 'rgba(255,23,68,0.1)';
+          msgEl.style.color = 'var(--red)';
+          msgEl.innerHTML = '✗ שגיאה בבדיקת המספר. ודא חיבור לרשת.';
+      });
   };
 
   window.deletePhoneIdx = function(i) {
@@ -2000,18 +2027,52 @@
     db.collection('users').doc(uid).set({phonePrompted: true}, {merge:true});
   };
 
-  $('btn-save-phone-modal').onclick = function() {
+$('btn-save-phone-modal').onclick = function() {
     var p = $('modal-phone-input').value;
-    if(p) {
-      var fmtP = window.formatPhone(p);
-      var newArr = (userPhones || []).slice();
-      if(!newArr.includes(fmtP)) newArr.push(fmtP);
-      db.collection('users').doc(uid).set({phones: newArr, phonePrompted: true}, {merge:true})
-        .catch(function(e) { console.error('Save modal phone failed:', e); });
-    } else {
+    if(!p) {
       db.collection('users').doc(uid).set({phonePrompted: true}, {merge:true});
+      hide('phone-modal-overlay');
+      return;
     }
-    hide('phone-modal-overlay');
+
+    var fmtP = window.formatPhone(p);
+    var btn = $('btn-save-phone-modal');
+    var originalText = btn.textContent;
+    btn.textContent = 'בודק זמינות...';
+    btn.disabled = true;
+
+    // בדיקת ייחודיות גם דרך הפופ-אפ
+    db.collection('users').where('phones', 'array-contains', fmtP).get()
+      .then(function(querySnapshot) {
+          if (!querySnapshot.empty) {
+              alert('המספר הזה כבר רשום בחשבון אחר במערכת! אנא הזן מספר אחר.');
+              btn.textContent = originalText;
+              btn.disabled = false;
+              return;
+          }
+
+          // המספר פנוי
+          var newArr = (userPhones || []).slice();
+          if(!newArr.includes(fmtP)) newArr.push(fmtP);
+          
+          db.collection('users').doc(uid).set({phones: newArr, phonePrompted: true}, {merge:true})
+            .then(function() {
+                hide('phone-modal-overlay');
+                btn.textContent = originalText;
+                btn.disabled = false;
+            })
+            .catch(function(e) { 
+                console.error('Save modal phone failed:', e); 
+                btn.textContent = originalText;
+                btn.disabled = false;
+            });
+      })
+      .catch(function(e) {
+          console.error('Error checking phone:', e);
+          alert('שגיאת רשת בבדיקת המספר.');
+          btn.textContent = originalText;
+          btn.disabled = false;
+      });
   };
 
 })();
