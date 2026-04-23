@@ -1426,7 +1426,7 @@ window.deletePhoneIdx = function(i) {
       } else if (d.phone) {
         // Migration from old single phone string to array
         userPhones = [d.phone];
-        db.collection('users').doc(uid).set({phones: userPhones}, {merge:true}).catch(function(){});').doc(uid).set({phones: userPhones, phone: firebase.firestore.FieldValue.delete()}, {merge:true}).catch(function(){});
+        db.collection('users').doc(uid).set({phones: userPhones}, {merge:true}).catch(function(){});
       } else {
         userPhones = [];
       }
