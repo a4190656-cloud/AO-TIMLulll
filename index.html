@@ -1329,12 +1329,12 @@
     if(isEmailProvider && !user.emailVerified){
       auth.signOut(); /* triggers onAuthStateChanged again with user=null */
       setTimeout(function(){
-        var el=$('login-err');
-        if(el){
-          el.style.color='var(--green)';
-          el.textContent='✓ נשלח אימייל אימות — בדוק את תיבת הדואר (כולל ספאם) ולחץ על הקישור.';
-          show('login-err');
-        }
+     var el=$('login-err');
+  if(el){
+      el.style.color='var(--green)';
+      el.innerHTML='✓ נשלח אימייל אימות — בדוק את תיבת הדואר (כולל ספאם) ולחץ על הקישור.<br><button type="button" onclick="window.location.reload()" style="background:none; border:none; color:#00BFFF; text-decoration:underline; cursor:pointer; font-weight:bold; font-family:\'Syne\', sans-serif; font-size:14px; padding:0; margin-top:12px;">רעננו את הדף לאחר האימות!</button>';
+      show('login-err');
+  }
       }, 300);
       return;
     }
