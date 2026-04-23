@@ -746,20 +746,20 @@
         <div style="padding:28px;text-align:center;color:var(--muted);font-size:13px">טוען...</div>
       </div>
       
-      <a href="https://wa.me/972532413778" target="_blank" class="sblock modern-hover" style="display:flex; align-items:center; justify-content:space-between; padding:12px 16px; margin-bottom:16px; text-decoration:none; background:linear-gradient(145deg, rgba(37,211,102,0.1), rgba(18,140,126,0.05)); border:1px solid rgba(37,211,102,0.3); border-radius:18px;">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <div style="width:38px; height:38px; border-radius:12px; background:rgba(37,211,102,0.15); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      <div class="sblock modern-hover" style="display:flex; margin-bottom:16px; background:linear-gradient(145deg, rgba(37,211,102,0.1), rgba(18,140,126,0.05)); border:1px solid rgba(37,211,102,0.3); border-radius:18px; overflow:hidden;">
+        <a href="https://wa.me/972532413778" target="_blank" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:14px 8px; text-decoration:none; border-left:1px solid rgba(37,211,102,0.2);">
+          <div style="width:34px; height:34px; border-radius:10px; background:rgba(37,211,102,0.15); display:flex; align-items:center; justify-content:center; margin-bottom:6px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
           </div>
-          <div>
-            <p style="color:#25D366; font-weight:800; font-size:14px; margin-bottom:2px;">בוט הוואטסאפ שלנו</p>
-            <p style="color:var(--muted); font-size:11px; font-weight:600; line-height:1.2;">הוסף תנועות ישירות מהצ'אט!</p>
+          <span style="color:#25D366; font-weight:800; font-size:13px; line-height:1.2; text-align:center;">לצ'אט עם הבוט</span>
+        </a>
+        <button onclick="switchView('settings'); setTimeout(function(){ document.getElementById('settings-phones-section').scrollIntoView({behavior:'smooth'}); }, 100);" style="flex:1; background:none; border:none; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:14px 8px; cursor:pointer;">
+          <div style="width:34px; height:34px; border-radius:10px; background:rgba(37,211,102,0.1); display:flex; align-items:center; justify-content:center; margin-bottom:6px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
           </div>
-        </div>
-        <div style="width:28px; height:28px; background:rgba(37,211,102,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-        </div>
-      </a>
+          <span style="color:var(--text); font-weight:700; font-size:12px; line-height:1.2; text-align:center; opacity:0.85;">הגדר מספרי טלפון לזיהוי</span>
+        </button>
+      </div>
       
     </div>
 
@@ -823,20 +823,28 @@
         </div>
       </div>
 
-      <div class="settings-section-title" style="margin-top:6px;">הגדרות כלליות</div>
+      <div class="settings-section-title" style="margin-top:6px;" id="settings-phones-section">ניהול מספרי וואטסאפ לבוט</div>
       
       <div class="sblock modern-hover">
         <div class="sblock-head">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          <span style="color:#25D366;">מספר טלפון לבוט</span>
+          <span style="color:#25D366;">המספרים המחוברים לחשבון</span>
         </div>
         <div class="sblock-body">
-          <p style="color:var(--muted);font-size:12px;margin-bottom:12px;line-height:1.4">המספר שיזוהה בוואטסאפ לרישום תנועות.<br>הפורמט יישמר אוטומטית (לדוגמה: 97250...)</p>
-          <input id="settings-phone-input" class="inp" type="tel" placeholder="הזן מספר טלפון" autocomplete="tel" style="margin-bottom:9px; text-align:right; direction:ltr;">
-          <button id="btn-save-phone" class="btn btn-ghost" style="font-size:13px;padding:10px; border-color:rgba(37,211,102,0.3);">שמור מספר טלפון</button>
-          <div id="phone-saved" class="saved hidden" style="color:#25D366;">✓ נשמר בהצלחה!</div>
+          <p style="color:var(--muted);font-size:12px;margin-bottom:12px;line-height:1.4">מספרים שמופיעים כאן יוכלו לשלוח תנועות ישירות דרך הבוט בוואטסאפ אל תוך החשבון שלך.</p>
+          
+          <div id="phone-list-container"></div>
+          
+          <div style="display:flex; gap:8px; margin-bottom:12px; margin-top:8px;">
+            <input id="settings-new-phone-input" class="inp" type="tel" placeholder="מספר חדש (למשל: 0501234567)" autocomplete="tel" style="text-align:right; direction:ltr; font-size:13px; padding:10px 12px; flex:1;">
+            <button onclick="addNewPhoneFromInput()" class="btn btn-ghost" style="width:auto; padding:10px 16px; font-size:13px; border-color:rgba(37,211,102,0.3); color:#25D366;">הוסף</button>
+          </div>
+          
+          <div id="phone-action-msg" class="saved hidden" style="font-size:12px; padding:8px; border-radius:8px; line-height:1.4;"></div>
         </div>
       </div>
+
+      <div class="settings-section-title" style="margin-top:6px;">הגדרות כלליות</div>
 
       <div class="sblock modern-hover">
         <div class="sblock-head">
@@ -980,7 +988,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
     </div>
     <h3 style="font-size:20px; font-weight:800; margin-bottom:8px; color:#25D366;">התחברות לבוט וואטסאפ</h3>
-    <p style="color:var(--muted); font-size:13px; line-height:1.5; margin-bottom:20px;">הזן את מספר הטלפון שלך כדי שנוכל לזהות אותך בוואטסאפ. פעולה זו אופציונלית ותוכל לשנות זאת תמיד מההגדרות.</p>
+    <p style="color:var(--muted); font-size:13px; line-height:1.5; margin-bottom:20px;">הזן את מספר הטלפון שלך כדי שנוכל לזהות אותך בוואטסאפ. תוכל להוסיף מספרים נוספים תמיד מההגדרות.</p>
     <input id="modal-phone-input" class="inp" type="tel" placeholder="050-1234567" style="margin-bottom:14px; text-align:center; direction:ltr; font-size:16px; letter-spacing:1px; border-color:rgba(37,211,102,0.3);">
     <button id="btn-save-phone-modal" class="btn modern-hover" style="background:linear-gradient(135deg, #25D366, #128C7E); color:#fff; box-shadow:0 4px 16px rgba(37,211,102,0.3); margin-bottom:12px;">שמור מספר טלפון</button>
     <button id="btn-skip-phone-modal" class="modern-hover" style="background:none; border:none; color:rgba(255,255,255,0.4); font-family:'Syne',sans-serif; font-size:13px; font-weight:700; cursor:pointer; padding:8px;">דלג לעת עתה</button>
@@ -1053,6 +1061,7 @@
   /* ── State ── */
   var uid = null, resetDay = 1, displayName = '';
   var incomes = [], expenses = [], fixedExpenses = [], fixedIncomes = [], userCategories = [];
+  var userPhones = []; // מערך מספרי טלפון לחשבון
   var modalType = 'income', isRegMode = false, unsubs = [];
   var newCatPanelOpen = false;
   var isUSD = false, exchangeRate = 3.7;
@@ -1070,17 +1079,13 @@
     show(name);
   }
 
-  /* פונקציית פענוח תאריכים חכמה שתומכת ב-Timestamp מהבוט */
   function parseDate(d) {
     if (!d) return new Date();
-    // אם הבוט שמר Firestore Timestamp
     if (d.toDate) return d.toDate();
     if (d.seconds) return new Date(d.seconds * 1000);
-    // ברירת מחדל
     return new Date(d);
   }
 
-  /* ── Format Phone Number to 972... ── */
   window.formatPhone = function(p) {
     var c = p.replace(/\D/g, '');
     if(c.startsWith('0')) return '972' + c.substring(1);
@@ -1142,7 +1147,7 @@
       renderCategoriesList2();
     } else {
       show('view-settings'); $('nav-settings').classList.add('active');
-      renderFixedLists(); renderCategoriesList();
+      renderFixedLists(); renderCategoriesList(); renderPhonesList();
     }
   };
 
@@ -1269,6 +1274,88 @@
     }).join('');
   }
 
+  /* ── Phone List Management ── */
+  window.renderPhonesList = function() {
+    var container = $('phone-list-container');
+    if(!container) return;
+    if(!userPhones || userPhones.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:16px; border:1px dashed rgba(255,255,255,0.15); border-radius:12px;"><p style="color:var(--muted);font-size:12px;margin:0;">לא הוגדרו מספרים. הוסף מספר כדי שהבוט יזהה אותך.</p></div>';
+    } else {
+        var html = '<div style="margin-bottom:12px; display:flex; flex-direction:column; gap:8px;">';
+        userPhones.forEach(function(p, i) {
+            html += '<div class="fixed-row modern-hover" style="border-color:rgba(37,211,102,0.2); background:rgba(37,211,102,0.03);">' +
+                    '<span class="mono" style="font-size:14px;color:#25D366;font-weight:700; direction:ltr; text-align:left;">' + p + '</span>' +
+                    '<div style="display:flex;gap:12px;">' +
+                    '<button onclick="editPhoneIdx(' + i + ')" style="background:none;border:none;color:var(--cyan);cursor:pointer;font-size:14px; display:flex; align-items:center;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon></svg></button>' +
+                    '<button onclick="deletePhoneIdx(' + i + ')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:14px; display:flex; align-items:center;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>' +
+                    '</div></div>';
+        });
+        html += '</div>';
+        container.innerHTML = html;
+    }
+  };
+
+  window.updatePhonesInDB = function(newPhones) {
+    var msgEl = $('phone-action-msg');
+    msgEl.style.background = 'rgba(255,255,255,0.05)';
+    msgEl.style.color = 'rgba(255,255,255,0.7)';
+    msgEl.textContent = 'שומר נתונים...';
+    show('phone-action-msg');
+
+    db.collection('users').doc(uid).set({phones: newPhones}, {merge:true})
+      .then(function() {
+          msgEl.style.background = 'rgba(37,211,102,0.1)';
+          msgEl.style.color = '#25D366';
+          msgEl.textContent = '✓ הפעולה נשמרה בהצלחה!';
+          userPhones = newPhones; // Update local state for immediate feedback
+          renderPhonesList();
+          setTimeout(function(){ hide('phone-action-msg'); }, 3000);
+      })
+      .catch(function(e) {
+          msgEl.style.background = 'rgba(255,23,68,0.1)';
+          msgEl.style.color = 'var(--red)';
+          msgEl.innerHTML = '✗ שגיאה בשמירה: ודא שהחיבור תקין ורענן את הדף. <br><span style="font-size:10px;opacity:0.8">(ייתכן וחסימת אינטרנט כמו נטפרי מונעת את שמירת הנתונים כרגע)</span>';
+      });
+  };
+
+  window.addNewPhoneFromInput = function() {
+    var input = $('settings-new-phone-input');
+    var p = input.value;
+    if(!p) return;
+    var fmtP = window.formatPhone(p);
+    if(userPhones && userPhones.includes(fmtP)) {
+        alert('מספר זה כבר קיים ברשימה המחוברת.');
+        return;
+    }
+    var newArr = (userPhones || []).slice();
+    newArr.push(fmtP);
+    updatePhonesInDB(newArr);
+    input.value = '';
+  };
+
+  window.deletePhoneIdx = function(i) {
+    if(confirm('האם להסיר מספר זה מחיבור לבוט?')) {
+        var newArr = userPhones.slice();
+        newArr.splice(i, 1);
+        updatePhonesInDB(newArr);
+    }
+  };
+
+  window.editPhoneIdx = function(i) {
+    var current = userPhones[i];
+    var p = prompt('ערוך מספר טלפון:', current);
+    if(p !== null && p.trim() !== '') {
+        var fmtP = window.formatPhone(p);
+        if(fmtP !== current && userPhones.includes(fmtP)) {
+           alert('מספר זה כבר קיים ברשימה.');
+           return;
+        }
+        var newArr = userPhones.slice();
+        newArr[i] = fmtP;
+        updatePhonesInDB(newArr);
+    }
+  };
+
   function renderAll(){ renderStats(); renderTx(); renderCategoriesList2(); }
 
   function reloadModalCategorySelect(selectedName){
@@ -1302,6 +1389,16 @@
         var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
         var si=$('settings-name-input'); if(si) si.value=displayName;
       }
+      if(d.phones) {
+        userPhones = d.phones;
+      } else if (d.phone) {
+        // Migration from old single phone string to array
+        userPhones = [d.phone];
+        db.collection('users').doc(uid).set({phones: userPhones, phone: firebase.firestore.FieldValue.delete()}, {merge:true}).catch(function(){});
+      } else {
+        userPhones = [];
+      }
+      renderPhonesList();
     }, function(){ /* ignore permission errors silently */ }));
 
     function snapCol(name, assign, extra){
@@ -1409,9 +1506,6 @@
 
   /* ══════════════════════════════════════════════
      GOOGLE LOGIN
-     — tries popup first, falls back to redirect
-       (redirect is needed for some mobile browsers
-       and privacy-focused DNS filters like Netfree)
   ══════════════════════════════════════════════ */
   $('btn-google-login').onclick = function(){
     var btn = this;
@@ -1910,33 +2004,24 @@
     var p = $('modal-phone-input').value;
     if(p) {
       var fmtP = window.formatPhone(p);
-      db.collection('users').doc(uid).set({phone: fmtP, phonePrompted: true}, {merge:true});
-      var pi=$('settings-phone-input'); if(pi) pi.value=fmtP;
+      var newArr = (userPhones || []).slice();
+      if(!newArr.includes(fmtP)) newArr.push(fmtP);
+      db.collection('users').doc(uid).set({phones: newArr, phonePrompted: true}, {merge:true})
+        .catch(function(e) { console.error('Save modal phone failed:', e); });
     } else {
       db.collection('users').doc(uid).set({phonePrompted: true}, {merge:true});
     }
     hide('phone-modal-overlay');
   };
 
-  $('btn-save-phone').onclick = function() {
-    var p = $('settings-phone-input').value;
-    var fmtP = p ? window.formatPhone(p) : '';
-    db.collection('users').doc(uid).set({phone: fmtP}, {merge:true}).then(function(){
-      $('settings-phone-input').value = fmtP;
-      show('phone-saved'); setTimeout(function(){ hide('phone-saved'); },2500);
-    });
-  };
-
 })();
 
 /* --- לוגיקה לאיפוס סיסמה --- */
-
-// פונקציות עזר להצגת הודעות (תואם למבנה הקיים שלך)
 window.showLoginOk = function(message) {
     var msgElement = document.getElementById('message-box');
     if (msgElement) {
         msgElement.innerHTML = message;
-        msgElement.className = 'auth-msg success'; // אם יש לך CSS כזה, או פשוט עיצוב ישיר:
+        msgElement.className = 'auth-msg success';
         msgElement.style.cssText = "display:block; padding:10px; background:#d4edda; color:#155724; border-radius:5px; margin-bottom:10px; text-align:center;";
     } else {
         alert("המייל נשלח! בדוק את תיבת הדואר שלך.");
@@ -1953,10 +2038,7 @@ window.showLoginErr = function(message) {
     }
 };
 
-// פונקציה לשליחת המייל
 window.sendResetEmail = function() {
-    // מנסה למצוא את המייל מתוך ה-Input הקיים בדף שלך
-    // ודא של-input של המייל יש id="email" או שנה כאן ל-id המתאים
     var emailInput = document.getElementById('email'); 
     var email = emailInput ? emailInput.value : "";
     var btn = event.target;
