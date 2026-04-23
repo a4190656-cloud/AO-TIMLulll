@@ -553,12 +553,10 @@
   <p id="loading-msg" style="color:var(--muted);font-size:13px;font-weight:600">מתחבר לחשבון<span id="loading-dots">...</span></p>
   <button id="btn-loading-manual" class="hidden" onclick="window.location.reload()" style="margin-top:16px;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:12px;color:rgba(255,255,255,0.5);font-family:Syne,sans-serif;font-size:12px;font-weight:700;padding:8px 18px;cursor:pointer;">לחץ לנסות שוב</button>
   <script>
-    /* Animated dots */
     var _d=0, _di=setInterval(function(){
       var el=document.getElementById('loading-dots');
       if(el){ _d=(_d+1)%4; el.textContent='.'.repeat(_d||1); }
     },500);
-    /* After 5s show retry button */
     setTimeout(function(){
       clearInterval(_di);
       var b=document.getElementById('btn-loading-manual');
@@ -742,6 +740,22 @@
       <div id="tx-list" class="card" style="overflow:hidden;margin-bottom:16px">
         <div style="padding:28px;text-align:center;color:var(--muted);font-size:13px">טוען...</div>
       </div>
+      
+      <a href="https://wa.me/972532413778" target="_blank" class="sblock modern-hover" style="display:flex; align-items:center; justify-content:space-between; padding:12px 16px; margin-bottom:16px; text-decoration:none; background:linear-gradient(145deg, rgba(37,211,102,0.1), rgba(18,140,126,0.05)); border:1px solid rgba(37,211,102,0.3); border-radius:18px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:38px; height:38px; border-radius:12px; background:rgba(37,211,102,0.15); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </div>
+          <div>
+            <p style="color:#25D366; font-weight:800; font-size:14px; margin-bottom:2px;">בוט הוואטסאפ שלנו</p>
+            <p style="color:var(--muted); font-size:11px; font-weight:600; line-height:1.2;">הוסף תנועות ישירות מהצ'אט!</p>
+          </div>
+        </div>
+        <div style="width:28px; height:28px; background:rgba(37,211,102,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </div>
+      </a>
+      
     </div>
 
     <div id="view-categories" class="hidden">
@@ -805,6 +819,19 @@
       </div>
 
       <div class="settings-section-title" style="margin-top:6px;">הגדרות כלליות</div>
+      
+      <div class="sblock modern-hover">
+        <div class="sblock-head">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span style="color:#25D366;">מספר טלפון לבוט</span>
+        </div>
+        <div class="sblock-body">
+          <p style="color:var(--muted);font-size:12px;margin-bottom:12px;line-height:1.4">המספר שיזוהה בוואטסאפ לרישום תנועות.<br>הפורמט יישמר אוטומטית (לדוגמה: 97250...)</p>
+          <input id="settings-phone-input" class="inp" type="tel" placeholder="הזן מספר טלפון" autocomplete="tel" style="margin-bottom:9px; text-align:right; direction:ltr;">
+          <button id="btn-save-phone" class="btn btn-ghost" style="font-size:13px;padding:10px; border-color:rgba(37,211,102,0.3);">שמור מספר טלפון</button>
+          <div id="phone-saved" class="saved hidden" style="color:#25D366;">✓ נשמר בהצלחה!</div>
+        </div>
+      </div>
 
       <div class="sblock modern-hover">
         <div class="sblock-head">
@@ -942,6 +969,19 @@
   </div>
 </div>
 
+<div id="phone-modal-overlay" class="hidden" style="position:fixed; inset:0; z-index:400; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; padding:24px;">
+  <div class="card slide-up" style="width:100%; max-width:340px; padding:32px 24px; text-align:center; border:1px solid rgba(37,211,102,0.3); box-shadow:0 16px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);">
+    <div style="width:64px; height:64px; border-radius:20px; background:linear-gradient(145deg, rgba(37,211,102,0.2), rgba(18,140,126,0.05)); border:1px solid rgba(37,211,102,0.4); display:flex; align-items:center; justify-content:center; margin:0 auto 18px; box-shadow:0 8px 24px rgba(37,211,102,0.15);">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+    </div>
+    <h3 style="font-size:20px; font-weight:800; margin-bottom:8px; color:#25D366;">התחברות לבוט וואטסאפ</h3>
+    <p style="color:var(--muted); font-size:13px; line-height:1.5; margin-bottom:20px;">הזן את מספר הטלפון שלך כדי שנוכל לזהות אותך בוואטסאפ. פעולה זו אופציונלית ותוכל לשנות זאת תמיד מההגדרות.</p>
+    <input id="modal-phone-input" class="inp" type="tel" placeholder="050-1234567" style="margin-bottom:14px; text-align:center; direction:ltr; font-size:16px; letter-spacing:1px; border-color:rgba(37,211,102,0.3);">
+    <button id="btn-save-phone-modal" class="btn modern-hover" style="background:linear-gradient(135deg, #25D366, #128C7E); color:#fff; box-shadow:0 4px 16px rgba(37,211,102,0.3); margin-bottom:12px;">שמור מספר טלפון</button>
+    <button id="btn-skip-phone-modal" class="modern-hover" style="background:none; border:none; color:rgba(255,255,255,0.4); font-family:'Syne',sans-serif; font-size:13px; font-weight:700; cursor:pointer; padding:8px;">דלג לעת עתה</button>
+  </div>
+</div>
+
 <div id="delete-confirm-overlay" class="hidden">
   <div id="delete-confirm-sheet">
     <div style="text-align:center;margin-bottom:18px;">
@@ -1024,6 +1064,14 @@
     ['screen-loading','screen-login','screen-setname','app'].forEach(hide);
     show(name);
   }
+
+  /* ── Format Phone Number to 972... ── */
+  window.formatPhone = function(p) {
+    var c = p.replace(/\D/g, '');
+    if(c.startsWith('0')) return '972' + c.substring(1);
+    if(c.startsWith('5')) return '972' + c;
+    return c;
+  };
 
   /* ── Password eye toggle ── */
   $('btn-pass-eye').onclick = function(){
@@ -1221,14 +1269,12 @@
   }
 
   /* ══════════════════════════════════════════════
-     FIRESTORE LISTENERS — get() fallback first,
-     then onSnapshot for live updates
+     FIRESTORE LISTENERS
   ══════════════════════════════════════════════ */
   function startListeners(){
     unsubs.forEach(function(u){ try{ u(); }catch(e){} }); unsubs=[];
     var uRef = db.collection('users').doc(uid);
 
-    /* User profile — silent fail on snapshot, just use get() data */
     unsubs.push(uRef.onSnapshot({ includeMetadataChanges: false }, function(doc){
       if(!doc.exists) return;
       var d = doc.data();
@@ -1238,13 +1284,16 @@
         var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
         var si=$('settings-name-input'); if(si) si.value=displayName;
       }
-    }, function(){ /* ignore permission errors silently */ }));
+      if(d.phone !== undefined) {
+        var pi=$('settings-phone-input'); if(pi && document.activeElement !== pi) pi.value = d.phone;
+      }
+    }, function(){ /* ignore */ }));
 
     function snapCol(name, assign, extra){
       unsubs.push(uRef.collection(name).onSnapshot(function(s){
         assign(s.docs.map(function(d){ return Object.assign({id:d.id},d.data()); }));
         renderAll(); if(extra) extra();
-      }, function(){ /* if blocked, fallback to get() once */
+      }, function(){
         uRef.collection(name).get().then(function(s){
           assign(s.docs.map(function(d){ return Object.assign({id:d.id},d.data()); }));
           renderAll(); if(extra) extra();
@@ -1260,28 +1309,37 @@
   }
 
   /* ══════════════════════════════════════════════
-     BOOT — called once we know the user is valid.
-     Handles name setup, then launches the app.
+     BOOT
   ══════════════════════════════════════════════ */
   function bootApp(user){
     uid = user.uid;
-    /* Try Firestore profile first, fall back gracefully */
     db.collection('users').doc(uid).get().then(function(snap){
-      var savedName = snap.exists ? snap.data().displayName : null;
-      var authName  = user.displayName || null;
-      var name      = savedName || authName || null;
+      var d = snap.exists ? snap.data() : {};
+      var name = d.displayName || user.displayName || null;
+      
       if(!name){
         showScreen('screen-setname');
         return;
       }
       displayName = name;
-      showScreen('app');
+
       var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
       var si=$('settings-name-input'); if(si) si.value=displayName;
-      var ri=$('reset-day-input'); if(ri) ri.value=resetDay;
+      var ri=$('reset-day-input'); if(ri) ri.value=d.resetDay || resetDay;
+
+      // טיפול במספר פלאפון ובחלון קופץ
+      var phone = d.phone || '';
+      var pi=$('settings-phone-input'); if(pi) pi.value=phone;
+
+      if(!phone && !d.phonePrompted){
+        showScreen('app'); // נראה את האפליקציה מאחור
+        show('phone-modal-overlay');
+      } else {
+        showScreen('app');
+      }
+
       startListeners();
     }).catch(function(){
-      /* Firestore blocked (e.g. NextDNS/Netfree) — still show app with auth name */
       var name = user.displayName || user.email.split('@')[0];
       displayName = name;
       showScreen('app');
@@ -1292,10 +1350,10 @@
   }
 
   /* ══════════════════════════════════════════════
-     AUTH STATE — with 4s timeout safety net
+     AUTH STATE
   ══════════════════════════════════════════════ */
   var authResolved = false;
-  var appBooted    = false; /* prevent double-boot */
+  var appBooted    = false;
   var authTimeout  = setTimeout(function(){
     if(!authResolved){
       authResolved = true;
@@ -1304,37 +1362,31 @@
   }, 4000);
 
   auth.onAuthStateChanged(function(user){
-    /* Clear the timeout whenever auth responds */
     clearTimeout(authTimeout);
 
     if(!user){
       authResolved = true;
       appBooted    = false;
       uid          = null;
-      /* Reset Google button so it works again after sign-out */
       var gBtn = $('btn-google-login');
       if(gBtn){ gBtn.disabled=false; gBtn.style.opacity='1'; }
       showScreen('screen-login');
       return;
     }
 
-    /* Mark resolved so timeout doesn't fire */
     authResolved = true;
-
-    /* Don't boot twice for the same user session */
     if(appBooted && uid === user.uid) return;
 
-    /* Email/password users must verify email */
     var isEmailProvider = user.providerData.some(function(p){ return p.providerId==='password'; });
     if(isEmailProvider && !user.emailVerified){
-      auth.signOut(); /* triggers onAuthStateChanged again with user=null */
+      auth.signOut();
       setTimeout(function(){
-     var el=$('login-err');
-  if(el){
-      el.style.color='var(--green)';
-      el.innerHTML='✓ נשלח אימייל אימות — בדוק את תיבת הדואר (כולל ספאם) ולחץ על הקישור.<br><button type="button" onclick="window.location.reload()" style="background:none; border:none; color:#00BFFF; text-decoration:underline; cursor:pointer; font-weight:bold; font-family:\'Syne\', sans-serif; font-size:14px; padding:0; margin-top:12px;">רעננו את הדף לאחר האימות!</button>';
-      show('login-err');
-  }
+        var el=$('login-err');
+        if(el){
+          el.style.color='var(--green)';
+          el.innerHTML='✓ נשלח אימייל אימות — בדוק את תיבת הדואר (כולל ספאם) ולחץ על הקישור.<br><button type="button" onclick="window.location.reload()" style="background:none; border:none; color:#00BFFF; text-decoration:underline; cursor:pointer; font-weight:bold; font-family:\'Syne\', sans-serif; font-size:14px; padding:0; margin-top:12px;">רעננו את הדף לאחר האימות!</button>';
+          show('login-err');
+        }
       }, 300);
       return;
     }
@@ -1345,9 +1397,6 @@
 
   /* ══════════════════════════════════════════════
      GOOGLE LOGIN
-     — tries popup first, falls back to redirect
-       (redirect is needed for some mobile browsers
-       and privacy-focused DNS filters like Netfree)
   ══════════════════════════════════════════════ */
   $('btn-google-login').onclick = function(){
     var btn = this;
@@ -1357,11 +1406,9 @@
     provider.setCustomParameters({ prompt: 'select_account' });
 
     auth.signInWithPopup(provider).then(function(){
-      /* onAuthStateChanged handles the rest — button re-enabled on signout or after boot */
       btn.disabled=false; btn.style.opacity='1';
     }).catch(function(e){
       if(e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request'){
-        /* Popup blocked — fall back to redirect (works on Netfree, mobile, etc.) */
         auth.signInWithRedirect(provider).catch(function(e2){
           btn.disabled=false; btn.style.opacity='1';
           showLoginErr('לא ניתן לפתוח חלון כניסה. נסה דפדפן אחר.');
@@ -1369,7 +1416,6 @@
         return;
       }
       if(e.code === 'auth/account-exists-with-different-credential'){
-        /* User already has email/password account — sign in with email and link */
         var pendingCred = e.credential;
         var email       = e.email;
         auth.fetchSignInMethodsForEmail(email).then(function(methods){
@@ -1380,7 +1426,6 @@
               return cred.user.linkWithCredential(pendingCred);
             }).then(function(){
               btn.disabled=false; btn.style.opacity='1';
-              /* linked — onAuthStateChanged fires */
             }).catch(function(){
               btn.disabled=false; btn.style.opacity='1';
               showLoginErr('שגיאה בקישור החשבונות. נסה שוב.');
@@ -1399,10 +1444,7 @@
     });
   };
 
-  /* Handle redirect result on page load (for Netfree / popup-blocked fallback) */
-  auth.getRedirectResult().then(function(result){
-    /* If redirect login succeeded — onAuthStateChanged handles it */
-  }).catch(function(e){
+  auth.getRedirectResult().then(function(result){}).catch(function(e){
     if(e.code === 'auth/account-exists-with-different-credential'){
       showLoginErr('חשבון עם מייל זה כבר קיים. השתמש בכניסה עם מייל וסיסמה.');
     }
@@ -1444,7 +1486,7 @@
   };
 
   /* ══════════════════════════════════════════════
-     EMAIL AUTH — login + register
+     EMAIL AUTH
   ══════════════════════════════════════════════ */
   $('btn-email-auth').onclick = function(){
     var email = $('login-email').value.trim();
@@ -1460,7 +1502,6 @@
     function resetBtn(){ btn.disabled=false; btn.style.opacity='1'; }
 
     if(isRegMode){
-      /* ─── REGISTER ─── */
       if(pass.length < 6){ showLoginErr('הסיסמה חייבת להכיל לפחות 6 תווים.'); resetBtn(); return; }
 
       auth.createUserWithEmailAndPassword(email, pass).then(function(cred){
@@ -1482,7 +1523,6 @@
       }).catch(function(e){
         resetBtn();
         if(e.code==='auth/email-already-in-use'){
-          /* Maybe they registered with Google first — try linking */
           auth.fetchSignInMethodsForEmail(email).then(function(methods){
             if(methods.indexOf('google.com')>=0 && methods.indexOf('password')<0){
               showLoginErr('מייל זה משויך לחשבון גוגל. כנס עם גוגל תחילה.');
@@ -1500,15 +1540,12 @@
       });
 
     } else {
-      /* ─── LOGIN ─── */
       auth.signInWithEmailAndPassword(email, pass).then(function(cred){
         resetBtn();
         if(!cred.user.emailVerified){
           auth.signOut();
-          /* Offer to resend verification */
           showLoginOk('המייל טרם אומת. <button onclick="resendVerif(\''+email+'\',\''+pass+'\')" style="background:none;border:none;color:var(--cyan);font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-decoration:underline;padding:0;">שלח שוב</button> <span style="color:rgba(255,255,255,0.4)">(כולל ספאם)</span><br><button onclick="window.location.reload()" style="background:none;border:none;color:#4285F4;text-decoration:underline;cursor:pointer;font-weight:bold;font-family:\'Syne\',sans-serif;font-size:13px;padding:0;margin-top:4px;">רעננו את הדף לאחר האימות!</button>');
         }
-        /* else: onAuthStateChanged fires and calls bootApp */
       }).catch(function(e){
         resetBtn();
         if(e.code==='auth/user-not-found' || e.code==='auth/wrong-password' || e.code==='auth/invalid-credential'){
@@ -1526,7 +1563,6 @@
     }
   };
 
-  /* Resend verification email */
   window.resendVerif = function(email, pass){
     auth.signInWithEmailAndPassword(email, pass).then(function(cred){
       var actionSettings = { url:'https://a4190656-cloud.github.io/AO-TIMLulll/', handleCodeInApp:false };
@@ -1548,7 +1584,6 @@
     user.updateProfile({displayName:name}).then(function(){
       return db.collection('users').doc(user.uid).set({displayName:name},{merge:true}).catch(function(){});
     }).then(function(){
-      /* Boot the app directly — no page reload needed */
       displayName = name;
       appBooted = true;
       uid = user.uid;
@@ -1563,10 +1598,9 @@
     });
   };
 
-  /* ── Sign out (header) ── */
+  /* ── Sign out ── */
   $('btn-signout').onclick=function(){ unsubs.forEach(function(u){ u(); }); auth.signOut(); };
 
-  /* ── Disconnect button in settings ── */
   $('btn-disconnect').onclick=function(){
     if(!confirm('להתנתק מהחשבון?')) return;
     unsubs.forEach(function(u){ u(); });
@@ -1590,9 +1624,7 @@
     $('btn-confirm-delete').style.opacity=ok?'1':'0.4';
   };
 
-  $('btn-cancel-delete').onclick=function(){
-    hide('delete-confirm-overlay');
-  };
+  $('btn-cancel-delete').onclick=function(){ hide('delete-confirm-overlay'); };
 
   $('btn-confirm-delete').onclick=function(){
     if($('delete-confirm-input').value.trim()!=='מחק') return;
@@ -1604,7 +1636,6 @@
     if(!user){ hide('delete-confirm-overlay'); return; }
     var userUid=user.uid;
 
-    /* Delete all subcollections then user doc then Firebase Auth account */
     function deleteCollection(colName){
       return db.collection('users').doc(userUid).collection(colName).get().then(function(snap){
         var batch=db.batch();
@@ -1628,7 +1659,6 @@
       hide('delete-confirm-overlay');
       showScreen('screen-login');
     }).catch(function(e){
-      /* If requires-recent-login, re-authenticate first */
       if(e.code==='auth/requires-recent-login'){
         $('delete-err').textContent='נדרשת התחברות מחדש. התנתק והתחבר שוב, ואז נסה שוב.';
         show('delete-err');
@@ -1836,15 +1866,41 @@
     db.collection('users').doc(uid).collection(col).doc(id).delete();
   };
 
-})();
-/* --- לוגיקה לאיפוס סיסמה --- */
+  /* ── WhatsApp Phone Modal Logic ── */
+  $('btn-skip-phone-modal').onclick = function() {
+    hide('phone-modal-overlay');
+    db.collection('users').doc(uid).set({phonePrompted: true}, {merge:true});
+  };
 
-// פונקציות עזר להצגת הודעות (תואם למבנה הקיים שלך)
+  $('btn-save-phone-modal').onclick = function() {
+    var p = $('modal-phone-input').value;
+    if(p) {
+      var fmtP = window.formatPhone(p);
+      db.collection('users').doc(uid).set({phone: fmtP, phonePrompted: true}, {merge:true});
+      var pi=$('settings-phone-input'); if(pi) pi.value=fmtP;
+    } else {
+      db.collection('users').doc(uid).set({phonePrompted: true}, {merge:true});
+    }
+    hide('phone-modal-overlay');
+  };
+
+  $('btn-save-phone').onclick = function() {
+    var p = $('settings-phone-input').value;
+    var fmtP = p ? window.formatPhone(p) : '';
+    db.collection('users').doc(uid).set({phone: fmtP}, {merge:true}).then(function(){
+      $('settings-phone-input').value = fmtP;
+      show('phone-saved'); setTimeout(function(){ hide('phone-saved'); },2500);
+    });
+  };
+
+})();
+
+/* --- לוגיקה לאיפוס סיסמה --- */
 window.showLoginOk = function(message) {
     var msgElement = document.getElementById('message-box');
     if (msgElement) {
         msgElement.innerHTML = message;
-        msgElement.className = 'auth-msg success'; // אם יש לך CSS כזה, או פשוט עיצוב ישיר:
+        msgElement.className = 'auth-msg success'; 
         msgElement.style.cssText = "display:block; padding:10px; background:#d4edda; color:#155724; border-radius:5px; margin-bottom:10px; text-align:center;";
     } else {
         alert("המייל נשלח! בדוק את תיבת הדואר שלך.");
@@ -1861,10 +1917,7 @@ window.showLoginErr = function(message) {
     }
 };
 
-// פונקציה לשליחת המייל
 window.sendResetEmail = function() {
-    // מנסה למצוא את המייל מתוך ה-Input הקיים בדף שלך
-    // ודא של-input של המייל יש id="email" או שנה כאן ל-id המתאים
     var emailInput = document.getElementById('email'); 
     var email = emailInput ? emailInput.value : "";
     var btn = event.target;
