@@ -1071,7 +1071,7 @@
     }).then(function(){
       btn.textContent = 'שכחת סיסמה?';
       btn.style.pointerEvents = 'auto';
-      showLoginOk('✓ נשלח מייל לאיפוס סיסמה לכתובת <strong>' + email + '</strong> — בדוק גם ספאם.');
+      showLoginOk('✓ נשלח מייל לאיפוס סיסמה לכתובת <strong>' + email + '</strong> — בדוק גם ספאם.<br><a onclick="window.location.reload()" style="color:#00BFFF;font-size:12px;font-weight:700;cursor:pointer;text-decoration:underline;">רעננו את הדף לאחר האימות!</a>');
     }).catch(function(e){
       btn.textContent = 'שכחת סיסמה?';
       btn.style.pointerEvents = 'auto';
@@ -1499,7 +1499,7 @@
         hide('login-name-wrap');
         $('btn-email-auth').textContent='כניסה לחשבון';
         $('btn-toggle-mode').textContent='עוד אין לך חשבון? לחץ כאן ←';
-        showLoginOk('✓ נשלח אימייל לכתובת <strong>'+email+'</strong><br>לחץ על הקישור לאימות, ואז <strong>רענן את הדף</strong> והתחבר.<br><span style="color:rgba(255,255,255,0.45);font-size:11px;">(בדוק גם בספאם)</span>');
+        showLoginOk('✓ נשלח אימייל לכתובת <strong>'+email+'</strong><br>לחץ על הקישור לאימות, ואז <strong>רענן את הדף</strong> והתחבר.<br><span style="color:rgba(255,255,255,0.45);font-size:11px;">(בדוק גם בספאם)</span><br><a onclick="window.location.reload()" style="color:#00BFFF;font-size:12px;font-weight:700;cursor:pointer;text-decoration:underline;">רעננו את הדף לאחר האימות!</a>');
       }).catch(function(e){
         resetBtn();
         if(e.code==='auth/email-already-in-use'){
@@ -1553,7 +1553,7 @@
       var actionSettings = { url:'https://a4190656-cloud.github.io/AO-TIMLulll/', handleCodeInApp:false };
       return cred.user.sendEmailVerification(actionSettings).then(function(){ return auth.signOut(); });
     }).then(function(){
-      showLoginOk('✓ נשלח מחדש לכתובת <strong>'+email+'</strong> <span style="color:var(--green);">(בדוק גם ספאם!)</span>');
+      showLoginOk('✓ נשלח מחדש לכתובת <strong>'+email+'</strong> <span style="color:var(--green);">(בדוק גם ספאם!)</span><br><a onclick="window.location.reload()" style="color:#00BFFF;font-size:12px;font-weight:700;cursor:pointer;text-decoration:underline;">רעננו את הדף לאחר האימות!</a>');
     }).catch(function(){ showLoginErr('שגיאה בשליחה. נסה שוב.'); });
   };
 
