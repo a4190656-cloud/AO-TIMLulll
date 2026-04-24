@@ -1994,7 +1994,7 @@ window.deletePhoneIdx = function(i) {
     var el=$('cat-list2');
     if(!el) return;
     if(!userCategories||!userCategories.length){
-      el.innerHTML='<div style="color:var(--muted);font-size:13px;text-align:center;padding:30px 10px;">אין קטגוריות עדיין.</div>';
+      el.innerHTML='<div style="color:var(--muted);font-size:13px;text-align:center;padding:30px 10px;">אין קטגוריות עדיין.<br><span style="font-size:11px;opacity:.6">לחץ "+ הוסף" כדי ליצור קטגוריה ראשונה.</span></div>';
       return;
     }
     var s=cycleStart();
@@ -2007,24 +2007,15 @@ window.deletePhoneIdx = function(i) {
       var colBg=isInc?'rgba(0,230,118,0.07)':'rgba(255,23,68,0.07)';
       var colBdr=isInc?'rgba(0,230,118,0.20)':'rgba(255,23,68,0.18)';
       var colBar=isInc?'linear-gradient(90deg,var(--green),#00C853)':'linear-gradient(90deg,var(--red),#D50000)';
-      
-      // חיבור התנועות הרגילות והקבועות (סנכרון מלא עם הבוט)
-      var src = isInc ? incomes.concat(fixedIncomes) : expenses.concat(fixedExpenses);
-      
-      var matched=src.filter(function(i){ 
-          // בודק אם הפריט הוא קבוע (כדי לספור אותו תמיד)
-          var isFixed = (isInc ? fixedIncomes : fixedExpenses).some(function(f){ return f.id === i.id; });
-          // סופר אם השם מתאים והוא או קבוע או שייך למחזור הנוכחי
-          return (i.category===cat.name || i.name===cat.name) && (isFixed || parseDate(i.date)>=s); 
-      });
-      
+      var src=isInc?incomes:expenses;
+      var matched=src.filter(function(i){ return i.category===cat.name&&parseDate(i.date)>=s; });
       var total=matched.reduce(function(a,i){ return a+Number(i.amount||0); },0);
       var count=matched.length;
       return '<div class="cat-tile" style="border:1px solid '+colBdr+';background:linear-gradient(145deg,'+colBg+',rgba(13,19,35,0.75));">'+
         '<button class="cat-tile-del" onclick="delItem(\'categories\',\''+cat.id+'\')">✕</button>'+
         '<div class="cat-tile-name">'+cat.name+'</div>'+
         '<div class="cat-tile-amount" style="color:'+col+';">'+fmt(total)+'</div>'+
-        '<div class="cat-tile-count">'+count+' תנועות</div>'+
+        '<div class="cat-tile-count">'+count+' תנועות במחזור</div>'+
         '<div class="cat-tile-bar" style="background:'+colBar+';opacity:0.55;"></div></div>';
     }
 
