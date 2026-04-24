@@ -2051,7 +2051,7 @@ window.deletePhoneIdx = function(i) {
     btn.textContent = 'בודק זמינות...';
     btn.disabled = true;
 
-    // בדיקת ייחודיות
+    // בדיקת ייחודיות ושמירה
     db.collection('users').where('phones', 'array-contains', fmtP).get()
       .then(function(querySnapshot) {
           if (!querySnapshot.empty) {
@@ -2064,7 +2064,6 @@ window.deletePhoneIdx = function(i) {
           var newArr = (userPhones || []).slice();
           if(!newArr.includes(fmtP)) newArr.push(fmtP);
           
-          // מחזירים את ה-Promise כדי שה-then הבא יחכה לסיום השמירה
           return db.collection('users').doc(uid).set({
             phones: newArr, 
             phone: (userPhones && userPhones.length > 0) ? userPhones[0] : fmtP, 
@@ -2072,80 +2071,19 @@ window.deletePhoneIdx = function(i) {
           }, {merge:true});
       })
       .then(function() {
-          hide('phone-modal-overlay'); // תיקון ה-hidc ל-hide
+          hide('phone-modal-overlay');
           btn.textContent = originalText;
           btn.disabled = false;
       })
       .catch(function(e) {
-          console.error('Save modal phone failed:', e);
-          alert('שגיאת רשת בבדיקת המספר.');
-          btn.textContent = originalText;
-          btn.disabled = false;
-      });
-  };
-      .catch(function(e) {
-          console.error('Error checking phone:', e);
-          alert('שגיאת רשת בבדיקת המספר.');
+          console.error('Error:', e);
+          alert('שגיאה בבדיקה או בשמירה.');
           btn.textContent = originalText;
           btn.disabled = false;
       });
   };
 
-})();
-
-/* --- לוגיקה לאיפוס סיסמה --- */
-window.showLoginOk = function(message) {
-    var msgElement = document.getElementById('message-box');
-    if (msgElement) {
-        msgElement.innerHTML = message;
-        msgElement.className = 'auth-msg success';
-        msgElement.style.cssText = "display:block; padding:10px; background:#d4edda; color:#155724; border-radius:5px; margin-bottom:10px; text-align:center;";
-    } else {
-        alert("המייל נשלח! בדוק את תיבת הדואר שלך.");
-    }
-};
-
-window.showLoginErr = function(message) {
-    var msgElement = document.getElementById('message-box');
-    if (msgElement) {
-        msgElement.innerHTML = message;
-        msgElement.style.cssText = "display:block; padding:10px; background:#f8d7da; color:#721c24; border-radius:5px; margin-bottom:10px; text-align:center;";
-    } else {
-        alert(message);
-    }
-};
-
-window.sendResetEmail = function() {
-    var emailInput = document.getElementById('email'); 
-    var email = emailInput ? emailInput.value : "";
-    var btn = event.target;
-
-    if (!email) {
-        showLoginErr('אנא הזן כתובת אימייל בתיבה למעלה.');
-        return;
-    }
-
-    var originalText = btn.textContent;
-    btn.textContent = 'שולח...';
-    btn.style.pointerEvents = 'none';
-
-    auth.sendPasswordResetEmail(email, {
-        url: 'https://a4190656-cloud.github.io/AO-TIMLulll/',
-        handleCodeInApp: false
-    }).then(function() {
-        btn.textContent = originalText;
-        btn.style.pointerEvents = 'auto';
-        
-        var successMsg = '✓ נשלח מייל לאיפוס סיסמה לכתובת <strong>' + email + '</strong>.<br>' +
-                         '<a onclick="window.location.reload()" style="color:#00BFFF; font-weight:bold; cursor:pointer; text-decoration:underline;">רעננו את הדף לאחר האימות!</a>';
-        showLoginOk(successMsg);
-    }).catch(function(e) {
-        btn.textContent = originalText;
-        btn.style.pointerEvents = 'auto';
-        if(e.code === 'auth/user-not-found') showLoginErr('לא נמצא חשבון עם מייל זה.');
-        else showLoginErr('שגיאה: ' + e.message);
-    });
-};
+})(); // סגירת ה-IIFE שהתחיל בתחילת ה-script
 </script>
 </body>
 </html>
