@@ -2033,11 +2033,6 @@ window.deletePhoneIdx = function(i) {
     if(incCats.length){ html+='<div class="cat-section-label">הכנסות</div><div class="cat-tiles-grid">'+incCats.map(tileHtml).join('')+'</div>'; }
     el.innerHTML=html;
   }
-    var html='';
-    if(expCats.length){ html+='<div class="cat-section-label">הוצאות</div><div class="cat-tiles-grid">'+expCats.map(tileHtml).join('')+'</div>'; }
-    if(incCats.length){ html+='<div class="cat-section-label">הכנסות</div><div class="cat-tiles-grid">'+incCats.map(tileHtml).join('')+'</div>'; }
-    el.innerHTML=html;
-  }
 
   /* ── Delete with confirm ── */
   window.delItem=function(col,id){
