@@ -1302,15 +1302,20 @@
     msgEl.textContent = 'שומר נתונים...';
     show('phone-action-msg');
 
- db.collection('users').doc(uid).set({
-    phones: newPhones,
-    phone: newPhones.length > 0 ? newPhones[newPhones.length - 1] : firebase.firestore.FieldValue.delete()
-}, {merge:true})
+    var updateData = { phones: newPhones };
+    // אם יש מספרים, נשמור תמיד את הראשון כ"ראשי" כדי שהבוט לא יתנתק
+    if (newPhones.length > 0) {
+        updateData.phone = newPhones[0]; 
+    } else {
+        updateData.phone = firebase.firestore.FieldValue.delete();
+    }
+
+    db.collection('users').doc(uid).set(updateData, {merge:true})
       .then(function() {
           msgEl.style.background = 'rgba(37,211,102,0.1)';
           msgEl.style.color = '#25D366';
           msgEl.textContent = '✓ הפעולה נשמרה בהצלחה!';
-          userPhones = newPhones; // Update local state for immediate feedback
+          userPhones = newPhones; 
           renderPhonesList();
           setTimeout(function(){ hide('phone-action-msg'); }, 3000);
       })
@@ -2060,11 +2065,14 @@ $('btn-save-phone-modal').onclick = function() {
           var newArr = (userPhones || []).slice();
           if(!newArr.includes(fmtP)) newArr.push(fmtP);
           
+          // עדכון המאגר מבלי לדרוס את המספר הראשי אם הוא כבר קיים
           db.collection('users').doc(uid).set({
-    phones: newArr, 
-    phone: fmtP, 
-    phonePrompted: true
-}, {merge:true})
+            phones: newArr, 
+            // אם כבר יש מספרים ברשימה, נשמור על הראשון כראשי עבור הבוט. 
+            // אם הרשימה הייתה ריקה, נגדיר את הנוכחי כראשי.
+            phone: (userPhones && userPhones.length > 0) ? userPhones[0] : fmtP, 
+            phonePrompted: true
+          }, {merge:true})
             .then(function() {
                 hide('phone-modal-overlay');
                 btn.textContent = originalText;
@@ -2075,7 +2083,6 @@ $('btn-save-phone-modal').onclick = function() {
                 btn.textContent = originalText;
                 btn.disabled = false;
             });
-      })
       .catch(function(e) {
           console.error('Error checking phone:', e);
           alert('שגיאת רשת בבדיקת המספר.');
