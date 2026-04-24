@@ -2031,13 +2031,13 @@ window.deletePhoneIdx = function(i) {
     db.collection('users').doc(uid).collection(col).doc(id).delete();
   };
 
-  /* ── WhatsApp Phone Modal Logic ── */
+ /* ── WhatsApp Phone Modal Logic ── */
   $('btn-skip-phone-modal').onclick = function() {
     hide('phone-modal-overlay');
     db.collection('users').doc(uid).set({phonePrompted: true}, {merge:true});
   };
 
-$('btn-save-phone-modal').onclick = function() {
+  $('btn-save-phone-modal').onclick = function() {
     var p = $('modal-phone-input').value;
     if(!p) {
       db.collection('users').doc(uid).set({phonePrompted: true}, {merge:true});
@@ -2051,38 +2051,38 @@ $('btn-save-phone-modal').onclick = function() {
     btn.textContent = 'בודק זמינות...';
     btn.disabled = true;
 
-    // בדיקת ייחודיות גם דרך הפופ-אפ
+    // בדיקת ייחודיות
     db.collection('users').where('phones', 'array-contains', fmtP).get()
       .then(function(querySnapshot) {
           if (!querySnapshot.empty) {
-              alert('המספר הזה כבר רשום בחשבון אחר במערכת! אנא הזן מספר אחר.');
+              alert('המספר הזה כבר רשום בחשבון אחר במערכת!');
               btn.textContent = originalText;
               btn.disabled = false;
               return;
           }
 
-          // המספר פנוי
           var newArr = (userPhones || []).slice();
           if(!newArr.includes(fmtP)) newArr.push(fmtP);
           
-          // עדכון המאגר מבלי לדרוס את המספר הראשי אם הוא כבר קיים
-          db.collection('users').doc(uid).set({
+          // מחזירים את ה-Promise כדי שה-then הבא יחכה לסיום השמירה
+          return db.collection('users').doc(uid).set({
             phones: newArr, 
-            // אם כבר יש מספרים ברשימה, נשמור על הראשון כראשי עבור הבוט. 
-            // אם הרשימה הייתה ריקה, נגדיר את הנוכחי כראשי.
             phone: (userPhones && userPhones.length > 0) ? userPhones[0] : fmtP, 
             phonePrompted: true
-          }, {merge:true})
-            .then(function() {
-                hide('phone-modal-overlay');
-                btn.textContent = originalText;
-                btn.disabled = false;
-            })
-            .catch(function(e) { 
-                console.error('Save modal phone failed:', e); 
-                btn.textContent = originalText;
-                btn.disabled = false;
-            });
+          }, {merge:true});
+      })
+      .then(function() {
+          hide('phone-modal-overlay'); // תיקון ה-hidc ל-hide
+          btn.textContent = originalText;
+          btn.disabled = false;
+      })
+      .catch(function(e) {
+          console.error('Save modal phone failed:', e);
+          alert('שגיאת רשת בבדיקת המספר.');
+          btn.textContent = originalText;
+          btn.disabled = false;
+      });
+  };
       .catch(function(e) {
           console.error('Error checking phone:', e);
           alert('שגיאת רשת בבדיקת המספר.');
