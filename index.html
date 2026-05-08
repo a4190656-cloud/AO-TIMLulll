@@ -1430,6 +1430,16 @@ window.deletePhoneIdx = function(i) {
         var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
         var si=$('settings-name-input'); if(si) si.value=displayName;
       }
+      // טעינת תמונת הפרופיל מהענן בכל פעם שהדף מתרענן
+      var picEl = document.getElementById('dashboard-profile-pic');
+      if(picEl) {
+        if(d.profilePic) {
+          picEl.src = d.profilePic;
+        } else {
+          // אם אין תמונה אישית, מוודא שמוצג הלוגו המקורי של AO Budget
+          picEl.src = "https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg";
+        }
+      }
       if(d.phones) {
         userPhones = d.phones;
       } else if (d.phone) {
@@ -2110,6 +2120,21 @@ window.deletePhoneIdx = function(i) {
         }
       };
       reader.readAsDataURL(file);
+    }
+  };
+  // פונקציה לאיפוס התמונה וחזרה ללוגו המקורי
+  window.resetProfilePic = function() {
+    var defaultPic = "https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg";
+    var picEl = document.getElementById('dashboard-profile-pic');
+    if (picEl) picEl.src = defaultPic;
+    
+    // מחיקת התמונה מהענן (Firebase)
+    if (uid) {
+      db.collection('users').doc(uid).update({
+        profilePic: firebase.firestore.FieldValue.delete()
+      }).then(function() { 
+        alert("התמונה אופסה בהצלחה!"); 
+      });
     }
   };
 })(); // סגירת ה-IIFE שהתחיל בתחילת ה-script
