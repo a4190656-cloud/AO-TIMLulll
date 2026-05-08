@@ -2099,28 +2099,62 @@ window.deletePhoneIdx = function(i) {
           btn.disabled = false;
       });
   };
-// לוגיקה להעלאת תמונת פרופיל ושמירה ב-Firebase
+// שמירת תמונה עם כיווץ אוטומטי כדי להבטיח סנכרון בין מכשירים
   window.handleProfilePicChange = function(event) {
     var file = event.target.files[0];
     if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        console.log("קובץ גדול, מתחיל כיווץ...");
+      }
+
       var reader = new FileReader();
-      reader.onloadend = function() {
-        var base64String = reader.result;
-        
-        // עדכון מיידי של התמונה בדף הבית
-        var picEl = document.getElementById('dashboard-profile-pic');
-        if (picEl) picEl.src = base64String;
-        
-        // שמירה ל-Firestore תחת המשתמש המחובר
-        if (uid) {
-          db.collection('users').doc(uid).set({ profilePic: base64String }, { merge: true })
-            .then(function() { 
-              console.log("תמונת הפרופיל עודכנה בהצלחה!"); 
-            })
-            .catch(function(error) { 
-              console.error("שגיאה בשמירת התמונה:", error); 
-            });
-        }
+      reader.onload = function(e) {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          var ctx = canvas.getContext('2d');
+          
+          var maxWidth = 400;
+          var maxHeight = 400;
+          var width = img.width;
+          var height = img.height;
+
+          if (width > height) {
+            if (width > maxWidth) {
+              height *= maxWidth / width;
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width *= maxHeight / height;
+              height = maxHeight;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // המרה ל-Base64 עם איכות של 70%
+          var compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+          
+          // עדכון התצוגה המקומית
+          var picEl = document.getElementById('dashboard-profile-pic');
+          if (picEl) picEl.src = compressedBase64;
+
+          // שמירה ל-Firebase
+          if (uid) {
+            db.collection('users').doc(uid).set({ profilePic: compressedBase64 }, { merge: true })
+              .then(function() {
+                alert("התמונה עודכנה וסונכרנה בהצלחה!");
+              })
+              .catch(function(error) {
+                alert("שגיאה בסנכרון: התמונה עדיין גדולה מדי.");
+                console.error(error);
+              });
+          }
+        };
+        img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
