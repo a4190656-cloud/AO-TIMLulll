@@ -770,21 +770,46 @@
     <div id="view-categories" class="hidden">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
         <p style="font-weight:700;font-size:14px">קטגוריות אישיות</p>
-        <button id="btn-toggle-add-cat2" style="background:rgba(0,229,255,0.10);border:1px solid rgba(0,229,255,0.22);border-radius:10px;color:var(--cyan);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;padding:7px 13px;cursor:pointer;transition:background .15s;" onclick="toggleAddCat2()">+ הוסף</button>
+        <button id="btn-toggle-add-wiz" class="modern-hover" style="background:rgba(0,229,255,0.10);border:1px solid rgba(0,229,255,0.22);border-radius:10px;color:var(--cyan);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;padding:7px 13px;cursor:pointer;transition:all 0.2s;" onclick="toggleCatWizard()">+ קטגוריה חדשה</button>
       </div>
-      <div id="add-cat2-form" class="hidden sblock" style="margin-bottom:14px;">
-        <div class="sblock-body" style="padding:14px 15px;">
-          <input id="cat-name2" class="inp" type="text" placeholder="שם הקטגוריה" autocomplete="off" style="margin-bottom:8px">
-          <select id="cat-type2" class="inp" style="margin-bottom:10px;">
-            <option value="expense">הוצאה</option>
-            <option value="income">הכנסה</option>
-          </select>
-          <button id="btn-add-cat2" class="btn btn-ghost" style="font-size:13px;padding:10px;">✓ שמור קטגוריה</button>
+
+      <div id="cat-wizard-container" class="hidden sblock" style="margin-bottom:16px; position:relative; overflow:hidden;">
+        <div class="sblock-body" style="padding:18px 16px;">
+          
+          <div id="cat-wiz-step1" class="slide-up">
+            <p style="text-align:center; font-size:13px; font-weight:700; color:var(--muted); margin-bottom:14px;">בחר איזה סוג קטגוריה תרצה ליצור:</p>
+            <div style="display:flex; gap:12px;">
+              <button onclick="setCatWizType('expense')" class="btn btn-ghost modern-hover" style="flex:1; padding:18px 10px; border-color:rgba(255,23,68,0.25); color:#FF6080; display:flex; flex-direction:column; align-items:center; gap:8px;">
+                <div style="background:rgba(255,23,68,0.1); border-radius:50%; padding:8px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </div>
+                הוצאה
+              </button>
+              <button onclick="setCatWizType('income')" class="btn btn-ghost modern-hover" style="flex:1; padding:18px 10px; border-color:rgba(0,230,118,0.25); color:#00E676; display:flex; flex-direction:column; align-items:center; gap:8px;">
+                <div style="background:rgba(0,230,118,0.1); border-radius:50%; padding:8px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </div>
+                הכנסה
+              </button>
+            </div>
+          </div>
+
+          <div id="cat-wiz-step2" class="hidden slide-up">
+            <div style="display:flex; align-items:center; margin-bottom:14px;">
+              <button onclick="backCatWiz()" style="background:none; border:none; color:var(--muted); cursor:pointer; padding:4px; display:flex; align-items:center;" title="חזור">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <p id="cat-wiz-title" style="flex:1; text-align:center; font-size:15px; font-weight:800;"></p>
+              <div style="width:28px;"></div> </div>
+            <input id="cat-wiz-name" class="inp" type="text" placeholder="איך נקרא לקטגוריה? (למשל: סופר)" autocomplete="off" style="margin-bottom:14px; font-size:14px; padding:14px;">
+            <button id="btn-wiz-save" class="btn modern-hover" style="font-size:14px; padding:13px; background:rgba(0,229,255,0.12); color:var(--cyan); border:1px solid rgba(0,229,255,0.3);">✓ שמור קטגוריה</button>
+          </div>
+
         </div>
       </div>
+
       <div id="cat-list2"></div>
     </div>
-
     <div id="view-settings" class="hidden">
 
       <div class="settings-section-title">תשלומים קבועים</div>
@@ -1255,7 +1280,7 @@
 
   function renderCategoriesList(){
     if(!userCategories||!userCategories.length){
-      $('cat-list').innerHTML='<div style="color:var(--muted);font-size:12px;text-align:center;padding:10px;">אין קטגוריות מוגדרות</div>';
+      $('cat-list').innerHTML='<div style="color:var(--muted);font-size:12px;text-align:center;padding:10px;">אין קטגוריות. <button onclick="loadDefaultCategories()" style="background:none;border:none;color:var(--cyan);text-decoration:underline;cursor:pointer;">טען קטגוריות ברירת מחדל</button></div>';
       return;
     }
     $('cat-list').innerHTML=userCategories.map(function(item){
@@ -1971,6 +1996,41 @@ window.deletePhoneIdx = function(i) {
       .catch(function(e){ console.error('Save failed:',e); });
   };
 
+  /* ── טעינת קטגוריות ברירת מחדל ── */
+  window.loadDefaultCategories = function() {
+    var btn = $('btn-load-defaults');
+    if(btn) { btn.disabled=true; btn.innerHTML='טוען נתונים... ⏳'; }
+    
+    var defaultCats = [
+      {name: 'סופרמרקט ומזון', type: 'expense'},
+      {name: 'דיור (שכירות/משכנתא)', type: 'expense'},
+      {name: 'חשבונות (חשמל, מים, ארנונה)', type: 'expense'},
+      {name: 'תחבורה ודלק', type: 'expense'},
+      {name: 'מעשרות ותרומות', type: 'expense'},
+      {name: 'ביטוחים', type: 'expense'},
+      {name: 'בריאות ופארם', type: 'expense'},
+      {name: 'קניות ופנאי', type: 'expense'},
+      {name: 'ילדים וחינוך', type: 'expense'},
+      {name: 'מסעדות ובתי קפה', type: 'expense'},
+      {name: 'משכורת', type: 'income'},
+      {name: 'הכנסה נוספת', type: 'income'},
+      {name: 'קצבאות', type: 'income'}
+    ];
+    
+    var batch = db.batch();
+    defaultCats.forEach(function(cat) {
+      var ref = db.collection('users').doc(uid).collection('categories').doc();
+      batch.set(ref, cat);
+    });
+    
+    batch.commit().then(function() {
+      // ה-listener כבר ירנדר את הרשימה מחדש כשזה יסתיים, כך שאין צורך לעשות כאן כלום חוץ מלחכות :)
+    }).catch(function(e) {
+      console.error("שגיאה בטעינת קטגוריות:", e);
+      if(btn) { btn.disabled=false; btn.innerHTML='שגיאה, נסה שוב'; }
+    });
+  };
+
   /* ── Categories (settings) ── */
   $('btn-add-cat').onclick=function(){
     var name=$('cat-name').value.trim(), type=$('cat-type').value;
@@ -1979,33 +2039,68 @@ window.deletePhoneIdx = function(i) {
       .then(function(){ $('cat-name').value=''; });
   };
 
-  window.toggleAddCat2=function(){
-    var f=$('add-cat2-form');
-    if(f.classList.contains('hidden')){ show('add-cat2-form'); setTimeout(function(){ $('cat-name2').focus(); },80); }
-    else { hide('add-cat2-form'); }
+  /* ── לוגיקת האשף (Wizard) ליצירת קטגוריות ── */
+  window.wizCatType = '';
+  
+  window.toggleCatWizard = function() {
+    var w = $('cat-wizard-container');
+    if(w.classList.contains('hidden')) {
+      show('cat-wizard-container');
+      show('cat-wiz-step1');
+      hide('cat-wiz-step2');
+      $('cat-wiz-name').value = '';
+    } else {
+      hide('cat-wizard-container');
+    }
   };
 
-  $('btn-add-cat2').onclick=function(){
-    var name=$('cat-name2').value.trim(), type=$('cat-type2').value;
+  window.setCatWizType = function(type) {
+    window.wizCatType = type;
+    hide('cat-wiz-step1');
+    
+    var isInc = type === 'income';
+    var titleText = isInc ? 'הכנסה חדשה' : 'הוצאה חדשה';
+    var titleColor = isInc ? '#00E676' : '#FF6080';
+    
+    $('cat-wiz-title').innerHTML = '<span style="color:' + titleColor + ';">' + titleText + '</span>';
+    show('cat-wiz-step2');
+    setTimeout(function() { $('cat-wiz-name').focus(); }, 50);
+  };
+
+  window.backCatWiz = function() {
+    hide('cat-wiz-step2');
+    show('cat-wiz-step1');
+  };
+
+  $('btn-wiz-save').onclick = function() {
+    var name = $('cat-wiz-name').value.trim();
+    var type = window.wizCatType;
     if(!name) return;
     
     var btn = this;
-    var originalText = btn.innerHTML;
+    var originalHtml = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = 'שומר... ⏳';
 
-    db.collection('users').doc(uid).collection('categories').add({name:name,type:type})
-      .then(function(){ 
-        $('cat-name2').value=''; 
-        btn.innerHTML = '✓ נשמר בהצלחה!';
+    db.collection('users').doc(uid).collection('categories').add({name:name, type:type})
+      .then(function() {
+        btn.innerHTML = '✓ הקטגוריה נוצרה!';
+        btn.style.background = 'rgba(0,230,118,0.15)';
         btn.style.color = '#00E676';
+        btn.style.borderColor = 'rgba(0,230,118,0.4)';
         
         setTimeout(function() {
+          hide('cat-wizard-container');
+          
           btn.disabled = false;
-          btn.innerHTML = originalText;
-          btn.style.color = '';
-          hide('add-cat2-form'); 
-        }, 1200);
+          btn.innerHTML = originalHtml;
+          btn.style.background = 'rgba(0,229,255,0.12)';
+          btn.style.color = 'var(--cyan)';
+          btn.style.borderColor = 'rgba(0,229,255,0.3)';
+          $('cat-wiz-name').value = '';
+          show('cat-wiz-step1');
+          hide('cat-wiz-step2');
+        }, 1100);
       });
   };
 
@@ -2028,7 +2123,7 @@ window.deletePhoneIdx = function(i) {
     var el=$('cat-list2');
     if(!el) return;
     if(!userCategories||!userCategories.length){
-      el.innerHTML='<div style="color:var(--muted);font-size:13px;text-align:center;padding:30px 10px;">אין קטגוריות עדיין.<br><span style="font-size:11px;opacity:.6">לחץ "+ הוסף" כדי ליצור קטגוריה ראשונה.</span></div>';
+      el.innerHTML='<div style="color:var(--muted);font-size:13px;text-align:center;padding:30px 10px;">אין קטגוריות עדיין.<br><span style="font-size:11px;opacity:.6">לחץ "+ קטגוריה חדשה" או השתמש ברשימה המוכנה:</span><br><button id="btn-load-defaults" onclick="loadDefaultCategories()" class="btn modern-hover" style="margin-top:15px; background:rgba(0,229,255,0.1); border:1px solid rgba(0,229,255,0.3); color:var(--cyan); font-size:13px; padding:10px;">טען קטגוריות נפוצות (מעשרות, דיור, קניות ועוד)</button></div>';
       return;
     }
     var s=cycleStart();
