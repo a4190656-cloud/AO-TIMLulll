@@ -530,6 +530,68 @@
     @keyframes floatParticle { 0%{opacity:0;transform:translateY(0) scale(0)} 20%{opacity:1;transform:translateY(-10px) scale(1)} 100%{opacity:0;transform:translateY(-55px) scale(.4)} }
     @keyframes fadeLabelIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
 
+    /* ── TOAST NOTIFICATIONS ── */
+    #toast-container {
+      position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+      z-index: 9999; display: flex; flex-direction: column; align-items: center; gap: 8px;
+      pointer-events: none; width: 90%; max-width: 360px;
+    }
+    .toast {
+      background: rgba(13,19,35,0.96); backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.10); border-radius: 14px;
+      padding: 12px 18px; font-size: 13px; font-weight: 600;
+      display: flex; align-items: center; gap: 10px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      animation: toastIn .3s cubic-bezier(.16,1,.3,1) forwards;
+      pointer-events: auto; width: 100%;
+    }
+    .toast.out { animation: toastOut .25s ease forwards; }
+    .toast-success { border-color: rgba(0,230,118,0.30); color: #00E676; }
+    .toast-error   { border-color: rgba(255,23,68,0.30);  color: #FF6080; }
+    .toast-info    { border-color: rgba(0,229,255,0.25);  color: var(--cyan); }
+    .toast-icon { font-size: 16px; flex-shrink: 0; }
+    .toast-msg { color: rgba(255,255,255,0.85); flex: 1; }
+    @keyframes toastIn  { from { opacity:0; transform:translateY(-14px) scale(.94); } to { opacity:1; transform:translateY(0) scale(1); } }
+    @keyframes toastOut { from { opacity:1; transform:translateY(0) scale(1); } to { opacity:0; transform:translateY(-10px) scale(.95); } }
+
+    /* ── SWIPE-TO-DELETE ── */
+    .tx-row { position: relative; overflow: hidden; }
+    .tx-swipe-bg {
+      position: absolute; inset: 0; display: flex; align-items: center;
+      justify-content: flex-end; padding-left: 20px;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,23,68,0.15) 100%);
+      opacity: 0; transition: opacity .15s; pointer-events: none;
+    }
+    .tx-row.swiping .tx-swipe-bg { opacity: 1; }
+
+    /* ── SEARCH BAR ── */
+    #tx-search-wrap { position: relative; margin-bottom: 10px; }
+    #tx-search { padding-right: 38px !important; }
+    .search-icon {
+      position: absolute; right: 13px; top: 50%; transform: translateY(-50%);
+      color: rgba(255,255,255,0.25); pointer-events: none;
+    }
+    #tx-clear-search {
+      position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.3);
+      font-size: 16px; line-height: 1; padding: 2px; transition: color .15s;
+    }
+    #tx-clear-search:hover { color: var(--red); }
+
+    /* ── EDIT TRANSACTION MODAL ── */
+    #edit-modal-overlay {
+      position:fixed; inset:0; z-index:210;
+      background:rgba(0,0,0,0.75); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+      display:flex; align-items:flex-end; justify-content:center;
+    }
+    #edit-modal-sheet {
+      width:100%; max-width:480px;
+      background:rgba(10,16,30,0.96); backdrop-filter:blur(40px);
+      border:1px solid rgba(255,255,255,0.10); border-bottom:none;
+      border-radius:26px 26px 0 0; padding:24px 22px 38px;
+      box-shadow:0 -8px 40px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.07);
+    }
+
     /* ── DELETE ACCOUNT confirm modal ── */
     #delete-confirm-overlay {
       position:fixed; inset:0; z-index:300;
@@ -551,11 +613,13 @@
 </head>
 <body>
 
+<div id="toast-container"></div>
+
 <div id="screen-loading" class="screen">
   <div class="logo-frame" style="width:62px;height:62px;margin-bottom:18px">
     <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" style="width:56px;height:56px">
   </div>
-  <p id="loading-msg" style="color:var(--muted);font-size:13px;font-weight:600">מתחבר לחשבון<span id="loading-dots">...</span></p>
+  <p id="loading-msg" style="color:var(--muted);font-size:13px;font-weight:600">מאמת חשבון<span id="loading-dots">...</span></p>
   <button id="btn-loading-manual" class="hidden" onclick="window.location.reload()" style="margin-top:16px;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:12px;color:rgba(255,255,255,0.5);font-family:Syne,sans-serif;font-size:12px;font-weight:700;padding:8px 18px;cursor:pointer;">לחץ לנסות שוב</button>
   <script>
     var _d=0, _di=setInterval(function(){
@@ -568,7 +632,7 @@
       var m=document.getElementById('loading-msg');
       if(b){ b.classList.remove('hidden'); }
       if(m){ m.textContent='לקח יותר מדי זמן...'; }
-    },5000);
+    },9000);
   </script>
 </div>
 
@@ -745,6 +809,11 @@
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <p style="font-weight:700;font-size:14px">תנועות אחרונות</p>
         <p style="font-size:11px;color:var(--muted)">המחזור הנוכחי</p>
+      </div>
+      <div id="tx-search-wrap">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="tx-search" class="inp" type="text" placeholder="חיפוש תנועה..." autocomplete="off" style="font-size:13px;padding:11px 38px 11px 38px;">
+        <button id="tx-clear-search" class="hidden" title="נקה חיפוש">✕</button>
       </div>
       <div id="tx-list" class="card" style="overflow:hidden;margin-bottom:16px">
         <div style="padding:28px;text-align:center;color:var(--muted);font-size:13px">טוען...</div>
@@ -1067,6 +1136,21 @@
   </div>
 </div>
 
+<!-- Edit Transaction Modal -->
+<div id="edit-modal-overlay" class="hidden" onclick="if(event.target===this) closeEditModal()">
+  <div id="edit-modal-sheet" class="slide-up" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <h3 id="edit-modal-title" style="text-align:center;font-size:17px;font-weight:700;margin-bottom:18px">עריכת תנועה</h3>
+    <input id="edit-modal-amount" class="inp mono modern-hover" type="text" inputmode="decimal"
+      placeholder="0" autocomplete="off"
+      style="font-size:36px;font-weight:800;text-align:center;padding:16px 10px;margin-bottom:11px">
+    <input id="edit-modal-desc" class="inp modern-hover" type="text" placeholder="תיאור הפעולה"
+      autocomplete="off" style="margin-bottom:11px">
+    <select id="edit-modal-category" class="inp modern-hover" style="margin-bottom:14px;"></select>
+    <button id="edit-modal-submit" class="btn modern-hover btn-cyan" style="font-size:15px;padding:15px;">שמור שינויים</button>
+  </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -1087,6 +1171,11 @@
   if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
   const auth = firebase.auth();
   const db   = firebase.firestore();
+
+  /* ── שמור משתמש לצמיתות — לא יצטרך להיכנס שוב מאותו דפדפן ── */
+  auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(e){
+    console.log('Persistence error:', e.code);
+  });
 
   db.enablePersistence().catch(function(e){ console.log('Offline persistence:', e.code); });
 
@@ -1118,12 +1207,103 @@
     return new Date(d);
   }
 
+  /* ── Toast notifications (replace alert()) ── */
+  function toast(msg, type) {
+    type = type || 'info';
+    var icons = { success: '✓', error: '✗', info: 'ℹ' };
+    var container = document.getElementById('toast-container');
+    var el = document.createElement('div');
+    el.className = 'toast toast-' + type;
+    el.innerHTML = '<span class="toast-icon">' + icons[type] + '</span><span class="toast-msg">' + msg + '</span>';
+    container.appendChild(el);
+    var timer = setTimeout(function() {
+      el.classList.add('out');
+      setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 300);
+    }, 3200);
+    el.addEventListener('click', function() {
+      clearTimeout(timer);
+      el.classList.add('out');
+      setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 300);
+    });
+  }
+
+  /* ── Edit transaction state ── */
+  var editingItem = null;
+
+  window.closeEditModal = function() { hide('edit-modal-overlay'); editingItem = null; };
+
+  window.openEditModal = function(item) {
+    editingItem = item;
+    var isInc = item._t === 'income';
+    $('edit-modal-title').textContent = isInc ? 'עריכת הכנסה' : 'עריכת הוצאה';
+    $('edit-modal-amount').value = item.amount;
+    $('edit-modal-amount').style.color = isInc ? 'var(--green)' : 'var(--text)';
+    $('edit-modal-amount').style.borderColor = isInc ? 'rgba(0,230,118,0.3)' : 'rgba(255,23,68,0.3)';
+    $('edit-modal-sheet').style.borderTop = '2px solid ' + (isInc ? 'var(--green)' : 'var(--red)');
+    $('edit-modal-submit').className = 'btn modern-hover ' + (isInc ? 'btn-green' : 'btn-red');
+    $('edit-modal-desc').value = item.description || '';
+    // Populate categories
+    var opts = '<option value="">ללא קטגוריה</option>';
+    userCategories.forEach(function(c) {
+      if (c.type === item._t) {
+        opts += '<option value="' + c.name + '"' + (item.category === c.name ? ' selected' : '') + '>' + c.name + '</option>';
+      }
+    });
+    $('edit-modal-category').innerHTML = opts;
+    show('edit-modal-overlay');
+    setTimeout(function() { $('edit-modal-amount').focus(); }, 100);
+  };
+
+  $('edit-modal-submit').onclick = function() {
+    if (!editingItem) return;
+    var amount = Number($('edit-modal-amount').value);
+    var desc = $('edit-modal-desc').value.trim();
+    if (!amount || !desc) { toast('נא למלא סכום ותיאור', 'error'); return; }
+    var col = editingItem._t === 'income' ? 'incomes' : 'expenses';
+    var data = { amount: amount, description: desc };
+    var cat = $('edit-modal-category').value;
+    if (cat) data.category = cat; else data.category = firebase.firestore.FieldValue.delete();
+    db.collection('users').doc(uid).collection(col).doc(editingItem.id).update(data)
+      .then(function() { closeEditModal(); toast('התנועה עודכנה בהצלחה!', 'success'); })
+      .catch(function() { toast('שגיאה בעדכון', 'error'); });
+  };
+
   window.formatPhone = function(p) {
     var c = p.replace(/\D/g, '');
     if(c.startsWith('0')) return '972' + c.substring(1);
     if(c.startsWith('5')) return '972' + c;
     return c;
   };
+
+  /* ── Search bar ── */
+  (function setupSearch(){
+    var searchEl = $('tx-search'), clearBtn = $('tx-clear-search');
+    if(!searchEl) return;
+    searchEl.addEventListener('input', function() {
+      if (this.value) { show('tx-clear-search'); } else { hide('tx-clear-search'); }
+      renderTx();
+    });
+    if(clearBtn) clearBtn.addEventListener('click', function() {
+      searchEl.value = ''; hide('tx-clear-search'); renderTx(); searchEl.focus();
+    });
+  })();
+
+  /* ── Enter key submits forms ── */
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter') return;
+    var active = document.activeElement;
+    if (!active) return;
+    // Login form
+    if (active.id === 'login-pass' || active.id === 'login-email') { $('btn-email-auth').click(); return; }
+    // Modal amount/desc
+    if (active.id === 'modal-amount' || active.id === 'modal-desc') { $('modal-submit').click(); return; }
+    // Edit modal
+    if (active.id === 'edit-modal-amount' || active.id === 'edit-modal-desc') { $('edit-modal-submit').click(); return; }
+    // Set name
+    if (active.id === 'setname-input') { $('btn-setname').click(); return; }
+    // Cat wizard
+    if (active.id === 'cat-wiz-name') { $('btn-wiz-save').click(); return; }
+  });
 
   /* ── Password eye toggle ── */
   $('btn-pass-eye').onclick = function(){
@@ -1255,12 +1435,24 @@
     incomes.forEach(function(i){ if(parseDate(i.date)>=s) all.push(Object.assign({},i,{_t:'income'})); });
     expenses.forEach(function(i){ if(parseDate(i.date)>=s) all.push(Object.assign({},i,{_t:'expense'})); });
     all.sort(function(a,b){ return parseDate(b.date)-parseDate(a.date); });
+
+    // Apply search filter
+    var searchEl = $('tx-search');
+    var q = searchEl ? searchEl.value.trim().toLowerCase() : '';
+    if (q) {
+      all = all.filter(function(item) {
+        return (item.description||'').toLowerCase().includes(q) ||
+               (item.category||'').toLowerCase().includes(q);
+      });
+    }
+
     var el=$('tx-list');
-    if(!all.length){ el.innerHTML='<div style="padding:30px;text-align:center;color:var(--muted);font-size:13px">אין תנועות במחזור הנוכחי</div>'; return; }
+    if(!all.length){ el.innerHTML='<div style="padding:30px;text-align:center;color:var(--muted);font-size:13px">' + (q ? 'לא נמצאו תנועות התואמות לחיפוש' : 'אין תנועות במחזור הנוכחי') + '</div>'; return; }
     el.innerHTML=all.map(function(item,idx){
       var isInc=item._t==='income', notLast=idx<all.length-1;
       var catHtml=item.category?'<span class="cat-tag">'+item.category+'</span>':'';
-      var waHtml = item.source === 'WhatsApp' ? '<span class="wa-tag"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> התעדכן מהוואטסאפ</span>' : '';
+      var waHtml = item.source === 'WhatsApp' ? '<span class="wa-tag"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> וואטסאפ</span>' : '';
+      var itemJson = JSON.stringify(item).replace(/'/g,"&#39;").replace(/"/g,"&quot;");
       return '<div class="tx-row modern-hover"'+(notLast?' style="border-bottom:1px solid rgba(255,255,255,0.04)"':'')+'>'+
         '<div style="display:flex;align-items:center;gap:11px">'+
         '<div class="tx-icon" style="background:'+(isInc?'rgba(0,230,118,0.1)':'rgba(255,255,255,0.05)')+';border:1px solid '+(isInc?'rgba(0,230,118,0.2)':'rgba(255,255,255,0.08)')+'">'+
@@ -1269,11 +1461,13 @@
           :'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>')+
         '</div>'+
         '<div><p style="font-weight:600;font-size:13px;line-height:1.3;display:flex;align-items:center;flex-wrap:wrap;gap:4px;">'+catHtml+(item.description||'')+waHtml+'</p>'+
-        '<p class="mono" style="font-size:10px;color:var(--muted);margin-top:2px">'+parseDate(item.date).toLocaleDateString('he-IL')+'</p></div></div>'+
-        '<div style="display:flex;align-items:center;gap:11px">'+
+        '<p class="mono" style="font-size:10px;color:var(--muted);margin-top:2px">'+parseDate(item.date).toLocaleDateString('he-IL',{day:'numeric',month:'long'})+'</p></div></div>'+
+        '<div style="display:flex;align-items:center;gap:8px">'+
         '<span class="mono" style="font-weight:700;font-size:13px;color:'+(isInc?'var(--green)':'var(--text)')+'">'+
         (isInc?'+':'−')+fmt(item.amount)+'</span>'+
-        '<button onclick="delItem(\''+(isInc?'incomes':'expenses')+'\',\''+item.id+'\')" class="del-btn">✕</button>'+
+        '<button onclick=\'openEditModal('+itemJson+')\' style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.22);padding:3px 5px;transition:color .14s;font-size:13px;" onmouseover="this.style.color=\'var(--cyan)\'" onmouseout="this.style.color=\'rgba(255,255,255,0.22)\'" aria-label="ערוך">'+
+        '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon></svg></button>'+
+        '<button onclick="delItem(\''+(isInc?'incomes':'expenses')+'\',\''+item.id+'\')" class="del-btn" aria-label="מחק">✕</button>'+
         '</div></div>';
     }).join('');
   }
@@ -1349,6 +1543,7 @@
           msgEl.textContent = '✓ הפעולה נשמרה בהצלחה!';
           userPhones = newPhones; 
           renderPhonesList();
+          toast('מספרי הטלפון עודכנו!', 'success');
           setTimeout(function(){ hide('phone-action-msg'); }, 3000);
       })
       .catch(function(e) {
@@ -1365,7 +1560,7 @@
     var fmtP = window.formatPhone(p);
     
     if(userPhones && userPhones.includes(fmtP)) {
-        alert('מספר זה כבר קיים ברשימה שלך.');
+        toast('מספר זה כבר קיים ברשימה שלך.', 'error');
         return;
     }
 
@@ -1383,6 +1578,7 @@
               msgEl.style.background = 'rgba(255,23,68,0.1)';
               msgEl.style.color = 'var(--red)';
               msgEl.textContent = '✗ המספר הזה כבר רשום בחשבון אחר במערכת!';
+              toast('המספר הזה כבר רשום בחשבון אחר!', 'error');
               return;
           }
 
@@ -1416,7 +1612,7 @@ window.deletePhoneIdx = function(i) {
     if(p !== null && p.trim() !== '') {
         var fmtP = window.formatPhone(p);
         if(fmtP !== current && userPhones.includes(fmtP)) {
-           alert('מספר זה כבר קיים ברשימה.');
+           toast('מספר זה כבר קיים ברשימה.', 'error');
            return;
         }
         var newArr = userPhones.slice();
@@ -1532,7 +1728,8 @@ window.deletePhoneIdx = function(i) {
   }
 
   /* ══════════════════════════════════════════════
-     AUTH STATE — with 4s timeout safety net
+     AUTH STATE — with 10s timeout safety net
+     (מוגדל ל-10 שניות לרשתות איטיות כמו Netfree)
   ══════════════════════════════════════════════ */
   var authResolved = false;
   var appBooted    = false; /* prevent double-boot */
@@ -1541,7 +1738,7 @@ window.deletePhoneIdx = function(i) {
       authResolved = true;
       showScreen('screen-login');
     }
-  }, 4000);
+  }, 10000);
 
   auth.onAuthStateChanged(function(user){
     /* Clear the timeout whenever auth responds */
@@ -1892,8 +2089,9 @@ window.deletePhoneIdx = function(i) {
     }).then(function(){
       displayName=name;
       $('header-name').textContent='שלום, '+name.split(' ')[0]+'!';
+      toast('השם עודכן בהצלחה!', 'success');
       show('name-saved'); setTimeout(function(){ hide('name-saved'); },2500);
-    }).catch(function(e){ console.error(e); });
+    }).catch(function(e){ console.error(e); toast('שגיאה בשמירה', 'error'); });
   };
 
   /* ── Currency toggle ── */
@@ -1982,7 +2180,8 @@ window.deletePhoneIdx = function(i) {
     var amount=Number($('modal-amount').value);
     var desc=$('modal-desc').value.trim();
     var cat=$('modal-category').value;
-    if(!amount||!desc) return;
+    if(!amount){ toast('נא להזין סכום', 'error'); return; }
+    if(!desc){ toast('נא להזין תיאור', 'error'); return; }
 
     var dataObj={amount:amount,description:desc,date:new Date().toISOString()};
     if(cat!=='') dataObj.category=cat;
@@ -1993,7 +2192,7 @@ window.deletePhoneIdx = function(i) {
     showSuccess(type,amount);
 
     db.collection('users').doc(uid).collection(type==='income'?'incomes':'expenses').add(dataObj)
-      .catch(function(e){ console.error('Save failed:',e); });
+      .catch(function(e){ console.error('Save failed:',e); toast('שגיאה בשמירה — בדוק חיבור', 'error'); });
   };
 
   /* ── טעינת קטגוריות ברירת מחדל ── */
@@ -2024,7 +2223,7 @@ window.deletePhoneIdx = function(i) {
     });
     
     batch.commit().then(function() {
-      // ה-listener כבר ירנדר את הרשימה מחדש כשזה יסתיים, כך שאין צורך לעשות כאן כלום חוץ מלחכות :)
+      toast('קטגוריות ברירת מחדל נטענו!', 'success');
     }).catch(function(e) {
       console.error("שגיאה בטעינת קטגוריות:", e);
       if(btn) { btn.disabled=false; btn.innerHTML='שגיאה, נסה שוב'; }
@@ -2034,9 +2233,9 @@ window.deletePhoneIdx = function(i) {
   /* ── Categories (settings) ── */
   $('btn-add-cat').onclick=function(){
     var name=$('cat-name').value.trim(), type=$('cat-type').value;
-    if(!name) return;
+    if(!name){ toast('נא להזין שם קטגוריה', 'error'); return; }
     db.collection('users').doc(uid).collection('categories').add({name:name,type:type})
-      .then(function(){ $('cat-name').value=''; });
+      .then(function(){ $('cat-name').value=''; toast('קטגוריה נוספה!', 'success'); });
   };
 
   /* ── לוגיקת האשף (Wizard) ליצירת קטגוריות ── */
@@ -2084,6 +2283,7 @@ window.deletePhoneIdx = function(i) {
 
     db.collection('users').doc(uid).collection('categories').add({name:name, type:type})
       .then(function() {
+        toast('קטגוריה "' + name + '" נוצרה!', 'success');
         btn.innerHTML = '✓ הקטגוריה נוצרה!';
         btn.style.background = 'rgba(0,230,118,0.15)';
         btn.style.color = '#00E676';
@@ -2107,15 +2307,15 @@ window.deletePhoneIdx = function(i) {
   /* ── Fixed ── */
   $('btn-add-fe').onclick=function(){
     var name=$('fe-name').value.trim(), amount=Number($('fe-amount').value);
-    if(!name||!amount) return;
+    if(!name||!amount){ toast('נא למלא שם וסכום', 'error'); return; }
     db.collection('users').doc(uid).collection('fixed_settings').add({name:name,amount:amount})
-      .then(function(){ $('fe-name').value=''; $('fe-amount').value=''; });
+      .then(function(){ $('fe-name').value=''; $('fe-amount').value=''; toast('הוצאה קבועה נוספה!', 'success'); });
   };
   $('btn-add-fi').onclick=function(){
     var name=$('fi-name').value.trim(), amount=Number($('fi-amount').value);
-    if(!name||!amount) return;
+    if(!name||!amount){ toast('נא למלא שם וסכום', 'error'); return; }
     db.collection('users').doc(uid).collection('fixed_incomes').add({name:name,amount:amount})
-      .then(function(){ $('fi-name').value=''; $('fi-amount').value=''; });
+      .then(function(){ $('fi-name').value=''; $('fi-amount').value=''; toast('הכנסה קבועה נוספה!', 'success'); });
   };
 
   /* ── Category tiles ── */
@@ -2160,7 +2360,9 @@ window.deletePhoneIdx = function(i) {
   /* ── Delete with confirm ── */
   window.delItem=function(col,id){
     if(!confirm('האם אתה בטוח שברצונך למחוק פריט זה?')) return;
-    db.collection('users').doc(uid).collection(col).doc(id).delete();
+    db.collection('users').doc(uid).collection(col).doc(id).delete()
+      .then(function() { toast('הפריט נמחק', 'success'); })
+      .catch(function() { toast('שגיאה במחיקה', 'error'); });
   };
 
  /* ── WhatsApp Phone Modal Logic ── */
@@ -2187,7 +2389,7 @@ window.deletePhoneIdx = function(i) {
     db.collection('users').where('phones', 'array-contains', fmtP).get()
       .then(function(querySnapshot) {
           if (!querySnapshot.empty) {
-              alert('המספר הזה כבר רשום בחשבון אחר במערכת!');
+              toast('המספר הזה כבר רשום בחשבון אחר במערכת!', 'error');
               btn.textContent = originalText;
               btn.disabled = false;
               return;
@@ -2209,7 +2411,7 @@ window.deletePhoneIdx = function(i) {
       })
       .catch(function(e) {
           console.error('Error:', e);
-          alert('שגיאה בבדיקה או בשמירה.');
+          toast('שגיאה בבדיקה או בשמירה.', 'error');
           btn.textContent = originalText;
           btn.disabled = false;
       });
@@ -2261,10 +2463,10 @@ window.deletePhoneIdx = function(i) {
           if (uid) {
             db.collection('users').doc(uid).set({ profilePic: compressedBase64 }, { merge: true })
               .then(function() {
-                alert("התמונה עודכנה וסונכרנה בהצלחה!");
+                toast('התמונה עודכנה וסונכרנה בהצלחה!', 'success');
               })
               .catch(function(error) {
-                alert("שגיאה בסנכרון: התמונה עדיין גדולה מדי.");
+                toast('שגיאה בסנכרון: התמונה עדיין גדולה מדי.', 'error');
                 console.error(error);
               });
           }
@@ -2285,7 +2487,7 @@ window.deletePhoneIdx = function(i) {
       db.collection('users').doc(uid).update({
         profilePic: firebase.firestore.FieldValue.delete()
       }).then(function() { 
-        alert("התמונה אופסה בהצלחה!"); 
+        toast('התמונה אופסה בהצלחה!', 'success');
       });
     }
   };
