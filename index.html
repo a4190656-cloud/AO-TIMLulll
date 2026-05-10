@@ -1988,8 +1988,25 @@ window.deletePhoneIdx = function(i) {
   $('btn-add-cat2').onclick=function(){
     var name=$('cat-name2').value.trim(), type=$('cat-type2').value;
     if(!name) return;
+    
+    var btn = this;
+    var originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = 'שומר... ⏳';
+
     db.collection('users').doc(uid).collection('categories').add({name:name,type:type})
-      .then(function(){ $('cat-name2').value=''; hide('add-cat2-form'); });
+      .then(function(){ 
+        $('cat-name2').value=''; 
+        btn.innerHTML = '✓ נשמר בהצלחה!';
+        btn.style.color = '#00E676';
+        
+        setTimeout(function() {
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+          btn.style.color = '';
+          hide('add-cat2-form'); 
+        }, 1200);
+      });
   };
 
   /* ── Fixed ── */
@@ -2028,11 +2045,14 @@ window.deletePhoneIdx = function(i) {
       var matched=src.filter(function(i){ return i.category===cat.name&&parseDate(i.date)>=s; });
       var total=matched.reduce(function(a,i){ return a+Number(i.amount||0); },0);
       var count=matched.length;
-      return '<div class="cat-tile" style="border:1px solid '+colBdr+';background:linear-gradient(145deg,'+colBg+',rgba(13,19,35,0.75));">'+
-        '<button class="cat-tile-del" onclick="delItem(\'categories\',\''+cat.id+'\')">✕</button>'+
+      
+      return '<div class="cat-tile" style="border:1px solid '+colBdr+';background:linear-gradient(145deg,'+colBg+',rgba(13,19,35,0.75)); cursor:pointer;" onclick="openModalWithCat(\''+cat.type+'\', \''+cat.name+'\')">'+
+        '<button class="cat-tile-del" onclick="event.stopPropagation(); delItem(\'categories\',\''+cat.id+'\')">✕</button>'+
         '<div class="cat-tile-name">'+cat.name+'</div>'+
         '<div class="cat-tile-amount" style="color:'+col+';">'+fmt(total)+'</div>'+
         '<div class="cat-tile-count">'+count+' תנועות במחזור</div>'+
+        '<div style="margin-top:12px; display:flex; align-items:center; gap:4px; font-size:11px; font-weight:800; color:'+col+'; opacity:0.85;">'+
+        '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> הוסף תנועה</div>'+
         '<div class="cat-tile-bar" style="background:'+colBar+';opacity:0.55;"></div></div>';
     }
 
@@ -2174,6 +2194,20 @@ window.deletePhoneIdx = function(i) {
       });
     }
   };
+
+  // פונקציה שפותחת את מודל ההוצאה/הכנסה ומזינה מראש את הקטגוריה שנבחרה
+  window.openModalWithCat = function(type, catName) {
+    openModal(type); // קורא לפונקציה המקורית שפותחת את החלון
+    
+    // ממתין שבריר שנייה שהחלון והסלקט יעלו ואז מזין את הערך אוטומטית
+    setTimeout(function() {
+      var catSelect = document.getElementById('modal-category');
+      if (catSelect) {
+        catSelect.value = catName; 
+      }
+    }, 50); 
+  };
+
 })(); // סגירת ה-IIFE שהתחיל בתחילת ה-script
 </script>
 </body>
