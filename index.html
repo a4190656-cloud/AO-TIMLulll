@@ -430,23 +430,123 @@
     #btn-modal-save-new-cat:hover { background:rgba(0,229,255,0.18); }
 
     /* ── CATEGORY TILES ── */
-    .cat-tiles-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+    .cat-tiles-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:6px; }
     .cat-tile {
-      background:rgba(13,19,35,0.75); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
-      border-radius:16px; padding:16px 14px 13px; position:relative; overflow:hidden;
-      transition:transform .2s,box-shadow .2s;
+      background:rgba(13,19,35,0.82); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+      border-radius:18px; padding:14px 13px 13px; position:relative; overflow:hidden;
+      transition:transform .2s,box-shadow .2s; display:flex; flex-direction:column; min-height:140px;
+      cursor:pointer;
     }
+    .cat-tile:active { transform:scale(.97); }
     .cat-tile:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(0,0,0,0.5); }
-    .cat-tile-del {
-      position:absolute; top:8px; left:8px; background:none; border:none; cursor:pointer;
-      color:rgba(255,255,255,0.18); font-size:13px; line-height:1; padding:3px 5px; transition:color .14s;
+
+    /* over-budget pulse */
+    .cat-tile.over-budget { animation: overBudgetPulse 2.5s ease-in-out infinite; }
+    @keyframes overBudgetPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(255,23,68,0); }
+      50%      { box-shadow: 0 0 20px 3px rgba(255,23,68,0.2); }
     }
-    .cat-tile-del:hover { color:var(--red); }
-    .cat-tile-name { font-weight:700; font-size:13px; line-height:1.3; margin-bottom:8px; padding-left:18px; word-break:break-word; }
-    .cat-tile-amount { font-family:'JetBrains Mono',monospace; font-size:18px; font-weight:700; line-height:1; }
-    .cat-tile-count { font-size:10px; font-weight:600; margin-top:4px; opacity:0.55; }
-    .cat-tile-bar { position:absolute; bottom:0; right:0; left:0; height:2px; border-radius:0 0 16px 16px; }
+    /* near-budget warning */
+    .cat-tile.near-budget { animation: nearBudgetPulse 3s ease-in-out infinite; }
+    @keyframes nearBudgetPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(255,160,0,0); }
+      50%      { box-shadow: 0 0 16px 2px rgba(255,160,0,0.14); }
+    }
+
+    .cat-tile-del {
+      position:absolute; top:8px; left:8px; background:rgba(255,255,255,0.06); border:none;
+      border-radius:50%; width:22px; height:22px; display:flex; align-items:center; justify-content:center;
+      cursor:pointer; color:rgba(255,255,255,0.3); font-size:10px; transition:all .15s; z-index:2;
+    }
+    .cat-tile-del:hover { background:rgba(255,23,68,0.2); color:#FF6080; }
+
+    /* budget edit pencil button */
+    .cat-tile-budget-btn {
+      position:absolute; top:8px; right:8px; background:rgba(255,255,255,0.06); border:none;
+      border-radius:50%; width:22px; height:22px; display:flex; align-items:center; justify-content:center;
+      cursor:pointer; color:rgba(255,255,255,0.28); font-size:10px; transition:all .15s; z-index:2;
+    }
+    .cat-tile-budget-btn:hover { background:rgba(0,229,255,0.15); color:var(--cyan); }
+
+    .cat-tile-name { font-weight:800; font-size:13px; line-height:1.3; word-break:break-word;
+      margin-top:6px; padding: 0 4px; }
+    .cat-tile-amount { font-family:'JetBrains Mono',monospace; font-size:19px; font-weight:800; line-height:1; margin-top:5px; }
+    .cat-tile-count  { font-size:10px; font-weight:600; opacity:.5; margin-top:2px; }
+
+    /* budget progress */
+    .cat-budget-track { margin-top:auto; padding-top:9px; }
+    .cat-budget-bar-bg { height:5px; border-radius:99px; background:rgba(255,255,255,0.07); overflow:hidden; margin-bottom:4px; }
+    .cat-budget-bar-fill { height:100%; border-radius:99px; transition:width .6s cubic-bezier(.16,1,.3,1); }
+    .cat-budget-label { font-size:9.5px; font-weight:700; color:rgba(255,255,255,0.38);
+      display:flex; justify-content:space-between; align-items:center; }
+    .cat-budget-remain { font-weight:800; }
+
+    /* no-budget add CTA */
+    .cat-tile-cta { margin-top:auto; display:flex; align-items:center; gap:4px;
+      font-size:10.5px; font-weight:800; opacity:.7; padding-top:8px; }
+
+    .cat-tile-bar { position:absolute; bottom:0; right:0; left:0; height:2px; border-radius:0 0 18px 18px; }
     .cat-section-label { font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:14px 0 8px; }
+
+    /* budget edit mini-modal */
+    #budget-edit-modal {
+      position:fixed; inset:0; z-index:250; background:rgba(0,0,0,0.7); backdrop-filter:blur(10px);
+      display:flex; align-items:flex-end; justify-content:center;
+    }
+    #budget-edit-sheet {
+      width:100%; max-width:480px; background:rgba(10,16,30,0.97); backdrop-filter:blur(40px);
+      border:1px solid rgba(255,255,255,0.10); border-bottom:none;
+      border-radius:26px 26px 0 0; padding:24px 22px 38px;
+      box-shadow:0 -8px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.07);
+      position:relative;
+    }
+    #budget-edit-sheet::before {
+      content:''; position:absolute; top:0; left:15%; right:15%; height:1px;
+      background:linear-gradient(90deg,transparent,rgba(0,229,255,0.4),transparent);
+    }
+
+    /* ── BUDGET ALERT BANNER ── */
+    #budget-alerts-banner {
+      border-radius: 16px; overflow: hidden;
+    }
+    .budget-alert-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 14px; border-radius: 13px; margin-bottom: 7px;
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid; transition: all .2s;
+    }
+    .budget-alert-item.alert-over {
+      background: rgba(255,23,68,0.09);
+      border-color: rgba(255,23,68,0.35);
+      box-shadow: 0 0 20px rgba(255,23,68,0.08), inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+    .budget-alert-item.alert-near {
+      background: rgba(255,160,0,0.08);
+      border-color: rgba(255,160,0,0.30);
+      box-shadow: 0 0 16px rgba(255,160,0,0.07), inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+    .budget-alert-icon { font-size: 18px; flex-shrink: 0; }
+    .budget-alert-body { flex: 1; min-width: 0; }
+    .budget-alert-name { font-size: 12px; font-weight: 800; line-height: 1.2; }
+    .budget-alert-over .budget-alert-name { color: #FF6080; }
+    .budget-alert-near .budget-alert-name { color: #FFB300; }
+    .budget-alert-detail { font-size: 10.5px; color: rgba(255,255,255,0.45); font-weight: 600; margin-top: 1px; }
+    .budget-alert-remain {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 800;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .budget-alert-remain.over { color: #FF6080; }
+    .budget-alert-remain.near { color: #FFB300; }
+
+    /* ── IMPROVED CAT TILE REMAIN BADGE ── */
+    .cat-remain-badge {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 800;
+      padding: 2px 7px; border-radius: 8px; margin-top: 3px;
+    }
+    .cat-remain-badge.ok { background: rgba(0,230,118,0.1); color: #00E676; border: 1px solid rgba(0,230,118,0.2); }
+    .cat-remain-badge.near { background: rgba(255,176,0,0.1); color: #FFB300; border: 1px solid rgba(255,176,0,0.25); }
+    .cat-remain-badge.over { background: rgba(255,23,68,0.12); color: #FF6080; border: 1px solid rgba(255,23,68,0.28); }
 
     /* ── MISC ── */
     .err   { color:var(--red);   font-size:12px; font-weight:700; text-align:center; margin-top:6px; }
@@ -785,6 +885,9 @@
   <div style="padding:16px 16px 0">
 
     <div id="view-dashboard">
+      <!-- Dashboard Budget Alerts -->
+      <div id="dash-budget-alerts" class="hidden" style="margin-bottom:14px;"></div>
+
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:20px" class="rise d3">
         <button id="btn-add-income" class="action-btn-income">
           <div class="action-btn-inner">
@@ -837,6 +940,9 @@
     </div>
 
     <div id="view-categories" class="hidden">
+      <!-- Budget Alerts Banner -->
+      <div id="budget-alerts-banner" class="hidden" style="margin-bottom:14px;"></div>
+
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
         <p style="font-weight:700;font-size:14px">קטגוריות אישיות</p>
         <button id="btn-toggle-add-wiz" class="modern-hover" style="background:rgba(0,229,255,0.10);border:1px solid rgba(0,229,255,0.22);border-radius:10px;color:var(--cyan);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;padding:7px 13px;cursor:pointer;transition:all 0.2s;" onclick="toggleCatWizard()">+ קטגוריה חדשה</button>
@@ -869,8 +975,30 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
               </button>
               <p id="cat-wiz-title" style="flex:1; text-align:center; font-size:15px; font-weight:800;"></p>
-              <div style="width:28px;"></div> </div>
-            <input id="cat-wiz-name" class="inp" type="text" placeholder="איך נקרא לקטגוריה? (למשל: סופר)" autocomplete="off" style="margin-bottom:14px; font-size:14px; padding:14px;">
+              <div style="width:28px;"></div>
+            </div>
+            <input id="cat-wiz-name" class="inp" type="text" placeholder="איך נקרא לקטגוריה? (למשל: סופר)" autocomplete="off" style="margin-bottom:10px; font-size:14px; padding:14px;">
+            <div id="cat-wiz-budget-wrap" style="margin-bottom:14px;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;">
+                <div style="width:28px;height:28px;border-radius:9px;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.2);display:flex;align-items:center;justify-content:center;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <div>
+                  <span style="font-size:12px;font-weight:700;color:var(--text);">תקרת הוצאה חודשית</span>
+                  <span style="font-size:10px;font-weight:600;color:rgba(255,255,255,0.35);margin-right:5px;">(אופציונלי)</span>
+                </div>
+              </div>
+              <div style="position:relative;">
+                <input id="cat-wiz-budget" class="inp mono" type="number" min="0" inputmode="decimal"
+                  placeholder="ללא הגבלה"
+                  style="padding-left:36px;font-size:16px;font-weight:800;letter-spacing:0.02em;text-align:left;direction:ltr;">
+                <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--cyan);font-size:14px;font-weight:700;pointer-events:none;">₪</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;margin-top:6px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(0,229,255,0.45)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <p style="font-size:10.5px;color:rgba(255,255,255,0.30);line-height:1.4">כשתגיע לסכום הזה תקבל התרעה אוטומטית</p>
+              </div>
+            </div>
             <button id="btn-wiz-save" class="btn modern-hover" style="font-size:14px; padding:13px; background:rgba(0,229,255,0.12); color:var(--cyan); border:1px solid rgba(0,229,255,0.3);">✓ שמור קטגוריה</button>
           </div>
 
@@ -1148,6 +1276,47 @@
       autocomplete="off" style="margin-bottom:11px">
     <select id="edit-modal-category" class="inp modern-hover" style="margin-bottom:14px;"></select>
     <button id="edit-modal-submit" class="btn modern-hover btn-cyan" style="font-size:15px;padding:15px;">שמור שינויים</button>
+  </div>
+</div>
+
+<!-- Budget Edit Modal -->
+<div id="budget-edit-modal" class="hidden" onclick="if(event.target===this) closeBudgetModal()">
+  <div id="budget-edit-sheet">
+    <div class="modal-handle"></div>
+    <div style="text-align:center;margin-bottom:6px;">
+      <span id="budget-edit-icon" style="font-size:28px;">💰</span>
+    </div>
+    <h3 id="budget-edit-catname" style="text-align:center;font-size:17px;font-weight:800;margin-bottom:2px;"></h3>
+    <p style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:14px;">הגדר תקרת הוצאה חודשית</p>
+
+    <!-- Current spend status -->
+    <div id="budget-edit-status" class="hidden" style="border-radius:12px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);margin-bottom:2px;">הוצאה במחזור הנוכחי</div>
+        <div id="budget-edit-current-spend" style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;color:#FF6080;"></div>
+      </div>
+      <div style="text-align:left;">
+        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);margin-bottom:2px;">נותר מהתקרה</div>
+        <div id="budget-edit-remain" style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;"></div>
+      </div>
+    </div>
+    <!-- Progress bar inside modal -->
+    <div id="budget-edit-bar-wrap" class="hidden" style="margin-bottom:16px;">
+      <div style="height:6px;border-radius:99px;background:rgba(255,255,255,0.06);overflow:hidden;">
+        <div id="budget-edit-bar" style="height:100%;border-radius:99px;transition:width .4s;"></div>
+      </div>
+    </div>
+
+    <div style="position:relative;margin-bottom:10px;">
+      <input id="budget-edit-input" class="inp mono" type="number" min="0" inputmode="decimal"
+        placeholder="ללא הגבלה"
+        style="padding-left:36px;font-size:24px;font-weight:800;text-align:left;direction:ltr;letter-spacing:0.02em;"
+        oninput="updateBudgetModalLive()">
+      <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--cyan);font-size:16px;font-weight:700;pointer-events:none;">₪</span>
+    </div>
+    <p style="font-size:11px;color:rgba(255,255,255,0.28);text-align:center;margin-bottom:18px;">השאר ריק או 0 לביטול ההגבלה</p>
+    <button id="budget-edit-save" class="btn modern-hover btn-cyan" style="font-size:15px;padding:15px;margin-bottom:10px;">שמור תקרה</button>
+    <button onclick="closeBudgetModal()" style="width:100%;background:none;border:none;color:var(--muted);font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;padding:8px;">ביטול</button>
   </div>
 </div>
 
@@ -1621,7 +1790,51 @@ window.deletePhoneIdx = function(i) {
     }
   };
 
-  function renderAll(){ renderStats(); renderTx(); renderCategoriesList2(); }
+  /* ── Dashboard budget alerts ── */
+  function renderDashBudgetAlerts() {
+    var el = $('dash-budget-alerts');
+    if (!el) return;
+    var s = cycleStart();
+    var overItems = [], nearItems = [];
+    userCategories.forEach(function(cat) {
+      if (cat.type !== 'expense' || !cat.budget || cat.budget <= 0) return;
+      var matched = expenses.filter(function(i){ return i.category === cat.name && parseDate(i.date) >= s; });
+      var total = matched.reduce(function(a, i){ return a + Number(i.amount||0); }, 0);
+      var pct = total / cat.budget;
+      if (total >= cat.budget) overItems.push({ cat: cat, total: total });
+      else if (pct >= 0.8) nearItems.push({ cat: cat, total: total, remain: cat.budget - total });
+    });
+    if (!overItems.length && !nearItems.length) {
+      el.innerHTML = '';
+      el.classList.add('hidden');
+      return;
+    }
+    var html = '';
+    overItems.forEach(function(item) {
+      html += '<div class="budget-alert-item alert-over" style="cursor:pointer;" onclick="switchView(\'categories\')">' +
+        '<span class="budget-alert-icon">🚨</span>' +
+        '<div class="budget-alert-body">' +
+          '<div class="budget-alert-name" style="color:#FF6080;">' + item.cat.name + '</div>' +
+          '<div class="budget-alert-detail">חרגת ב-' + fmt(item.total - item.cat.budget) + ' מתוך ' + fmt(item.cat.budget) + '</div>' +
+        '</div>' +
+        '<span class="budget-alert-remain over">חריגה!</span>' +
+      '</div>';
+    });
+    nearItems.forEach(function(item) {
+      html += '<div class="budget-alert-item alert-near" style="cursor:pointer;" onclick="switchView(\'categories\')">' +
+        '<span class="budget-alert-icon">⚠️</span>' +
+        '<div class="budget-alert-body">' +
+          '<div class="budget-alert-name" style="color:#FFB300;">' + item.cat.name + '</div>' +
+          '<div class="budget-alert-detail">נותר ' + fmt(item.remain) + ' מתוך ' + fmt(item.cat.budget) + '</div>' +
+        '</div>' +
+        '<span class="budget-alert-remain near">' + fmt(item.remain) + '</span>' +
+      '</div>';
+    });
+    el.innerHTML = html;
+    el.classList.remove('hidden');
+  }
+
+  function renderAll(){ renderStats(); renderTx(); renderCategoriesList2(); renderDashBudgetAlerts(); }
 
   function reloadModalCategorySelect(selectedName){
     var opts='<option value="">ללא קטגוריה</option>';
@@ -2134,6 +2347,9 @@ window.deletePhoneIdx = function(i) {
   $('btn-modal-save-new-cat').onclick=function(){
     var name=$('modal-new-cat-name').value.trim();
     if(!name||!uid) return;
+    // מניעת כפילויות
+    var isDup = userCategories.some(function(c){ return c.name.trim().toLowerCase()===name.toLowerCase()&&c.type===modalType; });
+    if(isDup){ toast('קטגוריה בשם "'+name+'" כבר קיימת!','error'); return; }
     db.collection('users').doc(uid).collection('categories').add({name:name,type:modalType}).then(function(){
       var exists=userCategories.some(function(c){ return c.name===name&&c.type===modalType; });
       if(!exists) userCategories.push({name:name,type:modalType,id:'_pending'});
@@ -2275,13 +2491,27 @@ window.deletePhoneIdx = function(i) {
     var name = $('cat-wiz-name').value.trim();
     var type = window.wizCatType;
     if(!name) return;
+
+    // ── מניעת כפילויות ──
+    var isDuplicate = userCategories.some(function(c) {
+      return c.name.trim().toLowerCase() === name.toLowerCase() && c.type === type;
+    });
+    if (isDuplicate) {
+      toast('קטגוריה בשם "' + name + '" כבר קיימת!', 'error');
+      $('cat-wiz-name').focus();
+      return;
+    }
     
     var btn = this;
     var originalHtml = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = 'שומר... ⏳';
 
-    db.collection('users').doc(uid).collection('categories').add({name:name, type:type})
+    var budgetVal = Number($('cat-wiz-budget').value) || 0;
+    var catData = { name: name, type: type };
+    if (budgetVal > 0) catData.budget = budgetVal;
+
+    db.collection('users').doc(uid).collection('categories').add(catData)
       .then(function() {
         toast('קטגוריה "' + name + '" נוצרה!', 'success');
         btn.innerHTML = '✓ הקטגוריה נוצרה!';
@@ -2298,6 +2528,7 @@ window.deletePhoneIdx = function(i) {
           btn.style.color = 'var(--cyan)';
           btn.style.borderColor = 'rgba(0,229,255,0.3)';
           $('cat-wiz-name').value = '';
+          $('cat-wiz-budget').value = '';
           show('cat-wiz-step1');
           hide('cat-wiz-step2');
         }, 1100);
@@ -2319,42 +2550,248 @@ window.deletePhoneIdx = function(i) {
   };
 
   /* ── Category tiles ── */
+  /* ── Budget edit modal ── */
+  var budgetEditCat = null;
+  window.closeBudgetModal = function() { hide('budget-edit-modal'); budgetEditCat = null; };
+  window.openBudgetModal = function(catId) {
+    budgetEditCat = userCategories.find(function(c){ return c.id === catId; });
+    if (!budgetEditCat) return;
+    var isInc = budgetEditCat.type === 'income';
+    $('budget-edit-catname').textContent = budgetEditCat.name;
+    $('budget-edit-icon').textContent = isInc ? '💚' : '🎯';
+    $('budget-edit-input').value = budgetEditCat.budget || '';
+    $('budget-edit-save').style.background = isInc ? 'linear-gradient(135deg,#00E676,#00C853)' : 'linear-gradient(135deg,var(--cyan),var(--cyan2))';
+    $('budget-edit-save').style.color = isInc ? '#04070E' : '#04070E';
+    $('budget-edit-save').style.borderColor = 'transparent';
+
+    // Show current spend for expense categories
+    if (!isInc) {
+      var s = cycleStart();
+      var matched = expenses.filter(function(i){ return i.category === budgetEditCat.name && parseDate(i.date) >= s; });
+      var currentSpend = matched.reduce(function(a,i){ return a+Number(i.amount||0); }, 0);
+      $('budget-edit-current-spend').textContent = fmt(currentSpend);
+
+      var statusEl = $('budget-edit-status');
+      statusEl.classList.remove('hidden');
+      statusEl.style.background = currentSpend > 0 ? 'rgba(255,23,68,0.06)' : 'rgba(255,255,255,0.03)';
+      statusEl.style.border = '1px solid ' + (currentSpend > 0 ? 'rgba(255,23,68,0.15)' : 'rgba(255,255,255,0.07)');
+
+      // Update remain
+      var budget = budgetEditCat.budget || 0;
+      var remainEl = $('budget-edit-remain');
+      if (budget > 0) {
+        var rem = budget - currentSpend;
+        remainEl.textContent = fmt(rem);
+        remainEl.style.color = rem < 0 ? '#FF6080' : rem < budget * 0.2 ? '#FFB300' : '#00E676';
+        // Show bar
+        var barWrap = $('budget-edit-bar-wrap');
+        barWrap.classList.remove('hidden');
+        var pct = Math.min(currentSpend / budget, 1);
+        var bar = $('budget-edit-bar');
+        bar.style.width = (pct * 100).toFixed(1) + '%';
+        bar.style.background = pct >= 1 ? 'linear-gradient(90deg,#FF1744,#FF6D00)' : pct >= 0.8 ? 'linear-gradient(90deg,#FFA000,#FF6D00)' : 'linear-gradient(90deg,var(--cyan),#00C853)';
+      } else {
+        remainEl.textContent = '—';
+        remainEl.style.color = 'rgba(255,255,255,0.3)';
+        $('budget-edit-bar-wrap').classList.add('hidden');
+      }
+      // Store currentSpend for live update
+      $('budget-edit-modal')._currentSpend = currentSpend;
+    } else {
+      $('budget-edit-status').classList.add('hidden');
+      $('budget-edit-bar-wrap').classList.add('hidden');
+    }
+
+    show('budget-edit-modal');
+    setTimeout(function(){ $('budget-edit-input').focus(); $('budget-edit-input').select(); }, 100);
+  };
+
+  window.updateBudgetModalLive = function() {
+    if (!budgetEditCat || budgetEditCat.type === 'income') return;
+    var newBudget = Number($('budget-edit-input').value) || 0;
+    var currentSpend = $('budget-edit-modal')._currentSpend || 0;
+    var remainEl = $('budget-edit-remain');
+    var barWrap = $('budget-edit-bar-wrap');
+    if (newBudget > 0) {
+      var rem = newBudget - currentSpend;
+      remainEl.textContent = fmt(rem);
+      remainEl.style.color = rem < 0 ? '#FF6080' : rem < newBudget * 0.2 ? '#FFB300' : '#00E676';
+      barWrap.classList.remove('hidden');
+      var pct = Math.min(currentSpend / newBudget, 1);
+      var bar = $('budget-edit-bar');
+      bar.style.width = (pct * 100).toFixed(1) + '%';
+      bar.style.background = pct >= 1 ? 'linear-gradient(90deg,#FF1744,#FF6D00)' : pct >= 0.8 ? 'linear-gradient(90deg,#FFA000,#FF6D00)' : 'linear-gradient(90deg,var(--cyan),#00C853)';
+    } else {
+      remainEl.textContent = '—';
+      remainEl.style.color = 'rgba(255,255,255,0.3)';
+      barWrap.classList.add('hidden');
+    }
+  };
+  $('budget-edit-save').onclick = function() {
+    if (!budgetEditCat) return;
+    var val = Number($('budget-edit-input').value) || 0;
+    var data = val > 0 ? { budget: val } : { budget: firebase.firestore.FieldValue.delete() };
+    db.collection('users').doc(uid).collection('categories').doc(budgetEditCat.id).update(data)
+      .then(function() {
+        closeBudgetModal();
+        toast(val > 0 ? 'תקרה הוגדרה: ' + fmt(val) : 'תקרה הוסרה', 'success');
+      }).catch(function(){ toast('שגיאה בשמירה', 'error'); });
+  };
+
+  /* ── Category tiles render ── */
   function renderCategoriesList2(){
     var el=$('cat-list2');
     if(!el) return;
     if(!userCategories||!userCategories.length){
       el.innerHTML='<div style="color:var(--muted);font-size:13px;text-align:center;padding:30px 10px;">אין קטגוריות עדיין.<br><span style="font-size:11px;opacity:.6">לחץ "+ קטגוריה חדשה" או השתמש ברשימה המוכנה:</span><br><button id="btn-load-defaults" onclick="loadDefaultCategories()" class="btn modern-hover" style="margin-top:15px; background:rgba(0,229,255,0.1); border:1px solid rgba(0,229,255,0.3); color:var(--cyan); font-size:13px; padding:10px;">טען קטגוריות נפוצות (מעשרות, דיור, קניות ועוד)</button></div>';
+      // hide banner
+      var banner = $('budget-alerts-banner');
+      if (banner) { banner.innerHTML = ''; banner.classList.add('hidden'); }
       return;
     }
     var s=cycleStart();
     var expCats=userCategories.filter(function(c){ return c.type==='expense'; });
     var incCats=userCategories.filter(function(c){ return c.type==='income'; });
 
+    // ── Build alerts banner ──
+    var alertsHtml = '';
+    var overList = [], nearList = [];
+    expCats.forEach(function(cat) {
+      if (!cat.budget || cat.budget <= 0) return;
+      var matched = expenses.filter(function(i){ return i.category===cat.name && parseDate(i.date)>=s; });
+      var total = matched.reduce(function(a,i){ return a+Number(i.amount||0); }, 0);
+      var pct = total / cat.budget;
+      if (total >= cat.budget) overList.push({ cat: cat, total: total });
+      else if (pct >= 0.8) nearList.push({ cat: cat, total: total, remain: cat.budget - total });
+    });
+
+    if (overList.length || nearList.length) {
+      overList.forEach(function(item) {
+        alertsHtml += '<div class="budget-alert-item alert-over">' +
+          '<span class="budget-alert-icon">🚨</span>' +
+          '<div class="budget-alert-body">' +
+            '<div class="budget-alert-name" style="color:#FF6080;">' + item.cat.name + ' — חרגת מהתקרה!</div>' +
+            '<div class="budget-alert-detail">הוצאת ' + fmt(item.total) + ' מתוך ' + fmt(item.cat.budget) + '</div>' +
+          '</div>' +
+          '<span class="budget-alert-remain over">+' + fmt(item.total - item.cat.budget) + '</span>' +
+        '</div>';
+      });
+      nearList.forEach(function(item) {
+        alertsHtml += '<div class="budget-alert-item alert-near">' +
+          '<span class="budget-alert-icon">⚠️</span>' +
+          '<div class="budget-alert-body">' +
+            '<div class="budget-alert-name" style="color:#FFB300;">' + item.cat.name + ' — מתקרב לתקרה</div>' +
+            '<div class="budget-alert-detail">הוצאת ' + fmt(item.cat.total||item.cat.budget-item.remain) + ' מתוך ' + fmt(item.cat.budget) + '</div>' +
+          '</div>' +
+          '<span class="budget-alert-remain near">נותר ' + fmt(item.remain) + '</span>' +
+        '</div>';
+      });
+      var banner = $('budget-alerts-banner');
+      if (banner) { banner.innerHTML = alertsHtml; banner.classList.remove('hidden'); }
+    } else {
+      var banner2 = $('budget-alerts-banner');
+      if (banner2) { banner2.innerHTML = ''; banner2.classList.add('hidden'); }
+    }
+
     function tileHtml(cat){
       var isInc=cat.type==='income';
-      var col=isInc?'var(--green)':'var(--red)';
-      var colBg=isInc?'rgba(0,230,118,0.07)':'rgba(255,23,68,0.07)';
-      var colBdr=isInc?'rgba(0,230,118,0.20)':'rgba(255,23,68,0.18)';
-      var colBar=isInc?'linear-gradient(90deg,var(--green),#00C853)':'linear-gradient(90deg,var(--red),#D50000)';
-      var src=isInc?incomes:expenses;
-      var matched=src.filter(function(i){ return i.category===cat.name&&parseDate(i.date)>=s; });
-      var total=matched.reduce(function(a,i){ return a+Number(i.amount||0); },0);
-      var count=matched.length;
-      
-      return '<div class="cat-tile" style="border:1px solid '+colBdr+';background:linear-gradient(145deg,'+colBg+',rgba(13,19,35,0.75)); cursor:pointer;" onclick="openModalWithCat(\''+cat.type+'\', \''+cat.name+'\')">'+
-        '<button class="cat-tile-del" onclick="event.stopPropagation(); delItem(\'categories\',\''+cat.id+'\')">✕</button>'+
+      var col    = isInc ? 'var(--green)' : 'var(--red)';
+      var colBg  = isInc ? 'rgba(0,230,118,0.07)' : 'rgba(255,23,68,0.07)';
+      var colBdr = isInc ? 'rgba(0,230,118,0.20)' : 'rgba(255,23,68,0.18)';
+      var colBar = isInc ? 'linear-gradient(90deg,var(--green),#00C853)' : 'linear-gradient(90deg,#FF1744,#D50000)';
+
+      var src     = isInc ? incomes : expenses;
+      var matched = src.filter(function(i){ return i.category===cat.name && parseDate(i.date)>=s; });
+      var total   = matched.reduce(function(a,i){ return a+Number(i.amount||0); }, 0);
+      var count   = matched.length;
+      var budget  = cat.budget || 0;
+
+      // Budget logic
+      var budgetHtml = '';
+      var overBudget = false, nearBudget = false;
+      if (budget > 0 && !isInc) {
+        var pct = Math.min(total / budget, 1);
+        var remain = budget - total;
+        overBudget = total >= budget;
+        nearBudget = !overBudget && pct >= 0.8;
+        var barColor = overBudget
+          ? 'linear-gradient(90deg,#FF1744,#FF6D00)'
+          : nearBudget
+            ? 'linear-gradient(90deg,#FFA000,#FF6D00)'
+            : colBar;
+
+        // Remain badge
+        var remainBadgeClass = overBudget ? 'over' : nearBudget ? 'near' : 'ok';
+        var remainBadgeIcon = overBudget ? '⚠' : nearBudget ? '▲' : '✓';
+        var remainBadgeText = overBudget
+          ? 'חרגת ב-' + fmt(total - budget)
+          : 'נותר ' + fmt(remain);
+
+        budgetHtml =
+          '<div class="cat-budget-track">'+
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">'+
+              '<span style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.35);">' + Math.round(pct*100) + '% מ-' + fmt(budget) + '</span>'+
+              '<span class="cat-remain-badge ' + remainBadgeClass + '">' + remainBadgeIcon + ' ' + remainBadgeText + '</span>'+
+            '</div>'+
+            '<div class="cat-budget-bar-bg"><div class="cat-budget-bar-fill" style="width:'+(pct*100).toFixed(1)+'%;background:'+barColor+';"></div></div>'+
+          '</div>';
+      } else if (!isInc && budget <= 0) {
+        // No budget set — show CTA to set one
+        budgetHtml =
+          '<div class="cat-tile-cta" style="color:rgba(255,255,255,0.25);">'+
+          '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon></svg>'+
+          'הגדר תקרה</div>'+
+          '<div class="cat-tile-bar" style="background:'+colBar+';opacity:0.35;"></div>';
+      } else {
+        // Income cat
+        budgetHtml =
+          '<div class="cat-tile-cta" style="color:'+col+';">'+
+          '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'+
+          'הוסף תנועה</div>'+
+          '<div class="cat-tile-bar" style="background:'+colBar+';opacity:0.45;"></div>';
+      }
+
+      var tileClass = 'cat-tile' + (overBudget ? ' over-budget' : nearBudget ? ' near-budget' : '');
+
+      return '<div class="'+tileClass+'" style="border:1px solid '+colBdr+';background:linear-gradient(145deg,'+colBg+',rgba(13,19,35,0.85));"'+
+        ' onclick="openModalWithCat(\''+cat.type+'\', \''+cat.name+'\')">'+
+        '<button class="cat-tile-del" onclick="event.stopPropagation(); delItem(\'categories\',\''+cat.id+'\')" aria-label="מחק">✕</button>'+
+        '<button class="cat-tile-budget-btn" onclick="event.stopPropagation(); openBudgetModal(\''+cat.id+'\')" aria-label="הגדר תקרה" title="הגדר תקרת הוצאה">'+
+          '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon></svg>'+
+        '</button>'+
         '<div class="cat-tile-name">'+cat.name+'</div>'+
-        '<div class="cat-tile-amount" style="color:'+col+';">'+fmt(total)+'</div>'+
+        '<div class="cat-tile-amount" style="color:'+col+';">'+(isInc?'+':'')+fmt(total)+'</div>'+
         '<div class="cat-tile-count">'+count+' תנועות במחזור</div>'+
-        '<div style="margin-top:12px; display:flex; align-items:center; gap:4px; font-size:11px; font-weight:800; color:'+col+'; opacity:0.85;">'+
-        '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> הוסף תנועה</div>'+
-        '<div class="cat-tile-bar" style="background:'+colBar+';opacity:0.55;"></div></div>';
+        budgetHtml+
+        '</div>';
     }
 
     var html='';
     if(expCats.length){ html+='<div class="cat-section-label">הוצאות</div><div class="cat-tiles-grid">'+expCats.map(tileHtml).join('')+'</div>'; }
     if(incCats.length){ html+='<div class="cat-section-label">הכנסות</div><div class="cat-tiles-grid">'+incCats.map(tileHtml).join('')+'</div>'; }
     el.innerHTML=html;
+
+    // Check for over-budget and show toast (once per session per category)
+    if (!window._budgetAlerted) window._budgetAlerted = {};
+    expCats.forEach(function(cat) {
+      if (!cat.budget || cat.budget <= 0) return;
+      var src = expenses;
+      var s2 = cycleStart();
+      var matched = src.filter(function(i){ return i.category===cat.name && parseDate(i.date)>=s2; });
+      var total2 = matched.reduce(function(a,i){ return a+Number(i.amount||0); }, 0);
+      var key = cat.id + '_' + (new Date().getMonth());
+      if (total2 >= cat.budget && !window._budgetAlerted[key]) {
+        window._budgetAlerted[key] = true;
+        setTimeout(function() {
+          toast('⚠️ חרגת מתקרת "'+cat.name+'"! ('+fmt(total2)+' / '+fmt(cat.budget)+')', 'error');
+        }, 600);
+      } else if (total2 >= cat.budget * 0.8 && !window._budgetAlerted[key+'_near']) {
+        window._budgetAlerted[key+'_near'] = true;
+        setTimeout(function() {
+          toast('📊 התקרבת לתקרת "'+cat.name+'" — נותר '+fmt(cat.budget - total2), 'info');
+        }, 800);
+      }
+    });
   }
 
   /* ── Delete with confirm ── */
