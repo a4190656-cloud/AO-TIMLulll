@@ -1170,6 +1170,88 @@
       pointer-events: none;
     }
 
+
+    /* ══ SECURITY BUBBLE — מסך התחברות ══ */
+    .security-bubble {
+      width: 100%; max-width: 370px;
+      margin-top: 14px;
+      position: relative;
+      border-radius: 22px;
+      overflow: hidden;
+    }
+    .security-bubble-glow {
+      position: absolute; inset: 0; border-radius: 22px; pointer-events: none; z-index: 0;
+      background: radial-gradient(ellipse at 30% 0%, rgba(0,229,255,0.10) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 100%, rgba(0,183,255,0.07) 0%, transparent 50%);
+      animation: bubbleGlow 4s ease-in-out infinite alternate;
+    }
+    @keyframes bubbleGlow {
+      0%   { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+    .security-bubble-inner {
+      position: relative; z-index: 1;
+      background: rgba(6,10,22,0.90);
+      backdrop-filter: blur(28px) saturate(160%);
+      -webkit-backdrop-filter: blur(28px) saturate(160%);
+      border: 1px solid rgba(0,229,255,0.18);
+      border-radius: 22px;
+      padding: 16px 18px 14px;
+      box-shadow: 0 0 0 1px rgba(0,229,255,0.06), 0 8px 36px rgba(0,0,0,0.45),
+                  inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+    /* קו עליון זוהר */
+    .security-bubble-inner::before {
+      content: '';
+      position: absolute; top: 0; left: 12%; right: 12%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,229,255,0.55), transparent);
+      border-radius: 22px 22px 0 0;
+    }
+    .security-bubble-header {
+      display: flex; align-items: center; gap: 9px; margin-bottom: 9px;
+    }
+    .security-bubble-icon {
+      width: 30px; height: 30px; flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(0,229,255,0.15), rgba(0,183,255,0.08));
+      border: 1px solid rgba(0,229,255,0.30);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--cyan);
+      box-shadow: 0 0 14px rgba(0,229,255,0.20);
+    }
+    .security-bubble-title {
+      font-size: 13px; font-weight: 800; color: #fff; letter-spacing: -0.1px;
+    }
+    .security-bubble-text {
+      font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.60);
+      line-height: 1.65; margin-bottom: 11px;
+    }
+    .security-bubble-text strong {
+      color: rgba(255,255,255,0.88); font-weight: 700;
+    }
+    /* תג ספאם — מודגש ובולט */
+    .security-spam-badge {
+      display: flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, rgba(255,180,0,0.10), rgba(255,140,0,0.06));
+      border: 1px solid rgba(255,180,0,0.28);
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-size: 11.5px; font-weight: 600;
+      color: rgba(255,200,80,0.85);
+      line-height: 1.45;
+      box-shadow: 0 0 18px rgba(255,160,0,0.08), inset 0 1px 0 rgba(255,255,255,0.04);
+      animation: spamPulse 3.5s ease-in-out infinite;
+    }
+    @keyframes spamPulse {
+      0%, 100% { border-color: rgba(255,180,0,0.28); box-shadow: 0 0 18px rgba(255,160,0,0.08); }
+      50%       { border-color: rgba(255,180,0,0.50); box-shadow: 0 0 28px rgba(255,160,0,0.18); }
+    }
+    .security-spam-badge svg {
+      flex-shrink: 0; color: rgba(255,180,0,0.80);
+    }
+    .security-spam-badge strong {
+      color: rgba(255,210,60,0.95); font-weight: 800;
+    }
   </style>
 </head>
 <body>
@@ -1248,6 +1330,27 @@
       <button id="btn-email-auth" class="btn btn-cyan modern-hover" style="margin-top:12px">כניסה לחשבון</button>
       <button id="btn-toggle-mode" class="link-btn" style="margin-top:4px">עוד אין לך חשבון? לחץ כאן ←</button>
     </div>
+
+    <!-- ✦ בועת אבטחה 2026 ✦ -->
+    <div class="security-bubble rise d2">
+      <div class="security-bubble-glow"></div>
+      <div class="security-bubble-inner">
+        <div class="security-bubble-header">
+          <div class="security-bubble-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <span class="security-bubble-title">שומרים בטוח על המידע שלך</span>
+        </div>
+        <p class="security-bubble-text">
+          גישה לחשבון מתבצעת באמצעות <strong>מייל וסיסמה בלבד</strong>. תהליך ההרשמה באפליקציה דורש אימות חד-פעמי במייל — ומנהלים את הכסף בביטחון מלא.
+        </p>
+        <div class="security-spam-badge">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+          <span>לא קיבלתם מייל? <strong>בדקו בספאם!</strong> המייל עלול להגיע לשם</span>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
