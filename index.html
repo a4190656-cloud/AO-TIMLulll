@@ -2504,32 +2504,23 @@
 (function() {
   'use strict';
 
-  /* ── Firebase init ── */
-  const FB_CFG = {
-    apiKey: "AIzaSyBqpLOIbztpurGuUqpfaWZT71JcofKG2rc",
-    authDomain: "riki-aharele-budget.firebaseapp.com",
-    projectId: "riki-aharele-budget",
-    storageBucket: "riki-aharele-budget.firebasestorage.app",
-    messagingSenderId: "53506652532",
-    appId: "1:53506652532:web:28b3e3fc28114b1feb9421"
-  };
  try {
-    if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
-    window.auth = firebase.auth();
-    window.db   = firebase.firestore();
-    
-    db.settings({ experimentalForceLongPolling: true });
+      if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
+      window.auth = firebase.auth();
+      window.db   = firebase.firestore();
+      
+      window.db.settings({ experimentalForceLongPolling: true });
 
-    /* ── שמור משתמש לצמיתות ── */
-    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(e){
-      console.log('Persistence error:', e.code);
-    });
+      /* ── שמור משתמש לצמיתות ── */
+      window.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(e){
+        console.log('Persistence error:', e.code);
+      });
 
-    db.enablePersistence().catch(function(e){ 
-      console.log('Offline persistence:', e.code); 
-    });
+      window.db.enablePersistence().catch(function(e){ 
+        console.log('Offline persistence:', e.code); 
+      });
 
-  } catch (error) {
+    } catch (error) {
     console.error("קריסה בזמן טעינת Firebase:", error);
     // מעבר למסך הלוגין במקרה של שגיאה כדי למנוע תקיעה על מסך הטעינה
     setTimeout(function() {
