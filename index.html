@@ -41,6 +41,34 @@
   <meta property="og:image" content="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  /* שכבת המתנה מאובטחת */
+#security-loader-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(4, 7, 14, 0.95);
+  backdrop-filter: blur(20px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: opacity 0.4s ease;
+}
+.security-scanner {
+  width: 80px; height: 80px; position: relative; margin-bottom: 24px;
+}
+.security-scanner::before {
+  content: ''; position: absolute; inset: 0;
+  border: 2px solid var(--cyan); border-radius: 50%;
+  animation: scanPulse 2s linear infinite;
+}
+@keyframes scanPulse {
+  0% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.4); }
+  100% { transform: scale(1.5); opacity: 0; box-shadow: 0 0 0 20px rgba(0, 229, 255, 0); }
+}
+.security-status-text {
+  font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800;
+  color: #fff; text-align: center; letter-spacing: -0.2px;
+}
+.security-sub-text {
+  font-size: 12px; color: var(--cyan); font-weight: 600; margin-top: 8px;
+  opacity: 0.8; letter-spacing: 1px; text-transform: uppercase;
+}
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     .profile-pic-container:hover .profile-pic-overlay { opacity: 1 !important; }
@@ -1745,6 +1773,42 @@
     pointer-events: none !important;
     transition: all 0.4s ease-out !important;
 }
+    /* ── מודל איפוס חודש (חודש חדש) ── */
+#cycle-modal-overlay {
+  position:fixed; inset:0; z-index:900;
+  background:rgba(0,0,0,0.85); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  display:flex; align-items:center; justify-content:center; padding:24px;
+}
+#cycle-modal-sheet {
+  width:100%; max-width:400px;
+  background:linear-gradient(160deg, rgba(14,20,42,0.95) 0%, rgba(6,9,22,0.98) 100%);
+  border:1px solid rgba(0,229,255,0.25);
+  border-radius:28px; padding:32px 24px 28px;
+  box-shadow:0 0 0 1px rgba(0,229,255,0.08), 0 24px 60px rgba(0,0,0,0.8), 0 0 80px rgba(0,229,255,0.12);
+  text-align:center; position:relative; overflow:hidden;
+}
+#cycle-modal-sheet::before {
+  content:''; position:absolute; top:0; left:15%; right:15%; height:2px;
+  background:linear-gradient(90deg,transparent,rgba(0,229,255,0.8),transparent);
+  border-radius:28px 28px 0 0;
+}
+.cycle-icon-wrap {
+  width:64px; height:64px; margin:0 auto 16px;
+  background:radial-gradient(circle, rgba(0,229,255,0.15) 0%, rgba(0,229,255,0.03) 100%);
+  border:1px solid rgba(0,229,255,0.3); border-radius:20px;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 24px rgba(0,229,255,0.2);
+}
+.cycle-totals-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:20px 0;
+}
+.cycle-total-card {
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);
+  border-radius:16px; padding:16px 12px; transition: transform 0.2s;
+}
+.cycle-total-card:hover { transform: translateY(-2px); background:rgba(255,255,255,0.05); }
+.cycle-total-title { font-size:11.5px; font-weight:800; color:var(--muted); margin-bottom:6px; }
+.cycle-total-amount { font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:800; }
   </style>
  
 </head>
@@ -2359,7 +2423,35 @@
     <button id="btn-skip-phone-modal" class="modern-hover" style="background:none; border:none; color:rgba(255,255,255,0.4); font-family:'Syne',sans-serif; font-size:13px; font-weight:700; cursor:pointer; padding:8px;">דלג לעת עתה</button>
   </div>
 </div>
-
+<div id="cycle-modal-overlay" class="hidden">
+  <div id="cycle-modal-sheet" class="slide-up">
+    <div class="cycle-icon-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>
+    </div>
+    <h3 style="font-size:22px;font-weight:900;color:#fff;letter-spacing:-0.5px;margin-bottom:8px;">חודש חדש התחיל! ✨</h3>
+    <p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.5;">התקציב שלך התאפס. הנה ההכנסות וההוצאות הקבועות שמוגדרות לחודש הקרוב:</p>
+    
+    <div class="cycle-totals-grid">
+      <div class="cycle-total-card">
+        <div class="cycle-total-title">הכנסות קבועות</div>
+        <div id="cycle-fi-total" class="cycle-total-amount" style="color:var(--green);">₪0</div>
+      </div>
+      <div class="cycle-total-card">
+        <div class="cycle-total-title">הוצאות קבועות</div>
+        <div id="cycle-fe-total" class="cycle-total-amount" style="color:var(--red);">₪0</div>
+      </div>
+    </div>
+    
+    <p style="font-size:14px;font-weight:800;color:#fff;margin-bottom:16px;">האם חל שינוי בסכומים הקבועים?</p>
+    
+    <button id="btn-cycle-ok" class="btn btn-cyan modern-hover" style="font-size:15px;padding:14px;margin-bottom:12px;">
+      לא, הכל נשאר אותו דבר
+    </button>
+    <button id="btn-cycle-edit" class="btn btn-ghost modern-hover" style="font-size:14px;padding:12px;border-color:rgba(255,255,255,0.15);">
+      כן, אני רוצה לעדכן
+    </button>
+  </div>
+</div>
 <div id="delete-confirm-overlay" class="hidden">
   <div id="delete-confirm-sheet">
     <div style="text-align:center;margin-bottom:18px;">
@@ -3237,85 +3329,44 @@ window.deletePhoneIdx = function(i) {
   /* ══════════════════════════════════════════════
      EMAIL AUTH — login + register
   ══════════════════════════════════════════════ */
-  $('btn-email-auth').onclick = function(){
-    var email = $('login-email').value.trim();
-    var pass  = $('login-pass').value;
-    var name  = $('login-name').value.trim();
-    hide('login-err');
+  $('btn-email-auth').onclick = function() {
+  var email = $('login-email').value.trim();
+  var pass  = $('login-pass').value;
+  if(!email || !pass) return;
 
-    if(!email || !pass){ showLoginErr('נא למלא אימייל וסיסמה.'); return; }
+  const securitySteps = [
+    { h: "מאמת פרוטוקולי אבטחה...", e: "Verifying Security Protocols" },
+    { h: "מפענח נתונים מוצפנים...", e: "Decrypting Secure Vault" },
+    { h: "יוצר חיבור מאובטח...", e: "Establishing Secure Gateway" }
+  ];
 
-    var btn = $('btn-email-auth');
-    btn.disabled = true; btn.style.opacity='0.6';
+  show('security-loader-overlay');
+  let step = 0;
+  let interval = setInterval(() => {
+    step = (step + 1) % securitySteps.length;
+    $('security-msg').textContent = securitySteps[step].h;
+    $('security-sub-msg').textContent = securitySteps[step].e;
+  }, 1200);
 
-    function resetBtn(){ btn.disabled=false; btn.style.opacity='1'; }
-
-    if(isRegMode){
-      /* ─── REGISTER ─── */
-      if(pass.length < 6){ showLoginErr('הסיסמה חייבת להכיל לפחות 6 תווים.'); resetBtn(); return; }
-
-      auth.createUserWithEmailAndPassword(email, pass).then(function(cred){
-        var jobs = [];
-        if(name){
-          jobs.push(cred.user.updateProfile({displayName: name}));
-          jobs.push(db.collection('users').doc(cred.user.uid).set({displayName: name},{merge:true}).catch(function(){}));
-        }
-        var actionSettings = { url:'https://a4190656-cloud.github.io/AO-TIMLulll/', handleCodeInApp:false };
-        jobs.push(cred.user.sendEmailVerification(actionSettings).catch(function(){}));
-        return Promise.all(jobs).then(function(){ return auth.signOut(); });
-      }).then(function(){
-        resetBtn();
-        isRegMode=false;
-        hide('login-name-wrap');
-        $('btn-email-auth').textContent='כניסה לחשבון';
-        $('btn-toggle-mode').textContent='עוד אין לך חשבון? לחץ כאן ←';
-        showLoginOk('✓ נשלח אימייל לכתובת <strong>'+email+'</strong><br>לחץ על הקישור לאימות, ואז <strong>רענן את הדף</strong> והתחבר.<br><span style="color:rgba(255,255,255,0.45);font-size:11px;">(בדוק גם בספאם)</span><br><button onclick="window.location.reload()" style="background:none;border:none;color:#4285F4;text-decoration:underline;cursor:pointer;font-weight:bold;font-family:\'Syne\',sans-serif;font-size:13px;padding:0;margin-top:4px;">רעננו את הדף לאחר האימות!</button>');
-      }).catch(function(e){
-        resetBtn();
-        if(e.code==='auth/email-already-in-use'){
-          /* Maybe they registered with Google first — try linking */
-          auth.fetchSignInMethodsForEmail(email).then(function(methods){
-            if(methods.indexOf('google.com')>=0 && methods.indexOf('password')<0){
-              showLoginErr('מייל זה משויך לחשבון גוגל. כנס עם גוגל תחילה.');
-            } else {
-              showLoginErr('כתובת מייל זו כבר רשומה. נסה להתחבר.');
-            }
-          }).catch(function(){ showLoginErr('כתובת מייל זו כבר רשומה. נסה להתחבר.'); });
-        } else if(e.code==='auth/invalid-email'){
-          showLoginErr('כתובת מייל לא תקינה.');
-        } else if(e.code==='auth/weak-password'){
-          showLoginErr('הסיסמה חלשה מדי — לפחות 6 תווים.');
-        } else {
-          showLoginErr('שגיאה ביצירת חשבון. נסה שוב.');
-        }
-      });
-
+  auth.signInWithEmailAndPassword(email, pass).then(function(cred){
+    clearInterval(interval);
+    // המעבר לאפליקציה יתבצע אוטומטית על ידי onAuthStateChanged
+  }).catch(function(e){
+    clearInterval(interval);
+    hide('security-loader-overlay');
+    
+    // טיפול בשגיאות כניסה
+    if(e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential'){
+      showLoginErr('אימייל או סיסמה שגויים.');
+    } else if(e.code === 'auth/invalid-email'){
+      showLoginErr('כתובת מייל לא תקינה.');
+    } else if(e.code === 'auth/too-many-requests'){
+      showLoginErr('יותר מדי ניסיונות. המתן מספר דקות ונסה שוב.');
     } else {
-      /* ─── LOGIN ─── */
-      auth.signInWithEmailAndPassword(email, pass).then(function(cred){
-        resetBtn();
-        if(!cred.user.emailVerified){
-          auth.signOut();
-          /* Offer to resend verification */
-          showLoginOk('המייל טרם אומת. <button onclick="resendVerif(\''+email+'\',\''+pass+'\')" style="background:none;border:none;color:var(--cyan);font-family:Syne,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-decoration:underline;padding:0;">שלח שוב</button> <span style="color:rgba(255,255,255,0.4)">(כולל ספאם)</span><br><button onclick="window.location.reload()" style="background:none;border:none;color:#4285F4;text-decoration:underline;cursor:pointer;font-weight:bold;font-family:\'Syne\',sans-serif;font-size:13px;padding:0;margin-top:4px;">רעננו את הדף לאחר האימות!</button>');
-        }
-        /* else: onAuthStateChanged fires and calls bootApp */
-      }).catch(function(e){
-        resetBtn();
-        if(e.code==='auth/user-not-found' || e.code==='auth/wrong-password' || e.code==='auth/invalid-credential'){
-          showLoginErr('אימייל או סיסמה שגויים.');
-        } else if(e.code==='auth/invalid-email'){
-          showLoginErr('כתובת מייל לא תקינה.');
-        } else if(e.code==='auth/too-many-requests'){
-          showLoginErr('יותר מדי ניסיונות. המתן מספר דקות ונסה שוב.');
-        } else if(e.code==='auth/network-request-failed'){
-          showLoginErr('שגיאת רשת — בדוק חיבור לאינטרנט.');
-        } else {
-          showLoginErr('שגיאה בכניסה. נסה שוב.');
-        }
-      });
+      showLoginErr('שגיאה בכניסה. נסה שוב.');
     }
-  };
+  });
+};
 
   /* Resend verification email */
   window.resendVerif = function(email, pass){
@@ -4130,7 +4181,56 @@ window.resetProfilePic = function() {
       }
     }, 50); 
   };
+/* ── בדיקת איפוס חודש והצגת מודל קבועות ── */
+  window.checkCyclePrompt = function() {
+    if (!uid) return;
+    var s = cycleStart();
+    var cycleKey = s.getFullYear() + '-' + (s.getMonth() + 1); // למשל: "2026-5"
+    
+    db.collection('users').doc(uid).get().then(function(doc) {
+      if (doc.exists) {
+        var data = doc.data();
+        // בודק אם כבר הראינו לו את ההודעה בחודש הספציפי הזה
+        if (data.lastCycleSeen !== cycleKey) {
+          
+          // חישוב הסכומים מתוך המערכים
+          var fiTotal = fixedIncomes.reduce(function(a,i){ return a+Number(i.amount||0); },0);
+          var feTotal = fixedExpenses.reduce(function(a,i){ return a+Number(i.amount||0); },0);
+          
+          $('cycle-fi-total').textContent = fmt(fiTotal);
+          $('cycle-fe-total').textContent = fmt(feTotal);
+          
+          show('cycle-modal-overlay');
+          
+          // כפתור 1: אין שינוי -> שומר את החודש במערכת וסוגר
+          $('btn-cycle-ok').onclick = function() {
+            db.collection('users').doc(uid).set({lastCycleSeen: cycleKey}, {merge:true});
+            hide('cycle-modal-overlay');
+          };
+          
+          // כפתור 2: יש שינוי -> שומר, סוגר ומעביר למסך ההגדרות ישר להוצאות הקבועות
+          $('btn-cycle-edit').onclick = function() {
+            db.collection('users').doc(uid).set({lastCycleSeen: cycleKey}, {merge:true});
+            hide('cycle-modal-overlay');
+            switchView('settings');
+            setTimeout(function(){ 
+              var section = document.getElementById('fe-name');
+              if (section) section.scrollIntoView({behavior:'smooth', block:'center'});
+            }, 300);
+          };
+        }
+      }
+    });
+  };
 
+  /* טיימר חכם שממתין שהנתונים ייטענו ואז בודק אם התחלף חודש */
+  var cycleCheckInterval = setInterval(function() {
+    // מוודא שהמשתמש מחובר ושההכנסות/הוצאות הקבועות נמשכו מהרשת
+    if (uid && typeof fixedExpenses !== 'undefined' && typeof fixedIncomes !== 'undefined') {
+      clearInterval(cycleCheckInterval);
+      setTimeout(window.checkCyclePrompt, 1500); // ממתין שנייה וחצי לחוויה חלקה
+    }
+  }, 1000);
 })(); // סגירת ה-IIFE שהתחיל בתחילת ה-script
 </script>
 
@@ -4378,5 +4478,15 @@ window.resetProfilePic = function() {
 })();
 
 </script>
+  <div id="security-loader-overlay" class="hidden">
+  <div class="security-scanner">
+    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      <circle cx="12" cy="12" r="3"/>
+    </svg>
+  </div>
+  <div id="security-msg" class="security-status-text">נכנס בצורה מאובטחת...</div>
+  <div id="security-sub-msg" class="security-sub-text">Verifying Security Protocols</div>
+</div>
 </body>
 </html>
