@@ -468,9 +468,25 @@
     }
     .cat-tile-budget-btn:hover { background:rgba(0,229,255,0.15); color:var(--cyan); }
 
-    .cat-tile-name { font-weight:800; font-size:13px; line-height:1.3; word-break:break-word;
-      margin-top:6px; padding: 0 4px; }
-    .cat-tile-amount { font-family:'JetBrains Mono',monospace; font-size:19px; font-weight:800; line-height:1; margin-top:5px; }
+    .cat-tile-name {
+      font-weight: 800;
+      font-size: 12.5px;
+      line-height: 1.3;
+      word-break: break-word;
+      margin-top: 6px;
+      padding: 0 2px;
+      color: rgba(255,255,255,0.90);
+      letter-spacing: -0.1px;
+    }
+    .cat-tile-amount {
+      font-family:'JetBrains Mono',monospace;
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1;
+      margin-top: 5px;
+      letter-spacing: -0.5px;
+      text-shadow: 0 0 20px currentColor;
+    }
     .cat-tile-count  { font-size:10px; font-weight:600; opacity:.5; margin-top:2px; }
 
     /* budget progress */
@@ -742,49 +758,88 @@
       animation: springModalIn 0.52s var(--spring) forwards !important;
     }
 
-    /* ── BENTO GRID — CATEGORY CARDS 2026 ── */
+    /* ══════════════════════════════════════════════════════
+       ✦  CATEGORY GRID 2029 — שוויון מושלם, עיצוב עתידני  ✦
+    ══════════════════════════════════════════════════════ */
     .cat-tiles-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 11px;
       margin-bottom: 8px;
     }
-    /* כרטיסים גדולים — אחד מתוך שלושה מוגדל */
-    .cat-tiles-grid .cat-tile:nth-child(3n+1) {
-      grid-column: span 2;
-    }
+    /* 2029 — כל הכרטיסים שווים, ללא span */
 
-    /* ── CAT TILE GLASS 2026 ── */
+    /* ── CAT TILE 2029 — Liquid Glass, Holographic, Equal Grid ── */
     .cat-tile {
-      background: linear-gradient(145deg, rgba(8,12,28,0.92) 0%, rgba(4,7,18,0.96) 100%) !important;
-      backdrop-filter: blur(40px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
-      border-radius: 22px !important;
-      padding: 16px 14px 14px !important;
-      min-height: 150px !important;
+      /* Liquid glass base */
+      background:
+        linear-gradient(160deg,
+          rgba(14,20,42,0.88) 0%,
+          rgba(6,9,22,0.95) 100%) !important;
+      backdrop-filter: blur(48px) saturate(200%) brightness(1.06) !important;
+      -webkit-backdrop-filter: blur(48px) saturate(200%) brightness(1.06) !important;
+      border-radius: 24px !important;
+      border: 1px solid rgba(255,255,255,0.07) !important;
+      padding: 16px 14px 13px !important;
+      min-height: 155px !important;
       position: relative;
       overflow: hidden;
-      transition: transform 0.3s var(--spring), box-shadow 0.3s ease !important;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition:
+        transform 0.32s var(--spring),
+        box-shadow 0.32s ease,
+        border-color 0.32s ease !important;
+      box-shadow:
+        0 2px 8px rgba(0,0,0,0.35),
+        0 8px 24px rgba(0,0,0,0.25),
+        inset 0 1px 0 rgba(255,255,255,0.05) !important;
     }
+
+    /* ── Holographic shimmer layer ── */
     .cat-tile::before {
       content: '';
       position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 70% -20%, rgba(0,229,255,0.06) 0%, transparent 60%);
+      border-radius: 24px;
+      background:
+        radial-gradient(ellipse at 80% -10%, rgba(0,229,255,0.07) 0%, transparent 55%),
+        radial-gradient(ellipse at 20% 110%, rgba(130,80,255,0.05) 0%, transparent 50%);
       pointer-events: none;
-      border-radius: 22px;
+      opacity: 1;
+      transition: opacity 0.3s ease;
     }
-    /* Noise texture overlay for premium feel */
+    .cat-tile:hover::before {
+      opacity: 1.6;
+    }
+
+    /* ── Prismatic top edge ── */
     .cat-tile::after {
       content: '';
-      position: absolute; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
-      pointer-events: none; border-radius: 22px; opacity: 0.4;
+      position: absolute; top: 0; left: 8%; right: 8%; height: 1px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(0,229,255,0.0) 10%,
+        rgba(0,229,255,0.35) 40%,
+        rgba(130,80,255,0.25) 60%,
+        rgba(0,229,255,0.0) 90%,
+        transparent 100%);
+      border-radius: 24px 24px 0 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
     }
-    .cat-tile:active { transform: scale(0.96) !important; }
+
+    /* ── Hover lift ── */
     .cat-tile:hover {
-      transform: translateY(-4px) scale(1.01) !important;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.08) !important;
+      transform: translateY(-5px) scale(1.015) !important;
+      border-color: rgba(0,229,255,0.20) !important;
+      box-shadow:
+        0 4px 16px rgba(0,0,0,0.4),
+        0 16px 48px rgba(0,0,0,0.45),
+        0 0 0 1px rgba(0,229,255,0.10),
+        inset 0 1px 0 rgba(255,255,255,0.08) !important;
     }
+    .cat-tile:active { transform: scale(0.95) !important; }
 
     /* ── GLOW HALO — משתנה צבע לפי ניצול תקציב ── */
     .cat-tile.over-budget {
@@ -815,51 +870,59 @@
       }
     }
 
-    /* ── CARD ENTRY MICRO-ANIMATIONS ── */
-    @keyframes bentoCardIn {
-      0%   { opacity: 0; transform: translateY(22px) scale(0.94); filter: blur(4px); }
-      60%  { opacity: 1; filter: blur(0); }
-      80%  { transform: translateY(-3px) scale(1.01); }
-      100% { transform: translateY(0) scale(1); }
+    /* ── CARD ENTRY MICRO-ANIMATIONS 2029 ── */
+    @keyframes cardIn2029 {
+      0%   { opacity: 0; transform: translateY(28px) scale(0.90) rotateX(8deg); filter: blur(6px) brightness(0.7); }
+      55%  { opacity: 1; filter: blur(0) brightness(1); }
+      78%  { transform: translateY(-4px) scale(1.02) rotateX(0deg); }
+      90%  { transform: translateY(2px) scale(0.99); }
+      100% { transform: translateY(0) scale(1) rotateX(0deg); }
     }
     .cat-tile {
-      animation: bentoCardIn 0.5s var(--spring) both;
+      animation: cardIn2029 0.55s var(--spring) both;
     }
-    .cat-tile:nth-child(1)  { animation-delay: 0.04s; }
-    .cat-tile:nth-child(2)  { animation-delay: 0.09s; }
-    .cat-tile:nth-child(3)  { animation-delay: 0.14s; }
-    .cat-tile:nth-child(4)  { animation-delay: 0.18s; }
-    .cat-tile:nth-child(5)  { animation-delay: 0.22s; }
-    .cat-tile:nth-child(6)  { animation-delay: 0.26s; }
-    .cat-tile:nth-child(7)  { animation-delay: 0.30s; }
-    .cat-tile:nth-child(8)  { animation-delay: 0.34s; }
+    .cat-tile:nth-child(1)  { animation-delay: 0.03s; }
+    .cat-tile:nth-child(2)  { animation-delay: 0.07s; }
+    .cat-tile:nth-child(3)  { animation-delay: 0.11s; }
+    .cat-tile:nth-child(4)  { animation-delay: 0.15s; }
+    .cat-tile:nth-child(5)  { animation-delay: 0.19s; }
+    .cat-tile:nth-child(6)  { animation-delay: 0.23s; }
+    .cat-tile:nth-child(7)  { animation-delay: 0.27s; }
+    .cat-tile:nth-child(8)  { animation-delay: 0.31s; }
+    .cat-tile:nth-child(9)  { animation-delay: 0.35s; }
+    .cat-tile:nth-child(10) { animation-delay: 0.39s; }
+    .cat-tile:nth-child(11) { animation-delay: 0.43s; }
+    .cat-tile:nth-child(12) { animation-delay: 0.47s; }
 
-    /* ── BUDGET PROGRESS BAR ENHANCED ── */
+    /* ── BUDGET PROGRESS BAR 2029 ── */
     .cat-budget-bar-bg {
-      height: 6px !important;
+      height: 5px !important;
       border-radius: 99px !important;
-      background: rgba(255,255,255,0.06) !important;
-      overflow: hidden !important;
+      background: rgba(255,255,255,0.05) !important;
+      overflow: visible !important;
       margin-bottom: 5px !important;
       position: relative;
     }
     .cat-budget-bar-fill {
       height: 100% !important;
       border-radius: 99px !important;
-      transition: width 0.8s cubic-bezier(0.16,1,0.3,1) !important;
-      box-shadow: 0 0 8px currentColor;
+      transition: width 0.9s cubic-bezier(0.16,1,0.3,1) !important;
+      position: relative;
+      box-shadow: 0 0 10px currentColor, 0 0 4px currentColor;
     }
-    /* Shimmer effect on progress bar */
+    /* Moving shimmer on bar */
     .cat-budget-bar-fill::after {
       content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
-      animation: barShimmer 2.5s ease-in-out infinite;
+      position: absolute; top: 0; bottom: 0; left: -30px; width: 60px;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.55) 50%, transparent 100%);
+      animation: barShimmer2029 2.8s ease-in-out infinite;
       border-radius: 99px;
     }
-    @keyframes barShimmer {
-      0%   { transform: translateX(-100%); }
-      100% { transform: translateX(400%); }
+    @keyframes barShimmer2029 {
+      0%   { left: -60px; opacity: 0; }
+      15%  { opacity: 1; }
+      85%  { opacity: 1; }
+      100% { left: 130%; opacity: 0; }
     }
 
     /* ── SETTINGS 2026 — Grouped Lists ── */
@@ -1252,6 +1315,381 @@
     .security-spam-badge strong {
       color: rgba(255,210,60,0.95); font-weight: 800;
     }
+    /* ══ WHATSAPP HELP BUBBLE — מסכי הרשמה ══ */
+    .wa-help-bubble {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      background: rgba(4, 10, 22, 0.92);
+      backdrop-filter: blur(24px) saturate(160%);
+      -webkit-backdrop-filter: blur(24px) saturate(160%);
+      border: 1px solid rgba(37, 211, 102, 0.28);
+      border-radius: 99px;
+      padding: 10px 18px 10px 12px;
+      box-shadow:
+        0 0 0 1px rgba(37,211,102,0.08),
+        0 8px 32px rgba(0,0,0,0.55),
+        0 0 40px rgba(37,211,102,0.08);
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.28s var(--spring), box-shadow 0.28s ease, border-color 0.28s ease;
+      animation: waBubbleIn 0.7s var(--spring) 1.0s both;
+      white-space: nowrap;
+    }
+    @keyframes waBubbleIn {
+      0%   { opacity:0; transform: translateX(-50%) translateY(24px) scale(0.88); }
+      65%  { opacity:1; transform: translateX(-50%) translateY(-4px) scale(1.02); }
+      100% { opacity:1; transform: translateX(-50%) translateY(0) scale(1); }
+    }
+    .wa-help-bubble:hover {
+      border-color: rgba(37,211,102,0.55);
+      box-shadow:
+        0 0 0 1px rgba(37,211,102,0.12),
+        0 12px 40px rgba(0,0,0,0.6),
+        0 0 60px rgba(37,211,102,0.18);
+      transform: translateX(-50%) translateY(-3px) scale(1.02);
+    }
+    .wa-help-bubble:active {
+      transform: translateX(-50%) scale(0.96);
+    }
+
+    /* עיגול האייקון הפועם */
+    .wa-icon-ring {
+      position: relative;
+      width: 38px; height: 38px;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .wa-icon-ring::before {
+      content: '';
+      position: absolute; inset: -4px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(37,211,102,0.45);
+      animation: waPing 2.2s ease-out infinite;
+    }
+    .wa-icon-ring::after {
+      content: '';
+      position: absolute; inset: -9px;
+      border-radius: 50%;
+      border: 1px solid rgba(37,211,102,0.20);
+      animation: waPing 2.2s ease-out 0.5s infinite;
+    }
+    @keyframes waPing {
+      0%   { transform: scale(1);   opacity: 0.9; }
+      70%  { transform: scale(1.4); opacity: 0;   }
+      100% { transform: scale(1.4); opacity: 0;   }
+    }
+    .wa-icon-circle {
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 18px rgba(37,211,102,0.40), 0 3px 10px rgba(0,0,0,0.35);
+      position: relative; z-index: 1;
+    }
+
+    /* טקסט הבועה */
+    .wa-help-text {
+      display: flex; flex-direction: column; gap: 1px;
+    }
+    .wa-help-title {
+      font-size: 12px; font-weight: 800;
+      color: rgba(255,255,255,0.92);
+      letter-spacing: -0.1px;
+    }
+    .wa-help-sub {
+      font-size: 10px; font-weight: 600;
+      color: rgba(37,211,102,0.75);
+      letter-spacing: 0.02em;
+    }
+
+    /* חץ ימני */
+    .wa-help-arrow {
+      color: rgba(37,211,102,0.5);
+      font-size: 14px;
+      margin-right: -2px;
+      transition: transform 0.2s var(--spring);
+    }
+    .wa-help-bubble:hover .wa-help-arrow {
+      transform: translateX(-3px);
+    }
+
+    /* ══ CAT TILE 2029 — פרטים עדינים נוספים ══ */
+
+    /* אייקון קטגוריה — עיגול צבע בזווית ──  */
+    .cat-tile-icon-dot {
+      position: absolute;
+      top: 14px; right: 14px;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      filter: blur(1px);
+      opacity: 0.9;
+    }
+
+    /* כפתור מחיקה 2029 */
+    .cat-tile-del {
+      position: absolute; top: 9px; left: 9px;
+      background: rgba(255,255,255,0.04) !important;
+      border: 1px solid rgba(255,255,255,0.07) !important;
+      border-radius: 10px !important;
+      width: 24px; height: 24px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: rgba(255,255,255,0.22);
+      font-size: 10px;
+      transition: all 0.2s var(--spring) !important;
+      z-index: 2;
+      backdrop-filter: blur(8px);
+    }
+    .cat-tile-del:hover {
+      background: rgba(255,31,78,0.14) !important;
+      border-color: rgba(255,31,78,0.30) !important;
+      color: #FF6080 !important;
+      box-shadow: 0 0 12px rgba(255,31,78,0.18) !important;
+      transform: scale(1.10);
+    }
+
+    /* כפתור עריכת תקציב 2029 */
+    .cat-tile-budget-btn {
+      position: absolute; top: 9px; right: 9px;
+      background: rgba(255,255,255,0.04) !important;
+      border: 1px solid rgba(255,255,255,0.07) !important;
+      border-radius: 10px !important;
+      width: 24px; height: 24px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: rgba(255,255,255,0.22);
+      font-size: 10px;
+      transition: all 0.2s var(--spring) !important;
+      z-index: 2;
+      backdrop-filter: blur(8px);
+    }
+    .cat-tile-budget-btn:hover {
+      background: rgba(0,229,255,0.12) !important;
+      border-color: rgba(0,229,255,0.28) !important;
+      color: var(--cyan) !important;
+      box-shadow: 0 0 12px rgba(0,229,255,0.18) !important;
+      transform: scale(1.10);
+    }
+
+    /* Section label 2029 */
+    .cat-section-label {
+      font-size: 9px !important;
+      font-weight: 900 !important;
+      letter-spacing: .22em !important;
+      text-transform: uppercase !important;
+      color: rgba(0,229,255,0.38) !important;
+      margin: 18px 0 10px !important;
+      display: flex; align-items: center; gap: 10px !important;
+    }
+    .cat-section-label::before {
+      content: '';
+      width: 4px; height: 4px;
+      background: var(--cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--cyan);
+      flex-shrink: 0;
+    }
+    .cat-section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(0,229,255,0.20), transparent);
+    }
+
+    /* count badge */
+    .cat-tile-count {
+      font-size: 9.5px !important;
+      font-weight: 700 !important;
+      color: rgba(255,255,255,0.28) !important;
+      margin-top: 2px !important;
+      letter-spacing: 0.02em;
+    }
+
+    /* budget label row */
+    .cat-budget-label {
+      font-size: 9px !important;
+      font-weight: 700 !important;
+      color: rgba(255,255,255,0.32) !important;
+      display: flex; justify-content: space-between; align-items: center;
+      letter-spacing: 0.02em;
+    }
+    .cat-budget-remain { font-weight: 800 !important; }
+
+    /* no-budget CTA */
+    .cat-tile-cta {
+      margin-top: auto;
+      display: flex; align-items: center; gap: 5px;
+      font-size: 10px; font-weight: 800;
+      color: rgba(0,229,255,0.45);
+      padding-top: 8px;
+      letter-spacing: 0.03em;
+      transition: color 0.2s ease;
+    }
+    .cat-tile:hover .cat-tile-cta {
+      color: rgba(0,229,255,0.75);
+    }
+
+    /* bottom accent bar */
+    .cat-tile-bar {
+      position: absolute; bottom: 0; right: 0; left: 0; height: 2px;
+      border-radius: 0 0 24px 24px;
+      opacity: 0.7;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       ✦  SCAN DOCUMENT BUTTON 2029  ✦
+    ══════════════════════════════════════════════════════ */
+
+    .scan-doc-btn {
+      width: 100%;
+      background: linear-gradient(145deg, rgba(0,229,255,0.05) 0%, rgba(6,9,22,0.92) 100%);
+      backdrop-filter: blur(32px) saturate(160%);
+      -webkit-backdrop-filter: blur(32px) saturate(160%);
+      border: 1px solid rgba(0,229,255,0.22);
+      border-radius: 20px;
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.3s var(--spring);
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(0,229,255,0.05),
+        0 4px 20px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .scan-doc-btn::before {
+      content: '';
+      position: absolute; top:0; left:8%; right:8%; height:1px;
+      background: linear-gradient(90deg, transparent, rgba(0,229,255,0.55), transparent);
+      border-radius: 20px 20px 0 0;
+    }
+    .scan-doc-btn:hover {
+      border-color: rgba(0,229,255,0.45);
+      transform: translateY(-3px);
+      box-shadow:
+        0 0 0 1px rgba(0,229,255,0.12),
+        0 8px 32px rgba(0,0,0,0.45),
+        0 0 40px rgba(0,229,255,0.10),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .scan-doc-btn:active { transform: scale(0.97); }
+    .scan-doc-btn-inner {
+      display: flex; align-items: center; gap: 13px;
+      padding: 13px 16px;
+    }
+    .scan-doc-icon-wrap {
+      width: 44px; height: 44px; flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(0,229,255,0.14), rgba(0,183,255,0.06));
+      border: 1px solid rgba(0,229,255,0.30);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--cyan);
+      box-shadow: 0 0 20px rgba(0,229,255,0.18), inset 0 1px 0 rgba(255,255,255,0.10);
+      position: relative;
+      transition: all 0.3s var(--spring);
+    }
+    .scan-doc-btn:hover .scan-doc-icon-wrap {
+      box-shadow: 0 0 30px rgba(0,229,255,0.30), inset 0 1px 0 rgba(255,255,255,0.14);
+      border-color: rgba(0,229,255,0.50);
+    }
+
+    /* Pulse ring on icon */
+    .scan-doc-pulse {
+      position: absolute; inset: -5px;
+      border-radius: 19px;
+      border: 1.5px solid rgba(0,229,255,0.3);
+      animation: scanDocPulse 2.5s ease-out infinite;
+      pointer-events: none;
+    }
+    @keyframes scanDocPulse {
+      0%   { transform: scale(1);    opacity: 0.8; }
+      70%  { transform: scale(1.25); opacity: 0;   }
+      100% { transform: scale(1.25); opacity: 0;   }
+    }
+
+    .scan-doc-text {
+      flex: 1; text-align: right; display: flex; flex-direction: column; gap: 3px;
+    }
+    .scan-doc-title {
+      font-size: 14px; font-weight: 800; color: rgba(255,255,255,0.92);
+      letter-spacing: -0.2px;
+    }
+    .scan-doc-sub {
+      font-size: 11px; font-weight: 600; color: rgba(0,229,255,0.60);
+      letter-spacing: 0.01em;
+    }
+    .scan-doc-arrow {
+      color: rgba(0,229,255,0.45);
+      transition: transform 0.2s var(--spring);
+      display: flex; align-items: center;
+    }
+    .scan-doc-btn:hover .scan-doc-arrow { transform: translateX(-3px); }
+
+    /* Processing state */
+    .scan-doc-processing {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(0,229,255,0.04);
+      border: 1px solid rgba(0,229,255,0.18);
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin-top: 8px;
+      animation: springModalIn 0.4s var(--spring) both;
+    }
+    .scan-beam-wrap {
+      width: 44px; height: 44px; flex-shrink: 0;
+      background: rgba(0,229,255,0.06);
+      border: 1px solid rgba(0,229,255,0.20);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+      box-shadow: 0 0 18px rgba(0,229,255,0.12);
+    }
+    .scan-beam-line {
+      position: absolute; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(0,229,255,0.95), transparent);
+      animation: beamSweep 1.4s ease-in-out infinite;
+      box-shadow: 0 0 8px rgba(0,229,255,0.7);
+    }
+    @keyframes beamSweep {
+      0%   { top: 2px;  opacity: 0; }
+      8%   { opacity: 1; }
+      92%  { opacity: 1; }
+      100% { top: 40px; opacity: 0; }
+    }
+    .scan-proc-text {
+      font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.65);
+    }
+
+    /* Result chip */
+    .scan-doc-result {
+      margin-top: 8px;
+      border-radius: 16px;
+      padding: 12px 15px;
+      font-size: 12px; font-weight: 700;
+      animation: springModalIn 0.45s var(--spring) both;
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .scan-doc-result.result-ok {
+      background: rgba(0,255,136,0.06);
+      border: 1px solid rgba(0,255,136,0.22);
+      color: rgba(0,255,136,0.88);
+    }
+    .scan-doc-result.result-err {
+      background: rgba(255,59,92,0.06);
+      border: 1px solid rgba(255,59,92,0.22);
+      color: rgba(255,120,140,0.88);
+    }
+    .scan-doc-result .result-icon { flex-shrink: 0; margin-top: 1px; }
+    .scan-doc-result .result-body { flex: 1; line-height: 1.6; }
+    .scan-doc-result .result-amount {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px; font-weight: 800; letter-spacing: -0.5px;
+      display: block; margin-bottom: 2px;
+    }
   </style>
 </head>
 <body>
@@ -1342,7 +1780,7 @@
           <span class="security-bubble-title">שומרים בטוח על המידע שלך</span>
         </div>
         <p class="security-bubble-text">
-          גישה לחשבון מתבצעת באמצעות <strong>מייל וסיסמה בלבד</strong>. תהליך ההרשמה דורש אימות חד-פעמי במייל — ומנהלים את התקציב בביטחון מלא.
+          גישה לחשבון מתבצעת באמצעות <strong>מייל וסיסמה בלבד</strong>. תהליך ההרשמה באפליקציה דורש אימות חד-פעמי במייל — ומנהלים את התקציב בביטחון מלא.
         </p>
         <div class="security-spam-badge">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
@@ -1471,6 +1909,38 @@
             <span class="action-btn-sublabel">הוסף הוצאה</span>
           </div>
         </button>
+      </div>
+
+      <!-- ✦ כפתור סריקת מסמכים — מתחת ליתרה ✦ -->
+      <div style="margin-bottom:18px" class="rise d3">
+        <button id="btn-scan-doc" class="scan-doc-btn" type="button">
+          <div class="scan-doc-btn-inner">
+            <div class="scan-doc-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+              <div class="scan-doc-pulse"></div>
+            </div>
+            <div class="scan-doc-text">
+              <span class="scan-doc-title">סריקת קבלה / חשבונית</span>
+              <span class="scan-doc-sub">AI מזהה ומוסיף אוטומטית</span>
+            </div>
+            <div class="scan-doc-arrow">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </div>
+          </div>
+        </button>
+        <input id="scan-doc-file" type="file" accept="image/*,.pdf" style="display:none" capture="environment">
+
+        <!-- מצב עיבוד -->
+        <div id="scan-doc-processing" class="scan-doc-processing hidden">
+          <div class="scan-beam-wrap">
+            <div class="scan-beam-line"></div>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(0,229,255,0.7)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          </div>
+          <span class="scan-proc-text">AI סורק את המסמך...</span>
+        </div>
+
+        <!-- תוצאה -->
+        <div id="scan-doc-result" class="scan-doc-result hidden"></div>
       </div>
 
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
@@ -1775,6 +2245,21 @@
   </nav>
 </div>
 
+
+<!-- ✦ WhatsApp Help Bubble — מסכי הרשמה ✦ -->
+<a id="wa-help-bubble" class="wa-help-bubble" href="https://wa.me/972534190656?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A0%D7%99%20%D7%A6%D7%A8%D7%99%D7%DA%20%D7%A2%D7%96%D7%A8%D7%94%20%D7%91%D7%94%D7%A8%D7%A9%D7%9E%D7%94%20%D7%9C-AO%20Budget" target="_blank" rel="noopener" style="display:none">
+  <div class="wa-icon-ring">
+    <div class="wa-icon-circle">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.127 1.534 5.862L.054 23.8a.5.5 0 0 0 .609.61l6.042-1.534A11.95 11.95 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.793 9.793 0 0 1-4.988-1.365l-.357-.212-3.588.912.945-3.49-.232-.368A9.794 9.794 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+    </div>
+  </div>
+  <div class="wa-help-text">
+    <span class="wa-help-title">נתקעתם? אנחנו כאן 👋</span>
+    <span class="wa-help-sub">לחצו לעזרה בוואטסאפ</span>
+  </div>
+  <span class="wa-help-arrow">←</span>
+</a>
+
 <div id="modal-overlay" class="hidden" onclick="handleOverlayClick(event)">
   <div id="modal-sheet" class="slide-up" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
@@ -2018,7 +2503,9 @@
     if (!editingItem) return;
     var amount = Number($('edit-modal-amount').value);
     var desc = $('edit-modal-desc').value.trim();
-    if (!amount || !desc) { toast('נא למלא סכום ותיאור', 'error'); return; }
+    if (!amount) { toast('נא למלא סכום', 'error'); return; }
+    /* אם לא הוזן תיאור — ברירת מחדל לפי סוג */
+    if (!desc) desc = (editingItem._t === 'income') ? 'הכנסה כללית' : 'הוצאה כללית';
     var col = editingItem._t === 'income' ? 'incomes' : 'expenses';
     var data = { amount: amount, description: desc };
     var cat = $('edit-modal-category').value;
@@ -3000,7 +3487,8 @@ window.deletePhoneIdx = function(i) {
     var desc=$('modal-desc').value.trim();
     var cat=$('modal-category').value;
     if(!amount){ toast('נא להזין סכום', 'error'); return; }
-    if(!desc){ toast('נא להזין תיאור', 'error'); return; }
+    /* אם לא הוזן תיאור — ברירת מחדל לפי סוג */
+    if(!desc) desc = (modalType==='income') ? 'הכנסה כללית' : 'הוצאה כללית';
 
     var dataObj={amount:amount,description:desc,date:new Date().toISOString()};
     if(cat!=='') dataObj.category=cat;
@@ -3562,6 +4050,239 @@ window.deletePhoneIdx = function(i) {
   };
 
 })(); // סגירת ה-IIFE שהתחיל בתחילת ה-script
+</script>
+
+
+
+<script>
+
+/* ── WhatsApp Help Bubble — הצגה במסכי הרשמה בלבד ── */
+(function() {
+  var bubble = document.getElementById('wa-help-bubble');
+  if (!bubble) return;
+
+  /* מסכי ההרשמה בהם הבועה מופיעה */
+  var SHOW_ON = ['screen-login', 'screen-setname', 'screen-verify'];
+
+  function updateBubble() {
+    /* בדוק איזה מסך פעיל */
+    var visible = SHOW_ON.some(function(id) {
+      var el = document.getElementById(id);
+      return el && !el.classList.contains('hidden') &&
+             el.style.display !== 'none';
+    });
+    if (visible) {
+      bubble.style.display = 'flex';
+    } else {
+      bubble.style.display = 'none';
+    }
+  }
+
+  /* עקוב אחרי שינויים ב-DOM */
+  var observer = new MutationObserver(updateBubble);
+  observer.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
+
+  /* בדיקה ראשונית + בדיקה נוספת אחרי שהכל עולה */
+  updateBubble();
+  setTimeout(updateBubble, 800);
+  setTimeout(updateBubble, 2000);
+})();
+
+</script>
+
+<script>
+
+/* ══════════════════════════════════════════════════════════════
+   ✦  SCAN DOCUMENT — קבלות וחשבוניות דרך Cloudflare Worker  ✦
+   ══════════════════════════════════════════════════════════════
+   הגדרה נדרשת:
+   1. צור Cloudflare Worker עם הקוד מהתיעוד
+   2. שנה את WORKER_URL לכתובת ה-Worker שלך
+   ================================================================ */
+
+(function() {
+
+  /* ── כתובת ה-Worker שלך — שנה כאן אחרי ההגדרה ── */
+  var WORKER_URL = 'https://ao.a4190656.workers.dev';
+
+  var scanBtn        = document.getElementById('btn-scan-doc');
+  var fileInput      = document.getElementById('scan-doc-file');
+  var processingEl   = document.getElementById('scan-doc-processing');
+  var resultEl       = document.getElementById('scan-doc-result');
+
+  if (!scanBtn || !fileInput) return;
+
+  /* ── פותח את בורר הקבצים ── */
+  scanBtn.onclick = function() {
+    resultEl.className  = 'scan-doc-result hidden';
+    resultEl.innerHTML  = '';
+    fileInput.click();
+  };
+
+  fileInput.onchange = async function() {
+    var file = fileInput.files && fileInput.files[0];
+    if (!file) return;
+    fileInput.value = '';
+
+    /* ── הצגת מצב עיבוד ── */
+    processingEl.classList.remove('hidden');
+    scanBtn.style.opacity = '0.5';
+    scanBtn.style.pointerEvents = 'none';
+
+    try {
+      var result = await sendToWorker(file);
+      showResult(result);
+    } catch(err) {
+      showError(err.message || 'שגיאה בסריקה — נסה שוב');
+    } finally {
+      processingEl.classList.add('hidden');
+      scanBtn.style.opacity = '';
+      scanBtn.style.pointerEvents = '';
+    }
+  };
+
+  /* ── שליחה ל-Cloudflare Worker ── */
+  async function sendToWorker(file) {
+    var b64 = await fileToBase64(file);
+    var mime = file.type || 'image/jpeg';
+
+    /* בניית רשימת קטגוריות לשליחה ל-AI */
+    var catSelect = document.getElementById('modal-category');
+    var cats = catSelect
+      ? Array.from(catSelect.options).filter(function(o){ return o.value; }).map(function(o){ return o.text; }).join(', ')
+      : '';
+
+    var resp = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageBase64: b64, mimeType: mime, categories: cats })
+    });
+
+    if (!resp.ok) {
+      var errText = await resp.text().catch(function(){ return ''; });
+      throw new Error('Worker ' + resp.status + (errText ? ': ' + errText.substring(0,80) : ''));
+    }
+
+    var data = await resp.json();
+    return data;
+  }
+
+  /* ── המרת קובץ ל-base64 ── */
+  function fileToBase64(file) {
+    return new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload  = function() { resolve(reader.result.split(',')[1]); };
+      reader.onerror = function() { reject(new Error('קריאת קובץ נכשלה')); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /* ── שמירה ל-Firebase לאחר סריקה ── */
+  function saveScannedTransaction(result) {
+    if (!window.uid || !window.db) {
+      toast('שגיאה: לא מחובר', 'error');
+      return;
+    }
+
+    var amount = parseFloat(result.amount);
+    if (!amount || isNaN(amount)) {
+      toast('לא זוהה סכום תקין', 'error');
+      return;
+    }
+
+    var type = (result.type === 'income') ? 'income' : 'expense';
+    var desc = result.description || (type === 'income' ? 'הכנסה כללית' : 'הוצאה כללית');
+
+    var dataObj = {
+      amount: amount,
+      description: desc,
+      date: new Date().toISOString()
+    };
+
+    /* קטגוריה — בדוק שקיימת ברשימה */
+    if (result.category) {
+      var catSelect = document.getElementById('modal-category');
+      if (catSelect) {
+        var match = Array.from(catSelect.options).find(function(o) {
+          return o.text === result.category || o.value === result.category;
+        });
+        if (match && match.value) dataObj.category = match.value;
+      }
+    }
+
+    var col = (type === 'income') ? 'incomes' : 'expenses';
+    window.db.collection('users').doc(window.uid).collection(col).add(dataObj)
+      .then(function() {
+        /* הצגת אנימציית הצלחה */
+        if (typeof showSuccess === 'function') showSuccess(type, amount);
+        toast((type === 'income' ? 'הכנסה' : 'הוצאה') + ' נשמרה מהסריקה!', 'success');
+      })
+      .catch(function(e) {
+        console.error('שמירת סריקה:', e);
+        toast('שגיאה בשמירה', 'error');
+      });
+  }
+
+  /* ── הצגת תוצאה מוצלחת ── */
+  function showResult(result) {
+    var amount  = result.amount  ? parseFloat(result.amount) : null;
+    var desc    = result.description || '';
+    var type    = result.type === 'income' ? 'income' : 'expense';
+    var cat     = result.category || '';
+    var isInc   = type === 'income';
+    var sym     = isInc ? '+' : '−';
+    var color   = isInc ? 'result-ok' : 'result-ok';
+    var typeLabel = isInc ? 'הכנסה' : 'הוצאה';
+    var typeColor = isInc ? '#00FF88' : '#FF6080';
+
+    resultEl.className  = 'scan-doc-result result-ok';
+    resultEl.innerHTML  =
+      '<div class="result-icon">' +
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="' + typeColor + '" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
+          '<polyline points="20 6 9 17 4 12"/>' +
+        '</svg>' +
+      '</div>' +
+      '<div class="result-body">' +
+        (amount ? '<span class="result-amount" style="color:' + typeColor + '">' + sym + ' ₪' + amount.toLocaleString() + '</span>' : '') +
+        '<span style="display:block;font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:2px;">' + (desc || '—') + '</span>' +
+        (cat ? '<span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.05);border-radius:6px;padding:2px 7px;margin-bottom:8px;">' + cat + '</span>' : '') +
+        '<br>' +
+        '<button onclick="window._scanResult && saveScannedTransaction(window._scanResult)" style="' +
+          'background:linear-gradient(135deg,' + (isInc?'rgba(0,255,136,0.15)':'rgba(255,96,128,0.15)') + ',' + (isInc?'rgba(0,200,100,0.08)':'rgba(200,0,50,0.08)') + ');' +
+          'border:1px solid ' + typeColor + '44;' +
+          'border-radius:10px;color:' + typeColor + ';' +
+          'font-family:'Syne',sans-serif;font-size:12px;font-weight:800;' +
+          'padding:8px 18px;cursor:pointer;margin-top:4px;' +
+          'transition:all 0.2s var(--spring);' +
+          '">' +
+          '✓ שמור כ' + typeLabel +
+        '</button>' +
+      '</div>';
+
+    /* שמור את התוצאה לשימוש בכפתור */
+    window._scanResult = result;
+
+    resultEl.classList.remove('hidden');
+  }
+
+  /* ── הצגת שגיאה ── */
+  function showError(msg) {
+    resultEl.className = 'scan-doc-result result-err';
+    resultEl.innerHTML =
+      '<div class="result-icon">' +
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6080" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
+          '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>' +
+        '</svg>' +
+      '</div>' +
+      '<div class="result-body">' + msg + '</div>';
+    resultEl.classList.remove('hidden');
+  }
+
+  /* חשוף saveScannedTransaction גלובלית */
+  window.saveScannedTransaction = saveScannedTransaction;
+
+})();
+
 </script>
 </body>
 </html>
