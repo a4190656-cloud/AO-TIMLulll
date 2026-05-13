@@ -4179,19 +4179,21 @@ window.deletePhoneIdx = function(i) {
 
   /* ── שמירה ל-Firebase לאחר סריקה ── */
   function saveScannedTransaction(result) {
-    if (!window.uid || !window.db) {
-      toast('שגיאה: לא מחובר', 'error');
+    var user = firebase.auth().currentUser;
+    if (!user) {
+      alert('שגיאה: לא מחובר למערכת.');
       return;
     }
 
     var amount = parseFloat(result.amount);
     if (!amount || isNaN(amount)) {
-      toast('לא זוהה סכום תקין', 'error');
+      alert('לא זוהה סכום תקין.');
       return;
     }
 
     var type = (result.type === 'income') ? 'income' : 'expense';
     var desc = result.description || (type === 'income' ? 'הכנסה כללית' : 'הוצאה כללית');
+    var cat = result.category || '';
 
     var dataObj = {
       amount: amount,
@@ -4199,27 +4201,30 @@ window.deletePhoneIdx = function(i) {
       date: new Date().toISOString()
     };
 
-    /* קטגוריה — בדוק שקיימת ברשימה */
-    if (result.category) {
+    if (cat) {
       var catSelect = document.getElementById('modal-category');
       if (catSelect) {
         var match = Array.from(catSelect.options).find(function(o) {
-          return o.text === result.category || o.value === result.category;
+          return o.text === cat || o.value === cat;
         });
         if (match && match.value) dataObj.category = match.value;
       }
     }
 
     var col = (type === 'income') ? 'incomes' : 'expenses';
-    window.db.collection('users').doc(window.uid).collection(col).add(dataObj)
+    
+    // מחיקת ההודעה כדי להראות שזה בטעינה
+    document.getElementById('scan-doc-result').innerHTML = '<div style="padding:15px; text-align:center; color:white; font-family:\'Syne\',sans-serif; font-weight:700;">שומר נתונים... ⏳</div>';
+
+    firebase.firestore().collection('users').doc(user.uid).collection(col).add(dataObj)
       .then(function() {
-        /* הצגת אנימציית הצלחה */
-        if (typeof showSuccess === 'function') showSuccess(type, amount);
-        toast((type === 'income' ? 'הכנסה' : 'הוצאה') + ' נשמרה מהסריקה!', 'success');
+        // ריענון הדף כדי שהתקציב, היתרה והרשימה יתעדכנו מיד
+        window.location.reload();
       })
       .catch(function(e) {
         console.error('שמירת סריקה:', e);
-        toast('שגיאה בשמירה', 'error');
+        alert('שגיאה בשמירה. נסה שוב.');
+        document.getElementById('scan-doc-result').classList.add('hidden');
       });
   }
 
