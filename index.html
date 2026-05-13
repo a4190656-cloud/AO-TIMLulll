@@ -3145,6 +3145,7 @@ window.deletePhoneIdx = function(i) {
      Handles name setup, then launches the app.
   ══════════════════════════════════════════════ */
   function bootApp(user){
+    hide('screen-login'); // מחביא את מסך הלוגין מיד כדי שלא יקפוץ
     hide('security-loader-overlay');
     uid = user.uid;
     /* Try Firestore profile first, fall back gracefully */
@@ -4479,8 +4480,8 @@ window.resetProfilePic = function() {
   <div id="security-loader-overlay" class="hidden">
   <div class="secure-spinner"></div>
   <div class="secure-text-wrap">
-    <div id="security-msg" class="secure-main-title">SECURE CONNECTION</div>
-    <div id="security-sub-msg" class="secure-sub-title">AO DIGITAL SERVICES</div>
+    <div id="security-msg" class="secure-main-title">יוצר חיבור מאובטח...</div>
+    <div id="security-sub-msg" class="secure-sub-title">הצפנת נתונים AO DIGITAL</div>
   </div>
 </div>
 </body>
