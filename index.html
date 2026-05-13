@@ -2513,17 +2513,33 @@
     messagingSenderId: "53506652532",
     appId: "1:53506652532:web:28b3e3fc28114b1feb9421"
   };
-  if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
-  const auth = firebase.auth();
-  const db   = firebase.firestore();
-  db.settings({ experimentalForceLongPolling: true });
+ try {
+    if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
+    window.auth = firebase.auth();
+    window.db   = firebase.firestore();
+    
+    db.settings({ experimentalForceLongPolling: true });
 
-  /* ── שמור משתמש לצמיתות — לא יצטרך להיכנס שוב מאותו דפדפן ── */
-  auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(e){
-    console.log('Persistence error:', e.code);
-  });
+    /* ── שמור משתמש לצמיתות ── */
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(e){
+      console.log('Persistence error:', e.code);
+    });
 
-  db.enablePersistence().catch(function(e){ console.log('Offline persistence:', e.code); });
+    db.enablePersistence().catch(function(e){ 
+      console.log('Offline persistence:', e.code); 
+    });
+
+  } catch (error) {
+    console.error("קריסה בזמן טעינת Firebase:", error);
+    // מעבר למסך הלוגין במקרה של שגיאה כדי למנוע תקיעה על מסך הטעינה
+    setTimeout(function() {
+      if (typeof showScreen === 'function') showScreen('screen-login');
+    }, 500);
+  }
+
+  // הגדרת המשתנים לשימוש בשאר הסקריפט
+  const auth = window.auth;
+  const db = window.db;
 
   /* ── State ── */
   var uid = null, resetDay = 1, displayName = '';
