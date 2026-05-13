@@ -4216,9 +4216,10 @@ window.deletePhoneIdx = function(i) {
     // מחיקת ההודעה כדי להראות שזה בטעינה
     document.getElementById('scan-doc-result').innerHTML = '<div style="padding:15px; text-align:center; color:white; font-family:\'Syne\',sans-serif; font-weight:700;">שומר נתונים... ⏳</div>';
 
-    firebase.firestore().collection('users').doc(user.uid).collection(col).add(dataObj)
-      .then(function() {
-        // ריענון הדף כדי שהתקציב, היתרה והרשימה יתעדכנו מיד
+    // הסתרת הודעת "שומר נתונים"
+document.getElementById('scan-doc-result').classList.add('hidden');
+// הפעלת האנימציה הירוקה עם הקונפטי
+if (typeof showSuccess === 'function') showSuccess(type, amount);
         window.location.reload();
       })
       .catch(function(e) {
