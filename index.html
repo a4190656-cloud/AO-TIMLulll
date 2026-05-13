@@ -1801,23 +1801,19 @@
     <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" style="width:56px;height:56px">
   </div>
   <p id="loading-msg" style="color:var(--muted);font-size:13px;font-weight:600">מאמת חשבון<span id="loading-dots">...</span></p>
-  <p id="loading-sub" style="color:rgba(255,255,255,0.18);font-size:11px;font-weight:600;margin-top:6px;text-align:center;max-width:220px;line-height:1.6">מתחבר לשרת דרך נטפרי...</p>
   <button id="btn-loading-manual" class="hidden" onclick="window.location.reload()" style="margin-top:16px;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:12px;color:rgba(255,255,255,0.5);font-family:Syne,sans-serif;font-size:12px;font-weight:700;padding:8px 18px;cursor:pointer;">לחץ לנסות שוב</button>
   <script>
     var _d=0, _di=setInterval(function(){
       var el=document.getElementById('loading-dots');
       if(el){ _d=(_d+1)%4; el.textContent='.'.repeat(_d||1); }
     },500);
-    /* אחרי 8 שניות — הראה הודעה על נטפרי */
-    setTimeout(function(){
-      var sub=document.getElementById('loading-sub');
-      if(sub) sub.textContent='נטפרי עלול לאחר את החיבור — מחכה...';
-    }, 8000);
     setTimeout(function(){
       clearInterval(_di);
-      var lbtn=document.getElementById('btn-loading-manual');
-      if(lbtn) lbtn.classList.remove('hidden');
-    },20000);
+      var b=document.getElementById('btn-loading-manual');
+      var m=document.getElementById('loading-msg');
+      if(b){ b.classList.remove('hidden'); }
+      if(m){ m.textContent='לקח יותר מדי זמן...'; }
+    },9000);
   </script>
 </div>
 
@@ -2520,32 +2516,14 @@
   if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
   const auth = firebase.auth();
   const db   = firebase.firestore();
-
-  /* ── Long Polling — חובה לנטפרי וכל רשת עם סינון WebSocket ──
-     חייב להיות לפני כל קריאה אחרת ל-Firestore              */
-  try {
-    db.settings({
-      experimentalForceLongPolling: true,
-      merge: true
-    });
-  } catch(e) { /* כבר הוגדר — בסדר */ }
+  db.settings({ experimentalForceLongPolling: true });
 
   /* ── שמור משתמש לצמיתות — לא יצטרך להיכנס שוב מאותו דפדפן ── */
   auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(e){
     console.log('Persistence error:', e.code);
   });
 
-  /* ── Offline persistence — רק אם הדפדפן תומך ולא בנטפרי (עלול לסתור LongPolling) ──
-     משתמשים ב-try/catch שקט כדי לא לבלוק את הטעינה                                   */
-  (function tryPersistence(){
-    try {
-      db.enablePersistence({ synchronizeTabs: false }).catch(function(e){
-        if(e.code !== 'failed-precondition' && e.code !== 'unimplemented'){
-          console.log('Offline persistence:', e.code);
-        }
-      });
-    } catch(e) {}
-  })();
+  db.enablePersistence().catch(function(e){ console.log('Offline persistence:', e.code); });
 
   /* ── State ── */
   var uid = null, resetDay = 1, displayName = '';
@@ -3052,8 +3030,7 @@ window.deletePhoneIdx = function(i) {
 
   /* ══════════════════════════════════════════════
      FIRESTORE LISTENERS — get() fallback first,
-     then onSnapshot for live updates.
-     תומך בנטפרי — LongPolling + timeout קצר
+     then onSnapshot for live updates
   ══════════════════════════════════════════════ */
   function startListeners(){
     unsubs.forEach(function(u){ try{ u(); }catch(e){} }); unsubs=[];
@@ -3115,77 +3092,55 @@ window.deletePhoneIdx = function(i) {
   }
 
   /* ══════════════════════════════════════════════
-     BOOT — called once we know the user is valid.
-     Handles name setup, then launches the app.
-     תומך בנטפרי — Firestore עלול לאחר/להיחסם
+     BOOT — נכנס לאפליקציה מיד עם Auth,
+     שם מ-Firestore נטען ברקע אם קיים
   ══════════════════════════════════════════════ */
   function bootApp(user){
     uid = user.uid;
 
-    /* Timeout קצר ל-Firestore get — אם לא מגיב ב-6 שניות מתקדמים עם auth data */
-    var fsTimeout = null;
-    var fsResolved = false;
+    /* 1. מציג את האפליקציה מיד עם הנתונים מ-Auth */
+    var authName = user.displayName || (user.email ? user.email.split('@')[0] : null);
 
-    function proceedWithName(name) {
-      if (fsResolved) return;
-      fsResolved = true;
-      clearTimeout(fsTimeout);
-      displayName = name;
-      showScreen('app');
-      var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
-      var si=$('settings-name-input'); if(si) si.value=displayName;
-      var sun=$('settings-user-name'); if(sun) sun.textContent=displayName;
-      var ri=$('reset-day-input'); if(ri) ri.value=resetDay;
-      startListeners();
+    if(!authName){
+      /* אין שם כלל — צריך להגדיר שם */
+      showScreen('screen-setname');
+      return;
     }
 
-    /* Fallback אוטומטי אחרי 6 שניות אם Firestore לא מגיב */
-    fsTimeout = setTimeout(function(){
-      if(!fsResolved){
-        var fallbackName = user.displayName || (user.email ? user.email.split('@')[0] : 'משתמש');
-        proceedWithName(fallbackName);
-      }
-    }, 6000);
+    /* 2. טוען לאפליקציה מיד */
+    displayName = authName;
+    showScreen('app');
+    var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
+    var si=$('settings-name-input'); if(si) si.value=displayName;
+    var sun=$('settings-user-name'); if(sun) sun.textContent=displayName;
+    var ri=$('reset-day-input'); if(ri) ri.value=resetDay;
+    startListeners();
 
+    /* 3. מנסה לשדרג שם מ-Firestore ברקע (אם שמור שם שונה) */
     db.collection('users').doc(uid).get().then(function(snap){
-      if(fsResolved) return;
-      var savedName = snap.exists ? snap.data().displayName : null;
-      var authName  = user.displayName || null;
-      var name      = savedName || authName || null;
-      if(!name){
-        clearTimeout(fsTimeout);
-        fsResolved = true;
-        showScreen('screen-setname');
-        return;
+      if(!snap.exists) return;
+      var savedName = snap.data().displayName;
+      if(savedName && savedName !== displayName){
+        displayName = savedName;
+        var hn2=$('header-name'); if(hn2) hn2.textContent='שלום, '+displayName.split(' ')[0]+'!';
+        var si2=$('settings-name-input'); if(si2) si2.value=displayName;
+        var sun2=$('settings-user-name'); if(sun2) sun2.textContent=displayName;
       }
-      proceedWithName(name);
-    }).catch(function(){
-      /* Firestore blocked (e.g. Netfree) — fallback to auth name */
-      if(!fsResolved){
-        var fallbackName = user.displayName || (user.email ? user.email.split('@')[0] : 'משתמש');
-        proceedWithName(fallbackName);
-      }
-    });
+    }).catch(function(){ /* Firestore חסום — בסדר, יש כבר שם מ-Auth */ });
   }
 
   /* ══════════════════════════════════════════════
-     AUTH STATE — with 18s timeout safety net
-     (מוגדל ל-18 שניות לנטפרי — LongPolling איטי יותר)
+     AUTH STATE — with 10s timeout safety net
+     (מוגדל ל-10 שניות לרשתות איטיות כמו Netfree)
   ══════════════════════════════════════════════ */
   var authResolved = false;
-  var appBooted    = false; /* prevent double-boot */
-  var _authAttempt = 0;
+  var appBooted    = false;
   var authTimeout  = setTimeout(function(){
     if(!authResolved){
       authResolved = true;
-      /* הראה כפתור "נסה שוב" אם הגיע timeout */
-      var lbtn = $('btn-loading-manual');
-      if(lbtn) lbtn.classList.remove('hidden');
-      var lmsg = $('loading-msg');
-      if(lmsg) lmsg.textContent = 'לא ניתן להתחבר לשרת';
       showScreen('screen-login');
     }
-  }, 18000);
+  }, 4000);
 
   auth.onAuthStateChanged(function(user){
     /* Clear the timeout whenever auth responds */
@@ -3432,22 +3387,20 @@ window.deletePhoneIdx = function(i) {
     var btn = $('btn-setname');
     btn.disabled=true; btn.style.opacity='0.6';
 
-    user.updateProfile({displayName:name}).then(function(){
-      return db.collection('users').doc(user.uid).set({displayName:name},{merge:true}).catch(function(){});
-    }).then(function(){
-      /* Boot the app directly — no page reload needed */
-      displayName = name;
-      appBooted = true;
-      uid = user.uid;
-      showScreen('app');
-      var hn=$('header-name'); if(hn) hn.textContent='שלום, '+name.split(' ')[0]+'!';
-      var si=$('settings-name-input'); if(si) si.value=name;
-      var ri=$('reset-day-input'); if(ri) ri.value=resetDay;
-      startListeners();
-    }).catch(function(){
-      btn.disabled=false; btn.style.opacity='1';
-      $('setname-err').textContent='שגיאה, נסה שוב.'; show('setname-err');
-    });
+    /* מציג את האפליקציה מיד */
+    displayName = name;
+    appBooted = true;
+    uid = user.uid;
+    showScreen('app');
+    var hn=$('header-name'); if(hn) hn.textContent='שלום, '+name.split(' ')[0]+'!';
+    var si=$('settings-name-input'); if(si) si.value=name;
+    var ri=$('reset-day-input'); if(ri) ri.value=resetDay;
+    startListeners();
+
+    /* שומר ברקע */
+    user.updateProfile({displayName:name}).catch(function(){});
+    db.collection('users').doc(user.uid).set({displayName:name},{merge:true}).catch(function(){});
+    btn.disabled=false; btn.style.opacity='1';
   };
 
   /* ── Sign out (header) ── */
