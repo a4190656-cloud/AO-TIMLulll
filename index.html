@@ -1690,9 +1690,64 @@
       font-size: 18px; font-weight: 800; letter-spacing: -0.5px;
       display: block; margin-bottom: 2px;
     }
+
+    /* ── AUTH LOADING OVERLAY ── */
+    #auth-loading-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(14px);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .auth-loading-card {
+      display: flex; flex-direction: column; align-items: center; gap: 20px;
+      padding: 40px; border-radius: 28px;
+      background: linear-gradient(145deg, rgba(13,19,35,0.95), rgba(6,10,20,0.98));
+      border: 1px solid rgba(0,229,255,0.25);
+      box-shadow: 0 0 60px rgba(0,229,255,0.1), 0 32px 64px rgba(0,0,0,0.6);
+      animation: springModalIn 0.5s var(--spring) forwards;
+    }
+    .auth-spinner-ring {
+      position: relative; width: 70px; height: 70px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .auth-spinner-ring::after {
+      content: ''; position: absolute; inset: -4px;
+      border: 3px solid transparent;
+      border-top-color: var(--cyan);
+      border-radius: 50%;
+      animation: spin 1.2s linear infinite;
+    }
+    .auth-spinner-dot {
+      position: absolute; inset: 4px;
+      border: 1px solid rgba(0,229,255,0.2);
+      border-radius: 50%;
+      animation: pulseGlow 2s ease-in-out infinite;
+    }
+    .auth-shield-icon { width: 32px; height: 32px; color: var(--cyan); filter: drop-shadow(0 0 8px rgba(0,229,255,0.5)); }
+    .auth-loading-text { font-size: 16px; font-weight: 800; color: #fff; letter-spacing: -0.2px; text-align: center; }
+    .auth-loading-sub { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.1em; text-align: center; }
+    
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes pulseGlow { 0%, 100% { opacity: 0.3; transform: scale(0.95); } 50% { opacity: 0.6; transform: scale(1.05); } }
+
   </style>
+
+<meta name="NetsparkQuiltingResult" total-length="226342" removed="0" rules-found="w6193,w6194,w6431,w3573,w1707,w3429,w3430,w6430,w9674,w9675,w73,w3509,w4829,w4830,w2656,w4448,w3240,w10821,w10822,w4253,w26854,w3897,w18014,w19266,w27396,w9473,w19726,w19754,w27088,w19458,w11400,w17783,w6522,w8931,w15638,w26682,w26683,w4835,w6243,w9946,w18370,w26950,w3033,w11212,w27365" />
 </head>
 <body>
+
+<div id="auth-loading-overlay" class="hidden">
+  <div class="auth-loading-card">
+    <div class="auth-spinner-ring">
+      <div class="auth-spinner-dot"></div>
+      <svg class="auth-shield-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+      </svg>
+    </div>
+    <div class="auth-loading-text">נכנס בצורה מאובטחת...</div>
+    <div class="auth-loading-sub">מבצע אימות נתונים והצפנה</div>
+  </div>
+</div>
+
 
 <div id="toast-container"></div>
 
@@ -2247,7 +2302,7 @@
 
 
 <!-- ✦ WhatsApp Help Bubble — מסכי הרשמה ✦ -->
-<a id="wa-help-bubble" class="wa-help-bubble" href="https://wa.me/972534190656?text=שלום 👋, אני צריך עזרה בהרשמה ל-AO Budget" target="_blank" rel="noopener" style="display:none">
+<a id="wa-help-bubble" class="wa-help-bubble" href="https://wa.me/972534190656?text=%D7%A9%D7%9C%D7%95%D7%9D%20%F0%9F%91%8B%2C%20%D7%90%D7%A0%D7%99%20%D7%A6%D7%A8%D7%99%D7%9A%20%D7%A2%D7%96%D7%A8%D7%94%20%D7%91%D7%94%D7%A8%D7%A9%D7%9E%D7%94%20%D7%9C-AO%20Budget" target="_blank" rel="noopener" style="display:none">
   <div class="wa-icon-ring">
     <div class="wa-icon-circle">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.127 1.534 5.862L.054 23.8a.5.5 0 0 0 .609.61l6.042-1.534A11.95 11.95 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.793 9.793 0 0 1-4.988-1.365l-.357-.212-3.588.912.945-3.49-.232-.368A9.794 9.794 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
@@ -2441,7 +2496,7 @@
     return '₪' + Number(n||0).toLocaleString('he-IL');
   }
   function showScreen(name){
-    ['screen-loading','screen-login','screen-setname','app'].forEach(hide);
+    ['screen-loading','screen-login','screen-setname','app', 'auth-loading-overlay'].forEach(hide);
     show(name);
   }
 
@@ -3184,10 +3239,16 @@ window.deletePhoneIdx = function(i) {
 
     if(!email || !pass){ showLoginErr('נא למלא אימייל וסיסמה.'); return; }
 
+    // הצגת אנימציית אבטחה
+    show('auth-loading-overlay');
+
     var btn = $('btn-email-auth');
     btn.disabled = true; btn.style.opacity='0.6';
 
-    function resetBtn(){ btn.disabled=false; btn.style.opacity='1'; }
+    function resetBtn(){ 
+      btn.disabled=false; btn.style.opacity='1'; 
+      hide('auth-loading-overlay'); // הסתרת אנימציית אבטחה בשגיאה
+    }
 
     if(isRegMode){
       /* ─── REGISTER ─── */
@@ -4229,7 +4290,7 @@ window.deletePhoneIdx = function(i) {
         alert('שגיאה בשמירה. נסה שוב.');
         document.getElementById('scan-doc-result').classList.add('hidden');
       });
-  }
+  } }
 
   /* ── הצגת תוצאה מוצלחת ── */
   function showResult(result) {
