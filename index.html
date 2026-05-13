@@ -1729,9 +1729,54 @@
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     @keyframes pulseGlow { 0%, 100% { opacity: 0.3; transform: scale(0.95); } 50% { opacity: 0.6; transform: scale(1.05); } }
 
+
+    /* ── הוספות לבועת וואטסאפ (סגירה ואנימציה) ── */
+    .wa-close-btn {
+      position: absolute; top: -6px; right: -6px;
+      width: 20px; height: 20px;
+      background: rgba(10,16,30,0.95); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%; color: rgba(255,255,255,0.7);
+      font-size: 11px; font-weight: bold; font-family: sans-serif;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 10;
+      transition: all 0.2s;
+    }
+    .wa-close-btn:hover { color: #fff; border-color: #FF6080; background: rgba(255,23,68,0.2); transform: scale(1.1); }
+
+    /* האנימציה של הטקסט שמתכווץ */
+    .wa-help-text, .wa-help-arrow, .wa-close-btn {
+      transition: max-width 0.5s var(--spring), opacity 0.4s ease, margin 0.5s ease;
+      max-width: 200px; overflow: hidden;
+    }
+
+    /* מצב ממוזער - זז למעלה שמאלה והופך רק לאייקון */
+    .wa-help-bubble.minimized {
+      bottom: calc(100vh - 85px);
+      left: 25px;
+      transform: translateX(0) scale(0.95);
+      padding: 0;
+      background: transparent;
+      border-color: transparent;
+      box-shadow: none;
+    }
+    .wa-help-bubble.minimized:hover {
+      transform: translateX(0) scale(1.05);
+      background: transparent; box-shadow: none; border-color: transparent;
+    }
+    .wa-help-bubble.minimized .wa-help-text,
+    .wa-help-bubble.minimized .wa-help-arrow,
+    .wa-help-bubble.minimized .wa-close-btn {
+      max-width: 0;
+      opacity: 0;
+      margin: 0;
+      pointer-events: none;
+    }
+
   </style>
 
 <meta name="NetsparkQuiltingResult" total-length="226342" removed="0" rules-found="w6193,w6194,w6431,w3573,w1707,w3429,w3430,w6430,w9674,w9675,w73,w3509,w4829,w4830,w2656,w4448,w3240,w10821,w10822,w4253,w26854,w3897,w18014,w19266,w27396,w9473,w19726,w19754,w27088,w19458,w11400,w17783,w6522,w8931,w15638,w26682,w26683,w4835,w6243,w9946,w18370,w26950,w3033,w11212,w27365" />
+
+<meta name="NetsparkQuiltingResult" total-length="228961" removed="0" rules-found="w6193,w6194,w6431,w3573,w1707,w3429,w3430,w6430,w9674,w9675,w73,w3509,w4829,w4830,w2656,w4448,w3240,w10821,w10822,w4253,w26854,w3897,w18014,w19266,w27396,w9473,w19726,w19754,w27088,w19458,w11400,w17783,w6522,w8931,w15638,w26682,w26683,w4835,w6243,w9946,w18370,w26950,w3033,w11212,w27365" />
 </head>
 <body>
 
@@ -2302,7 +2347,8 @@
 
 
 <!-- ✦ WhatsApp Help Bubble — מסכי הרשמה ✦ -->
-<a id="wa-help-bubble" class="wa-help-bubble" href="https://wa.me/972534190656?text=%D7%A9%D7%9C%D7%95%D7%9D%20%F0%9F%91%8B%2C%20%D7%90%D7%A0%D7%99%20%D7%A6%D7%A8%D7%99%D7%9A%20%D7%A2%D7%96%D7%A8%D7%94%20%D7%91%D7%94%D7%A8%D7%A9%D7%9E%D7%94%20%D7%9C-AO%20Budget" target="_blank" rel="noopener" style="display:none">
+<a id="wa-help-bubble" class="wa-help-bubble" href="https://wa.me/972534190656?text=שלום 👋, אני צריך עזרה בהרשמה ל-AO Budget" target="_blank" rel="noopener" style="display:none">
+  <div id="wa-close-btn" class="wa-close-btn">✕</div>
   <div class="wa-icon-ring">
     <div class="wa-icon-circle">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.127 1.534 5.862L.054 23.8a.5.5 0 0 0 .609.61l6.042-1.534A11.95 11.95 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.793 9.793 0 0 1-4.988-1.365l-.357-.212-3.588.912.945-3.49-.232-.368A9.794 9.794 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
@@ -4117,33 +4163,53 @@ window.deletePhoneIdx = function(i) {
 
 <script>
 
-/* ── WhatsApp Help Bubble — הצגה במסכי הרשמה בלבד ── */
+/* ── WhatsApp Help Bubble — הצגה, מיזעור ואוטומציה ── */
 (function() {
   var bubble = document.getElementById('wa-help-bubble');
+  var closeBtn = document.getElementById('wa-close-btn');
   if (!bubble) return;
 
-  /* מסכי ההרשמה בהם הבועה מופיעה */
   var SHOW_ON = ['screen-login', 'screen-setname', 'screen-verify'];
+  var isMinimized = false;
+  var minimizeTimer = null;
+
+  function minimizeBubble(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    if (isMinimized) return;
+    isMinimized = true;
+    bubble.classList.add('minimized');
+    if (minimizeTimer) clearTimeout(minimizeTimer);
+  }
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', minimizeBubble);
+  }
 
   function updateBubble() {
-    /* בדוק איזה מסך פעיל */
     var visible = SHOW_ON.some(function(id) {
       var el = document.getElementById(id);
-      return el && !el.classList.contains('hidden') &&
-             el.style.display !== 'none';
+      return el && !el.classList.contains('hidden') && el.style.display !== 'none';
     });
+    
     if (visible) {
       bubble.style.display = 'flex';
+      // הפעלה אוטומטית של המיזעור אחרי 7 שניות אם עדיין לא ממוזער
+      if (!isMinimized && !minimizeTimer) {
+        minimizeTimer = setTimeout(minimizeBubble, 7000);
+      }
     } else {
       bubble.style.display = 'none';
+      // אם עוברים לאפליקציה פנימה, נאפס כדי שאולי יופיע שוב בהתנתקות
+      if (minimizeTimer) clearTimeout(minimizeTimer);
+      isMinimized = false;
+      bubble.classList.remove('minimized');
+      minimizeTimer = null;
     }
   }
 
-  /* עקוב אחרי שינויים ב-DOM */
   var observer = new MutationObserver(updateBubble);
   observer.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
 
-  /* בדיקה ראשונית + בדיקה נוספת אחרי שהכל עולה */
   updateBubble();
   setTimeout(updateBubble, 800);
   setTimeout(updateBubble, 2000);
@@ -4290,7 +4356,7 @@ window.deletePhoneIdx = function(i) {
         alert('שגיאה בשמירה. נסה שוב.');
         document.getElementById('scan-doc-result').classList.add('hidden');
       });
-  } }
+  }
 
   /* ── הצגת תוצאה מוצלחת ── */
   function showResult(result) {
