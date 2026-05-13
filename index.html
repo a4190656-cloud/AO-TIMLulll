@@ -4268,6 +4268,53 @@ window.resetProfilePic = function() {
       setTimeout(window.checkCyclePrompt, 1500); // ממתין שנייה וחצי לחוויה חלקה
     }
   }, 1000);
+  // פונקציה לייצוא נתוני המשתמש לקובץ CSV
+window.exportUserData = function() {
+  if (!uid) {
+    toast('עליך להיות מחובר כדי לייצא נתונים', 'error');
+    return;
+  }
+  
+  toast('מכין את הקובץ עבורך...', 'info');
+
+  // יצירת תוכן ה-CSV עם תמיכה בעברית (BOM)
+  let csvContent = "\ufeff"; 
+  csvContent += "סוג,תאריך,תיאור,קטגוריה,סכום\n";
+
+  // איסוף כל הנתונים מהמערכים הקיימים באפליקציה
+  const allData = [
+    ...incomes.map(i => ({...i, type: 'הכנסה'})),
+    ...expenses.map(e => ({...e, type: 'הוצאה'}))
+  ];
+
+  // מיון התנועות לפי תאריך (מהחדש לישן)
+  allData.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  // בניית השורות בטבלה
+  allData.forEach(item => {
+    const date = new Date(item.date).toLocaleDateString('he-IL');
+    const row = [
+      item.type,
+      date,
+      `"${item.description || ''}"`,
+      `"${item.category || 'ללא'}"`,
+      item.amount
+    ].join(",");
+    csvContent += row + "\n";
+  });
+
+  // יצירת הורדה למכשיר
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", `AO_Budget_Export_${new Date().toLocaleDateString('he-IL')}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  toast('הקובץ הורד בהצלחה!', 'success');
+};
 })(); // סגירת ה-IIFE שהתחיל בתחילת ה-script
 </script>
 
