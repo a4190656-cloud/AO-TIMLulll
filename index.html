@@ -1806,6 +1806,15 @@
 .cycle-total-card:hover { transform: translateY(-2px); background:rgba(255,255,255,0.05); }
 .cycle-total-title { font-size:11.5px; font-weight:800; color:var(--muted); margin-bottom:6px; }
 .cycle-total-amount { font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:800; }
+    /* ── תיקון באג עכבר במחשב - מניעת בריחת הכפתור ── */
+.cat-tile:active {
+  transform: translateY(-2px) scale(1.01) !important;
+}
+.cat-tile-del, .cat-tile-budget-btn {
+  z-index: 99 !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+}
   </style>
  
 </head>
