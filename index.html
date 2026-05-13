@@ -1691,6 +1691,54 @@
       display: block; margin-bottom: 2px;
     }
   </style>
+  /* עיצוב כפתור סגירה לבועה */
+.wa-close-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 22px;
+    height: 22px;
+    background: #1a1a1a;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    z-index: 10;
+    transition: all 0.2s;
+}
+.wa-close-btn:hover { background: #FF1F4E; transform: scale(1.1); }
+
+/* מצב מינימליסטי - אחרי ההנפשה */
+.wa-help-bubble.minimized {
+    bottom: auto !important;
+    left: 20px !important;
+    top: 20px !important;
+    transform: translateX(0) scale(0.9) !important;
+    padding: 6px !important;
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 50% !important;
+    background: rgba(4, 10, 22, 0.6) !important;
+    border-color: rgba(37, 211, 102, 0.4) !important;
+    justify-content: center !important;
+    transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* הסתרת טקסט במצב מיני */
+.wa-help-bubble.minimized .wa-help-text, 
+.wa-help-bubble.minimized .wa-help-arrow,
+.wa-help-bubble.minimized .wa-close-btn {
+    display: none !important;
+}
+
+.wa-help-bubble.minimized .wa-icon-ring {
+    margin: 0 !important;
+}
 </head>
 <body>
 
@@ -2248,6 +2296,7 @@
 
 <!-- ✦ WhatsApp Help Bubble — מסכי הרשמה ✦ -->
 <a id="wa-help-bubble" class="wa-help-bubble" href="https://wa.me/972534190656?text=שלום 👋, אני צריך עזרה בהרשמה ל-AO Budget" target="_blank" rel="noopener" style="display:none">
+  <div class="wa-close-btn" onclick="event.preventDefault(); event.stopPropagation(); this.parentElement.style.display='none';">✕</div>
   <div class="wa-icon-ring">
     <div class="wa-icon-circle">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.127 1.534 5.862L.054 23.8a.5.5 0 0 0 .609.61l6.042-1.534A11.95 11.95 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.793 9.793 0 0 1-4.988-1.365l-.357-.212-3.588.912.945-3.49-.232-.368A9.794 9.794 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
@@ -4056,36 +4105,40 @@ window.deletePhoneIdx = function(i) {
 
 <script>
 
-/* ── WhatsApp Help Bubble — הצגה במסכי הרשמה בלבד ── */
 (function() {
   var bubble = document.getElementById('wa-help-bubble');
   if (!bubble) return;
 
-  /* מסכי ההרשמה בהם הבועה מופיעה */
-  var SHOW_ON = ['screen-login', 'screen-setname', 'screen-verify'];
+  var SHOW_ON = ['screen-login', 'screen-setname'];
+  var hasAnimated = false;
 
   function updateBubble() {
-    /* בדוק איזה מסך פעיל */
     var visible = SHOW_ON.some(function(id) {
       var el = document.getElementById(id);
-      return el && !el.classList.contains('hidden') &&
-             el.style.display !== 'none';
+      return el && !el.classList.contains('hidden') && el.style.display !== 'none';
     });
+
     if (visible) {
       bubble.style.display = 'flex';
+      
+      // הפעלת טיימר להנפשה רק פעם אחת
+      if (!hasAnimated) {
+        hasAnimated = true;
+        setTimeout(function() {
+          if (bubble.style.display !== 'none') {
+            bubble.classList.add('minimized');
+          }
+        }, 8000); // אחרי 8 שניות זה יזוז ויהפוך לעיגול למעלה
+      }
     } else {
       bubble.style.display = 'none';
     }
   }
 
-  /* עקוב אחרי שינויים ב-DOM */
   var observer = new MutationObserver(updateBubble);
   observer.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
 
-  /* בדיקה ראשונית + בדיקה נוספת אחרי שהכל עולה */
   updateBubble();
-  setTimeout(updateBubble, 800);
-  setTimeout(updateBubble, 2000);
 })();
 
 </script>
