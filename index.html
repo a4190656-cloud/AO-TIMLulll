@@ -2515,19 +2515,20 @@
   };
  try {
     if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
-    window.auth = firebase.auth();
-    window.db   = firebase.firestore();
-    
-    db.settings({ experimentalForceLongPolling: true });
+window.auth = firebase.auth();
+  window.db   = firebase.firestore();
+  
+  // התיקון: שימוש ב-window.db ו-window.auth כדי למנוע קריסה
+  window.db.settings({ experimentalForceLongPolling: true });
 
-    /* ── שמור משתמש לצמיתות ── */
-    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(e){
-      console.log('Persistence error:', e.code);
-    });
+  /* ── שמור משתמש לצמיתות ── */
+  window.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(e){
+    console.log('Persistence error:', e.code);
+  });
 
-    db.enablePersistence().catch(function(e){ 
-      console.log('Offline persistence:', e.code); 
-    });
+  window.db.enablePersistence().catch(function(e){ 
+    console.log('Offline persistence:', e.code); 
+  });
 
   } catch (error) {
     console.error("קריסה בזמן טעינת Firebase:", error);
