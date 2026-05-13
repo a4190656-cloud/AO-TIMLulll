@@ -4177,7 +4177,7 @@ window.deletePhoneIdx = function(i) {
     });
   }
 
-  /* ── שמירה ל-Firebase לאחר סריקה ── */
+/* ── שמירה ל-Firebase לאחר סריקה ── */
   function saveScannedTransaction(result) {
     var user = firebase.auth().currentUser;
     if (!user) {
@@ -4213,21 +4213,23 @@ window.deletePhoneIdx = function(i) {
 
     var col = (type === 'income') ? 'incomes' : 'expenses';
     
-    // מחיקת ההודעה כדי להראות שזה בטעינה
+    // הצגת הודעת טעינה
     document.getElementById('scan-doc-result').innerHTML = '<div style="padding:15px; text-align:center; color:white; font-family:\'Syne\',sans-serif; font-weight:700;">שומר נתונים... ⏳</div>';
 
-    // הסתרת הודעת "שומר נתונים"
-document.getElementById('scan-doc-result').classList.add('hidden');
-// הפעלת האנימציה הירוקה עם הקונפטי
-if (typeof showSuccess === 'function') showSuccess(type, amount);
-        window.location.reload();
+    // השמירה בפועל למסד הנתונים
+    firebase.firestore().collection('users').doc(user.uid).collection(col).add(dataObj)
+      .then(function() {
+        // הסתרת הודעת הטעינה
+        document.getElementById('scan-doc-result').classList.add('hidden');
+        // הפעלת האנימציה החלקה (בלי ריענון הדף!)
+        if (typeof showSuccess === 'function') showSuccess(type, amount);
       })
       .catch(function(e) {
         console.error('שמירת סריקה:', e);
         alert('שגיאה בשמירה. נסה שוב.');
         document.getElementById('scan-doc-result').classList.add('hidden');
       });
-  }
+  } }
 
   /* ── הצגת תוצאה מוצלחת ── */
   function showResult(result) {
