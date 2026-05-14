@@ -3276,6 +3276,42 @@ window.deletePhoneIdx = function(i) {
     }
 
     appBooted = true;
+
+    /* ── כפתור "חזור לאפליקציה" אם הגיע מה-app דרך ?from_app=1 ── */
+    var fromApp = new URLSearchParams(window.location.search).get('from_app') === '1';
+    if (fromApp) {
+      /* מחכים רגע שה-UI ייטען ואז מציגים overlay */
+      setTimeout(function(){
+        var overlay = document.createElement('div');
+        overlay.id = 'return-to-app-overlay';
+        overlay.style.cssText =
+          'position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;' +
+          'background:rgba(4,7,14,0.97);display:flex;flex-direction:column;' +
+          'align-items:center;justify-content:center;padding:30px;text-align:center;';
+        overlay.innerHTML =
+          '<div style="font-size:48px;margin-bottom:20px;">✅</div>' +
+          '<div style="font-family:\'Syne\',sans-serif;font-size:20px;font-weight:800;' +
+            'color:#fff;margin-bottom:10px;">הכניסה הצליחה!</div>' +
+          '<div style="font-family:\'Syne\',sans-serif;font-size:14px;' +
+            'color:rgba(255,255,255,0.6);margin-bottom:30px;line-height:1.6;">' +
+            'לחץ על הכפתור כדי לחזור לאפליקציה.' +
+          '</div>' +
+          '<a href="intent://reload#Intent;scheme=com.mycompany.ao;package=com.mycompany.ao;end" ' +
+            'style="display:block;width:100%;max-width:280px;padding:15px;border-radius:14px;' +
+            'background:linear-gradient(135deg,#00E5FF,#00BFFF);' +
+            'color:#04070E;font-family:\'Syne\',sans-serif;font-size:16px;font-weight:800;' +
+            'text-align:center;text-decoration:none;margin-bottom:14px;">' +
+            '📱 חזור לאפליקציה' +
+          '</a>' +
+          '<div style="font-family:\'Syne\',sans-serif;font-size:12px;' +
+            'color:rgba(255,255,255,0.35);">' +
+            'אם הכפתור לא עובד — פתח את האפליקציה ידנית. אתה כבר מחובר.' +
+          '</div>';
+        document.body.appendChild(overlay);
+      }, 400);
+      return; /* לא נטען את שאר האפליקציה בדפדפן */
+    }
+
     bootApp(user);
   });
 
@@ -3300,21 +3336,23 @@ window.deletePhoneIdx = function(i) {
          הפתרון: פתח את האתר בדפדפן חיצוני אמיתי שבו Popup עובד כרגיל. */
       btn.disabled=false; btn.style.opacity='1';
 
-      /* הצג הסבר קצר למשתמש */
+      /* הצג הסבר למשתמש עם כפתור פתיחה בדפדפן */
       showLoginErr('');
       var el = $('login-err');
       el.style.color = 'var(--cyan)';
       el.innerHTML =
-        '<div style="font-size:13px;font-weight:700;margin-bottom:10px;line-height:1.5;">' +
+        '<div style="font-size:13px;font-weight:700;margin-bottom:10px;line-height:1.6;">' +
           '⚠️ כניסה עם גוגל דרך האפליקציה מוגבלת.<br>' +
-          'לחץ על הכפתור למטה כדי להיכנס דרך הדפדפן:' +
+          '<span style="font-weight:600;color:rgba(255,255,255,0.6);font-size:12px;">' +
+            'לחץ להיכנס בדפדפן — אחר כך חזור לאפליקציה' +
+          '</span>' +
         '</div>' +
-        '<a href="' + window.location.href + '" target="_blank" ' +
+        '<a href="' + window.location.href + '?from_app=1" target="_blank" ' +
           'style="display:block;width:100%;padding:13px;border-radius:13px;' +
           'background:linear-gradient(135deg,#00E5FF,#00BFFF);' +
           'color:#04070E;font-family:\'Syne\',sans-serif;font-size:14px;font-weight:800;' +
-          'text-align:center;text-decoration:none;box-sizing:border-box;">' +
-          '🌐 פתח באתר / דפדפן' +
+          'text-align:center;text-decoration:none;box-sizing:border-box;margin-bottom:10px;">' +
+          '🌐 כניסה עם גוגל בדפדפן' +
         '</a>';
       show('login-err');
       return;
