@@ -3318,101 +3318,84 @@ window.deletePhoneIdx = function(i) {
   /* ══════════════════════════════════════════════
      GOOGLE LOGIN
   ══════════════════════════════════════════════ */
+  /* ══════════════════════════════════════════════
+     GOOGLE LOGIN — Google Identity Services (עובד ב-WebView + דפדפן)
+  ══════════════════════════════════════════════ */
+
+  var GOOGLE_CLIENT_ID = '53506652532-at4qsgo7pl1oags2unpc955qladic9rv.apps.googleusercontent.com';
+
+  function handleGoogleCredential(response) {
+    /* response.credential = ID token מגוגל */
+    var idToken = response.credential;
+    var credential = firebase.auth.GoogleAuthProvider.credential(idToken);
+    auth.signInWithCredential(credential).then(function(){
+      var gBtn = $('btn-google-login');
+      if(gBtn){ gBtn.disabled=false; gBtn.style.opacity='1'; }
+      hide('login-err');
+    }).catch(function(e){
+      var gBtn = $('btn-google-login');
+      if(gBtn){ gBtn.disabled=false; gBtn.style.opacity='1'; }
+      if(e.code === 'auth/account-exists-with-different-credential'){
+        showLoginErr('חשבון עם מייל זה כבר קיים. נסה כניסה עם אימייל וסיסמה.');
+      } else {
+        showLoginErr('שגיאה בכניסה עם גוגל: ' + (e.message || e.code));
+      }
+    });
+  }
+
+  function initGoogleSignIn() {
+    if (typeof google === 'undefined' || !google.accounts) {
+      setTimeout(initGoogleSignIn, 200);
+      return;
+    }
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleGoogleCredential,
+      auto_select: false,
+      cancel_on_tap_outside: true
+    });
+  }
+  initGoogleSignIn();
+
   $('btn-google-login').onclick = function(){
     var btn = this;
     btn.disabled = true;
     btn.style.opacity = '0.6';
-    var provider = new firebase.auth.GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
 
-    /* ── זיהוי WebView (אפליקציות WebIntoApp וכד') ── */
-    var ua = navigator.userAgent || '';
-    var isWebView = /wv/.test(ua)
-      || /Android.*Version\/[\d.]+.*Chrome\/[\d.]+ Mobile Safari/.test(ua)
-      || (typeof webkit !== 'undefined' && webkit && webkit.messageHandlers);
-
-    if (isWebView) {
-      /* WebView — signInWithRedirect שובר את ה-sessionStorage של Firebase.
-         הפתרון: פתח את האתר בדפדפן חיצוני אמיתי שבו Popup עובד כרגיל. */
+    if (typeof google === 'undefined' || !google.accounts) {
       btn.disabled=false; btn.style.opacity='1';
-
-      /* הצג הסבר למשתמש עם כפתור פתיחה בדפדפן */
-      showLoginErr('');
-      var el = $('login-err');
-      el.style.color = 'var(--cyan)';
-      el.innerHTML =
-        '<div style="font-size:13px;font-weight:700;margin-bottom:10px;line-height:1.6;">' +
-          '⚠️ כניסה עם גוגל דרך האפליקציה מוגבלת.<br>' +
-          '<span style="font-weight:600;color:rgba(255,255,255,0.6);font-size:12px;">' +
-            'לחץ להיכנס בדפדפן — אחר כך חזור לאפליקציה' +
-          '</span>' +
-        '</div>' +
-        '<a href="' + window.location.href + '?from_app=1" target="_blank" ' +
-          'style="display:block;width:100%;padding:13px;border-radius:13px;' +
-          'background:linear-gradient(135deg,#00E5FF,#00BFFF);' +
-          'color:#04070E;font-family:\'Syne\',sans-serif;font-size:14px;font-weight:800;' +
-          'text-align:center;text-decoration:none;box-sizing:border-box;margin-bottom:10px;">' +
-          '🌐 כניסה עם גוגל בדפדפן' +
-        '</a>';
-      show('login-err');
+      showLoginErr('שירות גוגל לא נטען. רענן את הדף ונסה שוב.');
       return;
     }
 
-    auth.signInWithPopup(provider).then(function(){
-      /* onAuthStateChanged handles the rest — button re-enabled on signout or after boot */
+    google.accounts.id.prompt(function(notification) {
       btn.disabled=false; btn.style.opacity='1';
-    }).catch(function(e){
-      if(e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request'){
-        /* Popup blocked — do NOT use signInWithRedirect (breaks sessionStorage).
-           Re-enable button so user can try again. */
-        btn.disabled=false; btn.style.opacity='1';
-        if(e.code === 'auth/popup-blocked'){
-          showLoginErr('החלון נחסם על ידי הדפדפן. אפשר חלונות קופצים ונסה שוב.');
-        }
-        return;
-      }
-      if(e.code === 'auth/account-exists-with-different-credential'){
-        /* User already has email/password account — show inline password prompt */
-        var pendingCred = e.credential;
-        var pendingEmail = e.email;
-        btn.disabled=false; btn.style.opacity='1';
-        showLoginErr('');
-        var el = $('login-err');
-        el.style.color = 'var(--cyan)';
-        el.innerHTML =
-          '<div style="font-size:13px;font-weight:700;margin-bottom:8px;">חשבון עם מייל זה כבר קיים.<br>הזן סיסמה כדי לקשר את גוגל:</div>' +
-          '<div class="pass-wrap" style="margin-bottom:8px;">' +
-            '<input id="link-pass-input" class="inp" type="password" placeholder="סיסמה" style="font-size:14px;">' +
-          '</div>' +
-          '<button id="link-pass-btn" class="btn btn-cyan" style="font-size:13px;padding:11px;">קשר חשבונות</button>';
-        show('login-err');
-        setTimeout(function(){ var lp=$('link-pass-input'); if(lp) lp.focus(); }, 80);
-        $('link-pass-btn').onclick = function(){
-          var pass = $('link-pass-input').value;
-          if(!pass) return;
-          $('link-pass-btn').disabled=true; $('link-pass-btn').textContent='מקשר...';
-          auth.signInWithEmailAndPassword(pendingEmail, pass).then(function(cred){
-            return cred.user.linkWithCredential(pendingCred);
-          }).then(function(){
-            hide('login-err');
-            /* onAuthStateChanged fires */
-          }).catch(function(le){
-            $('link-pass-btn').disabled=false; $('link-pass-btn').textContent='קשר חשבונות';
-            if(le.code==='auth/wrong-password'||le.code==='auth/invalid-credential'){
-              showLoginErr('סיסמה שגויה. נסה שוב.');
-            } else {
-              showLoginErr('שגיאה בקישור. נסה שוב.');
+      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+        /* One Tap לא הציג — נפתח את ה-account picker ידנית */
+        google.accounts.id.renderButton(
+          document.createElement('div'),
+          { theme: 'outline', size: 'large' }
+        );
+        /* fallback: פתח popup ישירות */
+        var tokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: GOOGLE_CLIENT_ID,
+          scope: 'email profile openid',
+          callback: function(tokenResponse) {
+            if (tokenResponse.error) {
+              showLoginErr('שגיאה בכניסה. נסה שוב.');
+              return;
             }
-          });
-        };
-        return;
-      }
-      btn.disabled=false; btn.style.opacity='1';
-      if(e.code !== 'auth/popup-closed-by-user'){
-        showLoginErr('שגיאה בכניסה עם גוגל. נסה שוב.');
+            var credential = firebase.auth.GoogleAuthProvider.credential(null, tokenResponse.access_token);
+            auth.signInWithCredential(credential).catch(function(e){
+              showLoginErr('שגיאה בכניסה עם גוגל.');
+            });
+          }
+        });
+        tokenClient.requestAccessToken({ prompt: 'select_account' });
       }
     });
   };
+
 
   /* Handle redirect result on page load (for Netfree / popup-blocked fallback) */
   auth.getRedirectResult().then(function(result){
