@@ -3239,14 +3239,6 @@ window.deletePhoneIdx = function(i) {
   }, 10000);
 
   auth.onAuthStateChanged(function(user){
-    auth.getRedirectResult().then(function(result) {
-  if (result.user) {
-    console.log("מחובר בהצלחה מהכרום!");
-    bootApp(result.user);
-  }
-}).catch(function(error) {
-  console.error("שגיאה בחזרה מהכרום:", error.message);
-});
     /* Clear the timeout whenever auth responds */
     clearTimeout(authTimeout);
 
@@ -3297,7 +3289,23 @@ window.deletePhoneIdx = function(i) {
     var provider = new firebase.auth.GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
 
-    auth.signInWithRedirect(provider).then(function(){
+    /* ── זיהוי WebView (אפליקציות WebIntoApp וכד') ── */
+    var ua = navigator.userAgent || '';
+    var isWebView = /wv/.test(ua)
+      || /Android.*Version\/[\d.]+.*Chrome\/[\d.]+ Mobile Safari/.test(ua)
+      || (typeof webkit !== 'undefined' && webkit && webkit.messageHandlers);
+
+    if (isWebView) {
+      /* WebView לא תומך ב-Popup — ישר Redirect כדי שגוגל יזהה חשבונות קיימים */
+      showLoginOk('מעביר לכניסה עם גוגל...');
+      auth.signInWithRedirect(provider).catch(function(e){
+        btn.disabled=false; btn.style.opacity='1';
+        showLoginErr('לא ניתן להתחבר עם גוגל. נסה דפדפן אחר.');
+      });
+      return;
+    }
+
+    auth.signInWithPopup(provider).then(function(){
       /* onAuthStateChanged handles the rest — button re-enabled on signout or after boot */
       btn.disabled=false; btn.style.opacity='1';
     }).catch(function(e){
