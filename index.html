@@ -3239,6 +3239,14 @@ window.deletePhoneIdx = function(i) {
   }, 10000);
 
   auth.onAuthStateChanged(function(user){
+    auth.getRedirectResult().then(function(result) {
+  if (result.user) {
+    console.log("מחובר בהצלחה מהכרום!");
+    bootApp(result.user);
+  }
+}).catch(function(error) {
+  console.error("שגיאה בחזרה מהכרום:", error.message);
+});
     /* Clear the timeout whenever auth responds */
     clearTimeout(authTimeout);
 
@@ -3289,7 +3297,7 @@ window.deletePhoneIdx = function(i) {
     var provider = new firebase.auth.GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
 
-    auth.signInWithPopup(provider).then(function(){
+    auth.signInWithRedirect(provider).then(function(){
       /* onAuthStateChanged handles the rest — button re-enabled on signout or after boot */
       btn.disabled=false; btn.style.opacity='1';
     }).catch(function(e){
