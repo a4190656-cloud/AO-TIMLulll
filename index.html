@@ -1867,25 +1867,7 @@
 
     <div class="card rise d1" style="padding:24px 20px">
 
-      <button id="btn-google-login" class="btn-google modern-hover" style="margin-bottom:8px">
-        <svg width="19" height="19" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-        כניסה עם גוגל
-      </button>
-
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:8px;">
-        <button onclick="window.location.reload()" style="display:flex;align-items:center;gap:5px;background:none;border:none;color:rgba(255,255,255,0.35);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;padding:4px 0;transition:color .15s;" onmouseover="this.style.color='rgba(255,255,255,0.7)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">
-          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
-          רענון הדף
-        </button>
-        <p style="font-size:10px;color:rgba(255,255,255,0.28);font-weight:600;text-align:left;line-height:1.4;">📱 מאפליקציה — השתמש במייל וסיסמה</p>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-        <div style="flex:1;height:1px;background:rgba(255,255,255,0.06)"></div>
-        <span style="font-size:11px;color:rgba(255,255,255,0.25);font-weight:700;letter-spacing:.1em">או עם אימייל</span>
-        <div style="flex:1;height:1px;background:rgba(255,255,255,0.06)"></div>
-      </div>
-
+      <!-- ── מייל + סיסמה — ראשון ── -->
       <div id="login-name-wrap" class="hidden" style="margin-bottom:9px">
         <input id="login-name" class="inp modern-hover" type="text" placeholder="השם המלא שלך" autocomplete="name">
       </div>
@@ -1904,7 +1886,67 @@
 
       <div id="login-err" class="err hidden" style="margin-top:8px;line-height:1.5;"></div>
       <button id="btn-email-auth" class="btn btn-cyan modern-hover" style="margin-top:12px">כניסה לחשבון</button>
-      <p style="font-size: 10px; color: rgba(255,255,255,0.3); text-align: center; margin-top: 15px; line-height: 1.4;">
+
+      <!-- ── מפריד ── -->
+      <div style="display:flex;align-items:center;gap:10px;margin:18px 0 14px">
+        <div style="flex:1;height:1px;background:rgba(255,255,255,0.06)"></div>
+        <span style="font-size:11px;color:rgba(255,255,255,0.22);font-weight:700;letter-spacing:.1em">או לחלופין</span>
+        <div style="flex:1;height:1px;background:rgba(255,255,255,0.06)"></div>
+      </div>
+
+      <!-- ── אזהרת אבטחה — כניסה עם גוגל ── -->
+      <div style="
+        background: linear-gradient(135deg, rgba(255,160,0,0.07) 0%, rgba(255,120,0,0.04) 100%);
+        border: 1px solid rgba(255,160,0,0.30);
+        border-radius: 16px;
+        padding: 11px 14px 11px 12px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        box-shadow: 0 0 20px rgba(255,140,0,0.06), inset 0 1px 0 rgba(255,255,255,0.04);
+        animation: googleWarningPulse 4s ease-in-out infinite;
+      ">
+        <div style="
+          width: 28px; height: 28px; flex-shrink: 0;
+          background: linear-gradient(135deg, rgba(255,160,0,0.18), rgba(255,100,0,0.10));
+          border: 1px solid rgba(255,160,0,0.35);
+          border-radius: 9px;
+          display: flex; align-items: center; justify-content: center;
+          box-shadow: 0 0 12px rgba(255,140,0,0.18);
+          margin-top: 1px;
+        ">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,180,0,0.90)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div style="flex: 1;">
+          <div style="font-size: 11.5px; font-weight: 900; color: rgba(255,190,60,0.95); letter-spacing: 0.01em; margin-bottom: 3px; display: flex; align-items: center; gap: 5px;">
+            <span>⚠️ שימו לב — מטעמי אבטחה</span>
+          </div>
+          <div style="font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.65); line-height: 1.55;">
+            כניסה עם גוגל זמינה <strong style="color:rgba(255,190,60,0.90);font-weight:800;">בדפדפן בלבד</strong> — לא מאפליקציה.
+          </div>
+        </div>
+      </div>
+      <style>
+        @keyframes googleWarningPulse {
+          0%,100% { border-color: rgba(255,160,0,0.28); box-shadow: 0 0 20px rgba(255,140,0,0.05); }
+          50%      { border-color: rgba(255,160,0,0.50); box-shadow: 0 0 28px rgba(255,140,0,0.14); }
+        }
+      </style>
+
+      <button id="btn-google-login" class="btn-google modern-hover" style="margin-bottom:8px">
+        <svg width="19" height="19" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        כניסה עם גוגל
+      </button>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;gap:8px;">
+        <button onclick="window.location.reload()" style="display:flex;align-items:center;gap:5px;background:none;border:none;color:rgba(255,255,255,0.35);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;padding:4px 0;transition:color .15s;" onmouseover="this.style.color='rgba(255,255,255,0.7)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+          רענון הדף
+        </button>
+      </div>
+
+      <p style="font-size: 10px; color: rgba(255,255,255,0.3); text-align: center; margin-top: 12px; line-height: 1.4;">
   בלחיצה על כניסה או הרשמה, ובשימוש באפליקציה או באתר, הינך מאשר את <br>
   <a href="https://a4190656-cloud.github.io/AO-TIMLulll/privacy.html" target="_blank" style="color: var(--cyan); text-decoration: none; font-weight: 700;">תנאי השימוש ומדיניות הפרטיות</a> של AO Budget.
 </p>
@@ -3328,19 +3370,6 @@ window.deletePhoneIdx = function(i) {
   /* ── טיפול ב-token שגוגל מחזיר ב-URL hash אחרי הכניסה ── */
   (function handleOAuthCallback() {
     var hash = window.location.hash;
-
-    /* בדוק אם יש token שמור מ-Chrome (כשחזרנו מדפדפן חיצוני לאפליקציה) */
-    var savedToken = null;
-    try { savedToken = localStorage.getItem('ao_google_token'); } catch(e){}
-    if (savedToken) {
-      try { localStorage.removeItem('ao_google_token'); } catch(e){}
-      var credential = firebase.auth.GoogleAuthProvider.credential(null, savedToken);
-      auth.signInWithCredential(credential).catch(function(e) {
-        showLoginErr('שגיאה בכניסה עם גוגל. נסה שוב.');
-      });
-      return;
-    }
-
     if (!hash) return;
     var params = {};
     hash.replace(/^#/, '').split('&').forEach(function(p) {
@@ -3352,55 +3381,7 @@ window.deletePhoneIdx = function(i) {
     /* נקה את ה-hash מה-URL בלי לרענן */
     history.replaceState(null, '', window.location.pathname + window.location.search);
 
-    var ua = navigator.userAgent || '';
-    var isWebView = /wv/.test(ua)
-      || /Android.*Version\/[\d.]+.*Chrome\/[\d.]+ Mobile Safari/.test(ua)
-      || (typeof webkit !== 'undefined' && webkit && webkit.messageHandlers);
-
-    if (!isWebView) {
-      /* רצים בדפדפן חיצוני (Chrome) — שמור token ל-localStorage
-         כדי שהאפליקציה תקרא אותו כשהמשתמש חוזר */
-      try {
-        localStorage.setItem('ao_google_token', params.access_token);
-      } catch(e) {}
-
-      /* הצג מסך "חזור לאפליקציה" */
-      document.addEventListener('DOMContentLoaded', function() {
-        showReturnToAppScreen();
-      });
-      if (document.readyState !== 'loading') showReturnToAppScreen();
-
-      function showReturnToAppScreen() {
-        var overlay = document.createElement('div');
-        overlay.style.cssText =
-          'position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;' +
-          'background:#04070E;display:flex;flex-direction:column;' +
-          'align-items:center;justify-content:center;padding:30px;text-align:center;';
-        overlay.innerHTML =
-          '<div style="font-size:52px;margin-bottom:20px;">✅</div>' +
-          '<div style="font-family:\'Syne\',sans-serif;font-size:22px;font-weight:800;' +
-            'color:#fff;margin-bottom:12px;">הכניסה הצליחה!</div>' +
-          '<div style="font-family:\'Syne\',sans-serif;font-size:14px;' +
-            'color:rgba(255,255,255,0.55);margin-bottom:32px;line-height:1.7;">' +
-            'חזור לאפליקציה —<br>תהיה מחובר אוטומטית.' +
-          '</div>' +
-          '<a href="intent://ao#Intent;scheme=com.mycompany;package=com.mycompany.ao;end" ' +
-            'style="display:block;width:100%;max-width:300px;padding:16px;border-radius:14px;' +
-            'background:linear-gradient(135deg,#00E5FF,#00BFFF);' +
-            'color:#04070E;font-family:\'Syne\',sans-serif;font-size:16px;font-weight:800;' +
-            'text-align:center;text-decoration:none;margin-bottom:16px;">' +
-            '📱 חזור לאפליקציה' +
-          '</a>' +
-          '<div style="font-family:\'Syne\',sans-serif;font-size:12px;' +
-            'color:rgba(255,255,255,0.3);">' +
-            'אם הכפתור לא עובד — פתח את האפליקציה ידנית.' +
-          '</div>';
-        document.body.appendChild(overlay);
-      }
-      return;
-    }
-
-    /* רצים ב-WebView — כנס ישירות */
+    /* כנס ל-Firebase עם ה-access_token */
     var credential = firebase.auth.GoogleAuthProvider.credential(null, params.access_token);
     auth.signInWithCredential(credential).catch(function(e) {
       showLoginErr('שגיאה בכניסה עם גוגל: ' + (e.message || e.code));
@@ -3427,18 +3408,17 @@ window.deletePhoneIdx = function(i) {
       || (typeof webkit !== 'undefined' && webkit && webkit.messageHandlers);
 
     if (isWebView) {
-      /* WebIntoApp עם "Default Browser" פותח קישורי target=_blank בדפדפן אמיתי.
-         פותחים את ה-OAuth URL ישירות בדפדפן חיצוני כך גוגל יזהה חשבונות קיימים. */
-      btn.disabled=false; btn.style.opacity='1';
-
-      /* יוצרים לינק זמני ולוחצים עליו עם target=_blank */
-      var a = document.createElement('a');
-      a.href = oauthUrl;
-      a.target = '_blank';
-      a.rel = 'noopener';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      /* intent:// מכריח את אנדרואיד לפתוח ב-Chrome ולא ב-WebView */
+      var intentUrl = 'intent://' +
+        'accounts.google.com/o/oauth2/v2/auth' +
+        '?client_id=' + encodeURIComponent(GOOGLE_CLIENT_ID) +
+        '&redirect_uri=' + encodeURIComponent(REDIRECT_URI) +
+        '&response_type=token' +
+        '&scope=' + encodeURIComponent('email profile openid') +
+        '&prompt=select_account' +
+        '#Intent;scheme=https;package=com.android.chrome;' +
+        'S.browser_fallback_url=' + encodeURIComponent(oauthUrl) + ';end';
+      window.location.href = intentUrl;
     } else {
       window.location.href = oauthUrl;
     }
