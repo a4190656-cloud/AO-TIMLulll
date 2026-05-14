@@ -4,6 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>AO Budget</title>
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00e5ff">
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('AO Service Worker Registered'))
+        .catch(err => console.log('SW Registration Failed', err));
+    });
+  }
+</script>
   <link id="favicon-link" rel="icon" type="image/png" href="">
   <link rel="apple-touch-icon" href="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg">
   <script>
@@ -3234,6 +3246,7 @@ window.deletePhoneIdx = function(i) {
       authResolved = true;
       appBooted    = false;
       uid          = null;
+      hide('security-loader-overlay');
       /* Reset Google button so it works again after sign-out */
       var gBtn = $('btn-google-login');
       if(gBtn){ gBtn.disabled=false; gBtn.style.opacity='1'; }
@@ -3286,30 +3299,44 @@ window.deletePhoneIdx = function(i) {
           btn.disabled=false; btn.style.opacity='1';
           showLoginErr('לא ניתן לפתוח חלון כניסה. נסה דפדפן אחר.');
         });
+        btn.disabled=false; btn.style.opacity='1';
+        showLoginOk('מעביר לכניסה עם גוגל...');
         return;
       }
       if(e.code === 'auth/account-exists-with-different-credential'){
-        /* User already has email/password account — sign in with email and link */
+        /* User already has email/password account — show inline password prompt */
         var pendingCred = e.credential;
-        var email       = e.email;
-        auth.fetchSignInMethodsForEmail(email).then(function(methods){
-          if(methods.indexOf('password') >= 0){
-            var pass = prompt('חשבון עם מייל זה כבר קיים.\nהזן את הסיסמה שלך כדי לקשר את חשבון גוגל:');
-            if(!pass){ btn.disabled=false; btn.style.opacity='1'; return; }
-            auth.signInWithEmailAndPassword(email, pass).then(function(cred){
-              return cred.user.linkWithCredential(pendingCred);
-            }).then(function(){
-              btn.disabled=false; btn.style.opacity='1';
-              /* linked — onAuthStateChanged fires */
-            }).catch(function(){
-              btn.disabled=false; btn.style.opacity='1';
-              showLoginErr('שגיאה בקישור החשבונות. נסה שוב.');
-            });
-          } else {
-            btn.disabled=false; btn.style.opacity='1';
-            showLoginErr('שגיאה בכניסה עם גוגל. נסה שוב.');
-          }
-        }).catch(function(){ btn.disabled=false; btn.style.opacity='1'; });
+        var pendingEmail = e.email;
+        btn.disabled=false; btn.style.opacity='1';
+        showLoginErr('');
+        var el = $('login-err');
+        el.style.color = 'var(--cyan)';
+        el.innerHTML =
+          '<div style="font-size:13px;font-weight:700;margin-bottom:8px;">חשבון עם מייל זה כבר קיים.<br>הזן סיסמה כדי לקשר את גוגל:</div>' +
+          '<div class="pass-wrap" style="margin-bottom:8px;">' +
+            '<input id="link-pass-input" class="inp" type="password" placeholder="סיסמה" style="font-size:14px;">' +
+          '</div>' +
+          '<button id="link-pass-btn" class="btn btn-cyan" style="font-size:13px;padding:11px;">קשר חשבונות</button>';
+        show('login-err');
+        setTimeout(function(){ var lp=$('link-pass-input'); if(lp) lp.focus(); }, 80);
+        $('link-pass-btn').onclick = function(){
+          var pass = $('link-pass-input').value;
+          if(!pass) return;
+          $('link-pass-btn').disabled=true; $('link-pass-btn').textContent='מקשר...';
+          auth.signInWithEmailAndPassword(pendingEmail, pass).then(function(cred){
+            return cred.user.linkWithCredential(pendingCred);
+          }).then(function(){
+            hide('login-err');
+            /* onAuthStateChanged fires */
+          }).catch(function(le){
+            $('link-pass-btn').disabled=false; $('link-pass-btn').textContent='קשר חשבונות';
+            if(le.code==='auth/wrong-password'||le.code==='auth/invalid-credential'){
+              showLoginErr('סיסמה שגויה. נסה שוב.');
+            } else {
+              showLoginErr('שגיאה בקישור. נסה שוב.');
+            }
+          });
+        };
         return;
       }
       btn.disabled=false; btn.style.opacity='1';
@@ -3385,24 +3412,55 @@ window.deletePhoneIdx = function(i) {
     $('security-sub-msg').textContent = securitySteps[step].e;
   }, 1200);
 
-  auth.signInWithEmailAndPassword(email, pass).then(function(cred){
-    clearInterval(interval);
-    // המעבר לאפליקציה יתבצע אוטומטית על ידי onAuthStateChanged
-  }).catch(function(e){
-    clearInterval(interval);
-    hide('security-loader-overlay');
-    
-    // טיפול בשגיאות כניסה
-    if(e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential'){
-      showLoginErr('אימייל או סיסמה שגויים.');
-    } else if(e.code === 'auth/invalid-email'){
-      showLoginErr('כתובת מייל לא תקינה.');
-    } else if(e.code === 'auth/too-many-requests'){
-      showLoginErr('יותר מדי ניסיונות. המתן מספר דקות ונסה שוב.');
-    } else {
-      showLoginErr('שגיאה בכניסה. נסה שוב.');
-    }
-  });
+  if (isRegMode) {
+    /* ── הרשמה: יצירת חשבון חדש ושליחת אימייל אימות ── */
+    auth.createUserWithEmailAndPassword(email, pass).then(function(cred){
+      clearInterval(interval);
+      hide('security-loader-overlay');
+      var actionSettings = { url: 'https://a4190656-cloud.github.io/AO-TIMLulll/', handleCodeInApp: false };
+      return cred.user.sendEmailVerification(actionSettings).then(function(){
+        return auth.signOut();
+      }).then(function(){
+        showLoginOk('✓ נשלח אימייל אימות לכתובת <strong>' + email + '</strong> — בדוק גם ספאם!<br>' +
+          '<button onclick="window.location.reload()" style="background:none;border:none;color:#00BFFF;text-decoration:underline;cursor:pointer;font-weight:bold;font-family:\'Syne\',sans-serif;font-size:14px;padding:0;margin-top:12px;">רעננו את הדף לאחר האימות!</button>');
+        /* חזרה למצב כניסה */
+        isRegMode = false;
+        hide('login-name-wrap');
+        $('btn-email-auth').textContent = 'כניסה לחשבון';
+        $('btn-toggle-mode').textContent = 'עוד אין לך חשבון? לחץ כאן ←';
+      });
+    }).catch(function(e){
+      clearInterval(interval);
+      hide('security-loader-overlay');
+      if(e.code === 'auth/email-already-in-use'){
+        showLoginErr('כתובת מייל זו כבר רשומה. נסה להתחבר.');
+      } else if(e.code === 'auth/invalid-email'){
+        showLoginErr('כתובת מייל לא תקינה.');
+      } else if(e.code === 'auth/weak-password'){
+        showLoginErr('הסיסמה חלשה מדי — לפחות 6 תווים.');
+      } else {
+        showLoginErr('שגיאה בהרשמה. נסה שוב.');
+      }
+    });
+  } else {
+    /* ── כניסה לחשבון קיים ── */
+    auth.signInWithEmailAndPassword(email, pass).then(function(cred){
+      clearInterval(interval);
+      // המעבר לאפליקציה יתבצע אוטומטית על ידי onAuthStateChanged
+    }).catch(function(e){
+      clearInterval(interval);
+      hide('security-loader-overlay');
+      if(e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential'){
+        showLoginErr('אימייל או סיסמה שגויים.');
+      } else if(e.code === 'auth/invalid-email'){
+        showLoginErr('כתובת מייל לא תקינה.');
+      } else if(e.code === 'auth/too-many-requests'){
+        showLoginErr('יותר מדי ניסיונות. המתן מספר דקות ונסה שוב.');
+      } else {
+        showLoginErr('שגיאה בכניסה. נסה שוב.');
+      }
+    });
+  }
 };
 
   /* Resend verification email */
