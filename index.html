@@ -3366,17 +3366,33 @@ window.deletePhoneIdx = function(i) {
       || (typeof webkit !== 'undefined' && webkit && webkit.messageHandlers);
 
     if (isWebView) {
-      /* intent:// מכריח את אנדרואיד לפתוח ב-Chrome ולא ב-WebView */
-      var intentUrl = 'intent://' +
-        'accounts.google.com/o/oauth2/v2/auth' +
-        '?client_id=' + encodeURIComponent(GOOGLE_CLIENT_ID) +
-        '&redirect_uri=' + encodeURIComponent(REDIRECT_URI) +
-        '&response_type=token' +
-        '&scope=' + encodeURIComponent('email profile openid') +
-        '&prompt=select_account' +
-        '#Intent;scheme=https;package=com.android.chrome;' +
-        'S.browser_fallback_url=' + encodeURIComponent(oauthUrl) + ';end';
-      window.location.href = intentUrl;
+      /* מציג כפתור שפותח את האתר ב-Chrome האמיתי עם ה-session הקיים */
+      btn.disabled=false; btn.style.opacity='1';
+      showLoginErr('');
+      var el = $('login-err');
+      el.style.color = 'var(--cyan)';
+      el.innerHTML =
+        '<div style="font-size:13px;font-weight:700;margin-bottom:10px;line-height:1.6;">' +
+          'לכניסה עם גוגל יש לפתוח ב-Chrome:<br>' +
+          '<span style="font-weight:600;color:rgba(255,255,255,0.6);font-size:12px;">' +
+            'אחרי הכניסה — חזור לאפליקציה, תהיה מחובר אוטומטית' +
+          '</span>' +
+        '</div>' +
+        '<a href="googlechrome://' + REDIRECT_URI.replace('https://', '') + '" ' +
+          'style="display:block;width:100%;padding:13px;border-radius:13px;' +
+          'background:linear-gradient(135deg,#00E5FF,#00BFFF);' +
+          'color:#04070E;font-family:\'Syne\',sans-serif;font-size:15px;font-weight:800;' +
+          'text-align:center;text-decoration:none;box-sizing:border-box;margin-bottom:10px;">' +
+          '🌐 פתח ב-Chrome' +
+        '</a>' +
+        '<a href="' + REDIRECT_URI + '" ' +
+          'style="display:block;width:100%;padding:10px;border-radius:13px;' +
+          'background:rgba(255,255,255,0.08);' +
+          'color:rgba(255,255,255,0.5);font-family:\'Syne\',sans-serif;font-size:13px;font-weight:600;' +
+          'text-align:center;text-decoration:none;box-sizing:border-box;">' +
+          'פתח בדפדפן ברירת מחדל' +
+        '</a>';
+      show('login-err');
     } else {
       window.location.href = oauthUrl;
     }
