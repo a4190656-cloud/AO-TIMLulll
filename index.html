@@ -3296,12 +3296,27 @@ window.deletePhoneIdx = function(i) {
       || (typeof webkit !== 'undefined' && webkit && webkit.messageHandlers);
 
     if (isWebView) {
-      /* WebView לא תומך ב-Popup — ישר Redirect כדי שגוגל יזהה חשבונות קיימים */
-      showLoginOk('מעביר לכניסה עם גוגל...');
-      auth.signInWithRedirect(provider).catch(function(e){
-        btn.disabled=false; btn.style.opacity='1';
-        showLoginErr('לא ניתן להתחבר עם גוגל. נסה דפדפן אחר.');
-      });
+      /* WebView — signInWithRedirect שובר את ה-sessionStorage של Firebase.
+         הפתרון: פתח את האתר בדפדפן חיצוני אמיתי שבו Popup עובד כרגיל. */
+      btn.disabled=false; btn.style.opacity='1';
+
+      /* הצג הסבר קצר למשתמש */
+      showLoginErr('');
+      var el = $('login-err');
+      el.style.color = 'var(--cyan)';
+      el.innerHTML =
+        '<div style="font-size:13px;font-weight:700;margin-bottom:10px;line-height:1.5;">' +
+          '⚠️ כניסה עם גוגל דרך האפליקציה מוגבלת.<br>' +
+          'לחץ על הכפתור למטה כדי להיכנס דרך הדפדפן:' +
+        '</div>' +
+        '<a href="' + window.location.href + '" target="_blank" ' +
+          'style="display:block;width:100%;padding:13px;border-radius:13px;' +
+          'background:linear-gradient(135deg,#00E5FF,#00BFFF);' +
+          'color:#04070E;font-family:\'Syne\',sans-serif;font-size:14px;font-weight:800;' +
+          'text-align:center;text-decoration:none;box-sizing:border-box;">' +
+          '🌐 פתח באתר / דפדפן' +
+        '</a>';
+      show('login-err');
       return;
     }
 
