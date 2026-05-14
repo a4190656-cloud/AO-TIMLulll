@@ -3363,13 +3363,12 @@ window.deletePhoneIdx = function(i) {
       btn.disabled=false; btn.style.opacity='1';
     }).catch(function(e){
       if(e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request'){
-        /* Popup blocked — fall back to redirect (works on Netfree, mobile, etc.) */
-        auth.signInWithRedirect(provider).catch(function(e2){
-          btn.disabled=false; btn.style.opacity='1';
-          showLoginErr('לא ניתן לפתוח חלון כניסה. נסה דפדפן אחר.');
-        });
+        /* Popup blocked — do NOT use signInWithRedirect (breaks sessionStorage).
+           Re-enable button so user can try again. */
         btn.disabled=false; btn.style.opacity='1';
-        showLoginOk('מעביר לכניסה עם גוגל...');
+        if(e.code === 'auth/popup-blocked'){
+          showLoginErr('החלון נחסם על ידי הדפדפן. אפשר חלונות קופצים ונסה שוב.');
+        }
         return;
       }
       if(e.code === 'auth/account-exists-with-different-credential'){
