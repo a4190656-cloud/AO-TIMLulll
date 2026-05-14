@@ -3328,6 +3328,19 @@ window.deletePhoneIdx = function(i) {
   /* ── טיפול ב-token שגוגל מחזיר ב-URL hash אחרי הכניסה ── */
   (function handleOAuthCallback() {
     var hash = window.location.hash;
+
+    /* בדוק אם יש token שמור מ-Chrome (כשחזרנו מדפדפן חיצוני לאפליקציה) */
+    var savedToken = null;
+    try { savedToken = localStorage.getItem('ao_google_token'); } catch(e){}
+    if (savedToken) {
+      try { localStorage.removeItem('ao_google_token'); } catch(e){}
+      var credential = firebase.auth.GoogleAuthProvider.credential(null, savedToken);
+      auth.signInWithCredential(credential).catch(function(e) {
+        showLoginErr('שגיאה בכניסה עם גוגל. נסה שוב.');
+      });
+      return;
+    }
+
     if (!hash) return;
     var params = {};
     hash.replace(/^#/, '').split('&').forEach(function(p) {
@@ -3339,7 +3352,55 @@ window.deletePhoneIdx = function(i) {
     /* נקה את ה-hash מה-URL בלי לרענן */
     history.replaceState(null, '', window.location.pathname + window.location.search);
 
-    /* כנס ל-Firebase עם ה-access_token */
+    var ua = navigator.userAgent || '';
+    var isWebView = /wv/.test(ua)
+      || /Android.*Version\/[\d.]+.*Chrome\/[\d.]+ Mobile Safari/.test(ua)
+      || (typeof webkit !== 'undefined' && webkit && webkit.messageHandlers);
+
+    if (!isWebView) {
+      /* רצים בדפדפן חיצוני (Chrome) — שמור token ל-localStorage
+         כדי שהאפליקציה תקרא אותו כשהמשתמש חוזר */
+      try {
+        localStorage.setItem('ao_google_token', params.access_token);
+      } catch(e) {}
+
+      /* הצג מסך "חזור לאפליקציה" */
+      document.addEventListener('DOMContentLoaded', function() {
+        showReturnToAppScreen();
+      });
+      if (document.readyState !== 'loading') showReturnToAppScreen();
+
+      function showReturnToAppScreen() {
+        var overlay = document.createElement('div');
+        overlay.style.cssText =
+          'position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;' +
+          'background:#04070E;display:flex;flex-direction:column;' +
+          'align-items:center;justify-content:center;padding:30px;text-align:center;';
+        overlay.innerHTML =
+          '<div style="font-size:52px;margin-bottom:20px;">✅</div>' +
+          '<div style="font-family:\'Syne\',sans-serif;font-size:22px;font-weight:800;' +
+            'color:#fff;margin-bottom:12px;">הכניסה הצליחה!</div>' +
+          '<div style="font-family:\'Syne\',sans-serif;font-size:14px;' +
+            'color:rgba(255,255,255,0.55);margin-bottom:32px;line-height:1.7;">' +
+            'חזור לאפליקציה —<br>תהיה מחובר אוטומטית.' +
+          '</div>' +
+          '<a href="intent://ao#Intent;scheme=com.mycompany;package=com.mycompany.ao;end" ' +
+            'style="display:block;width:100%;max-width:300px;padding:16px;border-radius:14px;' +
+            'background:linear-gradient(135deg,#00E5FF,#00BFFF);' +
+            'color:#04070E;font-family:\'Syne\',sans-serif;font-size:16px;font-weight:800;' +
+            'text-align:center;text-decoration:none;margin-bottom:16px;">' +
+            '📱 חזור לאפליקציה' +
+          '</a>' +
+          '<div style="font-family:\'Syne\',sans-serif;font-size:12px;' +
+            'color:rgba(255,255,255,0.3);">' +
+            'אם הכפתור לא עובד — פתח את האפליקציה ידנית.' +
+          '</div>';
+        document.body.appendChild(overlay);
+      }
+      return;
+    }
+
+    /* רצים ב-WebView — כנס ישירות */
     var credential = firebase.auth.GoogleAuthProvider.credential(null, params.access_token);
     auth.signInWithCredential(credential).catch(function(e) {
       showLoginErr('שגיאה בכניסה עם גוגל: ' + (e.message || e.code));
