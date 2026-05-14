@@ -3359,8 +3359,27 @@ window.deletePhoneIdx = function(i) {
       '&scope=' + encodeURIComponent('email profile openid') +
       '&prompt=select_account';
 
-    /* פותח בחלון חדש — עובד גם ב-Netfree וגם ב-WebView */
-    window.location.href = oauthUrl;
+    /* זיהוי WebView */
+    var ua = navigator.userAgent || '';
+    var isWebView = /wv/.test(ua)
+      || /Android.*Version\/[\d.]+.*Chrome\/[\d.]+ Mobile Safari/.test(ua)
+      || (typeof webkit !== 'undefined' && webkit && webkit.messageHandlers);
+
+    if (isWebView) {
+      /* intent:// מכריח את אנדרואיד לפתוח ב-Chrome ולא ב-WebView */
+      var intentUrl = 'intent://' +
+        'accounts.google.com/o/oauth2/v2/auth' +
+        '?client_id=' + encodeURIComponent(GOOGLE_CLIENT_ID) +
+        '&redirect_uri=' + encodeURIComponent(REDIRECT_URI) +
+        '&response_type=token' +
+        '&scope=' + encodeURIComponent('email profile openid') +
+        '&prompt=select_account' +
+        '#Intent;scheme=https;package=com.android.chrome;' +
+        'S.browser_fallback_url=' + encodeURIComponent(oauthUrl) + ';end';
+      window.location.href = intentUrl;
+    } else {
+      window.location.href = oauthUrl;
+    }
   };
 
 
