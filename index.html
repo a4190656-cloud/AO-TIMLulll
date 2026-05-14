@@ -3323,77 +3323,44 @@ window.deletePhoneIdx = function(i) {
   ══════════════════════════════════════════════ */
 
   var GOOGLE_CLIENT_ID = '53506652532-at4qsgo7pl1oags2unpc955qladic9rv.apps.googleusercontent.com';
+  var REDIRECT_URI = 'https://a4190656-cloud.github.io/AO-TIMLulll/';
 
-  function handleGoogleCredential(response) {
-    /* response.credential = ID token מגוגל */
-    var idToken = response.credential;
-    var credential = firebase.auth.GoogleAuthProvider.credential(idToken);
-    auth.signInWithCredential(credential).then(function(){
-      var gBtn = $('btn-google-login');
-      if(gBtn){ gBtn.disabled=false; gBtn.style.opacity='1'; }
-      hide('login-err');
-    }).catch(function(e){
-      var gBtn = $('btn-google-login');
-      if(gBtn){ gBtn.disabled=false; gBtn.style.opacity='1'; }
-      if(e.code === 'auth/account-exists-with-different-credential'){
-        showLoginErr('חשבון עם מייל זה כבר קיים. נסה כניסה עם אימייל וסיסמה.');
-      } else {
-        showLoginErr('שגיאה בכניסה עם גוגל: ' + (e.message || e.code));
-      }
+  /* ── טיפול ב-token שגוגל מחזיר ב-URL hash אחרי הכניסה ── */
+  (function handleOAuthCallback() {
+    var hash = window.location.hash;
+    if (!hash) return;
+    var params = {};
+    hash.replace(/^#/, '').split('&').forEach(function(p) {
+      var kv = p.split('=');
+      params[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1] || '');
     });
-  }
+    if (!params.access_token) return;
 
-  function initGoogleSignIn() {
-    if (typeof google === 'undefined' || !google.accounts) {
-      setTimeout(initGoogleSignIn, 200);
-      return;
-    }
-    google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: handleGoogleCredential,
-      auto_select: false,
-      cancel_on_tap_outside: true
+    /* נקה את ה-hash מה-URL בלי לרענן */
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+
+    /* כנס ל-Firebase עם ה-access_token */
+    var credential = firebase.auth.GoogleAuthProvider.credential(null, params.access_token);
+    auth.signInWithCredential(credential).catch(function(e) {
+      showLoginErr('שגיאה בכניסה עם גוגל: ' + (e.message || e.code));
     });
-  }
-  initGoogleSignIn();
+  })();
 
   $('btn-google-login').onclick = function(){
     var btn = this;
     btn.disabled = true;
     btn.style.opacity = '0.6';
 
-    if (typeof google === 'undefined' || !google.accounts) {
-      btn.disabled=false; btn.style.opacity='1';
-      showLoginErr('שירות גוגל לא נטען. רענן את הדף ונסה שוב.');
-      return;
-    }
+    /* בונה את ה-OAuth URL של גוגל ישירות — ללא שום ספרייה חיצונית */
+    var oauthUrl = 'https://accounts.google.com/o/oauth2/v2/auth' +
+      '?client_id=' + encodeURIComponent(GOOGLE_CLIENT_ID) +
+      '&redirect_uri=' + encodeURIComponent(REDIRECT_URI) +
+      '&response_type=token' +
+      '&scope=' + encodeURIComponent('email profile openid') +
+      '&prompt=select_account';
 
-    google.accounts.id.prompt(function(notification) {
-      btn.disabled=false; btn.style.opacity='1';
-      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-        /* One Tap לא הציג — נפתח את ה-account picker ידנית */
-        google.accounts.id.renderButton(
-          document.createElement('div'),
-          { theme: 'outline', size: 'large' }
-        );
-        /* fallback: פתח popup ישירות */
-        var tokenClient = google.accounts.oauth2.initTokenClient({
-          client_id: GOOGLE_CLIENT_ID,
-          scope: 'email profile openid',
-          callback: function(tokenResponse) {
-            if (tokenResponse.error) {
-              showLoginErr('שגיאה בכניסה. נסה שוב.');
-              return;
-            }
-            var credential = firebase.auth.GoogleAuthProvider.credential(null, tokenResponse.access_token);
-            auth.signInWithCredential(credential).catch(function(e){
-              showLoginErr('שגיאה בכניסה עם גוגל.');
-            });
-          }
-        });
-        tokenClient.requestAccessToken({ prompt: 'select_account' });
-      }
-    });
+    /* פותח בחלון חדש — עובד גם ב-Netfree וגם ב-WebView */
+    window.location.href = oauthUrl;
   };
 
 
