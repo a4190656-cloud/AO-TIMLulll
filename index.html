@@ -2400,7 +2400,7 @@
       <button id="btn-toggle-mode" type="button">
         <div class="cta-texts">
           <span class="cta-sub">עוד אין לך חשבון?</span>
-          <span class="cta-main">לחץ כאן לפתיחת חשבון!</span>
+          <span class="cta-main">לפתיחת חשבון — לחצו כאן!</span>
         </div>
         <div class="cta-icon-box">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -2576,39 +2576,243 @@
 </div>
 
 <div id="screen-setname" class="screen hidden">
-  <div style="width:100%;max-width:340px">
-    <div style="text-align:center;margin-bottom:26px" class="rise">
-      <div class="logo-frame" style="margin:0 auto 14px;width:74px;height:74px">
-        <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" style="width:68px;height:68px">
+  <style>
+    #screen-setname {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
+      padding: 0 20px 40px;
+      position: relative;
+    }
+    #screen-setname::before {
+      content: '';
+      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background:
+        radial-gradient(ellipse at 20% 10%, rgba(0,229,255,0.09) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 80%, rgba(100,80,255,0.07) 0%, transparent 45%);
+    }
+
+    .setname-hero {
+      width: 100%; max-width: 390px;
+      text-align: center;
+      padding-top: 56px; padding-bottom: 28px;
+    }
+    .setname-logo-ring {
+      position: relative; width: 88px; height: 88px;
+      margin: 0 auto 18px;
+    }
+    .setname-logo-ring::before {
+      content: '';
+      position: absolute; inset: -5px; border-radius: 24px;
+      background: conic-gradient(from 0deg, rgba(0,229,255,0) 0%, rgba(0,229,255,0.50) 45%, rgba(120,100,255,0.50) 65%, rgba(0,229,255,0) 100%);
+      animation: logoRingSpin 4s linear infinite;
+      mask: radial-gradient(farthest-side, transparent calc(100% - 1.5px), white calc(100% - 1.5px));
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 1.5px), white calc(100% - 1.5px));
+    }
+    .setname-logo-inner {
+      position: relative; z-index: 1;
+      width: 88px; height: 88px; border-radius: 22px; overflow: hidden;
+      box-shadow: 0 8px 36px rgba(0,0,0,0.60), 0 0 0 1px rgba(0,229,255,0.14), inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+    .setname-logo-inner img { width:100%; height:100%; object-fit:cover; display:block; }
+
+    .setname-welcome {
+      font-size: 28px; font-weight: 900; letter-spacing: -0.6px;
+      background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.72) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 6px;
+    }
+    .setname-sub { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.38); }
+
+    .setname-card {
+      width: 100%; max-width: 390px;
+      background: linear-gradient(160deg, rgba(12,18,38,0.92), rgba(5,8,20,0.96));
+      backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 26px; padding: 24px 22px 22px;
+      position: relative; overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(0,229,255,0.05), 0 20px 56px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.07);
+      animation: loginCardIn 0.55s var(--spring) both;
+    }
+    .setname-card::before {
+      content: ''; position: absolute; top:0; left:12%; right:12%; height:1px;
+      background: linear-gradient(90deg, transparent, rgba(0,229,255,0.60), rgba(100,80,255,0.40), transparent);
+    }
+
+    /* ── כרטיס סנכרון ── */
+    @keyframes syncPulse {
+      0%,100% { border-color: rgba(100,80,255,0.22); box-shadow: 0 4px 20px rgba(0,0,0,0.30); }
+      50%      { border-color: rgba(100,80,255,0.45); box-shadow: 0 6px 28px rgba(100,80,255,0.14); }
+    }
+    @keyframes syncIconSpin {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes syncDot {
+      0%,100% { opacity: 0.3; transform: scale(0.8); }
+      50%      { opacity: 1;   transform: scale(1.2); }
+    }
+
+    .sync-card {
+      width: 100%; max-width: 390px;
+      margin-top: 12px;
+      background: linear-gradient(135deg, rgba(80,60,200,0.09) 0%, rgba(0,180,255,0.06) 100%);
+      border: 1px solid rgba(100,80,255,0.24);
+      border-radius: 20px; padding: 16px 18px;
+      position: relative; overflow: hidden;
+      animation: loginCardIn 0.6s var(--spring) 0.1s both, syncPulse 3.8s ease-in-out infinite;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .sync-card::before {
+      content: ''; position: absolute; top:0; left:10%; right:10%; height:1px;
+      background: linear-gradient(90deg, transparent, rgba(120,100,255,0.55), rgba(0,229,255,0.35), transparent);
+    }
+
+    .sync-top-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .sync-icon-box {
+      width: 40px; height: 40px; flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(100,80,255,0.22), rgba(0,180,255,0.12));
+      border: 1px solid rgba(100,80,255,0.35);
+      border-radius: 13px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 18px rgba(100,80,255,0.25);
+    }
+    .sync-icon-svg { animation: syncIconSpin 5s linear infinite; }
+    .sync-title-col { flex: 1; }
+    .sync-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: linear-gradient(135deg, rgba(100,80,255,0.20), rgba(0,180,255,0.10));
+      border: 1px solid rgba(120,100,255,0.38);
+      border-radius: 6px; padding: 2px 8px;
+      font-size: 9px; font-weight: 900; letter-spacing: 0.14em;
+      color: rgba(160,140,255,0.95); margin-bottom: 3px;
+    }
+    .sync-tag::before { content:''; width:5px; height:5px; border-radius:50%; background:rgba(140,120,255,0.90); box-shadow:0 0 5px rgba(140,120,255,0.80); animation: betaTagPulse 2s ease-in-out infinite; }
+    .sync-headline { font-size: 14px; font-weight: 900; color: rgba(255,255,255,0.90); letter-spacing: -0.2px; display: block; }
+
+    .sync-features { display: flex; flex-direction: column; gap: 8px; }
+    .sync-feature-row { display: flex; align-items: center; gap: 10px; }
+    .sync-feature-dot {
+      width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, #7B61FF, #00B4FF);
+      box-shadow: 0 0 8px rgba(120,100,255,0.55);
+    }
+    .sync-feature-dot:nth-child(1) { animation: syncDot 2.0s ease-in-out infinite; }
+    .sync-feature-dot:nth-child(2) { animation: syncDot 2.0s ease-in-out 0.4s infinite; }
+    .sync-feature-dot:nth-child(3) { animation: syncDot 2.0s ease-in-out 0.8s infinite; }
+    .sync-feature-text { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.60); }
+    .sync-feature-text strong { color: rgba(180,165,255,0.90); font-weight: 900; }
+
+    .sync-devices-row {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 14px; padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .sync-device {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.45);
+    }
+    .sync-device-icon { font-size: 18px; }
+    .sync-device-arrow { color: rgba(120,100,255,0.55); flex-shrink: 0; }
+    .sync-free-badge {
+      display: flex; align-items: center; gap: 5px;
+      background: linear-gradient(135deg, rgba(0,229,255,0.10), rgba(100,80,255,0.06));
+      border: 1px solid rgba(0,229,255,0.22);
+      border-radius: 10px; padding: 6px 12px;
+      margin-top: 12px;
+      font-size: 11px; font-weight: 800;
+      color: rgba(0,229,255,0.85);
+      justify-content: center;
+    }
+  </style>
+
+  <div class="setname-hero rise">
+    <div class="setname-logo-ring">
+      <div class="setname-logo-inner">
+        <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" alt="AO Budget">
       </div>
-      <h1 style="font-size:21px;font-weight:800">ברוך הבא!</h1>
-      <p style="color:var(--muted);font-size:13px;margin-top:5px">איך לקרוא לך?</p>
     </div>
-    <div class="card rise d1" style="padding:22px">
-      <input id="setname-input" class="inp" type="text" placeholder="השם שלך" autocomplete="name" style="margin-bottom:11px">
-      <div id="setname-err" class="err hidden"></div>
-      <button id="btn-setname" class="btn btn-cyan">המשך לחשבון</button>
+    <h1 class="setname-welcome">ברוך הבא! 👋</h1>
+    <p class="setname-sub">רק שם אחד ואתם בפנים</p>
+  </div>
+
+  <div class="setname-card rise d1">
+    <div class="login-section-label">השם שלכם</div>
+    <input id="setname-input" class="inp-2026" type="text" placeholder="איך לקרוא לך?" autocomplete="name" style="margin-bottom:12px">
+    <div id="setname-err" class="err hidden" style="margin-bottom:10px;font-size:12px;font-weight:700;"></div>
+    <button id="btn-setname" class="btn-login-primary">המשך לחשבון →</button>
+  </div>
+
+  <!-- כרטיס סנכרון -->
+  <div class="sync-card rise d2">
+    <div class="sync-top-row">
+      <div class="sync-icon-box">
+        <svg class="sync-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(140,120,255,0.90)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6"/><path d="M2.5 12a10 10 0 0 1 17.5-7l1.5 1.5"/><path d="M2.5 22v-6h6"/><path d="M21.5 12a10 10 0 0 1-17.5 7l-1.5-1.5"/></svg>
+      </div>
+      <div class="sync-title-col">
+        <div class="sync-tag">∞ UNLIMITED</div>
+        <span class="sync-headline">סנכרון מלא בין כל המכשירים</span>
+      </div>
+    </div>
+
+    <div class="sync-features">
+      <div class="sync-feature-row">
+        <div class="sync-feature-dot"></div>
+        <div class="sync-feature-text">הנתונים שלכם <strong>מתעדכנים בזמן אמת</strong> בכל מקום</div>
+      </div>
+      <div class="sync-feature-row">
+        <div class="sync-feature-dot"></div>
+        <div class="sync-feature-text"><strong>אפליקציה, דפדפן, מחשב, טאבלט</strong> — הכל מסונכרן</div>
+      </div>
+      <div class="sync-feature-row">
+        <div class="sync-feature-dot"></div>
+        <div class="sync-feature-text">ללא הגבלת מכשירים — <strong>ללא תשלום נוסף</strong></div>
+      </div>
+    </div>
+
+    <div class="sync-devices-row">
+      <div class="sync-device"><span class="sync-device-icon">📱</span>טלפון</div>
+      <svg class="sync-device-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
+      <div class="sync-device"><span class="sync-device-icon">💻</span>מחשב</div>
+      <svg class="sync-device-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
+      <div class="sync-device"><span class="sync-device-icon">📟</span>טאבלט</div>
+    </div>
+
+    <div class="sync-free-badge">
+      ✦ &nbsp; חינמי לחלוטין — ללא הגבלה &nbsp; ✦
     </div>
   </div>
+
 </div>
 
 <div id="app" class="hidden">
 
   <div id="ticker-wrap"><div id="ticker-inner"></div></div>
 
-  <!-- ✦ BETA BANNER 2026 ✦ -->
+  <!-- ✦ BETA BANNER → BUBBLE 2026 ✦ -->
   <style>
-    @keyframes betaBannerGlow {
-      0%,100% { border-color: rgba(255,180,0,0.22); box-shadow: 0 0 0 0 rgba(255,160,0,0); }
-      50%      { border-color: rgba(255,180,0,0.45); box-shadow: 0 4px 24px rgba(255,160,0,0.12); }
+    @keyframes bubbleIn {
+      0%   { transform: scale(0) rotate(-20deg); opacity:0; }
+      60%  { transform: scale(1.15) rotate(4deg); opacity:1; }
+      80%  { transform: scale(0.92) rotate(-2deg); }
+      100% { transform: scale(1) rotate(0deg); opacity:1; }
     }
-    @keyframes betaTagPulse {
-      0%,100% { opacity: 1; }
-      50%      { opacity: 0.60; }
+    @keyframes bubblePop {
+      0%,100% { box-shadow: 0 0 0 0 rgba(255,160,0,0.0), 0 6px 24px rgba(0,0,0,0.5); }
+      50%      { box-shadow: 0 0 0 8px rgba(255,160,0,0.10), 0 6px 24px rgba(0,0,0,0.5); }
     }
-    @keyframes betaShimmer {
-      0%   { transform: translateX(120%); }
-      100% { transform: translateX(-120%); }
+    @keyframes bubbleDot {
+      0%,100% { transform: scale(1); opacity:1; }
+      50%      { transform: scale(1.5); opacity:0.7; }
+    }
+    @keyframes bannerCollapse {
+      0%   { opacity:1; transform:scale(1); max-height:80px; margin-bottom:0; }
+      40%  { opacity:0; transform:scale(0.85) translateY(-8px); }
+      100% { opacity:0; transform:scale(0.7); max-height:0; margin:0; padding:0; overflow:hidden; }
     }
 
     #beta-banner {
@@ -2624,8 +2828,7 @@
       -webkit-tap-highlight-color: transparent;
     }
     #beta-banner::before {
-      content: '';
-      position: absolute; top: 0; left: 6%; right: 6%; height: 1px;
+      content: ''; position: absolute; top: 0; left: 6%; right: 6%; height: 1px;
       background: linear-gradient(90deg, transparent, rgba(255,180,0,0.55), transparent);
     }
     #beta-banner .beta-shimmer {
@@ -2635,47 +2838,126 @@
     }
     #beta-banner:hover  { transform: translateY(-1px); background: linear-gradient(135deg, rgba(255,150,0,0.12), rgba(255,80,0,0.08)); }
     #beta-banner:active { transform: scale(0.98); }
+    #beta-banner.collapsing {
+      animation: bannerCollapse 0.55s cubic-bezier(0.4,0,0.2,1) forwards !important;
+      pointer-events: none;
+    }
 
-    .beta-icon-box {
-      width: 38px; height: 38px; flex-shrink: 0;
-      background: linear-gradient(135deg, rgba(255,160,0,0.20), rgba(255,100,0,0.10));
-      border: 1px solid rgba(255,160,0,0.38);
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; line-height: 1;
-      box-shadow: 0 0 16px rgba(255,150,0,0.22);
-    }
-    .beta-texts { flex: 1; }
-    .beta-tag {
-      display: inline-flex; align-items: center; gap: 4px;
-      background: linear-gradient(135deg, rgba(255,160,0,0.22), rgba(255,100,0,0.12));
-      border: 1px solid rgba(255,160,0,0.40);
-      border-radius: 6px; padding: 2px 7px;
-      font-size: 9.5px; font-weight: 900; letter-spacing: 0.12em;
-      color: rgba(255,200,60,0.95);
-      margin-bottom: 3px;
-      animation: betaTagPulse 2.5s ease-in-out infinite;
-    }
-    .beta-tag::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: rgba(255,200,60,0.90); box-shadow: 0 0 5px rgba(255,200,60,0.8); }
-    .beta-headline {
-      font-size: 13px; font-weight: 900;
-      color: rgba(255,255,255,0.88);
-      line-height: 1.2; display: block;
-    }
-    .beta-sub {
-      font-size: 10.5px; font-weight: 600;
-      color: rgba(255,200,60,0.65);
-      margin-top: 2px; display: block;
-      letter-spacing: 0.01em;
-    }
-    .beta-chevron {
-      color: rgba(255,175,0,0.55); flex-shrink: 0;
+    /* ── עיגול צף ── */
+    #beta-bubble {
+      position: fixed;
+      top: 18px; left: 16px;
+      z-index: 8888;
+      width: 54px; height: 54px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #FF9F1C, #FF6B35);
+      border: 2px solid rgba(255,220,100,0.55);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.50), 0 0 0 0 rgba(255,160,0,0.4);
+      display: none;
+      flex-direction: column;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      animation: bubbleIn 0.6s cubic-bezier(0.34,1.4,0.64,1) both, bubblePop 2.5s ease-in-out 0.8s infinite;
+      -webkit-tap-highlight-color: transparent;
       transition: transform 0.18s var(--spring);
     }
-    #beta-banner:hover .beta-chevron { transform: translateX(-3px); }
+    #beta-bubble.show { display: flex; }
+    #beta-bubble:hover  { transform: scale(1.10); }
+    #beta-bubble:active { transform: scale(0.93); }
 
-    /* ── מודאל דיווח ── */
-    #bug-modal-overlay {
+    /* נקודה חיה */
+    #beta-bubble::after {
+      content: '';
+      position: absolute; top: 2px; right: 2px;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 6px rgba(255,255,255,0.8);
+      animation: bubbleDot 1.8s ease-in-out infinite;
+    }
+
+    .bubble-emoji { font-size: 22px; line-height: 1; }
+    .bubble-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 6.5px; font-weight: 900;
+      color: rgba(255,255,255,0.90);
+      letter-spacing: 0.04em;
+      text-align: center; margin-top: 2px;
+      line-height: 1.2;
+    }
+
+    /* טולטיפ על הבועה */
+    #beta-bubble-tip {
+      position: fixed;
+      top: 80px; left: 10px;
+      background: linear-gradient(135deg, rgba(10,16,38,0.98), rgba(4,8,20,0.99));
+      border: 1px solid rgba(255,175,0,0.35);
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-family: 'Syne', sans-serif;
+      font-size: 12px; font-weight: 700;
+      color: rgba(255,220,80,0.92);
+      white-space: nowrap;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.55);
+      pointer-events: none;
+      opacity: 0; transform: translateY(-6px) scale(0.92);
+      transition: opacity 0.22s ease, transform 0.22s ease;
+      z-index: 8887;
+    }
+    #beta-bubble-tip::before {
+      content: '▲';
+      position: absolute; top: -10px; left: 20px;
+      font-size: 8px; color: rgba(255,175,0,0.40);
+    }
+    #beta-bubble-tip.show { opacity: 1; transform: translateY(0) scale(1); }
+  </style>
+
+  <!-- הבאנר -->
+  <div id="beta-banner">
+    <span class="beta-shimmer"></span>
+    <div class="beta-icon-box">🛠️</div>
+    <div class="beta-texts">
+      <span class="beta-tag">BETA</span>
+      <span class="beta-headline">האפליקציה בשלבי פיתוח</span>
+      <span class="beta-sub">נתקלתם בתקלה? לחצו לדיווח →</span>
+    </div>
+    <svg class="beta-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </div>
+
+  <!-- העיגול הצף -->
+  <div id="beta-bubble">
+    <span class="bubble-emoji">🛠️</span>
+    <span class="bubble-label">לחצו<br>לתקלה</span>
+  </div>
+  <div id="beta-bubble-tip">לחצו עלי לכל תקלה!</div>
+
+  <script>
+  (function(){
+    const banner = document.getElementById('beta-banner');
+    const bubble = document.getElementById('beta-bubble');
+    const tip    = document.getElementById('beta-bubble-tip');
+
+    function openModal(){ document.getElementById('bug-modal-overlay').classList.add('open'); }
+
+    banner.addEventListener('click', openModal);
+    bubble.addEventListener('click', openModal);
+
+    // טולטיפ על הבועה — מציג 3 שניות בהופעה
+    bubble.addEventListener('mouseenter', () => tip.classList.add('show'));
+    bubble.addEventListener('mouseleave', () => tip.classList.remove('show'));
+
+    // אחרי 20 שניות — אנימציה והצגת בועה
+    setTimeout(() => {
+      banner.classList.add('collapsing');
+      setTimeout(() => {
+        banner.style.display = 'none';
+        bubble.classList.add('show');
+        // טולטיפ אוטומטי ל-3 שניות בהופעה
+        tip.classList.add('show');
+        setTimeout(() => tip.classList.remove('show'), 3000);
+      }, 560);
+    }, 20000);
+  })();
+  </script>
       position: fixed; inset: 0; z-index: 9999;
       background: rgba(0,0,0,0.72);
       backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
@@ -2816,17 +3098,6 @@
     .bug-modal-close:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.75); }
   </style>
 
-  <!-- הבאנר -->
-  <div id="beta-banner" onclick="document.getElementById('bug-modal-overlay').classList.add('open')">
-    <span class="beta-shimmer"></span>
-    <div class="beta-icon-box">🛠️</div>
-    <div class="beta-texts">
-      <span class="beta-tag">BETA</span>
-      <span class="beta-headline">האפליקציה בשלבי פיתוח</span>
-      <span class="beta-sub">נתקלתם בתקלה? לחצו לדיווח →</span>
-    </div>
-    <svg class="beta-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-  </div>
 
   <!-- מודאל דיווח -->
   <div id="bug-modal-overlay" onclick="if(event.target===this)this.classList.remove('open')">
