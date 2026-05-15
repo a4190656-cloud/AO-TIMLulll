@@ -3,304 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AO Budget | תנאי שימוש ופרטיות</title>
+    <title>AO Budget | תנאי שימוש ומדיניות פרטיות</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;600;700;800&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-light: #60a5fa;
-            --bg-dark: #0f172a;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --primary: #00e5ff;
+            --primary-dark: #00bfff;
+            --bg-dark: #020617;
+            --card-bg: rgba(15, 23, 42, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
         }
 
         body {
-            font-family: 'Assistant', 'Inter', sans-serif;
-            background-color: #020617;
+            font-family: 'Assistant', sans-serif;
+            background-color: var(--bg-dark);
+            color: #f1f5f9;
             background-image: 
-                radial-gradient(circle at 0% 0%, rgba(37, 99, 235, 0.15) 0%, transparent 25%),
-                radial-gradient(circle at 100% 100%, rgba(37, 99, 235, 0.1) 0%, transparent 25%);
-            background-attachment: fixed;
-            color: #f8fafc;
-            line-height: 1.7;
+                radial-gradient(circle at 0% 0%, rgba(0, 229, 255, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(0, 191, 255, 0.03) 0%, transparent 50%);
+            line-height: 1.6;
         }
 
         .glass-card {
-            background: rgba(15, 23, 42, 0.6);
+            background: var(--card-bg);
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
             border-radius: 24px;
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
         }
 
-        .section-number {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
+        .section-title {
+            color: var(--primary);
+            border-right: 4px solid var(--primary);
+            padding-right: 15px;
+            margin-bottom: 20px;
         }
 
-        .sticky-nav {
-            position: sticky;
-            top: 2rem;
+        h1, h2, h3 { font-family: 'Assistant', sans-serif; font-weight: 800; }
+        
+        .nav-link {
+            transition: all 0.3s ease;
         }
-
-        /* עיצוב גלילה */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0f172a;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #475569;
+        .nav-link:hover {
+            color: var(--primary);
+            transform: translateY(-1px);
         }
 
         @media print {
-            body { background: white; color: black; }
             .no-print { display: none; }
-            .glass-card { border: none; box-shadow: none; backdrop-filter: none; }
+            body { background: white; color: black; }
+            .glass-card { border: none; box-shadow: none; }
         }
     </style>
 </head>
-<body class="antialiased selection:bg-blue-500/30">
+<body class="min-h-screen">
 
-    <nav class="p-6 border-b border-white/5 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-lg shadow-blue-500/20">AO</div>
-                <span class="text-xl font-extrabold tracking-tight">Budget</span>
+    <header class="no-print sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" alt="AO Logo" class="w-10 h-10 rounded-xl border border-white/10 shadow-lg">
+                <span class="text-xl font-black tracking-tight">AO <span class="text-cyan-400">BUDGET</span></span>
             </div>
-            <div class="hidden md:flex gap-6 text-sm font-medium text-slate-400">
-                <a href="#section-1" class="hover:text-blue-400 transition-colors">פרטיות</a>
-                <a href="#section-3" class="hover:text-blue-400 transition-colors">תנאי שימוש</a>
-                <a href="#section-7" class="hover:text-blue-400 transition-colors">צור קשר</a>
-            </div>
-            <button onclick="window.print()" class="no-print bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full text-sm font-semibold transition-all border border-white/10">
-                הדפסת מסמך
-            </button>
-        </div>
-    </nav>
-
-    <header class="py-16 px-6 text-center">
-        <div class="max-w-3xl mx-auto">
-            <h1 class="text-4xl md:text-6xl font-black mb-6 bg-gradient-to-r from-white via-white to-blue-400 bg-clip-text text-transparent italic">
-                תנאי שימוש ומדיניות פרטיות
-            </h1>
-            <p class="text-slate-400 text-lg">
-                AO Budget – AO Digital Services
-            </p>
-            <div class="mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium">
-                <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                עדכון אחרון: מאי 2026
-            </div>
+            <nav class="hidden md:flex gap-8 text-sm font-bold text-slate-400 uppercase tracking-widest">
+                <a href="index.html" class="nav-link">דף הבית</a>
+                <a href="#privacy" class="nav-link text-white">פרטיות</a>
+                <a href="#terms" class="nav-link text-white">תנאים</a>
+            </nav>
+            <button onclick="window.print()" class="text-xs bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full border border-white/10 transition-all font-bold">הדפס מסמך</button>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-6 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-12">
+    <main class="container mx-auto px-6 py-12 max-w-4xl">
         
-        <aside class="hidden lg:block lg:col-span-3 no-print">
-            <div class="sticky-nav space-y-4">
-                <h3 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-6">ניווט מהיר</h3>
-                <nav class="flex flex-col gap-1 border-r border-white/10 pr-4">
-                    <a href="#intro" class="py-2 hover:text-blue-400 transition-colors">הסכם משפטי</a>
-                    <a href="#section-1" class="py-2 hover:text-blue-400 transition-colors">1. איסוף מידע ופרטיות</a>
-                    <a href="#section-2" class="py-2 hover:text-blue-400 transition-colors">2. אבטחת מידע</a>
-                    <a href="#section-3" class="py-2 hover:text-blue-400 transition-colors">3. אחריות המשתמש</a>
-                    <a href="#section-4" class="py-2 hover:text-blue-400 transition-colors">4. קניין רוחני</a>
-                    <a href="#section-5" class="py-2 hover:text-blue-400 transition-colors">5. מחיקת נתונים</a>
-                    <a href="#section-7" class="py-2 hover:text-blue-400 transition-colors">7. תמיכה ויצירת קשר</a>
-                </nav>
-            </div>
-        </aside>
+        <div class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl mb-4 bg-gradient-to-l from-white to-slate-400 bg-clip-text text-transparent">תנאי שימוש ומדיניות פרטיות</h1>
+            <p class="text-slate-400 font-medium">עודכן לאחרונה: 15 במאי, 2026</p>
+        </div>
 
-        <div class="lg:col-span-9 space-y-8">
-            
-            <div id="intro" class="glass-card p-8 md:p-12">
-                <p class="text-lg md:text-xl text-slate-300 leading-relaxed font-light">
-                    מסמך זה מהווה <span class="text-white font-bold underline decoration-blue-500 underline-offset-4">הסכם משפטי מחייב</span> בין המשתמש (להלן: "המשתמש" או "אתה") לבין <strong>AO Digital Services</strong> בבעלות אהרון אורבך (להלן: "המפתח"). 
-                    <br><br>
-                    השימוש באפליקציית <strong>AO Budget</strong> (להלן: "האפליקציה") מהווה הסכמה מלאה ובלתי מסויגת לכל התנאים המפורטים להלן.
-                </p>
-            </div>
-
-            <section id="section-1" class="glass-card p-8 md:p-12 scroll-mt-24">
-                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
-                    <span class="section-number text-4xl">01</span>
-                    איסוף מידע ופרטיות (Privacy Policy)
-                </h2>
-                <div class="space-y-6 text-slate-400">
-                    <p>בהתאם לסעיף 4.8 להסכם ההפצה של גוגל, אנו מגנים על פרטיותך ומפרטים את המידע שנאסף:</p>
-                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <li class="bg-white/5 p-4 rounded-2xl border border-white/5">
-                            <strong class="text-white block mb-1">מידע מזהה:</strong>
-                            כתובת אימייל, שם מלא ותמונת פרופיל לצורך ניהול חשבון ואימות.
-                        </li>
-                        <li class="bg-white/5 p-4 rounded-2xl border border-white/5">
-                            <strong class="text-white block mb-1">נתונים פיננסיים:</strong>
-                            כל נתוני ההוצאות, ההכנסות והתקציבים נשמרים בבטחה ב-Google Firebase.
-                        </li>
-                        <li class="bg-white/5 p-4 rounded-2xl border border-white/5">
-                            <strong class="text-white block mb-1">מספרי טלפון:</strong>
-                            לצורך זיהוי ואימות מול שירותי בוט ה-WhatsApp של האפליקציה בלבד.
-                        </li>
-                        <li class="bg-white/5 p-4 rounded-2xl border border-white/5">
-                            <strong class="text-white block mb-1">סריקת מסמכים ו-AI:</strong>
-                            עיבוד זמני ב-Cloudflare Workers. התמונות אינן נשמרות לאחר הפעולה.
-                        </li>
-                    </ul>
-                    <div class="mt-4 p-4 rounded-xl bg-blue-500/5 border border-blue-500/10 text-sm italic">
-                        <strong class="text-blue-400">הרשאות מכשיר:</strong> האפליקציה עושה שימוש במצלמה ובגלריה אך ורק לצורך העלאת תמונות פרופיל וסריקת קבלות.
-                    </div>
-                </div>
-            </section>
-
-            <section id="section-2" class="glass-card p-8 md:p-12 scroll-mt-24">
-                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
-                    <span class="section-number text-4xl">02</span>
-                    אבטחת מידע
-                </h2>
-                <div class="space-y-4 text-slate-400">
-                    <p>כל המידע המועבר בין המכשיר לשרתים מוצפן באמצעות פרוטוקולי אבטחה מתקדמים (<span class="text-white font-mono">SSL/TLS</span>).</p>
-                    <p class="flex items-center gap-2 text-green-400">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>
-                        המפתח אינו משתף, מוכר או מעביר מידע אישי או פיננסי לצדדים שלישיים למטרות פרסום.
+        <section id="privacy" class="mb-20 scroll-mt-24">
+            <div class="glass-card p-8 md:p-12 shadow-2xl">
+                <h2 class="section-title text-2xl uppercase tracking-tighter">מדיניות פרטיות</h2>
+                
+                <div class="space-y-8 text-slate-300">
+                    <p>
+                        ברוכים הבאים ל-<strong>AO Budget</strong>. פרטיותך והביטחון הפיננסי שלך הם בראש סדר העדיפויות שלנו. מסמך זה מפרט כיצד אנו אוספים ומעבדים את המידע שלך במסגרת השימוש באפליקציה ובשירותי AO Digital.
                     </p>
-                </div>
-            </section>
 
-            <section id="section-3" class="glass-card p-8 md:p-12 scroll-mt-24">
-                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
-                    <span class="section-number text-4xl">03</span>
-                    אחריות ושימוש בשירות (Terms of Use)
-                </h2>
-                <div class="space-y-6">
-                    <div class="border-r-4 border-blue-500 pr-6">
-                        <h4 class="text-white font-bold mb-2">אחריות המשתמש</h4>
-                        <p class="text-slate-400">אתה האחראי הבלעדי לדיוק הנתונים המוזנים ולשמירה על סודיות פרטי הגישה לחשבונך.</p>
+                    <div>
+                        <h3 class="text-white text-lg mb-3">1. איסוף ועיבוד מספרי טלפון ושירות הבוט (WhatsApp)</h3>
+                        <p>
+                            האפליקציה מאפשרת לקשר מספרי טלפון לצורך זיהוי ושימוש בבוט הייעודי ב-WhatsApp. מספרי הטלפון נשמרים בצורה מאובטחת במסד הנתונים ומיועדים אך ורק לאימות המשתמש בעת שליחת תנועות פיננסיות מהבוט לחשבון. בעת שליחת הודעה, המערכת מעבדת את תוכן ההודעה (סכום ותיאור) לצורך הזנה אוטומטית בלבד.
+                        </p>
                     </div>
-                    <div class="border-r-4 border-slate-700 pr-6">
-                        <h4 class="text-white font-bold mb-2">הגבלת אחריות</h4>
-                        <p class="text-slate-400">האפליקציה מסופקת <span class="italic font-bold">"כפי שהיא" (As-Is)</span>. המפתח או חברת Google לא יישאו באחריות לכל נזק, ישיר או עקיף.</p>
+
+                    <div>
+                        <h3 class="text-white text-lg mb-3">2. עיבוד מסמכים ושימוש בבינה מלאכותית (AI)</h3>
+                        <p>
+                            במסגרת תכונת "סריקת קבלות", קבצים ותמונות המועלים על ידך נשלחים לעיבוד טכנולוגי בשרתים מאובטחים (באמצעות Cloudflare Worker) לצורך חילוץ נתונים על ידי מודלי AI. התמונות אינן נשמרות לאחר סיום הפענוח, והן משמשות נקודתית בלבד להמרת התמונה לנתון מספרי בחשבונך.
+                        </p>
                     </div>
-                    <div class="bg-amber-500/10 border border-amber-500/20 p-6 rounded-2xl">
-                        <h4 class="text-amber-400 font-bold mb-2 flex items-center gap-2">
-                            ⚠️ אי קיום ייעוץ פיננסי
-                        </h4>
-                        <p class="text-amber-200/70 text-sm">
-                            המידע המוצג באפליקציה הוא כלי עזר לניהול תקציב בלבד ואינו מהווה ייעוץ פיננסי, משפטי או חשבונאי מקצועי.
+
+                    <div>
+                        <h3 class="text-white text-lg mb-3">3. אחסון בענן (Google Firebase)</h3>
+                        <p>
+                            כלל המידע האישי והפיננסי (הכנסות, הוצאות, קטגוריות ותמונת פרופיל) מאוחסן בשרתי הענן של Google Firebase. המידע מוצפן ומוגן תחת פרוטוקולי האבטחה המחמירים של חברת גוגל. האפליקציה משתמשת בתמונת פרופיל שהועלתה על ידך כנתון Base64 השמור בענן לצורך סנכרון בין מכשיריך.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-white text-lg mb-3">4. הרשאות מכשיר ומצלמה</h3>
+                        <p>
+                            לצורך סריקת מסמכים או עדכון תמונת פרופיל, האפליקציה תבקש גישה למצלמה או לגלריה. הגישה מתבצעת רק לאחר אישור ידני שלך. איננו ניגשים למידע אחר במכשיר שאינו קשור ישירות לפעולות אלו.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-white text-lg mb-3">5. שימוש ללא אינטרנט (Offline Persistence)</h3>
+                        <p>
+                            האפליקציה שומרת עותק מוצפן של נתוניך בזיכרון המקומי של המכשיר כדי לאפשר עבודה רציפה ללא חיבור לרשת. מידע זה נשאר תחת אחריותך הבלעדית ומומלץ להגן על המכשיר בסיסמה או בנעילה ביומטרית.
                         </p>
                     </div>
                 </div>
-            </section>
-
-            <section id="section-4" class="glass-card p-8 md:p-12 scroll-mt-24">
-                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
-                    <span class="section-number text-4xl">04</span>
-                    קניין רוחני
-                </h2>
-                <p class="text-slate-400 mb-4">
-                    כל זכויות הקניין רוחני באפליקציה, לרבות עיצוב, קוד מקור, סימני מסחר (AO) ותכנים, שייכים באופן בלעדי ל-<strong>AO Digital Services</strong>.
-                </p>
-                <div class="p-4 rounded-xl bg-red-500/5 border border-red-500/10 text-red-300 text-sm">
-                    חל איסור מוחלט לבצע הנדסה לאחור (Reverse Engineering), העתקה או הפצה של חלקי האפליקציה ללא אישור בכתב.
-                </div>
-            </section>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <section id="section-5" class="glass-card p-8 scroll-mt-24">
-                    <h2 class="text-xl font-bold mb-4 flex items-center gap-3">
-                        <span class="section-number text-3xl">05</span>
-                        מחיקת נתונים
-                    </h2>
-                    <p class="text-slate-400 text-sm leading-relaxed">
-                        באפשרותך למחוק את חשבונך וכל הנתונים המקושרים אליו לצמיתות בכל עת דרך תפריט ההגדרות באפליקציה.
-                    </p>
-                </section>
-
-                <section id="section-6" class="glass-card p-8 scroll-mt-24">
-                    <h2 class="text-xl font-bold mb-4 flex items-center gap-3">
-                        <span class="section-number text-3xl">06</span>
-                        שינויים ועדכונים
-                    </h2>
-                    <p class="text-slate-400 text-sm leading-relaxed">
-                        המפתח רשאי לעדכן את התנאים מעת לעת. המשך השימוש מהווה הסכמה לתנאים החדשים.
-                    </p>
-                </section>
             </div>
+        </section>
 
-            <section id="section-7" class="glass-card p-8 md:p-12 scroll-mt-24 bg-gradient-to-br from-blue-600/10 to-transparent">
-                <h2 class="text-2xl font-bold mb-8 text-center underline decoration-blue-500 decoration-4 underline-offset-8">יצירת קשר ותמיכה</h2>
-                <div class="flex flex-col items-center gap-6">
-                    <p class="text-slate-300 text-center max-w-lg">
-                        לכל שאלה, דיווח על תקלות או בקשות בנושא פרטיות, ניתן לפנות למפתח בכתובת המייל הרשמית:
-                    </p>
-                    <a href="mailto:a4190656@gmail.com" class="group relative px-8 py-4 bg-white text-slate-900 rounded-full font-bold text-lg hover:bg-blue-50 transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-blue-500/20">
-                        a4190656@gmail.com
-                        <span class="absolute -top-1 -right-1 flex h-4 w-4">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-4 w-4 bg-blue-500 border-2 border-white"></span>
-                        </span>
-                    </a>
+        <section id="terms" class="scroll-mt-24">
+            <div class="glass-card p-8 md:p-12 shadow-2xl">
+                <h2 class="section-title text-2xl uppercase tracking-tighter">תנאי שימוש</h2>
+                
+                <div class="space-y-8 text-slate-300">
+                    <div>
+                        <h3 class="text-white text-lg mb-3">1. אחריות המשתמש</h3>
+                        <p>
+                            השימוש ב-AO Budget נועד לניהול פיננסי אישי. המשתמש אחראי בלעדית על דיוק הנתונים המוזנים ועל שמירת פרטי ההתחברות שלו. כל פעולה המבוצעת ממספר טלפון שאושר על ידך בהגדרות, תיחשב כפעולה שבוצעה על ידך.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-white text-lg mb-3">2. בעלות על נתונים וייצוא</h3>
+                        <p>
+                            כל המידע שייך לך. האפליקציה מספקת כלי לייצוא מלא של התנועות לקובץ CSV. איננו עושים שימוש בנתונים הפיננסיים שלך למטרות פרסום או מכירה לצדדים שלישיים.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-white text-lg mb-3">3. מחיקת חשבון לצמיתות</h3>
+                        <p>
+                            הזכות להישכח: ניתן לבקש מחיקה מוחלטת של החשבון דרך ההגדרות. פעולה זו הינה בלתי הפיכה ותמחק את כל המידע שלך, ההיסטוריה והקישור לבוט לצמיתות ממסדי הנתונים שלנו.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-white text-lg mb-3">4. הגבלת אחריות</h3>
+                        <p>
+                            AO Budget ושירותי AO Digital מספקים כלי לניהול ומעקב בלבד. האפליקציה אינה מהווה ייעוץ פיננסי מקצועי, ואין להסתמך עליה כגורם יחיד לקבלת החלטות כלכליות. החברה אינה אחראית לכל אובדן כספי או טעות הנובעת משימוש בנתונים.
+                        </p>
+                    </div>
+
+                    <div class="bg-blue-500/10 border border-blue-500/20 p-6 rounded-2xl">
+                        <p class="text-blue-300 text-sm font-bold italic">
+                            השימוש באפליקציה, בבוט ה-WhatsApp ובשירותי הסריקה מהווה הסכמה מלאה לכל התנאים המפורטים לעיל.
+                        </p>
+                    </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-        </div>
+        <footer class="mt-20 text-center text-slate-500 text-sm font-bold">
+            <div class="flex justify-center gap-6 mb-8 no-print">
+                <a href="mailto:a4190656@gmail.com" class="hover:text-cyan-400 transition-colors">צור קשר</a>
+                <a href="index.html" class="hover:text-cyan-400 transition-colors">חזרה לאפליקציה</a>
+            </div>
+            <p>&copy; 2026 אהרון אורבך | AO Budget & Digital Services</p>
+        </footer>
     </main>
 
-    <footer class="mt-20 py-12 border-t border-white/5 bg-slate-950 text-center no-print">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col items-center gap-4">
-                <div class="flex items-center gap-2 opacity-50 grayscale hover:grayscale-0 transition-all cursor-default">
-                    <div class="w-8 h-8 bg-white text-black rounded-lg flex items-center justify-center font-bold">AO</div>
-                    <span class="font-bold">Digital Services</span>
-                </div>
-                <p class="text-slate-500 text-sm">
-                    כל הזכויות שמורות &copy; 2026 אהרון אורבך | AO Budget
-                </p>
-            </div>
-        </div>
-    </footer>
-
-    <button id="backToTop" class="no-print fixed bottom-8 left-8 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg opacity-0 pointer-events-none transition-all hover:bg-blue-500">
+    <button id="backToTop" class="no-print fixed bottom-8 left-8 w-12 h-12 bg-cyan-600 rounded-full flex items-center justify-center text-white shadow-lg opacity-0 pointer-events-none transition-all hover:bg-cyan-500">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
         </svg>
     </button>
 
     <script>
-        const backToTop = document.getElementById('backToTop');
-        
+        const btn = document.getElementById('backToTop');
         window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTop.classList.add('opacity-100', 'pointer-events-auto');
-            } else {
-                backToTop.classList.remove('opacity-100', 'pointer-events-auto');
-            }
+            if (window.pageYOffset > 300) btn.classList.add('opacity-100', 'pointer-events-auto');
+            else btn.classList.remove('opacity-100', 'pointer-events-auto');
         });
-
-        backToTop.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // גלילה חלקה לקישורים פנימיים
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
+        btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
     </script>
 </body>
 </html>
