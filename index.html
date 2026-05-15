@@ -1855,125 +1855,676 @@
   </script>
 </div>
 
+<style>
+/* ══════════════════════════════════════════════
+   ✦  LOGIN SCREEN 2026 — PREMIUM REDESIGN  ✦
+══════════════════════════════════════════════ */
+
+/* ── רקע המסך עם particles ── */
+#screen-login {
+  position: relative;
+  overflow: hidden;
+  padding: 28px 20px 40px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── particles אנימציה ── */
+#login-particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.lp {
+  position: absolute;
+  border-radius: 50%;
+  animation: lpFloat linear infinite;
+  opacity: 0;
+}
+@keyframes lpFloat {
+  0%   { transform: translateY(110vh) scale(0);  opacity: 0; }
+  5%   { opacity: 1; }
+  95%  { opacity: 0.6; }
+  100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+}
+
+/* ── wrapper ── */
+#login-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ── לוגו וכותרת ── */
+#login-hero {
+  text-align: center;
+  animation: loginHeroIn 0.7s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes loginHeroIn {
+  0%  { opacity:0; transform: translateY(-20px) scale(0.92); }
+  100%{ opacity:1; transform: translateY(0) scale(1); }
+}
+
+/* logo ring glow */
+.login-logo-ring {
+  position: relative;
+  width: 92px; height: 92px;
+  margin: 0 auto 18px;
+  display: flex; align-items: center; justify-content: center;
+}
+.login-logo-ring::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 28px;
+  background: conic-gradient(
+    from 0deg,
+    rgba(0,229,255,0) 0%,
+    rgba(0,229,255,0.6) 25%,
+    rgba(0,183,255,0.3) 50%,
+    rgba(0,229,255,0) 75%
+  );
+  animation: logoRingSpin 4s linear infinite;
+  filter: blur(1px);
+}
+.login-logo-ring::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 25px;
+  background: var(--bg);
+}
+@keyframes logoRingSpin { to { transform: rotate(360deg); } }
+.login-logo-img {
+  position: relative;
+  z-index: 1;
+  width: 80px; height: 80px;
+  border-radius: 22px;
+  object-fit: cover;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,229,255,0.15);
+}
+
+.login-title {
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -0.6px;
+  background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.75) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 5px;
+}
+.login-subtitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.38);
+  letter-spacing: 0.02em;
+}
+
+/* ── כרטיס הטופס ── */
+#login-card {
+  width: 100%;
+  background: linear-gradient(160deg, rgba(10,16,34,0.92) 0%, rgba(4,7,18,0.96) 100%);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(0,229,255,0.14);
+  border-radius: 26px;
+  padding: 26px 22px 22px;
+  box-shadow:
+    0 0 0 1px rgba(0,229,255,0.05),
+    0 24px 60px rgba(0,0,0,0.6),
+    0 8px 20px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  position: relative;
+  overflow: hidden;
+  animation: loginCardIn 0.65s cubic-bezier(0.16,1,0.3,1) 0.1s both;
+}
+@keyframes loginCardIn {
+  0%  { opacity:0; transform: translateY(28px) scale(0.95); }
+  100%{ opacity:1; transform: translateY(0) scale(1); }
+}
+
+/* קו זוהר עליון */
+#login-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 10%; right: 10%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,229,255,0.6), transparent);
+}
+/* scanline */
+#login-card::after {
+  content: '';
+  position: absolute; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent, rgba(0,229,255,0.25), transparent);
+  animation: loginScan 5s linear infinite;
+  pointer-events: none;
+}
+@keyframes loginScan { 0% { top: -2%; } 100% { top: 108%; } }
+
+/* ── section label ── */
+.login-section-label {
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(0,229,255,0.45);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.login-section-label::before {
+  content: '';
+  width: 3px; height: 3px;
+  background: var(--cyan);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--cyan);
+  flex-shrink: 0;
+}
+.login-section-label::after {
+  content: '';
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, rgba(0,229,255,0.20), transparent);
+}
+
+/* ── inputs מוטורפים ── */
+.login-inp-wrap {
+  position: relative;
+  margin-bottom: 10px;
+}
+.login-inp-icon {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(0,229,255,0.35);
+  pointer-events: none;
+  transition: color 0.2s;
+}
+.login-inp-wrap:focus-within .login-inp-icon {
+  color: rgba(0,229,255,0.8);
+}
+.login-inp-wrap .inp {
+  padding-right: 42px !important;
+}
+
+/* ── כפתור כניסה ראשי ── */
+#btn-email-auth {
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.04em;
+  font-size: 15px !important;
+  padding: 15px !important;
+}
+#btn-email-auth::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(255,255,255,0.15) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+#btn-email-auth:hover::before {
+  transform: translateX(100%);
+}
+
+/* ── כפתור הרשמה CTA ── */
+#btn-toggle-mode {
+  position: relative;
+  width: 100%;
+  margin-top: 10px;
+  padding: 13px 18px;
+  background: linear-gradient(135deg, rgba(0,229,255,0.06) 0%, rgba(0,150,255,0.03) 100%);
+  border: 1px solid rgba(0,229,255,0.20);
+  border-radius: 16px;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  transition: all 0.28s var(--spring);
+  animation: ctaGlowAnim 3.5s ease-in-out infinite;
+}
+@keyframes ctaGlowAnim {
+  0%,100% { box-shadow: 0 0 0 0 rgba(0,229,255,0); }
+  50%      { box-shadow: 0 0 20px rgba(0,229,255,0.10); }
+}
+#btn-toggle-mode::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(110deg,
+    transparent 25%,
+    rgba(0,229,255,0.08) 45%,
+    rgba(255,255,255,0.04) 50%,
+    rgba(0,229,255,0.08) 55%,
+    transparent 75%);
+  background-size: 200% 100%;
+  animation: ctaShimmerAnim 3s linear infinite;
+  pointer-events: none;
+}
+@keyframes ctaShimmerAnim {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+#btn-toggle-mode::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 12%; right: 12%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,229,255,0.50), transparent);
+}
+#btn-toggle-mode:hover {
+  border-color: rgba(0,229,255,0.40);
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, rgba(0,229,255,0.10) 0%, rgba(0,150,255,0.06) 100%);
+}
+#btn-toggle-mode:active { transform: scale(0.97); }
+.cta-texts { display: flex; flex-direction: column; gap: 2px; text-align: right; }
+.cta-sub  { font-family:'Syne',sans-serif; font-size:11px; font-weight:600; color:rgba(255,255,255,0.35); }
+.cta-main {
+  font-family:'Syne',sans-serif; font-size:14px; font-weight:900;
+  background: linear-gradient(120deg, #00E5FF, #60D8FF, #00B8FF);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  letter-spacing: -0.2px;
+}
+.cta-icon-box {
+  width: 34px; height: 34px; flex-shrink: 0;
+  background: rgba(0,229,255,0.09);
+  border: 1px solid rgba(0,229,255,0.22);
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--cyan);
+  transition: transform 0.2s var(--spring), background 0.2s;
+}
+#btn-toggle-mode:hover .cta-icon-box {
+  background: rgba(0,229,255,0.16);
+  transform: translateX(-3px);
+}
+
+/* ── מפריד ── */
+.login-divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 16px 0 14px;
+}
+.login-divider-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent);
+}
+.login-divider-text {
+  font-size: 10px; font-weight: 800;
+  color: rgba(255,255,255,0.18);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ── אזהרת גוגל — premium ── */
+#google-warning-badge {
+  width: 100%;
+  background: linear-gradient(135deg, rgba(255,150,0,0.07) 0%, rgba(255,90,0,0.04) 100%);
+  border: 1px solid rgba(255,155,0,0.28);
+  border-radius: 16px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+  animation: warningGlow 4s ease-in-out infinite;
+}
+@keyframes warningGlow {
+  0%,100% { border-color: rgba(255,155,0,0.25); box-shadow: none; }
+  50%      { border-color: rgba(255,155,0,0.48); box-shadow: 0 0 24px rgba(255,120,0,0.10); }
+}
+#google-warning-badge::before {
+  content: '';
+  position: absolute; top: 0; left: 12%; right: 12%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,160,0,0.45), transparent);
+}
+.gwb-icon {
+  width: 34px; height: 34px; flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(255,160,0,0.16), rgba(255,90,0,0.08));
+  border: 1px solid rgba(255,150,0,0.32);
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 14px rgba(255,130,0,0.15);
+}
+.gwb-texts { flex: 1; }
+.gwb-title {
+  font-size: 12px; font-weight: 900;
+  color: rgba(255,185,50,0.95);
+  letter-spacing: 0.01em;
+  margin-bottom: 3px;
+}
+.gwb-body {
+  font-size: 11px; font-weight: 600;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.5;
+}
+.gwb-body strong {
+  color: rgba(255,185,50,0.88);
+  font-weight: 800;
+}
+
+/* ── כפתור גוגל ── */
+#btn-google-login {
+  transition: transform 0.2s var(--spring), box-shadow 0.2s ease, opacity 0.2s !important;
+}
+#btn-google-login:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.45) !important;
+}
+
+/* ── כפתור שכחת סיסמה ── */
+#btn-forgot-pass {
+  background: none; border: none;
+  color: rgba(0,229,255,0.50);
+  font-family: 'Syne', sans-serif;
+  font-size: 11px; font-weight: 700;
+  cursor: pointer; padding: 0;
+  transition: color 0.15s;
+}
+#btn-forgot-pass:hover { color: var(--cyan); }
+
+/* ── תחתית ── */
+.login-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  gap: 8px;
+}
+.login-reload-btn {
+  display: flex; align-items: center; gap: 5px;
+  background: none; border: none;
+  color: rgba(255,255,255,0.28);
+  font-family: 'Syne', sans-serif;
+  font-size: 10px; font-weight: 700;
+  cursor: pointer; padding: 0;
+  transition: color 0.15s;
+}
+.login-reload-btn:hover { color: rgba(255,255,255,0.65); }
+.login-privacy {
+  font-size: 10px;
+  color: rgba(255,255,255,0.22);
+  text-align: left;
+  line-height: 1.4;
+}
+.login-privacy a {
+  color: rgba(0,229,255,0.60);
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.15s;
+}
+.login-privacy a:hover { color: var(--cyan); }
+
+/* ── בועת אבטחה תחתונה ── */
+#login-sec-bubble {
+  width: 100%;
+  background: linear-gradient(140deg, rgba(6,10,22,0.90) 0%, rgba(4,7,16,0.94) 100%);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(0,229,255,0.13);
+  border-radius: 20px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  animation: loginCardIn 0.65s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+}
+#login-sec-bubble::before {
+  content: '';
+  position: absolute; top: 0; left: 14%; right: 14%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,229,255,0.35), transparent);
+}
+.lsb-icon-wrap {
+  width: 36px; height: 36px; flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(0,229,255,0.12), rgba(0,183,255,0.06));
+  border: 1px solid rgba(0,229,255,0.22);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--cyan);
+  box-shadow: 0 0 16px rgba(0,229,255,0.12);
+  margin-top: 1px;
+}
+.lsb-content {}
+.lsb-title {
+  font-size: 12px; font-weight: 800;
+  color: rgba(255,255,255,0.88);
+  margin-bottom: 5px;
+}
+.lsb-body {
+  font-size: 11px; font-weight: 600;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.6;
+  margin-bottom: 9px;
+}
+.lsb-body strong { color: rgba(255,255,255,0.72); font-weight: 700; }
+.lsb-spam-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: linear-gradient(135deg, rgba(255,175,0,0.09), rgba(255,130,0,0.05));
+  border: 1px solid rgba(255,165,0,0.25);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 10.5px; font-weight: 700;
+  color: rgba(255,185,60,0.80);
+  line-height: 1.4;
+}
+.lsb-spam-badge strong { color: rgba(255,195,70,0.95); font-weight: 900; }
+</style>
+
 <div id="screen-login" class="screen hidden">
-  <div style="width:100%;max-width:370px">
-    <div style="text-align:center;margin-bottom:30px" class="rise">
-      <div class="logo-frame modern-hover" style="margin:0 auto 16px;width:86px;height:86px">
-        <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" style="width:80px;height:80px">
+
+  <!-- particles -->
+  <div id="login-particles"></div>
+
+  <div id="login-inner">
+
+    <!-- ── הירו לוגו ── -->
+    <div id="login-hero">
+      <div class="login-logo-ring">
+        <img class="login-logo-img" src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" alt="AO Budget">
       </div>
-      <h1 style="font-size:26px;font-weight:800;letter-spacing:-.4px">AO Budget</h1>
-      <p style="color:var(--muted);font-size:13px;margin-top:5px">ניהול תקציב חכם ופשוט</p>
+      <h1 class="login-title">AO Budget</h1>
+      <p class="login-subtitle">ניהול תקציב חכם · פשוט · בטוח</p>
     </div>
 
-    <div class="card rise d1" style="padding:24px 20px">
+    <!-- ── כרטיס טופס ── -->
+    <div id="login-card">
 
-      <!-- ── מייל + סיסמה — ראשון ── -->
-      <div id="login-name-wrap" class="hidden" style="margin-bottom:9px">
-        <input id="login-name" class="inp modern-hover" type="text" placeholder="השם המלא שלך" autocomplete="name">
+      <!-- שם (נסתר ברישום בלבד) -->
+      <div id="login-name-wrap" class="hidden" style="margin-bottom:10px">
+        <div class="login-inp-wrap" style="margin-bottom:0">
+          <div class="login-inp-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <input id="login-name" class="inp" type="text" placeholder="השם המלא שלך" autocomplete="name">
+        </div>
       </div>
-      <input id="login-email" class="inp modern-hover" type="email" placeholder="כתובת אימייל" autocomplete="email" style="margin-bottom:9px">
 
-      <div class="pass-wrap" style="margin-bottom:0">
-        <input id="login-pass" class="inp modern-hover" type="password" placeholder="סיסמה" autocomplete="new-password" data-lpignore="true" data-form-type="other">
+      <!-- section label -->
+      <div class="login-section-label">כניסה עם מייל וסיסמה</div>
+
+      <!-- אימייל -->
+      <div class="login-inp-wrap">
+        <div class="login-inp-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <input id="login-email" class="inp" type="email" placeholder="כתובת אימייל" autocomplete="email">
+      </div>
+
+      <!-- סיסמה -->
+      <div class="login-inp-wrap pass-wrap" style="margin-bottom:0">
+        <div class="login-inp-icon" style="right:42px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <input id="login-pass" class="inp" type="password" placeholder="סיסמה" autocomplete="new-password" data-lpignore="true" data-form-type="other" style="padding-right:56px!important">
         <button type="button" class="pass-eye" id="btn-pass-eye" aria-label="הצג/הסתר סיסמה">
           <svg id="eye-icon-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           <svg id="eye-icon-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
         </button>
       </div>
-      <div style="text-align:left;margin-top:5px;margin-bottom:2px;">
-        <button id="btn-forgot-pass" type="button" style="background:none;border:none;color:rgba(0,229,255,0.55);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;padding:0;transition:color .15s;" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='rgba(0,229,255,0.55)'">שכחת סיסמה?</button>
+
+      <!-- שכחת סיסמה -->
+      <div style="text-align:left;margin-top:6px;margin-bottom:0">
+        <button id="btn-forgot-pass" type="button">שכחת סיסמה?</button>
       </div>
 
+      <!-- שגיאה -->
       <div id="login-err" class="err hidden" style="margin-top:8px;line-height:1.5;"></div>
-      <button id="btn-email-auth" class="btn btn-cyan modern-hover" style="margin-top:12px">כניסה לחשבון</button>
 
-      <!-- ── מפריד ── -->
-      <div style="display:flex;align-items:center;gap:10px;margin:18px 0 14px">
-        <div style="flex:1;height:1px;background:rgba(255,255,255,0.06)"></div>
-        <span style="font-size:11px;color:rgba(255,255,255,0.22);font-weight:700;letter-spacing:.1em">או לחלופין</span>
-        <div style="flex:1;height:1px;background:rgba(255,255,255,0.06)"></div>
+      <!-- כניסה -->
+      <button id="btn-email-auth" class="btn btn-cyan" style="margin-top:14px">כניסה לחשבון</button>
+
+      <!-- CTA הרשמה -->
+      <button id="btn-toggle-mode" type="button">
+        <div class="cta-texts">
+          <span class="cta-sub">עוד אין לך חשבון?</span>
+          <span class="cta-main">הרשמה חינם — לחץ כאן</span>
+        </div>
+        <div class="cta-icon-box">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </div>
+      </button>
+
+      <!-- מפריד -->
+      <div class="login-divider">
+        <div class="login-divider-line"></div>
+        <span class="login-divider-text">או לחלופין</span>
+        <div class="login-divider-line"></div>
       </div>
 
-      <!-- ── אזהרת אבטחה — כניסה עם גוגל ── -->
-      <div style="
-        background: linear-gradient(135deg, rgba(255,160,0,0.07) 0%, rgba(255,120,0,0.04) 100%);
-        border: 1px solid rgba(255,160,0,0.30);
-        border-radius: 16px;
-        padding: 11px 14px 11px 12px;
-        margin-bottom: 10px;
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-        box-shadow: 0 0 20px rgba(255,140,0,0.06), inset 0 1px 0 rgba(255,255,255,0.04);
-        animation: googleWarningPulse 4s ease-in-out infinite;
-      ">
-        <div style="
-          width: 28px; height: 28px; flex-shrink: 0;
-          background: linear-gradient(135deg, rgba(255,160,0,0.18), rgba(255,100,0,0.10));
-          border: 1px solid rgba(255,160,0,0.35);
-          border-radius: 9px;
-          display: flex; align-items: center; justify-content: center;
-          box-shadow: 0 0 12px rgba(255,140,0,0.18);
-          margin-top: 1px;
-        ">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,180,0,0.90)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <!-- אזהרת גוגל -->
+      <div id="google-warning-badge">
+        <div class="gwb-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,175,50,0.92)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         </div>
-        <div style="flex: 1;">
-          <div style="font-size: 11.5px; font-weight: 900; color: rgba(255,190,60,0.95); letter-spacing: 0.01em; margin-bottom: 3px; display: flex; align-items: center; gap: 5px;">
-            <span>⚠️ שימו לב — מטעמי אבטחה</span>
-          </div>
-          <div style="font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.65); line-height: 1.55;">
-            כניסה עם גוגל זמינה <strong style="color:rgba(255,190,60,0.90);font-weight:800;">בדפדפן בלבד</strong> — לא מאפליקציה.
-          </div>
+        <div class="gwb-texts">
+          <div class="gwb-title">⚠️ שימו לב — מטעמי אבטחה</div>
+          <div class="gwb-body">כניסה עם גוגל זמינה <strong>בדפדפן בלבד</strong> — לא מאפליקציה.</div>
         </div>
       </div>
-      <style>
-        @keyframes googleWarningPulse {
-          0%,100% { border-color: rgba(255,160,0,0.28); box-shadow: 0 0 20px rgba(255,140,0,0.05); }
-          50%      { border-color: rgba(255,160,0,0.50); box-shadow: 0 0 28px rgba(255,140,0,0.14); }
-        }
-      </style>
 
-      <button id="btn-google-login" class="btn-google modern-hover" style="margin-bottom:8px">
+      <!-- גוגל -->
+      <button id="btn-google-login" class="btn-google" style="margin-bottom:0">
         <svg width="19" height="19" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
         כניסה עם גוגל
       </button>
 
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;gap:8px;">
-        <button onclick="window.location.reload()" style="display:flex;align-items:center;gap:5px;background:none;border:none;color:rgba(255,255,255,0.35);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;padding:4px 0;transition:color .15s;" onmouseover="this.style.color='rgba(255,255,255,0.7)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">
-          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+      <!-- תחתית -->
+      <div class="login-footer-row">
+        <button class="login-reload-btn" onclick="window.location.reload()">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
           רענון הדף
         </button>
-      </div>
-
-      <p style="font-size: 10px; color: rgba(255,255,255,0.3); text-align: center; margin-top: 12px; line-height: 1.4;">
-  בלחיצה על כניסה או הרשמה, ובשימוש באפליקציה או באתר, הינך מאשר את <br>
-  <a href="https://a4190656-cloud.github.io/AO-TIMLulll/privacy.html" target="_blank" style="color: var(--cyan); text-decoration: none; font-weight: 700;">תנאי השימוש ומדיניות הפרטיות</a> של AO Budget.
-</p>
-      <button id="btn-toggle-mode" class="link-btn" style="margin-top:4px">עוד אין לך חשבון? לחץ כאן ←</button>
-    </div>
-
-    <!-- ✦ בועת אבטחה 2026 ✦ -->
-    <div class="security-bubble rise d2">
-      <div class="security-bubble-glow"></div>
-      <div class="security-bubble-inner">
-        <div class="security-bubble-header">
-          <div class="security-bubble-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </div>
-          <span class="security-bubble-title">שומרים בטוח על המידע שלך</span>
-        </div>
-        <p class="security-bubble-text">
-          גישה לחשבון מתבצעת באמצעות <strong>מייל וסיסמה בלבד</strong>. תהליך ההרשמה באפליקציה דורש אימות חד-פעמי במייל — ומנהלים את התקציב בביטחון מלא.
+        <p class="login-privacy">
+          <a href="https://a4190656-cloud.github.io/AO-TIMLulll/privacy.html" target="_blank">תנאי שימוש ופרטיות</a>
         </p>
-        <div class="security-spam-badge">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
-          <span>לא קיבלתם מייל? <strong>בדקו בספאם!</strong> המייל עלול להגיע לשם</span>
+      </div>
+    </div><!-- /login-card -->
+
+    <!-- ── בועת אבטחה תחתונה ── -->
+    <div id="login-sec-bubble">
+      <div class="lsb-icon-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="lsb-content">
+        <div class="lsb-title">המידע שלך מוגן לחלוטין</div>
+        <p class="lsb-body">גישה לחשבון מתבצעת באמצעות <strong>מייל וסיסמה בלבד</strong>. ההרשמה דורשת אימות חד-פעמי במייל.</p>
+        <!-- ✦ SPAM MEGA ALERT ✦ -->
+        <style>
+          @keyframes spamFlash {
+            0%,100% { box-shadow: 0 0 0 0 rgba(255,80,80,0); border-color: rgba(255,80,80,0.28); }
+            50%      { box-shadow: 0 0 22px rgba(255,80,80,0.28), 0 0 6px rgba(255,80,80,0.20); border-color: rgba(255,80,80,0.55); }
+          }
+          .spam-mega-badge {
+            display: flex; align-items: center; gap: 11px;
+            background: linear-gradient(135deg, rgba(255,50,50,0.10) 0%, rgba(255,120,0,0.07) 100%);
+            border: 1px solid rgba(255,80,80,0.30);
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-top: 10px;
+            position: relative; overflow: hidden;
+            animation: spamFlash 2.8s ease-in-out infinite;
+          }
+          .spam-mega-badge::before {
+            content: '';
+            position: absolute; top: 0; left: 8%; right: 8%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,90,90,0.55), transparent);
+          }
+          .spam-icon-circle {
+            width: 36px; height: 36px; flex-shrink: 0;
+            background: linear-gradient(135deg, rgba(255,60,60,0.20), rgba(255,100,0,0.12));
+            border: 1px solid rgba(255,70,70,0.40);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 17px; line-height: 1;
+            box-shadow: 0 0 16px rgba(255,60,60,0.25);
+          }
+          .spam-text-block { flex: 1; }
+          .spam-line1 { font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.45); letter-spacing: 0.02em; margin-bottom: 3px; }
+          .spam-line2 { font-size: 13.5px; font-weight: 900; background: linear-gradient(135deg, #FF6B6B, #FF9F43); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.1px; line-height: 1.2; }
+          .spam-line3 { font-size: 10px; font-weight: 600; color: rgba(255,160,100,0.70); margin-top: 2px; letter-spacing: 0.01em; }
+        </style>
+        <div class="spam-mega-badge">
+          <div class="spam-icon-circle">📬</div>
+          <div class="spam-text-block">
+            <div class="spam-line1">לא קיבלתם מייל אימות?</div>
+            <div class="spam-line2">בדקו את תיקיית הספאם!</div>
+            <div class="spam-line3">המייל עלול להגיע לג'אנק / קידומי מכירות</div>
+          </div>
         </div>
       </div>
     </div>
 
-  </div>
+  </div><!-- /login-inner -->
+
+  <!-- particles script -->
+  <script>
+  (function(){
+    var c = document.getElementById('login-particles');
+    if (!c) return;
+    var colors = ['rgba(0,229,255,', 'rgba(0,183,255,', 'rgba(100,200,255,'];
+    for (var i = 0; i < 22; i++) {
+      var el = document.createElement('div');
+      el.className = 'lp';
+      var size = Math.random() * 3 + 1;
+      var col = colors[Math.floor(Math.random() * colors.length)];
+      var opacity = Math.random() * 0.5 + 0.15;
+      el.style.cssText = [
+        'width:' + size + 'px',
+        'height:' + size + 'px',
+        'left:' + (Math.random() * 100) + '%',
+        'background:' + col + opacity + ')',
+        'box-shadow:0 0 ' + (size*4) + 'px ' + col + '0.4)',
+        'animation-duration:' + (Math.random() * 14 + 10) + 's',
+        'animation-delay:' + (Math.random() * 12) + 's'
+      ].join(';');
+      c.appendChild(el);
+    }
+  })();
+  </script>
+
 </div>
 
 <div id="screen-setname" class="screen hidden">
@@ -2819,7 +3370,7 @@
     }).then(function(){
       btn.textContent = 'שכחת סיסמה?';
       btn.style.pointerEvents = 'auto';
-      showLoginOk('✓ נשלח מייל לאיפוס סיסמה לכתובת <strong>' + email + '</strong> — בדוק גם ספאם.<br><button onclick="window.location.reload()" style="background:none;border:none;color:#4285F4;text-decoration:underline;cursor:pointer;font-weight:bold;font-family:\'Syne\',sans-serif;font-size:13px;padding:0;margin-top:4px;">רעננו את הדף לאחר האימות!</button>');
+      showLoginOk('✓ נשלח מייל לאיפוס סיסמה לכתובת <strong>' + email + '</strong><br><span style="display:inline-flex;align-items:center;gap:6px;margin-top:9px;padding:8px 13px;background:linear-gradient(135deg,rgba(255,50,50,0.16),rgba(255,120,0,0.10));border:1px solid rgba(255,80,80,0.42);border-radius:11px;">📬 <span style="font-size:13px;font-weight:900;background:linear-gradient(135deg,#FF6B6B,#FF9F43);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">בדקו בתיקיית הספאם! המייל עלול להגיע לשם</span></span><br><button onclick="window.location.reload()" style="background:none;border:none;color:#4285F4;text-decoration:underline;cursor:pointer;font-weight:bold;font-family:\'Syne\',sans-serif;font-size:13px;padding:0;margin-top:4px;">רעננו את הדף לאחר האימות!</button>');
     }).catch(function(e){
       btn.textContent = 'שכחת סיסמה?';
       btn.style.pointerEvents = 'auto';
@@ -3310,7 +3861,7 @@ window.deletePhoneIdx = function(i) {
      var el=$('login-err');
   if(el){
       el.style.color='var(--green)';
-      el.innerHTML='✓ נשלח אימייל אימות — בדוק את תיבת הדואר (כולל ספאם) ולחץ על הקישור.<br><button type="button" onclick="window.location.reload()" style="background:none; border:none; color:#00BFFF; text-decoration:underline; cursor:pointer; font-weight:bold; font-family:\'Syne\', sans-serif; font-size:14px; padding:0; margin-top:12px;">רעננו את הדף לאחר האימות!</button>';
+      el.innerHTML='✓ נשלח אימייל אימות — בדוק את תיבת הדואר ולחץ על הקישור.<br><span style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:7px 12px;background:linear-gradient(135deg,rgba(255,50,50,0.18),rgba(255,120,0,0.12));border:1px solid rgba(255,80,80,0.45);border-radius:10px;font-size:12.5px;font-weight:900;background-clip:text;">📬 <span style="-webkit-text-fill-color:transparent;-webkit-background-clip:text;background-clip:text;background:linear-gradient(135deg,#FF6B6B,#FF9F43);font-weight:900;">בדקו גם בתיקיית הספאם! המייל עלול להגיע לשם</span></span><br><button type="button" onclick="window.location.reload()" style="background:none; border:none; color:#00BFFF; text-decoration:underline; cursor:pointer; font-weight:bold; font-family:\'Syne\', sans-serif; font-size:14px; padding:0; margin-top:12px;">רעננו את הדף לאחר האימות!</button>';
       show('login-err');
   }
       }, 300);
@@ -3500,7 +4051,7 @@ window.deletePhoneIdx = function(i) {
       return cred.user.sendEmailVerification(actionSettings).then(function(){
         return auth.signOut();
       }).then(function(){
-        showLoginOk('✓ נשלח אימייל אימות לכתובת <strong>' + email + '</strong> — בדוק גם ספאם!<br>' +
+        showLoginOk('✓ נשלח אימייל אימות לכתובת <strong>' + email + '</strong><br><span style="display:inline-flex;align-items:center;gap:6px;margin-top:9px;padding:8px 13px;background:linear-gradient(135deg,rgba(255,50,50,0.16),rgba(255,120,0,0.10));border:1px solid rgba(255,80,80,0.42);border-radius:11px;">📬 <span style="font-size:13px;font-weight:900;background:linear-gradient(135deg,#FF6B6B,#FF9F43);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">בדקו בתיקיית הספאם! המייל עלול להגיע לשם</span></span><br>' +
           '<button onclick="window.location.reload()" style="background:none;border:none;color:#00BFFF;text-decoration:underline;cursor:pointer;font-weight:bold;font-family:\'Syne\',sans-serif;font-size:14px;padding:0;margin-top:12px;">רעננו את הדף לאחר האימות!</button>');
         /* חזרה למצב כניסה */
         isRegMode = false;
@@ -3548,7 +4099,7 @@ window.deletePhoneIdx = function(i) {
       var actionSettings = { url:'https://a4190656-cloud.github.io/AO-TIMLulll/', handleCodeInApp:false };
       return cred.user.sendEmailVerification(actionSettings).then(function(){ return auth.signOut(); });
     }).then(function(){
-      showLoginOk('✓ נשלח מחדש לכתובת <strong>'+email+'</strong> <span style="color:var(--green);">(בדוק גם ספאם!)</span><br><button onclick="window.location.reload()" style="background:none;border:none;color:#4285F4;text-decoration:underline;cursor:pointer;font-weight:bold;font-family:\'Syne\',sans-serif;font-size:13px;padding:0;margin-top:4px;">רעננו את הדף לאחר האימות!</button>');
+      showLoginOk('✓ נשלח מחדש לכתובת <strong>'+email+'</strong><br><span style="display:inline-flex;align-items:center;gap:6px;margin-top:9px;padding:8px 13px;background:linear-gradient(135deg,rgba(255,50,50,0.16),rgba(255,120,0,0.10));border:1px solid rgba(255,80,80,0.42);border-radius:11px;">📬 <span style="font-size:13px;font-weight:900;background:linear-gradient(135deg,#FF6B6B,#FF9F43);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">בדקו בתיקיית הספאם! המייל עלול להגיע לשם</span></span><br><button onclick="window.location.reload()" style="background:none;border:none;color:#4285F4;text-decoration:underline;cursor:pointer;font-weight:bold;font-family:\'Syne\',sans-serif;font-size:13px;padding:0;margin-top:4px;">רעננו את הדף לאחר האימות!</button>');
     }).catch(function(){ showLoginErr('שגיאה בשליחה. נסה שוב.'); });
   };
 
