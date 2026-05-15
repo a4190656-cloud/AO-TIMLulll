@@ -2400,7 +2400,7 @@
       <button id="btn-toggle-mode" type="button">
         <div class="cta-texts">
           <span class="cta-sub">עוד אין לך חשבון?</span>
-          <span class="cta-main"לחץ כאן"</span>
+          <span class="cta-main">הרשמה חינם — לחץ כאן</span>
         </div>
         <div class="cta-icon-box">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -2595,6 +2595,532 @@
 <div id="app" class="hidden">
 
   <div id="ticker-wrap"><div id="ticker-inner"></div></div>
+
+  <!-- ✦ BETA BANNER 2026 ✦ -->
+  <style>
+    @keyframes betaBannerGlow {
+      0%,100% { border-color: rgba(255,180,0,0.22); box-shadow: 0 0 0 0 rgba(255,160,0,0); }
+      50%      { border-color: rgba(255,180,0,0.45); box-shadow: 0 4px 24px rgba(255,160,0,0.12); }
+    }
+    @keyframes betaTagPulse {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.60; }
+    }
+    @keyframes betaShimmer {
+      0%   { transform: translateX(120%); }
+      100% { transform: translateX(-120%); }
+    }
+
+    #beta-banner {
+      margin: 12px 16px 0;
+      background: linear-gradient(135deg, rgba(255,150,0,0.08) 0%, rgba(255,80,0,0.05) 100%);
+      border: 1px solid rgba(255,175,0,0.28);
+      border-radius: 18px;
+      padding: 12px 14px;
+      display: flex; align-items: center; gap: 11px;
+      position: relative; overflow: hidden; cursor: pointer;
+      animation: betaBannerGlow 3.2s ease-in-out infinite;
+      transition: transform 0.18s var(--spring), background 0.18s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #beta-banner::before {
+      content: '';
+      position: absolute; top: 0; left: 6%; right: 6%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,180,0,0.55), transparent);
+    }
+    #beta-banner .beta-shimmer {
+      position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(105deg, transparent 35%, rgba(255,200,0,0.09) 50%, transparent 65%);
+      animation: betaShimmer 3.5s linear infinite;
+    }
+    #beta-banner:hover  { transform: translateY(-1px); background: linear-gradient(135deg, rgba(255,150,0,0.12), rgba(255,80,0,0.08)); }
+    #beta-banner:active { transform: scale(0.98); }
+
+    .beta-icon-box {
+      width: 38px; height: 38px; flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(255,160,0,0.20), rgba(255,100,0,0.10));
+      border: 1px solid rgba(255,160,0,0.38);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; line-height: 1;
+      box-shadow: 0 0 16px rgba(255,150,0,0.22);
+    }
+    .beta-texts { flex: 1; }
+    .beta-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: linear-gradient(135deg, rgba(255,160,0,0.22), rgba(255,100,0,0.12));
+      border: 1px solid rgba(255,160,0,0.40);
+      border-radius: 6px; padding: 2px 7px;
+      font-size: 9.5px; font-weight: 900; letter-spacing: 0.12em;
+      color: rgba(255,200,60,0.95);
+      margin-bottom: 3px;
+      animation: betaTagPulse 2.5s ease-in-out infinite;
+    }
+    .beta-tag::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: rgba(255,200,60,0.90); box-shadow: 0 0 5px rgba(255,200,60,0.8); }
+    .beta-headline {
+      font-size: 13px; font-weight: 900;
+      color: rgba(255,255,255,0.88);
+      line-height: 1.2; display: block;
+    }
+    .beta-sub {
+      font-size: 10.5px; font-weight: 600;
+      color: rgba(255,200,60,0.65);
+      margin-top: 2px; display: block;
+      letter-spacing: 0.01em;
+    }
+    .beta-chevron {
+      color: rgba(255,175,0,0.55); flex-shrink: 0;
+      transition: transform 0.18s var(--spring);
+    }
+    #beta-banner:hover .beta-chevron { transform: translateX(-3px); }
+
+    /* ── מודאל דיווח ── */
+    #bug-modal-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      display: flex; align-items: flex-end; justify-content: center;
+      padding-bottom: env(safe-area-inset-bottom, 0);
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.28s ease;
+    }
+    #bug-modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    #bug-modal {
+      width: 100%; max-width: 430px;
+      background: linear-gradient(160deg, rgba(10,16,38,0.98) 0%, rgba(4,8,20,0.99) 100%);
+      border: 1px solid rgba(255,175,0,0.20);
+      border-radius: 28px 28px 0 0;
+      padding: 0 0 32px;
+      position: relative; overflow: hidden;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.34,1.2,0.64,1);
+      box-shadow: 0 -16px 60px rgba(0,0,0,0.70), 0 0 0 1px rgba(255,175,0,0.08);
+    }
+    #bug-modal-overlay.open #bug-modal { transform: translateY(0); }
+
+    .bug-modal-handle {
+      width: 38px; height: 4px; border-radius: 2px;
+      background: rgba(255,255,255,0.15);
+      margin: 14px auto 0;
+    }
+    .bug-modal-top {
+      position: absolute; top: 0; left: 8%; right: 8%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,175,0,0.55), transparent);
+    }
+    .bug-modal-header {
+      padding: 20px 22px 16px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .bug-modal-icon {
+      width: 44px; height: 44px; flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(255,155,0,0.20), rgba(255,90,0,0.10));
+      border: 1px solid rgba(255,155,0,0.35);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 0 20px rgba(255,150,0,0.25);
+    }
+    .bug-modal-title { font-size: 18px; font-weight: 900; color: #fff; line-height: 1.2; }
+    .bug-modal-subtitle { font-size: 12px; font-weight: 600; color: rgba(255,200,60,0.70); margin-top: 2px; }
+
+    .bug-modal-body { padding: 0 22px; }
+    .bug-modal-desc {
+      font-size: 13px; font-weight: 600;
+      color: rgba(255,255,255,0.55); line-height: 1.65;
+      margin-bottom: 18px;
+    }
+
+    .bug-contact-card {
+      display: flex; align-items: center; gap: 13px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      margin-bottom: 10px;
+      text-decoration: none;
+      position: relative; overflow: hidden;
+      transition: transform 0.18s var(--spring), filter 0.18s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .bug-contact-card:hover  { transform: translateY(-2px); }
+    .bug-contact-card:active { transform: scale(0.97); }
+
+    .bug-contact-card.email-card {
+      background: linear-gradient(135deg, rgba(0,229,255,0.10), rgba(0,180,255,0.06));
+      border: 1px solid rgba(0,229,255,0.24);
+      box-shadow: 0 4px 20px rgba(0,229,255,0.08);
+    }
+    .bug-contact-card.email-card::before {
+      content: ''; position: absolute; top:0; left:8%; right:8%; height:1px;
+      background: linear-gradient(90deg, transparent, rgba(0,229,255,0.50), transparent);
+    }
+    .bug-contact-card.wa-card {
+      background: linear-gradient(135deg, rgba(37,211,102,0.10), rgba(18,140,60,0.06));
+      border: 1px solid rgba(37,211,102,0.24);
+      box-shadow: 0 4px 20px rgba(37,211,102,0.08);
+    }
+    .bug-contact-card.wa-card::before {
+      content: ''; position: absolute; top:0; left:8%; right:8%; height:1px;
+      background: linear-gradient(90deg, transparent, rgba(37,211,102,0.50), transparent);
+    }
+
+    .bug-contact-icon {
+      width: 42px; height: 42px; flex-shrink: 0;
+      border-radius: 13px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .email-card .bug-contact-icon {
+      background: linear-gradient(135deg, rgba(0,229,255,0.20), rgba(0,180,255,0.10));
+      border: 1px solid rgba(0,229,255,0.30);
+      box-shadow: 0 0 16px rgba(0,229,255,0.18);
+    }
+    .wa-card .bug-contact-icon {
+      background: linear-gradient(135deg, rgba(37,211,102,0.22), rgba(18,140,60,0.10));
+      border: 1px solid rgba(37,211,102,0.30);
+      box-shadow: 0 0 16px rgba(37,211,102,0.18);
+    }
+
+    .bug-contact-texts { flex: 1; }
+    .bug-contact-label {
+      font-size: 10px; font-weight: 800; letter-spacing: 0.14em;
+      text-transform: uppercase; margin-bottom: 2px;
+    }
+    .email-card .bug-contact-label { color: rgba(0,229,255,0.65); }
+    .wa-card    .bug-contact-label { color: rgba(37,211,102,0.65); }
+
+    .bug-contact-value {
+      font-size: 14.5px; font-weight: 900;
+      direction: ltr; text-align: right;
+    }
+    .email-card .bug-contact-value { color: rgba(0,229,255,0.95); }
+    .wa-card    .bug-contact-value { color: rgba(37,211,102,0.95); }
+
+    .bug-contact-arrow {
+      flex-shrink: 0;
+    }
+    .email-card .bug-contact-arrow { color: rgba(0,229,255,0.45); }
+    .wa-card    .bug-contact-arrow { color: rgba(37,211,102,0.45); }
+
+    .bug-modal-close {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: calc(100% - 44px); margin: 16px 22px 0;
+      padding: 13px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 14px; cursor: pointer;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px; font-weight: 700;
+      color: rgba(255,255,255,0.45);
+      transition: background 0.18s, color 0.18s;
+    }
+    .bug-modal-close:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.75); }
+  </style>
+
+  <!-- הבאנר -->
+  <div id="beta-banner" onclick="document.getElementById('bug-modal-overlay').classList.add('open')">
+    <span class="beta-shimmer"></span>
+    <div class="beta-icon-box">🛠️</div>
+    <div class="beta-texts">
+      <span class="beta-tag">BETA</span>
+      <span class="beta-headline">האפליקציה בשלבי פיתוח</span>
+      <span class="beta-sub">נתקלתם בתקלה? לחצו לדיווח →</span>
+    </div>
+    <svg class="beta-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </div>
+
+  <!-- מודאל דיווח -->
+  <div id="bug-modal-overlay" onclick="if(event.target===this)this.classList.remove('open')">
+    <div id="bug-modal">
+      <div class="bug-modal-top"></div>
+      <div class="bug-modal-handle"></div>
+      <div class="bug-modal-header">
+        <div class="bug-modal-icon">🐛</div>
+        <div>
+          <div class="bug-modal-title">דווחו לנו על תקלה</div>
+          <div class="bug-modal-subtitle">נטפל בזה בהקדם האפשרי</div>
+        </div>
+      </div>
+      <div class="bug-modal-body">
+        <p class="bug-modal-desc">אנחנו עובדים קשה לשפר את האפליקציה. אם נתקלתם בבאג, התנהגות מוזרה, או כל בעיה — שלחו לנו ונחזור אליכם.</p>
+
+        <a class="bug-contact-card email-card" href="mailto:a4190656@gmail.com?subject=דיווח%20תקלה%20-%20AO%20Budget&body=שלום%2C%0Aנתקלתי%20בתקלה%20הבאה%3A%0A%0A">
+          <div class="bug-contact-icon">✉️</div>
+          <div class="bug-contact-texts">
+            <div class="bug-contact-label">אימייל</div>
+            <div class="bug-contact-value">a4190656@gmail.com</div>
+          </div>
+          <svg class="bug-contact-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </a>
+
+        <a class="bug-contact-card wa-card" href="https://wa.me/972534190656?text=שלום%2C%20נתקלתי%20בתקלה%20ב-AO%20Budget%3A%0A" target="_blank">
+          <div class="bug-contact-icon">💬</div>
+          <div class="bug-contact-texts">
+            <div class="bug-contact-label">WhatsApp</div>
+            <div class="bug-contact-value">053-4190656</div>
+          </div>
+          <svg class="bug-contact-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </a>
+
+        <button class="bug-modal-close" onclick="document.getElementById('bug-modal-overlay').classList.remove('open')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          סגירה
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- / BETA BANNER -->
+
+  <!-- ✦ PWA INSTALL BANNER 2026 ✦ -->
+  <style>
+    @keyframes pwaSlideDown {
+      0%   { opacity: 0; transform: translateY(-20px) scale(0.96); max-height: 0; }
+      60%  { opacity: 1; }
+      100% { opacity: 1; transform: translateY(0) scale(1); max-height: 200px; }
+    }
+    @keyframes pwaGlow {
+      0%,100% { border-color: rgba(0,229,255,0.20); box-shadow: 0 4px 20px rgba(0,0,0,0.25); }
+      50%      { border-color: rgba(0,229,255,0.42); box-shadow: 0 6px 28px rgba(0,229,255,0.12); }
+    }
+    @keyframes pwaShimmer {
+      0%   { transform: translateX(110%); }
+      100% { transform: translateX(-110%); }
+    }
+    @keyframes pwaIconFloat {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-3px); }
+    }
+
+    #pwa-install-banner {
+      margin: 10px 16px 0;
+      background: linear-gradient(135deg, rgba(0,12,30,0.95) 0%, rgba(0,8,22,0.98) 100%);
+      border: 1px solid rgba(0,229,255,0.22);
+      border-radius: 20px;
+      padding: 14px 14px 14px 16px;
+      display: none;
+      align-items: center; gap: 12px;
+      position: relative; overflow: hidden;
+      animation: pwaSlideDown 0.55s cubic-bezier(0.34,1.2,0.64,1) both, pwaGlow 3.5s ease-in-out infinite;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+    #pwa-install-banner.visible { display: flex; }
+    #pwa-install-banner::before {
+      content: ''; position: absolute; top:0; left:8%; right:8%; height:1px;
+      background: linear-gradient(90deg, transparent, rgba(0,229,255,0.65), transparent);
+    }
+    #pwa-install-banner .pwa-shimmer {
+      position: absolute; inset:0; pointer-events:none;
+      background: linear-gradient(105deg, transparent 30%, rgba(0,229,255,0.07) 50%, transparent 70%);
+      animation: pwaShimmer 4s linear infinite;
+    }
+
+    .pwa-app-icon {
+      width: 46px; height: 46px; flex-shrink: 0;
+      border-radius: 13px; overflow: hidden;
+      border: 1.5px solid rgba(0,229,255,0.20);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5), 0 0 18px rgba(0,229,255,0.12);
+      animation: pwaIconFloat 3s ease-in-out infinite;
+      position: relative; z-index: 1;
+    }
+    .pwa-app-icon img { width:100%; height:100%; object-fit:cover; display:block; }
+
+    .pwa-texts { flex: 1; min-width: 0; }
+    .pwa-label {
+      font-size: 9.5px; font-weight: 900; letter-spacing: 0.14em;
+      color: rgba(0,229,255,0.60); text-transform: uppercase;
+      margin-bottom: 2px; display: flex; align-items: center; gap: 5px;
+    }
+    .pwa-label::before {
+      content: ''; width: 5px; height: 5px; border-radius: 50%;
+      background: var(--cyan); box-shadow: 0 0 6px var(--cyan);
+      animation: betaTagPulse 2s ease-in-out infinite;
+    }
+    .pwa-title {
+      font-size: 13.5px; font-weight: 900; color: rgba(255,255,255,0.92);
+      letter-spacing: -0.2px; line-height: 1.2; display: block;
+    }
+    .pwa-sub {
+      font-size: 10.5px; font-weight: 600;
+      color: rgba(255,255,255,0.38); margin-top: 2px; display: block;
+    }
+
+    .pwa-btn-group { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+    .pwa-btn-install {
+      padding: 8px 14px;
+      background: linear-gradient(135deg, #00E5FF, #00BFFF);
+      color: #020C14;
+      border: none; border-radius: 10px;
+      font-family: 'Syne', sans-serif;
+      font-size: 12px; font-weight: 900;
+      cursor: pointer; white-space: nowrap;
+      box-shadow: 0 4px 16px rgba(0,229,255,0.35), inset 0 1px 0 rgba(255,255,255,0.25);
+      transition: transform 0.18s var(--spring), box-shadow 0.18s;
+      position: relative; overflow: hidden;
+    }
+    .pwa-btn-install::before {
+      content:''; position:absolute; inset:0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 60%);
+    }
+    .pwa-btn-install:hover  { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(0,229,255,0.45); }
+    .pwa-btn-install:active { transform: scale(0.96); }
+    .pwa-btn-dismiss {
+      padding: 5px 14px;
+      background: none; border: none;
+      font-family: 'Syne', sans-serif;
+      font-size: 10.5px; font-weight: 700;
+      color: rgba(255,255,255,0.28);
+      cursor: pointer; text-align: center;
+      transition: color .15s;
+    }
+    .pwa-btn-dismiss:hover { color: rgba(255,255,255,0.55); }
+
+    /* iOS bottom sheet */
+    #pwa-ios-overlay {
+      position: fixed; inset:0; z-index:9998;
+      background: rgba(0,0,0,0.68);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      display: flex; align-items: flex-end; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.28s ease;
+    }
+    #pwa-ios-overlay.open { opacity:1; pointer-events:all; }
+    #pwa-ios-sheet {
+      width: 100%; max-width: 430px;
+      background: linear-gradient(160deg, rgba(8,14,34,0.99), rgba(3,7,18,0.99));
+      border: 1px solid rgba(0,229,255,0.18);
+      border-radius: 28px 28px 0 0;
+      padding: 0 22px 36px;
+      transform: translateY(100%);
+      transition: transform 0.38s cubic-bezier(0.34,1.15,0.64,1);
+      box-shadow: 0 -16px 60px rgba(0,0,0,0.70);
+      position: relative; overflow: hidden;
+    }
+    #pwa-ios-overlay.open #pwa-ios-sheet { transform: translateY(0); }
+    #pwa-ios-sheet::before {
+      content:''; position:absolute; top:0; left:8%; right:8%; height:1px;
+      background: linear-gradient(90deg, transparent, rgba(0,229,255,0.60), transparent);
+    }
+    .ios-handle { width:38px; height:4px; border-radius:2px; background:rgba(255,255,255,0.14); margin:14px auto 18px; }
+    .ios-sheet-icon { width:64px; height:64px; border-radius:18px; overflow:hidden; border:1.5px solid rgba(0,229,255,0.22); box-shadow:0 8px 28px rgba(0,0,0,0.55),0 0 20px rgba(0,229,255,0.14); margin:0 auto 14px; display:block; }
+    .ios-sheet-title { font-size:20px; font-weight:900; color:#fff; text-align:center; margin-bottom:6px; }
+    .ios-sheet-sub { font-size:13px; font-weight:600; color:rgba(255,255,255,0.45); text-align:center; line-height:1.6; margin-bottom:22px; }
+    .ios-steps { display:flex; flex-direction:column; gap:12px; margin-bottom:24px; }
+    .ios-step { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:14px; padding:12px 14px; }
+    .ios-step-num { width:28px; height:28px; flex-shrink:0; background:linear-gradient(135deg,rgba(0,229,255,0.18),rgba(0,180,255,0.08)); border:1px solid rgba(0,229,255,0.28); border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:900; color:var(--cyan); }
+    .ios-step-text { flex:1; font-size:12.5px; font-weight:700; color:rgba(255,255,255,0.72); line-height:1.45; }
+    .ios-step-text strong { color:#fff; font-weight:900; }
+    .ios-step-emoji { font-size:20px; flex-shrink:0; }
+    .ios-close-btn { width:100%; padding:13px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09); border-radius:14px; font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:rgba(255,255,255,0.45); cursor:pointer; transition:background .15s,color .15s; }
+    .ios-close-btn:hover { background:rgba(255,255,255,0.09); color:rgba(255,255,255,0.72); }
+  </style>
+
+  <div id="pwa-install-banner">
+    <span class="pwa-shimmer"></span>
+    <div class="pwa-app-icon">
+      <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" alt="AO Budget">
+    </div>
+    <div class="pwa-texts">
+      <div class="pwa-label">חדש</div>
+      <span class="pwa-title">הוסיפו למסך הבית</span>
+      <span class="pwa-sub">חווית אפליקציה מלאה — בלי דפדפן</span>
+    </div>
+    <div class="pwa-btn-group">
+      <button class="pwa-btn-install" id="pwa-install-btn">התקנה</button>
+      <button class="pwa-btn-dismiss" id="pwa-dismiss-btn">לא עכשיו</button>
+    </div>
+  </div>
+
+  <!-- iOS הדרכה -->
+  <div id="pwa-ios-overlay" onclick="if(event.target===this)this.classList.remove('open')">
+    <div id="pwa-ios-sheet">
+      <div class="ios-handle"></div>
+      <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" class="ios-sheet-icon" alt="AO Budget">
+      <div class="ios-sheet-title">הוסיפו למסך הבית</div>
+      <div class="ios-sheet-sub">הפכו את AO Budget לאפליקציה מלאה<br>בשלושה שלבים פשוטים</div>
+      <div class="ios-steps">
+        <div class="ios-step">
+          <div class="ios-step-num">1</div>
+          <div class="ios-step-text">לחצו על כפתור <strong>השיתוף</strong> בתחתית הדפדפן</div>
+          <div class="ios-step-emoji">📤</div>
+        </div>
+        <div class="ios-step">
+          <div class="ios-step-num">2</div>
+          <div class="ios-step-text">גללו ובחרו <strong>הוסף למסך הבית</strong></div>
+          <div class="ios-step-emoji">➕</div>
+        </div>
+        <div class="ios-step">
+          <div class="ios-step-num">3</div>
+          <div class="ios-step-text">לחצו <strong>הוסף</strong> — וזהו! האפליקציה מוכנה</div>
+          <div class="ios-step-emoji">🎉</div>
+        </div>
+      </div>
+      <button class="ios-close-btn" onclick="document.getElementById('pwa-ios-overlay').classList.remove('open');localStorage.setItem('pwa-dismissed','1')">הבנתי, תודה!</button>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    // לא מציגים שוב אם כבר נדחה
+    if (localStorage.getItem('pwa-dismissed')) return;
+    // לא מציגים אם כבר מותקן
+    if (window.matchMedia('(display-mode: standalone)').matches) return;
+
+    const banner  = document.getElementById('pwa-install-banner');
+    const installBtn = document.getElementById('pwa-install-btn');
+    const dismissBtn = document.getElementById('pwa-dismiss-btn');
+    let deferredPrompt = null;
+
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+    // iOS Safari — הצג הדרכה
+    if (isIOS && isSafari) {
+      banner.classList.add('visible');
+      installBtn.addEventListener('click', () => {
+        document.getElementById('pwa-ios-overlay').classList.add('open');
+      });
+      dismissBtn.addEventListener('click', () => {
+        banner.style.animation = 'none';
+        banner.style.transition = 'all 0.3s ease';
+        banner.style.opacity = '0'; banner.style.transform = 'translateY(-10px)';
+        setTimeout(() => banner.remove(), 320);
+        localStorage.setItem('pwa-dismissed','1');
+      });
+      return;
+    }
+
+    // Chrome / Android — beforeinstallprompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      banner.classList.add('visible');
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      banner.style.transition = 'all 0.3s ease';
+      banner.style.opacity = '0'; banner.style.transform = 'translateY(-10px)';
+      setTimeout(() => banner.remove(), 320);
+      if (outcome === 'accepted') localStorage.setItem('pwa-dismissed','1');
+    });
+
+    dismissBtn.addEventListener('click', () => {
+      banner.style.transition = 'all 0.3s ease';
+      banner.style.opacity = '0'; banner.style.transform = 'translateY(-10px)';
+      setTimeout(() => banner.remove(), 320);
+      localStorage.setItem('pwa-dismissed','1');
+    });
+
+    // אם כבר הותקן — הסר
+    window.addEventListener('appinstalled', () => {
+      if (banner) banner.remove();
+      localStorage.setItem('pwa-dismissed','1');
+    });
+  })();
+  </script>
+  <!-- / PWA INSTALL BANNER -->
 
   <div style="padding:20px 16px 0">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px" class="rise">
