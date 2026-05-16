@@ -1827,6 +1827,49 @@
   min-width: 28px !important;
   min-height: 28px !important;
 }
+
+/* ── inp-2026 / btn-login-primary — גלובלי ── */
+.inp-2026 {
+  display: block; width: 100%; box-sizing: border-box;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 14px;
+  padding: 14px 16px;
+  color: #fff;
+  font-family: 'Syne', sans-serif;
+  font-size: 15px; font-weight: 600;
+  text-align: right; outline: none;
+  -webkit-appearance: none;
+  transition: border-color .22s, box-shadow .22s, background .22s;
+}
+.inp-2026:focus {
+  border-color: rgba(0,229,255,0.45);
+  background: rgba(0,229,255,0.04);
+  box-shadow: 0 0 0 3px rgba(0,229,255,0.09);
+}
+.inp-2026::placeholder { color: rgba(255,255,255,0.20); font-weight: 500; }
+
+.btn-login-primary {
+  display: block; width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #00E5FF 0%, #00BFFF 100%);
+  color: #020C14;
+  border: none; border-radius: 15px;
+  font-family: 'Syne', sans-serif;
+  font-size: 15px; font-weight: 900;
+  letter-spacing: 0.01em; cursor: pointer;
+  position: relative; overflow: hidden;
+  box-shadow: 0 6px 28px rgba(0,229,255,0.35), 0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.28);
+  transition: transform 0.2s var(--spring), box-shadow 0.2s ease;
+}
+.btn-login-primary::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 60%);
+  pointer-events: none;
+}
+.btn-login-primary:hover  { transform: translateY(-2px); box-shadow: 0 10px 36px rgba(0,229,255,0.45), inset 0 1px 0 rgba(255,255,255,0.28); }
+.btn-login-primary:active { transform: scale(0.97); }
   </style>
  
 </head>
@@ -2795,55 +2838,11 @@
 
   <!-- ✦ BETA BANNER → BUBBLE 2026 ✦ -->
   <style>
-    @keyframes bubbleIn {
-      0%   { transform: scale(0) rotate(-20deg); opacity:0; }
-      60%  { transform: scale(1.15) rotate(4deg); opacity:1; }
-      80%  { transform: scale(0.92) rotate(-2deg); }
-      100% { transform: scale(1) rotate(0deg); opacity:1; }
+    /* ── צ'יפ תמיכה — תמיד מוצג ── */
+    @keyframes betaTagPulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.55; transform: scale(0.85); }
     }
-    @keyframes bubblePop {
-      0%,100% { box-shadow: 0 0 0 0 rgba(255,160,0,0.0), 0 6px 24px rgba(0,0,0,0.5); }
-      50%      { box-shadow: 0 0 0 8px rgba(255,160,0,0.10), 0 6px 24px rgba(0,0,0,0.5); }
-    }
-    @keyframes bubbleDot {
-      0%,100% { transform: scale(1); opacity:1; }
-      50%      { transform: scale(1.5); opacity:0.7; }
-    }
-    @keyframes bannerCollapse {
-      0%   { opacity:1; transform:scale(1); max-height:80px; margin-bottom:0; }
-      40%  { opacity:0; transform:scale(0.85) translateY(-8px); }
-      100% { opacity:0; transform:scale(0.7); max-height:0; margin:0; padding:0; overflow:hidden; }
-    }
-
-    #beta-banner {
-      margin: 12px 16px 0;
-      background: linear-gradient(135deg, rgba(255,150,0,0.08) 0%, rgba(255,80,0,0.05) 100%);
-      border: 1px solid rgba(255,175,0,0.28);
-      border-radius: 18px;
-      padding: 12px 14px;
-      display: flex; align-items: center; gap: 11px;
-      position: relative; overflow: hidden; cursor: pointer;
-      animation: betaBannerGlow 3.2s ease-in-out infinite;
-      transition: transform 0.18s var(--spring), background 0.18s;
-      -webkit-tap-highlight-color: transparent;
-    }
-    #beta-banner::before {
-      content: ''; position: absolute; top: 0; left: 6%; right: 6%; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,180,0,0.55), transparent);
-    }
-    #beta-banner .beta-shimmer {
-      position: absolute; inset: 0; pointer-events: none;
-      background: linear-gradient(105deg, transparent 35%, rgba(255,200,0,0.09) 50%, transparent 65%);
-      animation: betaShimmer 3.5s linear infinite;
-    }
-    #beta-banner:hover  { transform: translateY(-1px); background: linear-gradient(135deg, rgba(255,150,0,0.12), rgba(255,80,0,0.08)); }
-    #beta-banner:active { transform: scale(0.98); }
-    #beta-banner.collapsing {
-      animation: bannerCollapse 0.55s cubic-bezier(0.4,0,0.2,1) forwards !important;
-      pointer-events: none;
-    }
-
-    /* ── צ'יפ קליל — סגנון Intercom ── */
     @keyframes chipSlideIn {
       0%   { opacity:0; transform: translateX(-18px) scale(0.88); }
       65%  { transform: translateX(3px) scale(1.02); }
@@ -2865,7 +2864,7 @@
       display: none;
       align-items: center; gap: 8px;
       padding: 9px 14px 9px 10px;
-      background: rgba(14, 20, 42, 0.94);
+      background: rgba(14,20,42,0.94);
       backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255,255,255,0.10);
       border-radius: 999px;
@@ -2874,14 +2873,9 @@
       box-shadow: 0 2px 12px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.07);
       -webkit-tap-highlight-color: transparent;
       transition: transform 0.18s var(--spring), background 0.18s, border-color 0.18s;
-      max-width: 160px;
     }
     #beta-bubble.show { display: flex; }
-    #beta-bubble:hover {
-      transform: translateY(-2px);
-      background: rgba(20, 28, 56, 0.97);
-      border-color: rgba(255,255,255,0.16);
-    }
+    #beta-bubble:hover  { transform: translateY(-2px); background: rgba(20,28,56,0.97); border-color: rgba(255,255,255,0.16); }
     #beta-bubble:active { transform: scale(0.96); }
 
     .chip-dot-wrap {
@@ -2905,63 +2899,22 @@
       font-family: 'Syne', sans-serif;
       font-size: 11.5px; font-weight: 700;
       color: rgba(255,255,255,0.72);
-      letter-spacing: -0.1px;
-      white-space: nowrap;
+      letter-spacing: -0.1px; white-space: nowrap;
     }
-    .chip-text strong {
-      color: rgba(255,255,255,0.90);
-      font-weight: 900;
-    }
-
-    /* טולטיפ — נשאר כמות שהוא אבל מוסתר */
-    #beta-bubble-tip { display: none; }
+    .chip-text strong { color: rgba(255,255,255,0.90); font-weight: 900; }
   </style>
 
-  <!-- הבאנר -->
-  <div id="beta-banner">
-    <span class="beta-shimmer"></span>
-    <div class="beta-icon-box">🛠️</div>
-    <div class="beta-texts">
-      <span class="beta-tag">BETA</span>
-      <span class="beta-headline">האפליקציה בשלבי פיתוח</span>
-      <span class="beta-sub">נתקלתם בתקלה? לחצו לדיווח →</span>
-    </div>
-    <svg class="beta-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-  </div>
-
-  <!-- העיגול הצף -->
-  <div id="beta-bubble">
+  <!-- ✦ צ'יפ תמיכה — תמיד מוצג ✦ -->
+  <div id="beta-bubble" class="show">
     <div class="chip-dot-wrap">🐞</div>
     <span class="chip-text"><strong>תקלה?</strong> דברו איתנו</span>
   </div>
-  <div id="beta-bubble-tip"></div>
 
   <script>
   (function(){
-    const banner = document.getElementById('beta-banner');
     const bubble = document.getElementById('beta-bubble');
-    const tip    = document.getElementById('beta-bubble-tip');
-
     function openModal(){ document.getElementById('bug-modal-overlay').classList.add('open'); }
-
-    banner.addEventListener('click', openModal);
     bubble.addEventListener('click', openModal);
-
-    // טולטיפ על הבועה — מציג 3 שניות בהופעה
-    bubble.addEventListener('mouseenter', () => tip.classList.add('show'));
-    bubble.addEventListener('mouseleave', () => tip.classList.remove('show'));
-
-    // אחרי 20 שניות — אנימציה והצגת בועה
-    setTimeout(() => {
-      banner.classList.add('collapsing');
-      setTimeout(() => {
-        banner.style.display = 'none';
-        bubble.classList.add('show');
-        // טולטיפ אוטומטי ל-3 שניות בהופעה
-        tip.classList.add('show');
-        setTimeout(() => tip.classList.remove('show'), 3000);
-      }, 560);
-    }, 20000);
   })();
   </script>
 
@@ -4582,8 +4535,8 @@ window.deletePhoneIdx = function(i) {
     unsubs.forEach(function(u){ try{ u(); }catch(e){} }); unsubs=[];
     var uRef = db.collection('users').doc(uid);
 
-    /* User profile — silent fail on snapshot, just use get() data */
-    unsubs.push(uRef.onSnapshot({ includeMetadataChanges: false }, function(doc){
+    /* User profile — with get() fallback if snapshot fails */
+    function loadUserDoc(doc) {
       if(!doc.exists) return;
       var d = doc.data();
       if(d.resetDay){ resetDay=d.resetDay; var ri=$('reset-day-input'); if(ri) ri.value=resetDay; }
@@ -4591,10 +4544,8 @@ window.deletePhoneIdx = function(i) {
         displayName=d.displayName;
         var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
         var si=$('settings-name-input'); if(si) si.value=displayName;
-        /* עדכון כרטיס המשתמש החכם */
         var sun=$('settings-user-name'); if(sun) sun.textContent=displayName;
       }
-      // טעינת תמונת הפרופיל מהענן בכל פעם שהדף מתרענן
       var picEl = document.getElementById('dashboard-profile-pic');
       var picEl2 = document.getElementById('settings-user-avatar');
       if(picEl) {
@@ -4609,14 +4560,20 @@ window.deletePhoneIdx = function(i) {
       if(d.phones) {
         userPhones = d.phones;
       } else if (d.phone) {
-        // Migration from old single phone string to array
         userPhones = [d.phone];
         db.collection('users').doc(uid).set({phones: userPhones}, {merge:true}).catch(function(){});
       } else {
         userPhones = [];
       }
       renderPhonesList();
-    }, function(){ /* ignore permission errors silently */ }));
+    }
+
+    unsubs.push(uRef.onSnapshot({ includeMetadataChanges: false }, loadUserDoc,
+      function() {
+        // fallback אם ה-snapshot נחסם — מושך פעם אחת עם get()
+        uRef.get().then(loadUserDoc).catch(function(){});
+      }
+    ));
 
     function snapCol(name, assign, extra){
       unsubs.push(uRef.collection(name).onSnapshot(function(s){
@@ -4862,14 +4819,18 @@ window.deletePhoneIdx = function(i) {
   ══════════════════════════════════════════════ */
   $('btn-toggle-mode').onclick=function(){
     isRegMode=!isRegMode;
+    var mainSpan = $('btn-toggle-mode').querySelector('.cta-main');
+    var subSpan  = $('btn-toggle-mode').querySelector('.cta-sub');
     if(isRegMode){
       show('login-name-wrap');
       $('btn-email-auth').textContent='צור חשבון';
-      $('btn-toggle-mode').textContent='← חזרה לכניסה';
+      if(mainSpan) mainSpan.textContent='חזרה לכניסה';
+      if(subSpan)  subSpan.textContent='כבר יש לך חשבון?';
     } else {
       hide('login-name-wrap');
       $('btn-email-auth').textContent='כניסה לחשבון';
-      $('btn-toggle-mode').textContent='עוד אין לך חשבון? לחץ כאן ←';
+      if(mainSpan) mainSpan.textContent='לפתיחת חשבון — לחצו כאן!';
+      if(subSpan)  subSpan.textContent='עוד אין לך חשבון?';
     }
     hide('login-err');
   };
