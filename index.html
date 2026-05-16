@@ -3655,24 +3655,208 @@
         </div>
       </div>
 
-      <div class="settings-section-title" style="margin-top:6px;" id="settings-phones-section">ניהול מספרי וואטסאפ לבוט</div>
-      
-      <div class="sblock modern-hover">
-        <div class="sblock-head">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          <span style="color:#25D366;">המספרים המחוברים לחשבון</span>
-        </div>
-        <div class="sblock-body">
-          <p style="color:var(--muted);font-size:12px;margin-bottom:12px;line-height:1.4">מספרים שמופיעים כאן יוכלו לשלוח תנועות ישירות דרך הבוט בוואטסאפ אל תוך החשבון שלך.</p>
-          
-          <div id="phone-list-container"></div>
-          
-          <div style="display:flex; gap:8px; margin-bottom:12px; margin-top:8px;">
-            <input id="settings-new-phone-input" class="inp" type="tel" placeholder="מספר חדש (למשל: 0501234567)" autocomplete="tel" style="text-align:right; direction:ltr; font-size:13px; padding:10px 12px; flex:1;">
-            <button onclick="addNewPhoneFromInput()" class="btn btn-ghost" style="width:auto; padding:10px 16px; font-size:13px; border-color:rgba(37,211,102,0.3); color:#25D366;">הוסף</button>
+      <div class="settings-section-title" style="margin-top:6px;" id="settings-phones-section">חיבור מספרי וואטסאפ לבוט</div>
+
+      <style>
+        /* ── כרטיס מספרי הבוט 2026 ── */
+        #phones-card-2026 {
+          background: linear-gradient(160deg, rgba(8,18,12,0.95), rgba(4,12,8,0.98));
+          border: 1px solid rgba(37,211,102,0.18);
+          border-radius: 22px;
+          overflow: hidden;
+          margin-bottom: 12px;
+          box-shadow: 0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(37,211,102,0.08);
+          position: relative;
+        }
+        #phones-card-2026::before {
+          content:''; position:absolute; top:0; left:8%; right:8%; height:1px;
+          background: linear-gradient(90deg, transparent, rgba(37,211,102,0.50), transparent);
+        }
+        .phones-card-header {
+          display: flex; align-items: center; gap: 12px;
+          padding: 16px 18px 14px;
+          border-bottom: 1px solid rgba(37,211,102,0.08);
+        }
+        .phones-header-icon {
+          width: 38px; height: 38px; flex-shrink:0;
+          background: linear-gradient(135deg, rgba(37,211,102,0.18), rgba(18,140,60,0.08));
+          border: 1px solid rgba(37,211,102,0.28);
+          border-radius: 12px;
+          display: flex; align-items: center; justify-content: center;
+          box-shadow: 0 0 16px rgba(37,211,102,0.18);
+          font-size: 18px;
+        }
+        .phones-header-text { flex:1; }
+        .phones-header-title { font-size:14px; font-weight:800; color:rgba(255,255,255,0.90); }
+        .phones-header-sub   { font-size:11px; font-weight:600; color:rgba(255,255,255,0.38); margin-top:2px; }
+        .phones-header-badge {
+          display:flex; align-items:center; gap:4px;
+          background: rgba(37,211,102,0.10);
+          border: 1px solid rgba(37,211,102,0.25);
+          border-radius: 8px; padding: 3px 9px;
+          font-size: 10px; font-weight:900;
+          color: rgba(37,211,102,0.90);
+          letter-spacing: 0.08em;
+        }
+        .phones-header-badge::before {
+          content:''; width:5px; height:5px; border-radius:50%;
+          background:#25D366; box-shadow:0 0 5px rgba(37,211,102,0.80);
+        }
+
+        /* רשימת מספרים */
+        .phones-list-wrap { padding: 14px 16px 10px; }
+        .phone-item-2026 {
+          display:flex; align-items:center; gap:10px;
+          background: rgba(37,211,102,0.04);
+          border: 1px solid rgba(37,211,102,0.16);
+          border-radius: 14px; padding: 12px 14px;
+          margin-bottom: 8px;
+          position: relative; overflow:hidden;
+          transition: border-color .18s, background .18s;
+          animation: phoneItemIn 0.35s var(--spring) both;
+        }
+        @keyframes phoneItemIn {
+          0%   { opacity:0; transform:translateX(14px); }
+          100% { opacity:1; transform:translateX(0); }
+        }
+        .phone-item-2026::before {
+          content:''; position:absolute; top:0; left:5%; right:5%; height:1px;
+          background: linear-gradient(90deg, transparent, rgba(37,211,102,0.30), transparent);
+        }
+        .phone-wa-icon {
+          width:32px; height:32px; flex-shrink:0;
+          background: linear-gradient(135deg, rgba(37,211,102,0.18), rgba(18,140,60,0.10));
+          border: 1px solid rgba(37,211,102,0.28); border-radius:10px;
+          display:flex; align-items:center; justify-content:center; font-size:15px;
+        }
+        .phone-number-text {
+          flex:1; font-family:'JetBrains Mono',monospace;
+          font-size:14px; font-weight:700; color:#25D366;
+          direction:ltr; text-align:right; letter-spacing:0.5px;
+        }
+        .phone-status-dot {
+          width:7px; height:7px; border-radius:50%; flex-shrink:0;
+          background:#4CD964;
+          box-shadow:0 0 6px rgba(76,217,100,0.7);
+          animation: chipDot 2s ease-in-out infinite;
+        }
+        .phone-action-btn {
+          width:28px; height:28px; border-radius:8px; border:none;
+          display:flex; align-items:center; justify-content:center;
+          cursor:pointer; transition: background .15s, transform .15s; flex-shrink:0;
+        }
+        .phone-action-btn:hover { transform:scale(1.12); }
+        .phone-action-btn.edit { background:rgba(0,229,255,0.10); color:rgba(0,229,255,0.80); }
+        .phone-action-btn.del  { background:rgba(255,50,80,0.10);  color:rgba(255,80,100,0.80); }
+        .phone-action-btn.edit:hover { background:rgba(0,229,255,0.18); color:var(--cyan); }
+        .phone-action-btn.del:hover  { background:rgba(255,50,80,0.20);  color:#ff4060; }
+        .phone-empty-state {
+          text-align:center; padding:20px 16px;
+          border: 1px dashed rgba(37,211,102,0.18); border-radius:14px;
+          margin-bottom:10px;
+        }
+        .phone-empty-icon { font-size:28px; margin-bottom:6px; }
+        .phone-empty-title { font-size:13px; font-weight:800; color:rgba(255,255,255,0.55); margin-bottom:3px; }
+        .phone-empty-sub   { font-size:11px; font-weight:600; color:rgba(255,255,255,0.30); }
+
+        /* שדה הוספה */
+        .phones-add-wrap {
+          padding: 0 16px 16px;
+          display:flex; gap:8px; align-items:stretch;
+        }
+        .phones-input-wrap { flex:1; position:relative; }
+        .phones-input-icon {
+          position:absolute; right:12px; top:50%; transform:translateY(-50%);
+          color:rgba(37,211,102,0.45); pointer-events:none; font-size:14px;
+          transition: color .2s;
+        }
+        #settings-new-phone-input:focus + .phones-input-icon { color:rgba(37,211,102,0.80); }
+        #settings-new-phone-input {
+          width:100%; box-sizing:border-box;
+          background: rgba(255,255,255,0.04);
+          border: 1px solid rgba(37,211,102,0.20);
+          border-radius: 13px; padding: 12px 40px 12px 14px;
+          color:#fff; font-family:'Syne',sans-serif;
+          font-size:14px; font-weight:600; direction:ltr; text-align:right;
+          outline:none; -webkit-appearance:none;
+          transition: border-color .2s, box-shadow .2s;
+        }
+        #settings-new-phone-input:focus {
+          border-color: rgba(37,211,102,0.50);
+          box-shadow: 0 0 0 3px rgba(37,211,102,0.10);
+        }
+        #settings-new-phone-input::placeholder { color:rgba(255,255,255,0.22); font-size:12px; }
+        .btn-add-phone-2026 {
+          padding: 12px 18px;
+          background: linear-gradient(135deg, rgba(37,211,102,0.22), rgba(18,140,60,0.12));
+          border: 1px solid rgba(37,211,102,0.35);
+          border-radius: 13px; cursor:pointer;
+          font-family:'Syne',sans-serif; font-size:13px; font-weight:900;
+          color: rgba(37,211,102,0.95); white-space:nowrap;
+          box-shadow: 0 4px 16px rgba(37,211,102,0.12);
+          transition: transform .18s var(--spring), box-shadow .18s, background .18s;
+          display:flex; align-items:center; gap:6px;
+        }
+        .btn-add-phone-2026:hover  { transform:translateY(-1px); box-shadow:0 6px 22px rgba(37,211,102,0.22); background: linear-gradient(135deg,rgba(37,211,102,0.30),rgba(18,140,60,0.18)); }
+        .btn-add-phone-2026:active { transform:scale(0.96); }
+
+        /* הודעת סטטוס */
+        #phone-action-msg {
+          margin: 0 16px 14px;
+          padding: 10px 14px; border-radius:12px;
+          font-size:12px; font-weight:700; line-height:1.5;
+          display:none;
+          transition: all .2s;
+        }
+        #phone-action-msg.show { display:block; }
+
+        /* אינפו בוט */
+        .phones-bot-info {
+          display:flex; align-items:flex-start; gap:10px;
+          background: rgba(255,255,255,0.03);
+          border-top: 1px solid rgba(255,255,255,0.06);
+          padding: 12px 16px;
+        }
+        .phones-bot-info-icon { font-size:15px; flex-shrink:0; margin-top:1px; }
+        .phones-bot-info-text { font-size:11px; font-weight:600; color:rgba(255,255,255,0.38); line-height:1.6; }
+        .phones-bot-info-text strong { color:rgba(37,211,102,0.75); font-weight:800; }
+      </style>
+
+      <div id="phones-card-2026">
+        <div class="phones-card-header">
+          <div class="phones-header-icon">📱</div>
+          <div class="phones-header-text">
+            <div class="phones-header-title">מספרים מחוברים לבוט</div>
+            <div class="phones-header-sub">שולחים הוצאה בוואטסאפ — נרשמת אוטומטית</div>
           </div>
-          
-          <div id="phone-action-msg" class="saved hidden" style="font-size:12px; padding:8px; border-radius:8px; line-height:1.4;"></div>
+          <div class="phones-header-badge">LIVE</div>
+        </div>
+
+        <div class="phones-list-wrap">
+          <div id="phone-list-container"></div>
+        </div>
+
+        <div class="phones-add-wrap">
+          <div class="phones-input-wrap">
+            <input id="settings-new-phone-input" type="tel"
+              placeholder="0501234567"
+              autocomplete="tel"
+              onkeydown="if(event.key==='Enter') addNewPhoneFromInput()">
+            <span class="phones-input-icon">📲</span>
+          </div>
+          <button class="btn-add-phone-2026" onclick="addNewPhoneFromInput()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            הוסף
+          </button>
+        </div>
+
+        <div id="phone-action-msg"></div>
+
+        <div class="phones-bot-info">
+          <span class="phones-bot-info-icon">💡</span>
+          <div class="phones-bot-info-text">
+            מספרים שכבר מוגדרים בבוט ייזוהו אוטומטית. שלחו <strong>"עזרה"</strong> לבוט בוואטסאפ לאחר הוספה.
+          </div>
         </div>
       </div>
 
@@ -4352,94 +4536,100 @@
     var container = $('phone-list-container');
     if(!container) return;
     if(!userPhones || userPhones.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:16px; border:1px dashed rgba(255,255,255,0.15); border-radius:12px;"><p style="color:var(--muted);font-size:12px;margin:0;">לא הוגדרו מספרים. הוסף מספר כדי שהבוט יזהה אותך.</p></div>';
+      container.innerHTML =
+        '<div class="phone-empty-state">' +
+          '<div class="phone-empty-icon">📵</div>' +
+          '<div class="phone-empty-title">אין מספרים מחוברים</div>' +
+          '<div class="phone-empty-sub">הוסיפו מספר כדי שהבוט יזהה אתכם</div>' +
+        '</div>';
     } else {
-        var html = '<div style="margin-bottom:12px; display:flex; flex-direction:column; gap:8px;">';
-        userPhones.forEach(function(p, i) {
-            html += '<div class="fixed-row modern-hover" style="border-color:rgba(37,211,102,0.2); background:rgba(37,211,102,0.03);">' +
-                    '<span class="mono" style="font-size:14px;color:#25D366;font-weight:700; direction:ltr; text-align:left;">' + p + '</span>' +
-                    '<div style="display:flex;gap:12px;">' +
-                    '<button onclick="editPhoneIdx(' + i + ')" style="background:none;border:none;color:var(--cyan);cursor:pointer;font-size:14px; display:flex; align-items:center;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon></svg></button>' +
-                    '<button onclick="deletePhoneIdx(' + i + ')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:14px; display:flex; align-items:center;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>' +
-                    '</div></div>';
-        });
-        html += '</div>';
-        container.innerHTML = html;
+      var html = '';
+      userPhones.forEach(function(p, i) {
+        html +=
+          '<div class="phone-item-2026" style="animation-delay:' + (i*0.06) + 's">' +
+            '<div class="phone-wa-icon">💬</div>' +
+            '<span class="phone-number-text">' + p + '</span>' +
+            '<div class="phone-status-dot"></div>' +
+            '<button class="phone-action-btn edit" onclick="editPhoneIdx(' + i + ')" title="ערוך">' +
+              '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"/></svg>' +
+            '</button>' +
+            '<button class="phone-action-btn del" onclick="deletePhoneIdx(' + i + ')" title="הסר">' +
+              '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>' +
+            '</button>' +
+          '</div>';
+      });
+      container.innerHTML = html;
     }
   };
 
+  function showPhoneMsg(text, type) {
+    var el = $('phone-action-msg');
+    if(!el) return;
+    el.style.background = type === 'ok'
+      ? 'rgba(37,211,102,0.10)' : type === 'loading'
+      ? 'rgba(255,255,255,0.05)' : 'rgba(255,50,80,0.10)';
+    el.style.color = type === 'ok'
+      ? '#25D366' : type === 'loading'
+      ? 'rgba(255,255,255,0.65)' : '#ff4060';
+    el.style.border = '1px solid ' + (type === 'ok'
+      ? 'rgba(37,211,102,0.25)' : type === 'loading'
+      ? 'rgba(255,255,255,0.08)' : 'rgba(255,50,80,0.25)');
+    el.textContent = text;
+    el.classList.add('show');
+    if(type === 'ok') setTimeout(function(){ el.classList.remove('show'); }, 3000);
+  }
+
   window.updatePhonesInDB = function(newPhones) {
-    var msgEl = $('phone-action-msg');
-    msgEl.style.background = 'rgba(255,255,255,0.05)';
-    msgEl.style.color = 'rgba(255,255,255,0.7)';
-    msgEl.textContent = 'שומר נתונים...';
-    show('phone-action-msg');
-
+    showPhoneMsg('שומר...', 'loading');
     var updateData = { phones: newPhones };
-    // אם יש מספרים, נשמור תמיד את הראשון כ"ראשי" כדי שהבוט לא יתנתק
-    if (newPhones.length > 0) {
-        updateData.phone = newPhones[0]; 
-    } else {
-        updateData.phone = firebase.firestore.FieldValue.delete();
-    }
-
+    if (newPhones.length > 0) { updateData.phone = newPhones[0]; }
+    else { updateData.phone = firebase.firestore.FieldValue.delete(); }
     db.collection('users').doc(uid).set(updateData, {merge:true})
       .then(function() {
-          msgEl.style.background = 'rgba(37,211,102,0.1)';
-          msgEl.style.color = '#25D366';
-          msgEl.textContent = '✓ הפעולה נשמרה בהצלחה!';
-          userPhones = newPhones; 
-          renderPhonesList();
-          toast('מספרי הטלפון עודכנו!', 'success');
-          setTimeout(function(){ hide('phone-action-msg'); }, 3000);
+        userPhones = newPhones;
+        renderPhonesList();
+        showPhoneMsg('✓ נשמר בהצלחה!', 'ok');
+        toast('מספרי הטלפון עודכנו!', 'success');
       })
       .catch(function(e) {
-          msgEl.style.background = 'rgba(255,23,68,0.1)';
-          msgEl.style.color = 'var(--red)';
-          msgEl.innerHTML = '✗ שגיאה בשמירה: ודא שהחיבור תקין ורענן את הדף. <br><span style="font-size:10px;opacity:0.8">(ייתכן וחסימת אינטרנט כמו נטפרי מונעת את שמירת הנתונים כרגע)</span>';
+        showPhoneMsg('✗ שגיאה בשמירה — בדקו חיבור לרשת', 'err');
       });
   };
 
   window.addNewPhoneFromInput = function() {
     var input = $('settings-new-phone-input');
-    var p = input.value;
+    var p = input.value.trim();
     if(!p) return;
     var fmtP = window.formatPhone(p);
-    
     if(userPhones && userPhones.includes(fmtP)) {
-        toast('מספר זה כבר קיים ברשימה שלך.', 'error');
-        return;
+      showPhoneMsg('המספר הזה כבר ברשימה שלך', 'err');
+      return;
     }
+    showPhoneMsg('מוודא שהמספר פנוי...', 'loading');
 
-    var msgEl = $('phone-action-msg');
-    msgEl.style.background = 'rgba(255,255,255,0.05)';
-    msgEl.style.color = 'rgba(255,255,255,0.7)';
-    msgEl.textContent = 'מוודא שהמספר פנוי...';
-    show('phone-action-msg');
-
-    // בדיקה במסד הנתונים האם המספר כבר מקושר לחשבון אחר
+    // בדיקה: האם המספר רשום אצל משתמש אחר (לא אצלנו)
     db.collection('users').where('phones', 'array-contains', fmtP).get()
-      .then(function(querySnapshot) {
-          if (!querySnapshot.empty) {
-              // המספר נמצא אצל מישהו אחר
-              msgEl.style.background = 'rgba(255,23,68,0.1)';
-              msgEl.style.color = 'var(--red)';
-              msgEl.textContent = '✗ המספר הזה כבר רשום בחשבון אחר במערכת!';
-              toast('המספר הזה כבר רשום בחשבון אחר!', 'error');
-              return;
-          }
-
-          // המספר פנוי - שומרים
-          var newArr = (userPhones || []).slice();
-          newArr.push(fmtP);
-          updatePhonesInDB(newArr);
-          input.value = '';
+      .then(function(qs) {
+        var takenByOther = false;
+        qs.forEach(function(doc) {
+          if(doc.id !== uid) takenByOther = true;
+        });
+        if(takenByOther) {
+          showPhoneMsg('✗ המספר רשום בחשבון אחר במערכת', 'err');
+          toast('המספר הזה כבר רשום בחשבון אחר!', 'error');
+          return;
+        }
+        var newArr = (userPhones || []).slice();
+        newArr.push(fmtP);
+        updatePhonesInDB(newArr);
+        input.value = '';
       })
-      .catch(function(e) {
-          console.error('Error checking phone uniqueness:', e);
-          msgEl.style.background = 'rgba(255,23,68,0.1)';
-          msgEl.style.color = 'var(--red)';
-          msgEl.innerHTML = '✗ שגיאה בבדיקת המספר. ודא חיבור לרשת.';
+      .catch(function() {
+        // אם הבדיקה נכשלת — פשוט שומרים בלי בדיקה
+        var newArr = (userPhones || []).slice();
+        newArr.push(fmtP);
+        updatePhonesInDB(newArr);
+        input.value = '';
       });
   };
 
