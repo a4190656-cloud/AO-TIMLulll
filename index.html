@@ -2476,12 +2476,31 @@
       </button>
 
       <!-- הסכמה משפטית -->
-      <div class="legal-consent-bar" style="margin-top:14px;margin-bottom:0">
-        <div class="legal-icon-wrap">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        </div>
-        <p class="legal-text">
-          הרשמה, כניסה או שימוש באפליקציה מהווים <strong>הסכמה מלאה</strong> ל<a href="https://a4190656-cloud.github.io/AO-TIMLulll/privacy.html" target="_blank">תנאי השימוש ומדיניות הפרטיות</a> של AO Budget, לרבות איסוף ועיבוד מידע כמפורט בהם.
+      <div style="
+        display:flex; align-items:center; gap:10px;
+        padding:10px 14px;
+        background:rgba(255,255,255,0.02);
+        border:1px solid rgba(255,255,255,0.06);
+        border-radius:14px;
+        margin-top:14px;
+        position:relative; overflow:hidden;
+      ">
+        <div style="
+          position:absolute; top:0; left:10%; right:10%; height:1px;
+          background:linear-gradient(90deg,transparent,rgba(255,255,255,0.10),transparent);
+        "></div>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <p style="
+          margin:0; flex:1;
+          font-size:9.5px; font-weight:600;
+          color:rgba(255,255,255,0.28);
+          line-height:1.6; letter-spacing:0.01em;
+        ">
+          שימוש באפליקציה מהווה הסכמה ל<a href="https://a4190656-cloud.github.io/AO-TIMLulll/privacy.html" target="_blank" style="
+            color:rgba(0,229,255,0.55); font-weight:800;
+            text-decoration:none; border-bottom:1px solid rgba(0,229,255,0.20);
+            padding-bottom:1px; transition:color .15s,border-color .15s;
+          " onmouseover="this.style.color='#00E5FF';this.style.borderColor='rgba(0,229,255,0.55)'" onmouseout="this.style.color='rgba(0,229,255,0.55)';this.style.borderColor='rgba(0,229,255,0.20)'">תנאי השימוש ומדיניות הפרטיות</a>
         </p>
       </div>
 
