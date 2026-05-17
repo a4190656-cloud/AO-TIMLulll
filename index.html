@@ -4939,43 +4939,53 @@ window.deletePhoneIdx = function(i) {
     });
   })();
 
+ /* ══════════════════════════════════════════════
+     NATIVE GOOGLE LOGIN — הגשר לאפליקציה
+  ══════════════════════════════════════════════ */
+  
+  // 1. הפונקציה שתקבל את הנתונים מהאפליקציה (Flutter יקרא לה מבחוץ!)
+  window.receiveGoogleToken = function(idToken, accessToken) {
+    show('security-loader-overlay'); // מציג מסך טעינה מאובטח
+    
+    // בונה תעודת זהות של גוגל מתוך האסימונים שקיבלנו מהמכשיר
+    var credential = firebase.auth.GoogleAuthProvider.credential(idToken, accessToken);
+    
+    // נכנס ל-Firebase
+    auth.signInWithCredential(credential).then(function(result) {
+      // הצלחה! onAuthStateChanged (שכבר קיים בקוד) יעביר אותנו לאפליקציה
+      hide('security-loader-overlay');
+    }).catch(function(error) {
+      hide('security-loader-overlay');
+      showLoginErr('שגיאה בחיבור לחשבון: ' + error.message);
+      var gBtn = $('btn-google-login');
+      if(gBtn){ gBtn.disabled=false; gBtn.style.opacity='1'; }
+    });
+  };
+
+  // 2. הפעולה של לחיצה על הכפתור
   $('btn-google-login').onclick = function(){
     var btn = this;
     btn.disabled = true;
     btn.style.opacity = '0.6';
 
-    /* בונה את ה-OAuth URL של גוגל ישירות — ללא שום ספרייה חיצונית */
-    var oauthUrl = 'https://accounts.google.com/o/oauth2/v2/auth' +
-      '?client_id=' + encodeURIComponent(GOOGLE_CLIENT_ID) +
-      '&redirect_uri=' + encodeURIComponent(REDIRECT_URI) +
-      '&response_type=token' +
-      '&scope=' + encodeURIComponent('email profile openid') +
-      '&prompt=select_account';
+    // בדיקה: האם אנחנו רצים בתוך האפליקציה שלנו (Flutter)?
+    var isFlutterApp = window.flutter_inappwebview !== undefined;
 
-    /* זיהוי WebView */
-    var ua = navigator.userAgent || '';
-    var isWebView = /wv/.test(ua)
-      || /Android.*Version\/[\d.]+.*Chrome\/[\d.]+ Mobile Safari/.test(ua)
-      || (typeof webkit !== 'undefined' && webkit && webkit.messageHandlers);
-
-    if (isWebView) {
-      /* intent:// מכריח את אנדרואיד לפתוח ב-Chrome ולא ב-WebView */
-      var intentUrl = 'intent://' +
-        'accounts.google.com/o/oauth2/v2/auth' +
+    if (isFlutterApp) {
+      // אם אנחנו באפליקציה -> שולחים פקודה ל-Flutter לפתוח את החלון הנייטיב!
+      window.flutter_inappwebview.callHandler('NativeGoogleLogin');
+    } else {
+      // אם אנחנו בדפדפן רגיל -> התנהגות רגילה כמו מקודם
+      var oauthUrl = 'https://accounts.google.com/o/oauth2/v2/auth' +
         '?client_id=' + encodeURIComponent(GOOGLE_CLIENT_ID) +
         '&redirect_uri=' + encodeURIComponent(REDIRECT_URI) +
         '&response_type=token' +
         '&scope=' + encodeURIComponent('email profile openid') +
-        '&prompt=select_account' +
-        '#Intent;scheme=https;package=com.android.chrome;' +
-        'S.browser_fallback_url=' + encodeURIComponent(oauthUrl) + ';end';
-      window.location.href = intentUrl;
-    } else {
+        '&prompt=select_account';
+      
       window.location.href = oauthUrl;
     }
   };
-
-
   /* Handle redirect result on page load (for Netfree / popup-blocked fallback) */
   auth.getRedirectResult().then(function(result){
     /* If redirect login succeeded — onAuthStateChanged handles it */
