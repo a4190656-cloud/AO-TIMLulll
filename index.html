@@ -17,30 +17,41 @@
     });
   }
 </script>
-  <link id="favicon-link" rel="icon" type="image/png" href="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/main/icon.png">
-  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/main/icon.png">
+  <link id="favicon-link" rel="icon" type="image/png" href="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/refs/heads/main/icon-512.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/refs/heads/main/icon-512.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/refs/heads/main/icon-512.png">
   <script>
     (function(){
+      var ICON = 'https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/refs/heads/main/icon-512.png';
       function setCircularFavicon(){
         var img = new Image();
         img.crossOrigin = 'anonymous';
         img.onload = function(){
           var c = document.createElement('canvas');
-          c.width = c.height = 64;
+          c.width = c.height = 128;
           var ctx = c.getContext('2d');
+          /* עיגול עם רדיוס 2026 */
+          var r = 28;
           ctx.beginPath();
-          ctx.arc(32, 32, 32, 0, Math.PI * 2);
+          ctx.moveTo(r, 0); ctx.lineTo(128-r, 0);
+          ctx.quadraticCurveTo(128, 0, 128, r);
+          ctx.lineTo(128, 128-r);
+          ctx.quadraticCurveTo(128, 128, 128-r, 128);
+          ctx.lineTo(r, 128);
+          ctx.quadraticCurveTo(0, 128, 0, 128-r);
+          ctx.lineTo(0, r);
+          ctx.quadraticCurveTo(0, 0, r, 0);
           ctx.closePath();
           ctx.clip();
-          ctx.drawImage(img, 0, 0, 64, 64);
+          ctx.drawImage(img, 0, 0, 128, 128);
           var link = document.getElementById('favicon-link');
           if(link) link.href = c.toDataURL('image/png');
         };
         img.onerror = function(){
           var link = document.getElementById('favicon-link');
-          if(link) link.href = 'https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/main/icon.png';
+          if(link) link.href = ICON;
         };
-        img.src = 'https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/main/icon.png';
+        img.src = ICON;
       }
       if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', setCircularFavicon); }
       else { setCircularFavicon(); }
@@ -51,9 +62,9 @@
   <meta property="og:url" content="https://a4190656-cloud.github.io/AO-TIMLulll/">
   <meta property="og:title" content="AO ניהול תקציב | התקציב האישי שלכם!">
   <meta property="og:description" content="הצטרפו לניהול תקציב חכם. בואו לעקוב אחרי הכסף שלכם בסטייל.">
-  <meta property="og:image" content="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/main/icon.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
+  <meta property="og:image" content="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/refs/heads/main/icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
   <style>
   /* מסך טעינה מאובטח - גרסת פרימיום AO */
 #security-loader-overlay {
@@ -1880,7 +1891,7 @@
 
 <div id="screen-loading" class="screen">
   <div class="logo-frame" style="width:62px;height:62px;margin-bottom:18px">
-    <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" style="width:56px;height:56px">
+    <img src="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/refs/heads/main/icon-512.png" style="width:56px;height:56px">
   </div>
   <p id="loading-msg" style="color:var(--muted);font-size:13px;font-weight:600">מאמת חשבון<span id="loading-dots">...</span></p>
   <button id="btn-loading-manual" class="hidden" onclick="window.location.reload()" style="margin-top:16px;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:12px;color:rgba(255,255,255,0.5);font-family:Syne,sans-serif;font-size:12px;font-weight:700;padding:8px 18px;cursor:pointer;">לחץ לנסות שוב</button>
@@ -2387,7 +2398,7 @@
     <!-- ── הירו לוגו ── -->
     <div id="login-hero">
       <div class="login-logo-ring">
-        <img class="login-logo-img" src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" alt="AO Budget">
+        <img class="login-logo-img" src="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/refs/heads/main/icon-512.png" alt="AO Budget">
       </div>
       <h1 class="login-title">AO Budget</h1>
       <p class="login-subtitle">ניהול תקציב חכם · פשוט · בטוח</p>
@@ -2716,7 +2727,7 @@
   <div class="setname-hero rise">
     <div class="setname-logo-ring">
       <div class="setname-logo-inner">
-        <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" alt="AO Budget">
+        <img src="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/refs/heads/main/icon-512.png" alt="AO Budget">
       </div>
     </div>
     <h1 class="setname-welcome">ברוך הבא! 👋</h1>
@@ -3188,7 +3199,7 @@
   <div id="pwa-install-banner">
     <span class="pwa-shimmer"></span>
     <div class="pwa-app-icon">
-      <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" alt="AO Budget">
+      <img src="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/refs/heads/main/icon-512.png" alt="AO Budget">
     </div>
     <div class="pwa-texts">
       <div class="pwa-label">חדש</div>
@@ -3205,7 +3216,7 @@
   <div id="pwa-ios-overlay" onclick="if(event.target===this)this.classList.remove('open')">
     <div id="pwa-ios-sheet">
       <div class="ios-handle"></div>
-      <img src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" class="ios-sheet-icon" alt="AO Budget">
+      <img src="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/refs/heads/main/icon-512.png" class="ios-sheet-icon" alt="AO Budget">
       <div class="ios-sheet-title">הוסיפו למסך הבית</div>
       <div class="ios-sheet-sub">הפכו את AO Budget לאפליקציה מלאה<br>בשלושה שלבים פשוטים</div>
       <div class="ios-steps">
@@ -3298,7 +3309,7 @@
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px" class="rise">
 <div style="display:flex;align-items:center;gap:11px">
         <div class="logo-frame modern-hover profile-pic-container" style="width:42px;height:42px;position:relative;cursor:pointer;overflow:hidden;padding:0;border-radius:14px;" onclick="document.getElementById('profile-pic-upload').click()">
-          <img id="dashboard-profile-pic" src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:13px;display:block;">
+          <img id="dashboard-profile-pic" src="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/refs/heads/main/icon-512.png" style="width:100%;height:100%;object-fit:cover;border-radius:13px;display:block;">
           <div class="profile-pic-overlay" style="position:absolute;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;border-radius:13px;backdrop-filter:blur(2px);">
             <svg style="color:white;width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
           </div>
@@ -3622,7 +3633,7 @@
       <!-- Smart User Card 2026 -->
       <div id="settings-user-card">
         <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;position:relative;z-index:1;">
-          <img id="settings-user-avatar" class="user-card-avatar" src="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg" style="width:54px;height:54px;border-radius:17px;">
+          <img id="settings-user-avatar" class="user-card-avatar" src="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/refs/heads/main/icon-512.png" style="width:54px;height:54px;border-radius:17px;">
           <div style="flex:1;min-width:0;">
             <div id="settings-user-name" style="font-size:17px;font-weight:800;letter-spacing:-0.3px;margin-bottom:3px;">טוען...</div>
             <div class="user-card-badge"><span class="live-dot" style="width:5px;height:5px;"></span> חשבון פעיל</div>
@@ -5018,8 +5029,8 @@ window.deletePhoneIdx = function(i) {
           picEl.src = d.profilePic;
           if(picEl2) picEl2.src = d.profilePic;
         } else {
-          picEl.src = "https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg";
-          if(picEl2) picEl2.src = "https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg";
+          picEl.src = "https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/refs/heads/main/icon-512.png";
+          if(picEl2) picEl2.src = "https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/refs/heads/main/icon-512.png";
         }
       }
       if(d.phones) {
@@ -6173,7 +6184,7 @@ window.resetProfilePic = function() {
   if (!confirm('האם אתה בטוח שברצונך לאפס את התמונה ולחזור ללוגו המקורי?')) {
     return; 
   }
-  var defaultPic = "https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg";
+  var defaultPic = "https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/refs/heads/main/icon-512.png";
   var picEl = document.getElementById('dashboard-profile-pic');
   var picEl2 = document.getElementById('settings-user-avatar');
   if (picEl) picEl.src = defaultPic;
