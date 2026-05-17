@@ -3435,7 +3435,18 @@
               <span class="scan-doc-sub">AI מזהה ומוסיף אוטומטית</span>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
-              <div style="background:linear-gradient(135deg,rgba(255,160,0,0.18),rgba(255,100,0,0.10));border:1px solid rgba(255,160,0,0.35);border-radius:6px;padding:2px 7px;font-size:8.5px;font-weight:900;color:rgba(255,200,60,0.95);letter-spacing:0.10em;">בפיתוח</div>
+              <div style="
+                display:inline-flex;align-items:center;gap:5px;
+                background:linear-gradient(135deg,rgba(120,80,255,0.18),rgba(80,60,200,0.10));
+                border:1px solid rgba(130,90,255,0.35);
+                border-radius:20px;
+                padding:3px 10px 3px 7px;
+                font-size:9px;font-weight:900;
+                color:rgba(180,150,255,0.95);
+                letter-spacing:0.06em;
+                box-shadow:0 0 12px rgba(120,80,255,0.15);
+                white-space:nowrap;
+              ">🌱 פונקציה בפיתוח</div>
               <div class="scan-doc-arrow">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
               </div>
@@ -5917,24 +5928,50 @@ window.deletePhoneIdx = function(i) {
 
     if (overList.length || nearList.length) {
       overList.forEach(function(item) {
-        alertsHtml += '<div class="budget-alert-item alert-over">' +
-          '<span class="budget-alert-icon">🚨</span>' +
-          '<div class="budget-alert-body">' +
-            '<div class="budget-alert-name" style="color:#FF6080;">' + item.cat.name + ' — חרגת מהתקרה!</div>' +
-            '<div class="budget-alert-detail">הוצאת ' + fmt(item.total) + ' מתוך ' + fmt(item.cat.budget) + '</div>' +
-          '</div>' +
-          '<span class="budget-alert-remain over">+' + fmt(item.total - item.cat.budget) + '</span>' +
-        '</div>';
+        alertsHtml +=
+          '<div style="'+
+            'display:flex;align-items:center;gap:12px;'+
+            'background:linear-gradient(135deg,rgba(255,23,68,0.12),rgba(180,0,30,0.08));'+
+            'border:1px solid rgba(255,23,68,0.38);'+
+            'border-radius:16px;padding:13px 15px;margin-bottom:8px;'+
+            'position:relative;overflow:hidden;'+
+            'box-shadow:0 0 0 1px rgba(255,23,68,0.10),0 6px 24px rgba(255,23,68,0.15),inset 0 1px 0 rgba(255,255,255,0.05);'+
+            'animation:overBudgetPulse 2.5s ease-in-out infinite;'+
+          '">'+
+          '<style>@keyframes overBudgetPulse{0%,100%{border-color:rgba(255,23,68,0.38);box-shadow:0 0 0 1px rgba(255,23,68,0.10),0 6px 24px rgba(255,23,68,0.15)}50%{border-color:rgba(255,23,68,0.65);box-shadow:0 0 0 1px rgba(255,23,68,0.18),0 8px 32px rgba(255,23,68,0.28)}}</style>'+
+          '<div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,23,68,0.7),transparent);"></div>'+
+          '<div style="width:40px;height:40px;flex-shrink:0;border-radius:13px;background:linear-gradient(135deg,rgba(255,23,68,0.22),rgba(180,0,30,0.12));border:1px solid rgba(255,23,68,0.40);display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 18px rgba(255,23,68,0.25);">🚨</div>'+
+          '<div style="flex:1;min-width:0;">'+
+            '<div style="font-size:12.5px;font-weight:900;color:#FF6080;margin-bottom:3px;letter-spacing:-0.1px;">'+item.cat.name+' — חרגת מהתקרה!</div>'+
+            '<div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);">הוצאת '+fmt(item.total)+' מתוך '+fmt(item.cat.budget)+'</div>'+
+          '</div>'+
+          '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0;">'+
+            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:13px;font-weight:900;color:#FF1744;">+'+fmt(item.total-item.cat.budget)+'</div>'+
+            '<div style="font-size:9px;font-weight:700;color:rgba(255,80,80,0.55);letter-spacing:0.04em;">חריגה</div>'+
+          '</div>'+
+          '</div>';
       });
       nearList.forEach(function(item) {
-        alertsHtml += '<div class="budget-alert-item alert-near">' +
-          '<span class="budget-alert-icon">⚠️</span>' +
-          '<div class="budget-alert-body">' +
-            '<div class="budget-alert-name" style="color:#FFB300;">' + item.cat.name + ' — מתקרב לתקרה</div>' +
-            '<div class="budget-alert-detail">הוצאת ' + fmt(item.cat.total||item.cat.budget-item.remain) + ' מתוך ' + fmt(item.cat.budget) + '</div>' +
-          '</div>' +
-          '<span class="budget-alert-remain near">נותר ' + fmt(item.remain) + '</span>' +
-        '</div>';
+        alertsHtml +=
+          '<div style="'+
+            'display:flex;align-items:center;gap:12px;'+
+            'background:linear-gradient(135deg,rgba(255,160,0,0.10),rgba(200,100,0,0.06));'+
+            'border:1px solid rgba(255,160,0,0.32);'+
+            'border-radius:16px;padding:13px 15px;margin-bottom:8px;'+
+            'position:relative;overflow:hidden;'+
+            'box-shadow:0 0 0 1px rgba(255,160,0,0.08),0 4px 20px rgba(255,130,0,0.10);'+
+          '">'+
+          '<div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,160,0,0.55),transparent);"></div>'+
+          '<div style="width:40px;height:40px;flex-shrink:0;border-radius:13px;background:linear-gradient(135deg,rgba(255,160,0,0.18),rgba(200,100,0,0.10));border:1px solid rgba(255,160,0,0.35);display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 14px rgba(255,130,0,0.18);">⚠️</div>'+
+          '<div style="flex:1;min-width:0;">'+
+            '<div style="font-size:12.5px;font-weight:900;color:#FFB300;margin-bottom:3px;letter-spacing:-0.1px;">'+item.cat.name+' — מתקרב לתקרה</div>'+
+            '<div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);">הוצאת '+fmt(item.total)+' מתוך '+fmt(item.cat.budget)+'</div>'+
+          '</div>'+
+          '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0;">'+
+            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:13px;font-weight:900;color:#FFB300;">'+fmt(item.remain)+'</div>'+
+            '<div style="font-size:9px;font-weight:700;color:rgba(255,180,0,0.55);letter-spacing:0.04em;">נותר</div>'+
+          '</div>'+
+          '</div>';
       });
       var banner = $('budget-alerts-banner');
       if (banner) { banner.innerHTML = alertsHtml; banner.classList.remove('hidden'); }
@@ -6048,13 +6085,14 @@ window.deletePhoneIdx = function(i) {
       var key = cat.id + '_' + (new Date().getMonth());
       if (total2 >= cat.budget && !window._budgetAlerted[key]) {
         window._budgetAlerted[key] = true;
+        window._budgetAlerted[key+'_near'] = true; /* suppress near alert if already over */
         setTimeout(function() {
-          toast('⚠️ חרגת מתקרת "'+cat.name+'"! ('+fmt(total2)+' / '+fmt(cat.budget)+')', 'error');
+          toast('🚨 חרגת מהתקרה ב"'+cat.name+'"! הוצאת '+fmt(total2)+' מתוך '+fmt(cat.budget), 'error');
         }, 600);
-      } else if (total2 >= cat.budget * 0.8 && !window._budgetAlerted[key+'_near']) {
+      } else if (total2 >= cat.budget * 0.8 && !window._budgetAlerted[key+'_near'] && !window._budgetAlerted[key]) {
         window._budgetAlerted[key+'_near'] = true;
         setTimeout(function() {
-          toast('📊 התקרבת לתקרת "'+cat.name+'" — נותר '+fmt(cat.budget - total2), 'info');
+          toast('⚠️ מתקרב לתקרה ב"'+cat.name+'" — נותר '+fmt(cat.budget - total2), 'info');
         }, 800);
       }
     });
@@ -6392,10 +6430,55 @@ window.exportUserData = function() {
 
   if (!scanBtn || !fileInput) return;
 
-  /* ── פותח את בורר הקבצים ── */
+  /* ── פותח את בורר הקבצים עם בדיקת מגבלת 7 סריקות ── */
+  var DAILY_SCAN_LIMIT = 7;
+  function getScanUsageToday() {
+    var today = new Date().toDateString();
+    var stored = localStorage.getItem('ao_scan_usage');
+    if (!stored) return { date: today, count: 0 };
+    try {
+      var obj = JSON.parse(stored);
+      if (obj.date !== today) return { date: today, count: 0 };
+      return obj;
+    } catch(e) { return { date: today, count: 0 }; }
+  }
+  function incrementScanUsage() {
+    var usage = getScanUsageToday();
+    usage.count = (usage.count || 0) + 1;
+    localStorage.setItem('ao_scan_usage', JSON.stringify(usage));
+    return usage.count;
+  }
+
   scanBtn.onclick = function() {
+    var usage = getScanUsageToday();
+    var remaining = DAILY_SCAN_LIMIT - (usage.count || 0);
+
+    if (remaining <= 0) {
+      /* הראה הודעה יפה — מגבלה הושגה */
+      resultEl.className  = 'scan-doc-result';
+      resultEl.style.display = 'block';
+      resultEl.innerHTML =
+        '<div style="'+
+          'background:linear-gradient(135deg,rgba(255,100,0,0.10),rgba(200,60,0,0.07));'+
+          'border:1px solid rgba(255,120,0,0.35);border-radius:16px;'+
+          'padding:16px;text-align:center;position:relative;overflow:hidden;'+
+        '">'+
+        '<div style="position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,120,0,0.55),transparent);"></div>'+
+        '<div style="font-size:28px;margin-bottom:8px;">⏳</div>'+
+        '<div style="font-size:13px;font-weight:900;color:rgba(255,160,60,0.95);margin-bottom:5px;">הגעת למגבלה היומית</div>'+
+        '<div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);line-height:1.6;">'+
+          'מוגבל עד <strong style="color:rgba(255,180,60,0.90);">7 סריקות ביום</strong><br>'+
+          'המגבלה תתאפס מחר 🌅'+
+        '</div>'+
+        '</div>';
+      return;
+    }
+
     resultEl.className  = 'scan-doc-result hidden';
     resultEl.innerHTML  = '';
+    /* עדכן את כתוביות הכפתור עם מספר הסריקות הנותרות */
+    var subEl = scanBtn.querySelector('.scan-doc-sub');
+    if (subEl) subEl.textContent = 'נותרו '+remaining+' סריקות להיום';
     fileInput.click();
   };
 
@@ -6404,10 +6487,14 @@ window.exportUserData = function() {
     if (!file) return;
     fileInput.value = '';
 
-    /* ── הצגת מצב עיבוד ── */
+    /* ── הצגת מצב עיבוד + ספירת שימוש ── */
     processingEl.classList.remove('hidden');
     scanBtn.style.opacity = '0.5';
     scanBtn.style.pointerEvents = 'none';
+    var newCount = incrementScanUsage();
+    var remaining2 = DAILY_SCAN_LIMIT - newCount;
+    var subEl2 = scanBtn.querySelector('.scan-doc-sub');
+    if (subEl2) subEl2.textContent = remaining2 > 0 ? 'נותרו '+remaining2+' סריקות להיום' : 'הגעת למגבלה היומית';
 
     try {
       var result = await sendToWorker(file);
