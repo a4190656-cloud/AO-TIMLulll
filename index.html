@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>AO Budget</title>
   <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#00e5ff">
+  <meta name="theme-color" content="#00E5FF">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <script>
   if ('serviceWorker' in navigator) {
@@ -16,8 +17,8 @@
     });
   }
 </script>
-  <link id="favicon-link" rel="icon" type="image/png" href="">
-  <link rel="apple-touch-icon" href="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg">
+  <link id="favicon-link" rel="icon" type="image/png" href="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/main/icon.png">
+  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/main/icon.png">
   <script>
     (function(){
       function setCircularFavicon(){
@@ -37,9 +38,9 @@
         };
         img.onerror = function(){
           var link = document.getElementById('favicon-link');
-          if(link){ link.type='image/jpeg'; link.href='https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg'; }
+          if(link) link.href = 'https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/main/icon.png';
         };
-        img.src = 'https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg';
+        img.src = 'https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/main/icon.png';
       }
       if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', setCircularFavicon); }
       else { setCircularFavicon(); }
@@ -50,7 +51,7 @@
   <meta property="og:url" content="https://a4190656-cloud.github.io/AO-TIMLulll/">
   <meta property="og:title" content="AO ניהול תקציב | התקציב האישי שלכם!">
   <meta property="og:description" content="הצטרפו לניהול תקציב חכם. בואו לעקוב אחרי הכסף שלכם בסטייל.">
-  <meta property="og:image" content="https://i.ibb.co/pB3Yp5jN/IMG-20260419-WA0041.jpg">
+  <meta property="og:image" content="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/main/icon.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <style>
@@ -491,16 +492,16 @@
     }
 
     .cat-tile-del {
-      position:absolute; top:8px; left:8px; background:rgba(255,255,255,0.06); border:none;
-      border-radius:50%; width:22px; height:22px; display:flex; align-items:center; justify-content:center;
+      position:absolute; bottom:8px; left:8px; background:rgba(255,255,255,0.06); border:none;
+      border-radius:8px; width:24px; height:24px; display:flex; align-items:center; justify-content:center;
       cursor:pointer; color:rgba(255,255,255,0.3); font-size:10px; transition:all .15s; z-index:2;
     }
     .cat-tile-del:hover { background:rgba(255,23,68,0.2); color:#FF6080; }
 
     /* budget edit pencil button */
     .cat-tile-budget-btn {
-      position:absolute; top:8px; right:8px; background:rgba(255,255,255,0.06); border:none;
-      border-radius:50%; width:22px; height:22px; display:flex; align-items:center; justify-content:center;
+      position:absolute; bottom:8px; right:8px; background:rgba(255,255,255,0.06); border:none;
+      border-radius:8px; width:24px; height:24px; display:flex; align-items:center; justify-content:center;
       cursor:pointer; color:rgba(255,255,255,0.28); font-size:10px; transition:all .15s; z-index:2;
     }
     .cat-tile-budget-btn:hover { background:rgba(0,229,255,0.15); color:var(--cyan); }
@@ -3403,8 +3404,11 @@
               <span class="scan-doc-title">סריקת קבלה / חשבונית</span>
               <span class="scan-doc-sub">AI מזהה ומוסיף אוטומטית</span>
             </div>
-            <div class="scan-doc-arrow">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
+              <div style="background:linear-gradient(135deg,rgba(255,160,0,0.18),rgba(255,100,0,0.10));border:1px solid rgba(255,160,0,0.35);border-radius:6px;padding:2px 7px;font-size:8.5px;font-weight:900;color:rgba(255,200,60,0.95);letter-spacing:0.10em;">בפיתוח</div>
+              <div class="scan-doc-arrow">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </div>
             </div>
           </div>
         </button>
@@ -3436,19 +3440,111 @@
         <div style="padding:28px;text-align:center;color:var(--muted);font-size:13px">טוען...</div>
       </div>
       
-      <div class="sblock modern-hover" style="display:flex; margin-bottom:16px; background:linear-gradient(145deg, rgba(37,211,102,0.1), rgba(18,140,126,0.05)); border:1px solid rgba(37,211,102,0.3); border-radius:18px; overflow:hidden;">
-        <a href="https://wa.me/972532413778" target="_blank" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:14px 8px; text-decoration:none; border-left:1px solid rgba(37,211,102,0.2);">
-          <div style="width:34px; height:34px; border-radius:10px; background:rgba(37,211,102,0.15); display:flex; align-items:center; justify-content:center; margin-bottom:6px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      <style>
+        /* ── בוט וואטסאפ 2026 ── */
+        #wa-bot-card {
+          background: linear-gradient(145deg, rgba(8,20,14,0.96), rgba(4,12,8,0.98));
+          border: 1px solid rgba(37,211,102,0.22);
+          border-radius: 22px; overflow: hidden;
+          margin-bottom: 16px;
+          box-shadow: 0 4px 28px rgba(0,0,0,0.40), inset 0 1px 0 rgba(37,211,102,0.08);
+          position: relative;
+        }
+        #wa-bot-card::before {
+          content:''; position:absolute; top:0; left:8%; right:8%; height:1px;
+          background: linear-gradient(90deg, transparent, rgba(37,211,102,0.55), transparent);
+        }
+        .wa-bot-header {
+          display:flex; align-items:center; gap:13px;
+          padding:18px 18px 14px;
+          border-bottom: 1px solid rgba(37,211,102,0.08);
+        }
+        .wa-bot-logo {
+          width:46px; height:46px; flex-shrink:0;
+          background: linear-gradient(135deg, #25D366, #128C7E);
+          border-radius:14px;
+          display:flex; align-items:center; justify-content:center;
+          box-shadow: 0 4px 16px rgba(37,211,102,0.35), 0 0 0 1px rgba(37,211,102,0.20);
+        }
+        .wa-bot-title { font-size:15px; font-weight:900; color:#fff; margin-bottom:3px; }
+        .wa-bot-sub   { font-size:11px; font-weight:600; color:rgba(255,255,255,0.40); }
+        .wa-bot-live  {
+          display:flex; align-items:center; gap:5px; margin-right:auto;
+          background:rgba(37,211,102,0.10); border:1px solid rgba(37,211,102,0.25);
+          border-radius:8px; padding:3px 9px;
+          font-size:10px; font-weight:900; color:rgba(37,211,102,0.92); letter-spacing:.06em;
+        }
+        .wa-bot-live::before { content:''; width:5px; height:5px; border-radius:50%; background:#25D366; box-shadow:0 0 5px rgba(37,211,102,0.8); animation:chipDot 2s ease-in-out infinite; }
+
+        .wa-bot-actions { display:flex; gap:10px; padding:14px 16px; }
+        .wa-btn-chat {
+          flex:1; display:flex; align-items:center; justify-content:center; gap:9px;
+          padding:13px 16px;
+          background: linear-gradient(135deg, #25D366, #128C7E);
+          border:none; border-radius:14px; cursor:pointer; text-decoration:none;
+          font-family:'Syne',sans-serif; font-size:14px; font-weight:900;
+          color:#fff; letter-spacing:-0.1px;
+          box-shadow: 0 6px 22px rgba(37,211,102,0.38), inset 0 1px 0 rgba(255,255,255,0.18);
+          transition: transform .18s var(--spring), box-shadow .18s;
+          position:relative; overflow:hidden;
+        }
+        .wa-btn-chat::before {
+          content:''; position:absolute; inset:0;
+          background: linear-gradient(135deg, rgba(255,255,255,0.14) 0%, transparent 60%);
+        }
+        .wa-btn-chat:hover  { transform:translateY(-2px); box-shadow:0 10px 30px rgba(37,211,102,0.45), inset 0 1px 0 rgba(255,255,255,0.18); }
+        .wa-btn-chat:active { transform:scale(0.97); }
+        .wa-btn-phone {
+          width:48px; height:48px; flex-shrink:0;
+          display:flex; align-items:center; justify-content:center;
+          background:rgba(37,211,102,0.08); border:1px solid rgba(37,211,102,0.20);
+          border-radius:14px; cursor:pointer;
+          color:rgba(37,211,102,0.75);
+          transition: background .18s, transform .18s var(--spring);
+        }
+        .wa-btn-phone:hover { background:rgba(37,211,102,0.15); transform:scale(1.06); }
+
+        .wa-bot-commands {
+          display:flex; flex-wrap:wrap; gap:6px;
+          padding: 0 16px 14px;
+        }
+        .wa-cmd-chip {
+          display:inline-flex; align-items:center; gap:5px;
+          background:rgba(37,211,102,0.07); border:1px solid rgba(37,211,102,0.18);
+          border-radius:8px; padding:5px 10px;
+          font-size:11px; font-weight:700; color:rgba(255,255,255,0.65);
+          cursor:default;
+        }
+        .wa-cmd-chip span { color:#25D366; font-weight:900; font-family:'JetBrains Mono',monospace; }
+      </style>
+
+      <div id="wa-bot-card">
+        <div class="wa-bot-header">
+          <div class="wa-bot-logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
           </div>
-          <span style="color:#25D366; font-weight:800; font-size:13px; line-height:1.2; text-align:center;">לצ'אט עם הבוט</span>
-        </a>
-        <button onclick="switchView('settings'); setTimeout(function(){ document.getElementById('settings-phones-section').scrollIntoView({behavior:'smooth'}); }, 100);" style="flex:1; background:none; border:none; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:14px 8px; cursor:pointer;">
-          <div style="width:34px; height:34px; border-radius:10px; background:rgba(37,211,102,0.1); display:flex; align-items:center; justify-content:center; margin-bottom:6px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          <div>
+            <div class="wa-bot-title">בוט AO Budget</div>
+            <div class="wa-bot-sub">שלחו הוצאה ותירשם אוטומטית</div>
           </div>
-          <span style="color:var(--text); font-weight:700; font-size:12px; line-height:1.2; text-align:center; opacity:0.85;">הגדר מספרי טלפון לזיהוי</span>
-        </button>
+          <div class="wa-bot-live">LIVE</div>
+        </div>
+
+        <div class="wa-bot-actions">
+          <a href="https://wa.me/972532413778?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA" target="_blank" class="wa-btn-chat">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+            לצ'אט עם הבוט
+          </a>
+          <button class="wa-btn-phone" onclick="switchView('settings'); setTimeout(function(){ document.getElementById('settings-phones-section').scrollIntoView({behavior:'smooth'}); }, 100);" title="הגדר מספרי טלפון">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          </button>
+        </div>
+
+        <div class="wa-bot-commands">
+          <div class="wa-cmd-chip">שלח <span>50 קפה</span> — הוצאה</div>
+          <div class="wa-cmd-chip">שלח <span>משכורת 8000</span> — הכנסה</div>
+          <div class="wa-cmd-chip">שלח <span>פקודות</span> — עזרה</div>
+        </div>
       </div>
       
     </div>
@@ -3553,43 +3649,243 @@
         </div>
       </div>
 
-      <div class="settings-section-title">תשלומים קבועים</div>
+      <div class="settings-section-title" id="settings-fixed-section">תשלומים קבועים</div>
 
-      <div class="sblock-fixed-expense">
-        <div class="sblock-fixed-head">
-          <div class="sblock-fixed-head-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6080" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      <style>
+        /* ── כרטיסי הוצאות/הכנסות קבועות 2026 ── */
+        .fixed-block-2026 {
+          border-radius: 22px; overflow: hidden;
+          margin-bottom: 12px;
+          position: relative;
+          box-shadow: 0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .fixed-block-expense { background: linear-gradient(160deg, rgba(20,6,10,0.97), rgba(12,3,6,0.99)); border: 1px solid rgba(255,60,90,0.20); }
+        .fixed-block-income  { background: linear-gradient(160deg, rgba(4,18,10,0.97), rgba(2,10,6,0.99));  border: 1px solid rgba(0,230,118,0.20); }
+        .fixed-block-expense::before { content:''; position:absolute; top:0; left:8%; right:8%; height:1px; background:linear-gradient(90deg,transparent,rgba(255,80,110,0.55),transparent); }
+        .fixed-block-income::before  { content:''; position:absolute; top:0; left:8%; right:8%; height:1px; background:linear-gradient(90deg,transparent,rgba(0,230,118,0.55),transparent); }
+
+        .fixed-block-header {
+          display:flex; align-items:center; gap:12px;
+          padding:16px 18px 14px;
+          border-bottom-width:1px; border-bottom-style:solid;
+        }
+        .fixed-block-expense .fixed-block-header { border-bottom-color: rgba(255,60,90,0.10); }
+        .fixed-block-income  .fixed-block-header { border-bottom-color: rgba(0,230,118,0.10); }
+
+        .fixed-block-icon {
+          width:40px; height:40px; flex-shrink:0;
+          border-radius:13px;
+          display:flex; align-items:center; justify-content:center;
+        }
+        .fixed-block-expense .fixed-block-icon { background:rgba(255,60,90,0.14); border:1px solid rgba(255,60,90,0.28); box-shadow:0 0 16px rgba(255,60,90,0.16); }
+        .fixed-block-income  .fixed-block-icon { background:rgba(0,230,118,0.12); border:1px solid rgba(0,230,118,0.26); box-shadow:0 0 16px rgba(0,230,118,0.14); }
+
+        .fixed-block-title-col { flex:1; }
+        .fixed-block-title { font-size:14px; font-weight:900; }
+        .fixed-block-expense .fixed-block-title { color:#FF6080; }
+        .fixed-block-income  .fixed-block-title { color:#00E676; }
+        .fixed-block-sub { font-size:10px; font-weight:600; color:rgba(255,255,255,0.35); margin-top:2px; }
+
+        .fixed-block-total {
+          font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:800;
+          background:rgba(255,255,255,0.04); border-radius:9px; padding:4px 11px;
+        }
+        .fixed-block-expense .fixed-block-total { color:#FF6080; border:1px solid rgba(255,60,90,0.18); }
+        .fixed-block-income  .fixed-block-total { color:#00E676; border:1px solid rgba(0,230,118,0.18); }
+
+        /* רשימת פריטים */
+        .fixed-items-list { padding:12px 16px 8px; display:flex; flex-direction:column; gap:7px; }
+
+        .fixed-item-row {
+          display:flex; align-items:center; gap:10px;
+          padding:11px 13px;
+          border-radius:13px;
+          position:relative; overflow:hidden;
+          transition: background .15s;
+          animation: phoneItemIn 0.3s var(--spring) both;
+        }
+        .fixed-item-expense { background:rgba(255,60,90,0.06); border:1px solid rgba(255,60,90,0.14); }
+        .fixed-item-income  { background:rgba(0,230,118,0.05); border:1px solid rgba(0,230,118,0.13); }
+
+        .fixed-item-icon { font-size:17px; flex-shrink:0; }
+        .fixed-item-info { flex:1; min-width:0; }
+        .fixed-item-name  { font-size:13px; font-weight:800; color:rgba(255,255,255,0.88); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .fixed-item-amount {
+          font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; margin-top:1px;
+        }
+        .fixed-item-expense .fixed-item-amount { color:rgba(255,100,128,0.80); }
+        .fixed-item-income  .fixed-item-amount { color:rgba(0,220,110,0.80); }
+
+        .fixed-item-actions { display:flex; gap:5px; flex-shrink:0; }
+        .fixed-item-btn {
+          width:28px; height:28px; border:none; border-radius:8px;
+          display:flex; align-items:center; justify-content:center;
+          cursor:pointer; transition:background .15s, transform .15s;
+        }
+        .fixed-item-btn:hover { transform:scale(1.10); }
+        .fixed-item-btn.edit { background:rgba(0,229,255,0.08); color:rgba(0,229,255,0.75); }
+        .fixed-item-btn.edit:hover { background:rgba(0,229,255,0.16); color:var(--cyan); }
+        .fixed-item-btn.del  { background:rgba(255,50,80,0.08); color:rgba(255,80,100,0.75); }
+        .fixed-item-btn.del:hover  { background:rgba(255,50,80,0.18); color:#ff4060; }
+
+        .fixed-empty-row {
+          text-align:center; padding:14px;
+          border:1px dashed rgba(255,255,255,0.08); border-radius:12px;
+          font-size:12px; font-weight:600; color:rgba(255,255,255,0.28);
+        }
+
+        /* שדה הוספה */
+        .fixed-add-wrap { padding:0 16px 16px; display:flex; flex-direction:column; gap:7px; }
+        .fixed-add-row { display:flex; gap:7px; }
+        .fixed-add-inp {
+          flex:1; background:rgba(255,255,255,0.04);
+          border-radius:12px; padding:11px 13px;
+          color:#fff; font-family:'Syne',sans-serif; font-size:13px; font-weight:600;
+          text-align:right; outline:none; -webkit-appearance:none;
+          transition:border-color .2s, box-shadow .2s;
+        }
+        .fixed-add-inp-expense { border:1px solid rgba(255,60,90,0.18); }
+        .fixed-add-inp-expense:focus { border-color:rgba(255,60,90,0.45); box-shadow:0 0 0 3px rgba(255,60,90,0.09); }
+        .fixed-add-inp-income  { border:1px solid rgba(0,230,118,0.18); }
+        .fixed-add-inp-income:focus  { border-color:rgba(0,230,118,0.45); box-shadow:0 0 0 3px rgba(0,230,118,0.09); }
+        .fixed-add-inp::placeholder { color:rgba(255,255,255,0.22); font-size:12px; }
+
+        .fixed-add-btn {
+          padding:11px 16px;
+          border:none; border-radius:12px; cursor:pointer;
+          font-family:'Syne',sans-serif; font-size:13px; font-weight:900;
+          display:flex; align-items:center; gap:5px; white-space:nowrap;
+          transition:transform .18s var(--spring), box-shadow .18s;
+        }
+        .fixed-add-btn-expense {
+          background:linear-gradient(135deg,rgba(255,60,90,0.22),rgba(180,0,40,0.12));
+          border:1px solid rgba(255,60,90,0.35); color:rgba(255,100,128,0.95);
+          box-shadow:0 4px 14px rgba(255,60,90,0.12);
+        }
+        .fixed-add-btn-income {
+          background:linear-gradient(135deg,rgba(0,230,118,0.20),rgba(0,150,70,0.10));
+          border:1px solid rgba(0,230,118,0.32); color:rgba(0,220,110,0.95);
+          box-shadow:0 4px 14px rgba(0,230,118,0.12);
+        }
+        .fixed-add-btn:hover  { transform:translateY(-1px); }
+        .fixed-add-btn:active { transform:scale(0.97); }
+
+        /* מודאל עריכה */
+        #fixed-edit-overlay {
+          position:fixed; inset:0; z-index:9999;
+          background:rgba(0,0,0,0.70); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+          display:flex; align-items:flex-end; justify-content:center;
+          opacity:0; pointer-events:none; transition:opacity .25s;
+        }
+        #fixed-edit-overlay.open { opacity:1; pointer-events:all; }
+        #fixed-edit-sheet {
+          width:100%; max-width:430px;
+          background:linear-gradient(160deg,rgba(10,16,38,0.99),rgba(4,8,20,0.99));
+          border:1px solid rgba(255,255,255,0.09);
+          border-radius:26px 26px 0 0;
+          padding:0 22px 36px;
+          transform:translateY(100%);
+          transition:transform .38s cubic-bezier(0.34,1.15,0.64,1);
+          box-shadow:0 -16px 60px rgba(0,0,0,0.70);
+          position:relative; overflow:hidden;
+        }
+        #fixed-edit-overlay.open #fixed-edit-sheet { transform:translateY(0); }
+        #fixed-edit-sheet::before { content:''; position:absolute; top:0; left:8%; right:8%; height:1px; background:linear-gradient(90deg,transparent,rgba(0,229,255,0.55),transparent); }
+        .edit-sheet-handle { width:38px; height:4px; border-radius:2px; background:rgba(255,255,255,0.14); margin:14px auto 18px; }
+        .edit-sheet-title { font-size:18px; font-weight:900; color:#fff; margin-bottom:16px; }
+        .edit-sheet-inp {
+          width:100%; box-sizing:border-box;
+          background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.10);
+          border-radius:13px; padding:13px 15px;
+          color:#fff; font-family:'Syne',sans-serif; font-size:14px; font-weight:600;
+          text-align:right; outline:none; margin-bottom:10px; -webkit-appearance:none;
+          transition:border-color .2s, box-shadow .2s;
+        }
+        .edit-sheet-inp:focus { border-color:rgba(0,229,255,0.45); box-shadow:0 0 0 3px rgba(0,229,255,0.09); }
+        .edit-sheet-btns { display:flex; gap:9px; margin-top:6px; }
+        .edit-sheet-save {
+          flex:1; padding:13px; background:linear-gradient(135deg,#00E5FF,#00BFFF);
+          color:#020C14; border:none; border-radius:13px;
+          font-family:'Syne',sans-serif; font-size:14px; font-weight:900; cursor:pointer;
+          box-shadow:0 4px 20px rgba(0,229,255,0.30);
+          transition:transform .18s var(--spring);
+        }
+        .edit-sheet-save:hover { transform:translateY(-2px); }
+        .edit-sheet-cancel {
+          flex:1; padding:13px; background:rgba(255,255,255,0.05);
+          border:1px solid rgba(255,255,255,0.09); border-radius:13px;
+          font-family:'Syne',sans-serif; font-size:14px; font-weight:700;
+          color:rgba(255,255,255,0.45); cursor:pointer;
+          transition:background .18s;
+        }
+        .edit-sheet-cancel:hover { background:rgba(255,255,255,0.09); }
+      </style>
+
+      <!-- מודאל עריכת פריט קבוע -->
+      <div id="fixed-edit-overlay" onclick="if(event.target===this)closeFixedEdit()">
+        <div id="fixed-edit-sheet">
+          <div class="edit-sheet-handle"></div>
+          <div class="edit-sheet-title" id="fixed-edit-title">עריכת פריט</div>
+          <input id="fixed-edit-name"   class="edit-sheet-inp" type="text"   placeholder="שם">
+          <input id="fixed-edit-amount" class="edit-sheet-inp" type="number" placeholder="סכום ₪">
+          <div class="edit-sheet-btns">
+            <button class="edit-sheet-save"   onclick="saveFixedEdit()">שמור שינויים</button>
+            <button class="edit-sheet-cancel" onclick="closeFixedEdit()">ביטול</button>
           </div>
-          <div class="sblock-fixed-head-text">
-            <div class="sblock-fixed-head-title">הוצאות קבועות</div>
-            <div class="sblock-fixed-head-sub">חיובים חוזרים מדי חודש</div>
-          </div>
-          <div class="sblock-fixed-total" id="fe-total-badge">₪0</div>
-        </div>
-        <div class="sblock-fixed-body">
-          <input id="fe-name"   class="inp" type="text"   placeholder="שם ההוצאה (למשל: שכר דירה, ביטוח)" autocomplete="off" style="margin-bottom:8px">
-          <input id="fe-amount" class="inp" type="number" placeholder="סכום ₪" autocomplete="off" style="margin-bottom:10px">
-          <button id="btn-add-fe" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px;border-color:rgba(255,23,68,0.20);">+ הוסף הוצאה קבועה</button>
-          <div id="fe-list"></div>
         </div>
       </div>
 
-      <div class="sblock-fixed-income">
-        <div class="sblock-fixed-head">
-          <div class="sblock-fixed-head-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00E676" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+      <!-- הוצאות קבועות -->
+      <div class="fixed-block-2026 fixed-block-expense">
+        <div class="fixed-block-header">
+          <div class="fixed-block-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6080" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
           </div>
-          <div class="sblock-fixed-head-text">
-            <div class="sblock-fixed-head-title">הכנסות קבועות</div>
-            <div class="sblock-fixed-head-sub">מקורות הכנסה חוזרים</div>
+          <div class="fixed-block-title-col">
+            <div class="fixed-block-title">הוצאות קבועות</div>
+            <div class="fixed-block-sub">חיובים חוזרים מדי חודש</div>
           </div>
-          <div class="sblock-fixed-total" id="fi-total-badge">₪0</div>
+          <div class="fixed-block-total" id="fe-total-badge">₪0</div>
         </div>
-        <div class="sblock-fixed-body">
-          <input id="fi-name"   class="inp" type="text"   placeholder="מקור הכנסה (למשל: משכורת, שכירות)" autocomplete="off" style="margin-bottom:8px">
-          <input id="fi-amount" class="inp" type="number" placeholder="סכום ₪" autocomplete="off" style="margin-bottom:10px">
-          <button id="btn-add-fi" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px;border-color:rgba(0,230,118,0.20);">+ הוסף הכנסה קבועה</button>
-          <div id="fi-list"></div>
+        <div class="fixed-items-list" id="fe-list"></div>
+        <div class="fixed-add-wrap">
+          <div class="fixed-add-row">
+            <input id="fe-name" class="fixed-add-inp fixed-add-inp-expense" type="text" placeholder="שם ההוצאה (שכר דירה, ביטוח...)">
+          </div>
+          <div class="fixed-add-row">
+            <input id="fe-amount" class="fixed-add-inp fixed-add-inp-expense" type="number" placeholder="סכום ₪" style="flex:0.6;">
+            <button id="btn-add-fe" class="fixed-add-btn fixed-add-btn-expense">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              הוסף הוצאה
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- הכנסות קבועות -->
+      <div class="fixed-block-2026 fixed-block-income">
+        <div class="fixed-block-header">
+          <div class="fixed-block-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00E676" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          </div>
+          <div class="fixed-block-title-col">
+            <div class="fixed-block-title">הכנסות קבועות</div>
+            <div class="fixed-block-sub">מקורות הכנסה חוזרים</div>
+          </div>
+          <div class="fixed-block-total" id="fi-total-badge">₪0</div>
+        </div>
+        <div class="fixed-items-list" id="fi-list"></div>
+        <div class="fixed-add-wrap">
+          <div class="fixed-add-row">
+            <input id="fi-name" class="fixed-add-inp fixed-add-inp-income" type="text" placeholder="מקור הכנסה (משכורת, שכירות...)">
+          </div>
+          <div class="fixed-add-row">
+            <input id="fi-amount" class="fixed-add-inp fixed-add-inp-income" type="number" placeholder="סכום ₪" style="flex:0.6;">
+            <button id="btn-add-fi" class="fixed-add-btn fixed-add-btn-income">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              הוסף הכנסה
+            </button>
+          </div>
         </div>
       </div>
 
@@ -4455,19 +4751,60 @@
   }
 
   function renderFixedLists(){
-    $('fe-list').innerHTML=fixedExpenses.map(function(item){
-      return '<div class="fixed-row modern-hover"><span style="font-size:13px;font-weight:600">'+item.name+'</span>'+
-        '<div style="display:flex;align-items:center;gap:9px">'+
-        '<span class="mono" style="color:var(--red);font-weight:700;font-size:13px">'+fmt(item.amount)+'</span>'+
-        '<button onclick="delItem(\'fixed_settings\',\''+item.id+'\')" class="del-btn">✕</button></div></div>';
-    }).join('');
-    $('fi-list').innerHTML=fixedIncomes.map(function(item){
-      return '<div class="fixed-row modern-hover"><span style="font-size:13px;font-weight:600">'+item.name+'</span>'+
-        '<div style="display:flex;align-items:center;gap:9px">'+
-        '<span class="mono" style="color:var(--green);font-weight:700;font-size:13px">'+fmt(item.amount)+'</span>'+
-        '<button onclick="delItem(\'fixed_incomes\',\''+item.id+'\')" class="del-btn">✕</button></div></div>';
-    }).join('');
+    function makeFixedItem(item, col, type) {
+      var isExp = type === 'expense';
+      var emoji = isExp ? '💳' : '💰';
+      var amtColor = isExp ? 'rgba(255,100,128,0.85)' : 'rgba(0,220,110,0.85)';
+      var cls = isExp ? 'fixed-item-expense' : 'fixed-item-income';
+      return '<div class="fixed-item-row ' + cls + '">' +
+        '<span class="fixed-item-icon">' + emoji + '</span>' +
+        '<div class="fixed-item-info">' +
+          '<div class="fixed-item-name">' + (item.name || '—') + '</div>' +
+          '<div class="fixed-item-amount">₪' + fmt(item.amount) + ' / חודש</div>' +
+        '</div>' +
+        '<div class="fixed-item-actions">' +
+          '<button class="fixed-item-btn edit" onclick="openFixedEdit(\'' + col + '\',\'' + item.id + '\',\'' + (item.name||'').replace(/'/g,"\\'") + '\',' + item.amount + ')" title="ערוך">' +
+            '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"/></svg>' +
+          '</button>' +
+          '<button class="fixed-item-btn del" onclick="delItem(\'' + col + '\',\'' + item.id + '\')" title="מחק">' +
+            '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+    }
+    var feEl = $('fe-list');
+    var fiEl = $('fi-list');
+    if(feEl) feEl.innerHTML = fixedExpenses.length
+      ? fixedExpenses.map(function(item){ return makeFixedItem(item,'fixed_settings','expense'); }).join('')
+      : '<div class="fixed-empty-row">אין הוצאות קבועות — הוסיפו את הראשונה</div>';
+    if(fiEl) fiEl.innerHTML = fixedIncomes.length
+      ? fixedIncomes.map(function(item){ return makeFixedItem(item,'fixed_incomes','income'); }).join('')
+      : '<div class="fixed-empty-row">אין הכנסות קבועות — הוסיפו את הראשונה</div>';
   }
+
+  /* ── עריכת פריט קבוע ── */
+  var _editFixedMeta = null;
+  window.openFixedEdit = function(col, id, name, amount) {
+    _editFixedMeta = { col:col, id:id };
+    $('fixed-edit-title').textContent = col === 'fixed_incomes' ? 'עריכת הכנסה קבועה' : 'עריכת הוצאה קבועה';
+    $('fixed-edit-name').value   = name;
+    $('fixed-edit-amount').value = amount;
+    $('fixed-edit-overlay').classList.add('open');
+  };
+  window.closeFixedEdit = function() {
+    $('fixed-edit-overlay').classList.remove('open');
+    _editFixedMeta = null;
+  };
+  window.saveFixedEdit = function() {
+    if(!_editFixedMeta) return;
+    var name   = $('fixed-edit-name').value.trim();
+    var amount = parseFloat($('fixed-edit-amount').value);
+    if(!name || !amount) return;
+    db.collection('users').doc(uid).collection(_editFixedMeta.col).doc(_editFixedMeta.id)
+      .update({ name:name, amount:amount })
+      .then(function(){ closeFixedEdit(); toast('עודכן בהצלחה!','success'); })
+      .catch(function(){ toast('שגיאה בעדכון','error'); });
+  };
 
   /* ── Phone List Management ── */
   window.renderPhonesList = function() {
@@ -5077,6 +5414,8 @@ window.deletePhoneIdx = function(i) {
       var si=$('settings-name-input'); if(si) si.value=name;
       var ri=$('reset-day-input'); if(ri) ri.value=resetDay;
       startListeners();
+      // אונבורדינג למשתמש חדש
+      setTimeout(function(){ showOnboarding(); }, 600);
     }).catch(function(){
       btn.disabled=false; btn.style.opacity='1';
       $('setname-err').textContent='שגיאה, נסה שוב.'; show('setname-err');
@@ -6157,25 +6496,38 @@ window.exportUserData = function() {
     resultEl.className  = 'scan-doc-result result-ok';
     resultEl.innerHTML  =
       '<div class="result-icon">' +
-        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="' + typeColor + '" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
-          '<polyline points="20 6 9 17 4 12"/>' +
-        '</svg>' +
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="' + typeColor + '" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' +
       '</div>' +
       '<div class="result-body">' +
+        '<div style="font-size:10px;font-weight:800;letter-spacing:0.10em;color:rgba(255,255,255,0.35);margin-bottom:4px;">זוהה על ידי AI</div>' +
         (amount ? '<span class="result-amount" style="color:' + typeColor + '">' + sym + ' ₪' + amount.toLocaleString() + '</span>' : '') +
-        '<span style="display:block;font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:2px;">' + (desc || '—') + '</span>' +
+        '<span style="display:block;font-size:12px;color:rgba(255,255,255,0.7);margin-top:2px;margin-bottom:2px;">' + (desc || '—') + '</span>' +
         (cat ? '<span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.05);border-radius:6px;padding:2px 7px;margin-bottom:8px;">' + cat + '</span>' : '') +
-        '<br>' +
-        '<button onclick="window._scanResult && saveScannedTransaction(window._scanResult)" style="' +
-          'background:linear-gradient(135deg,' + (isInc?'rgba(0,255,136,0.15)':'rgba(255,96,128,0.15)') + ',' + (isInc?'rgba(0,200,100,0.08)':'rgba(200,0,50,0.08)') + ');' +
-          'border:1px solid ' + typeColor + '44;' +
-          'border-radius:10px;color:' + typeColor + ';' +
-          'font-family:\'Syne\',sans-serif;font-size:12px;font-weight:800;' +
-          'padding:8px 18px;cursor:pointer;margin-top:4px;' +
-          'transition:all 0.2s var(--spring);' +
-          '">' +
-          '✓ שמור כ' + typeLabel +
-        '</button>' +
+        '<div style="margin-top:10px;font-size:11.5px;font-weight:700;color:rgba(255,255,255,0.55);margin-bottom:8px;">האם הפרטים נכונים?</div>' +
+        '<div style="display:flex;gap:8px;">' +
+          '<button onclick="window._scanResult && saveScannedTransaction(window._scanResult)" style="' +
+            'flex:1;' +
+            'background:linear-gradient(135deg,' + (isInc?'rgba(0,255,136,0.18)':'rgba(255,96,128,0.18)') + ',' + (isInc?'rgba(0,200,100,0.08)':'rgba(200,0,50,0.08)') + ');' +
+            'border:1px solid ' + typeColor + '55;' +
+            'border-radius:12px;color:' + typeColor + ';' +
+            'font-family:\'Syne\',sans-serif;font-size:13px;font-weight:900;' +
+            'padding:10px;cursor:pointer;' +
+            'transition:all 0.18s var(--spring);' +
+            '">' +
+            '✓ כן, שמור' +
+          '</button>' +
+          '<button onclick="document.getElementById(\'scan-doc-result\').classList.add(\'hidden\'); window._scanResult=null;" style="' +
+            'flex:1;' +
+            'background:rgba(255,255,255,0.04);' +
+            'border:1px solid rgba(255,255,255,0.10);' +
+            'border-radius:12px;color:rgba(255,255,255,0.45);' +
+            'font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;' +
+            'padding:10px;cursor:pointer;' +
+            'transition:all 0.18s var(--spring);' +
+            '">' +
+            '✕ ביטול' +
+          '</button>' +
+        '</div>' +
       '</div>';
 
     /* שמור את התוצאה לשימוש בכפתור */
@@ -6210,5 +6562,130 @@ window.exportUserData = function() {
     <div id="security-sub-msg" class="secure-sub-title">הצפנת נתונים AO DIGITAL</div>
   </div>
 </div>
+
+<!-- ✦ ONBOARDING MODAL 2026 ✦ -->
+<style>
+  #onboarding-overlay {
+    position:fixed; inset:0; z-index:9990;
+    background:rgba(0,0,0,0.75);
+    backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+    display:flex; align-items:flex-end; justify-content:center;
+    opacity:0; pointer-events:none;
+    transition:opacity .3s ease;
+    padding-bottom:env(safe-area-inset-bottom,0);
+  }
+  #onboarding-overlay.open { opacity:1; pointer-events:all; }
+
+  #onboarding-sheet {
+    width:100%; max-width:430px;
+    background:linear-gradient(160deg,rgba(8,14,34,0.99),rgba(3,7,18,0.99));
+    border:1px solid rgba(0,229,255,0.14);
+    border-radius:28px 28px 0 0;
+    padding:0 22px 36px;
+    transform:translateY(100%);
+    transition:transform .45s cubic-bezier(0.34,1.15,0.64,1);
+    box-shadow:0 -20px 60px rgba(0,0,0,0.70);
+    position:relative; overflow:hidden;
+  }
+  #onboarding-overlay.open #onboarding-sheet { transform:translateY(0); }
+  #onboarding-sheet::before {
+    content:''; position:absolute; top:0; left:8%; right:8%; height:1px;
+    background:linear-gradient(90deg,transparent,rgba(0,229,255,0.65),transparent);
+  }
+
+  .ob-handle { width:38px; height:4px; border-radius:2px; background:rgba(255,255,255,0.14); margin:14px auto 22px; }
+
+  .ob-hero { text-align:center; margin-bottom:22px; }
+  .ob-emoji { font-size:44px; margin-bottom:10px; display:block; }
+  .ob-title { font-size:22px; font-weight:900; color:#fff; margin-bottom:5px; letter-spacing:-0.4px; }
+  .ob-sub { font-size:13px; font-weight:600; color:rgba(255,255,255,0.45); line-height:1.55; }
+
+  .ob-options { display:flex; flex-direction:column; gap:10px; margin-bottom:18px; }
+
+  .ob-option {
+    display:flex; align-items:center; gap:14px;
+    padding:16px 18px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:18px; cursor:pointer;
+    position:relative; overflow:hidden;
+    transition:all .2s var(--spring);
+    -webkit-tap-highlight-color:transparent;
+  }
+  .ob-option::before {
+    content:''; position:absolute; top:0; left:6%; right:6%; height:1px;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.10),transparent);
+  }
+  .ob-option:hover  { transform:translateY(-2px); border-color:rgba(0,229,255,0.25); background:rgba(0,229,255,0.04); }
+  .ob-option:active { transform:scale(0.98); }
+
+  .ob-option.primary { background:linear-gradient(135deg,rgba(0,229,255,0.10),rgba(0,180,255,0.06)); border-color:rgba(0,229,255,0.28); }
+  .ob-option.primary::before { background:linear-gradient(90deg,transparent,rgba(0,229,255,0.50),transparent); }
+  .ob-option.primary:hover { border-color:rgba(0,229,255,0.50); background:linear-gradient(135deg,rgba(0,229,255,0.15),rgba(0,180,255,0.09)); }
+
+  .ob-option-icon {
+    width:44px; height:44px; flex-shrink:0;
+    border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px;
+    background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.10);
+  }
+  .ob-option.primary .ob-option-icon { background:rgba(0,229,255,0.14); border-color:rgba(0,229,255,0.28); box-shadow:0 0 16px rgba(0,229,255,0.18); }
+
+  .ob-option-text { flex:1; }
+  .ob-option-title { font-size:14px; font-weight:900; color:rgba(255,255,255,0.90); margin-bottom:3px; }
+  .ob-option.primary .ob-option-title { color:var(--cyan); }
+  .ob-option-desc  { font-size:11px; font-weight:600; color:rgba(255,255,255,0.40); line-height:1.45; }
+
+  .ob-option-arrow { color:rgba(255,255,255,0.25); flex-shrink:0; transition:transform .18s var(--spring); }
+  .ob-option:hover .ob-option-arrow { transform:translateX(-3px); color:rgba(0,229,255,0.55); }
+</style>
+
+<div id="onboarding-overlay">
+  <div id="onboarding-sheet">
+    <div class="ob-handle"></div>
+    <div class="ob-hero">
+      <span class="ob-emoji">🚀</span>
+      <div class="ob-title">מוכנים להתחיל!</div>
+      <div class="ob-sub">רוצים להגדיר עכשיו הכנסות /<br>הוצאות קבועות ויום איפוס חשבון?</div>
+    </div>
+    <div class="ob-options">
+      <div class="ob-option primary" onclick="closeOnboarding(true)">
+        <div class="ob-option-icon">⚙️</div>
+        <div class="ob-option-text">
+          <div class="ob-option-title">כן, בוא נגדיר עכשיו</div>
+          <div class="ob-option-desc">הגדרת הכנסות/הוצאות קבועות ויום איפוס — לדיוק מקסימלי</div>
+        </div>
+        <svg class="ob-option-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </div>
+      <div class="ob-option" onclick="closeOnboarding(false)">
+        <div class="ob-option-icon">⏭️</div>
+        <div class="ob-option-text">
+          <div class="ob-option-title">לא עכשיו, אדלג</div>
+          <div class="ob-option-desc">אפשר תמיד לעדכן בהגדרות מאוחר יותר</div>
+        </div>
+        <svg class="ob-option-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.showOnboarding = function() {
+    if(localStorage.getItem('ob-done')) return;
+    document.getElementById('onboarding-overlay').classList.add('open');
+  };
+  window.closeOnboarding = function(goToSettings) {
+    document.getElementById('onboarding-overlay').classList.remove('open');
+    localStorage.setItem('ob-done','1');
+    if(goToSettings) {
+      setTimeout(function(){
+        if(typeof switchView === 'function') switchView('settings');
+        setTimeout(function(){
+          var el = document.getElementById('settings-fixed-section');
+          if(el) el.scrollIntoView({behavior:'smooth'});
+        }, 200);
+      }, 350);
+    }
+  };
+</script>
 </body>
 </html>
