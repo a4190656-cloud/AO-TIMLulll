@@ -503,19 +503,27 @@
     }
 
     .cat-tile-del {
-      position:absolute; bottom:8px; left:8px; background:rgba(255,255,255,0.06); border:none;
-      border-radius:8px; width:24px; height:24px; display:flex; align-items:center; justify-content:center;
-      cursor:pointer; color:rgba(255,255,255,0.3); font-size:10px; transition:all .15s; z-index:2;
+      background:rgba(255,23,68,0.08); border:1px solid rgba(255,23,68,0.18); border-radius:8px;
+      width:26px; height:26px; display:flex; align-items:center; justify-content:center;
+      cursor:pointer; color:rgba(255,23,68,0.55); font-size:11px; transition:all .15s; flex-shrink:0;
     }
-    .cat-tile-del:hover { background:rgba(255,23,68,0.2); color:#FF6080; }
+    .cat-tile-del:hover { background:rgba(255,23,68,0.22); color:#FF6080; }
 
     /* budget edit pencil button */
     .cat-tile-budget-btn {
-      position:absolute; bottom:8px; right:8px; background:rgba(255,255,255,0.06); border:none;
-      border-radius:8px; width:24px; height:24px; display:flex; align-items:center; justify-content:center;
-      cursor:pointer; color:rgba(255,255,255,0.28); font-size:10px; transition:all .15s; z-index:2;
+      background:rgba(0,229,255,0.07); border:1px solid rgba(0,229,255,0.18); border-radius:8px;
+      width:26px; height:26px; display:flex; align-items:center; justify-content:center;
+      cursor:pointer; color:rgba(0,229,255,0.50); font-size:10px; transition:all .15s; flex-shrink:0;
     }
-    .cat-tile-budget-btn:hover { background:rgba(0,229,255,0.15); color:var(--cyan); }
+    .cat-tile-budget-btn:hover { background:rgba(0,229,255,0.18); color:var(--cyan); }
+
+    /* action row at bottom of tile */
+    .cat-tile-actions {
+      display: flex; align-items: center; justify-content: flex-end; gap: 6px;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
 
     .cat-tile-name {
       font-weight: 800;
@@ -699,25 +707,25 @@
     #toast-container {
       position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
       z-index: 9999; display: flex; flex-direction: column; align-items: center; gap: 8px;
-      pointer-events: none; width: 90%; max-width: 360px;
+      pointer-events: none; width: 92%; max-width: 380px;
     }
     .toast {
-      background: rgba(13,19,35,0.96); backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,0.10); border-radius: 14px;
-      padding: 12px 18px; font-size: 13px; font-weight: 600;
+      background: rgba(10,16,32,0.97); backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.10); border-radius: 16px;
+      padding: 13px 14px 13px 16px; font-size: 13px; font-weight: 700;
       display: flex; align-items: center; gap: 10px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-      animation: toastIn .3s cubic-bezier(.16,1,.3,1) forwards;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
+      animation: toastIn .35s cubic-bezier(.16,1,.3,1) forwards;
       pointer-events: auto; width: 100%;
     }
     .toast.out { animation: toastOut .25s ease forwards; }
-    .toast-success { border-color: rgba(0,230,118,0.30); color: #00E676; }
-    .toast-error   { border-color: rgba(255,23,68,0.30);  color: #FF6080; }
-    .toast-info    { border-color: rgba(0,229,255,0.25);  color: var(--cyan); }
-    .toast-icon { font-size: 16px; flex-shrink: 0; }
-    .toast-msg { color: rgba(255,255,255,0.85); flex: 1; }
-    @keyframes toastIn  { from { opacity:0; transform:translateY(-14px) scale(.94); } to { opacity:1; transform:translateY(0) scale(1); } }
-    @keyframes toastOut { from { opacity:1; transform:translateY(0) scale(1); } to { opacity:0; transform:translateY(-10px) scale(.95); } }
+    .toast-success { border-color: rgba(0,230,118,0.35); box-shadow: 0 12px 40px rgba(0,0,0,0.6),0 0 0 1px rgba(0,230,118,0.08),inset 0 1px 0 rgba(0,230,118,0.08); }
+    .toast-error   { border-color: rgba(255,23,68,0.40);  box-shadow: 0 12px 40px rgba(0,0,0,0.6),0 0 0 1px rgba(255,23,68,0.10),inset 0 1px 0 rgba(255,23,68,0.06); }
+    .toast-info    { border-color: rgba(0,229,255,0.30);  box-shadow: 0 12px 40px rgba(0,0,0,0.6),0 0 0 1px rgba(0,229,255,0.07),inset 0 1px 0 rgba(0,229,255,0.06); }
+    .toast-icon { font-size: 18px; flex-shrink: 0; }
+    .toast-msg { color: rgba(255,255,255,0.88); flex: 1; line-height: 1.45; font-size: 12.5px; }
+    @keyframes toastIn  { from { opacity:0; transform:translateY(-18px) scale(.92); } to { opacity:1; transform:translateY(0) scale(1); } }
+    @keyframes toastOut { from { opacity:1; transform:translateY(0) scale(1); } to { opacity:0; transform:translateY(-12px) scale(.93); } }
 
     /* ── SWIPE-TO-DELETE ── */
     .tx-row { position: relative; overflow: hidden; }
@@ -2475,32 +2483,22 @@
         </div>
       </button>
 
-      <!-- הסכמה משפטית -->
+      <!-- הסכמה משפטית אלגנטית -->
       <div style="
-        display:flex; align-items:center; gap:10px;
-        padding:10px 14px;
-        background:rgba(255,255,255,0.02);
-        border:1px solid rgba(255,255,255,0.06);
-        border-radius:14px;
-        margin-top:14px;
+        margin-top:16px;
+        padding:13px 15px;
+        background:linear-gradient(135deg,rgba(0,229,255,0.03) 0%,rgba(255,255,255,0.02) 100%);
+        border:1px solid rgba(0,229,255,0.10);
+        border-radius:16px;
         position:relative; overflow:hidden;
+        display:flex; align-items:flex-start; gap:10px;
       ">
-        <div style="
-          position:absolute; top:0; left:10%; right:10%; height:1px;
-          background:linear-gradient(90deg,transparent,rgba(255,255,255,0.10),transparent);
-        "></div>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        <p style="
-          margin:0; flex:1;
-          font-size:9.5px; font-weight:600;
-          color:rgba(255,255,255,0.28);
-          line-height:1.6; letter-spacing:0.01em;
-        ">
-          שימוש באפליקציה מהווה הסכמה ל<a href="https://a4190656-cloud.github.io/AO-TIMLulll/privacy.html" target="_blank" style="
-            color:rgba(0,229,255,0.55); font-weight:800;
-            text-decoration:none; border-bottom:1px solid rgba(0,229,255,0.20);
-            padding-bottom:1px; transition:color .15s,border-color .15s;
-          " onmouseover="this.style.color='#00E5FF';this.style.borderColor='rgba(0,229,255,0.55)'" onmouseout="this.style.color='rgba(0,229,255,0.55)';this.style.borderColor='rgba(0,229,255,0.20)'">תנאי השימוש ומדיניות הפרטיות</a>
+        <div style="position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,0.25),transparent);"></div>
+        <div style="width:26px;height:26px;flex-shrink:0;margin-top:1px;border-radius:8px;background:rgba(0,229,255,0.07);border:1px solid rgba(0,229,255,0.18);display:flex;align-items:center;justify-content:center;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(0,229,255,0.65)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <p style="margin:0;flex:1;font-size:10px;font-weight:600;color:rgba(255,255,255,0.30);line-height:1.7;letter-spacing:0.01em;">
+          הרשמה, כניסה או שימוש באפליקציה מהווים הסכמה מלאה ל<a href="https://a4190656-cloud.github.io/AO-TIMLulll/privacy.html" target="_blank" style="color:rgba(0,229,255,0.60);font-weight:800;text-decoration:none;border-bottom:1px solid rgba(0,229,255,0.22);padding-bottom:1px;transition:color .15s,border-color .15s;" onmouseover="this.style.color='#00E5FF';this.style.borderColor='rgba(0,229,255,0.50)'" onmouseout="this.style.color='rgba(0,229,255,0.60)';this.style.borderColor='rgba(0,229,255,0.22)'">תנאי השימוש ומדיניות הפרטיות</a> של AO Budget, לרבות איסוף ועיבוד מידע כמפורט בהם.
         </p>
       </div>
 
@@ -3435,18 +3433,7 @@
               <span class="scan-doc-sub">AI מזהה ומוסיף אוטומטית</span>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
-              <div style="
-                display:inline-flex;align-items:center;gap:5px;
-                background:linear-gradient(135deg,rgba(120,80,255,0.18),rgba(80,60,200,0.10));
-                border:1px solid rgba(130,90,255,0.35);
-                border-radius:20px;
-                padding:3px 10px 3px 7px;
-                font-size:9px;font-weight:900;
-                color:rgba(180,150,255,0.95);
-                letter-spacing:0.06em;
-                box-shadow:0 0 12px rgba(120,80,255,0.15);
-                white-space:nowrap;
-              ">🌱 פונקציה בפיתוח</div>
+              <div style="background:linear-gradient(135deg,rgba(255,160,0,0.18),rgba(255,100,0,0.10));border:1px solid rgba(255,160,0,0.35);border-radius:6px;padding:2px 7px;font-size:8.5px;font-weight:900;color:rgba(255,200,60,0.95);letter-spacing:0.10em;">בפיתוח</div>
               <div class="scan-doc-arrow">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
               </div>
@@ -3658,7 +3645,137 @@
 
       <div id="cat-list2"></div>
     </div>
-    <div id="view-settings" class="hidden">
+    <div id="view-charts" class="hidden">
+      <style>
+        /* ── Charts View 2026 ── */
+        .chart-hero {
+          background: linear-gradient(145deg, rgba(13,19,35,0.92), rgba(6,10,20,0.96));
+          border: 1px solid rgba(0,229,255,0.15);
+          border-radius: 24px;
+          padding: 22px 18px;
+          margin-bottom: 14px;
+          position: relative; overflow: hidden;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
+        }
+        .chart-hero::before {
+          content: ''; position: absolute; top:0; left:10%; right:10%; height:1px;
+          background: linear-gradient(90deg,transparent,rgba(0,229,255,0.45),transparent);
+        }
+        .chart-section-title {
+          font-size: 11px; font-weight: 800; letter-spacing: .10em; text-transform: uppercase;
+          color: rgba(255,255,255,0.30); margin-bottom: 12px;
+          display: flex; align-items: center; gap: 8px;
+        }
+        .chart-section-title::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.07); }
+
+        /* Donut chart container */
+        #donut-wrap {
+          position: relative; width: 190px; height: 190px;
+          margin: 0 auto 6px; flex-shrink: 0;
+        }
+        #donut-svg { width: 190px; height: 190px; transform: rotate(-90deg); }
+        #donut-center {
+          position: absolute; inset: 0;
+          display: flex; flex-direction: column; align-items: center; justify-content: center;
+          pointer-events: none;
+        }
+        #donut-center-label {
+          font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.35);
+          letter-spacing: .08em; text-transform: uppercase; margin-bottom: 2px;
+        }
+        #donut-center-amount {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 20px; font-weight: 900; color: #fff;
+          text-shadow: 0 0 16px rgba(0,229,255,0.35);
+        }
+
+        /* Legend */
+        .chart-legend { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+        .chart-legend-item {
+          display: flex; align-items: center; gap: 10px;
+          padding: 10px 13px;
+          background: rgba(255,255,255,0.03);
+          border: 1px solid rgba(255,255,255,0.06);
+          border-radius: 13px;
+          transition: background .15s;
+        }
+        .chart-legend-item:hover { background: rgba(255,255,255,0.055); }
+        .chart-legend-dot {
+          width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+          box-shadow: 0 0 8px currentColor;
+        }
+        .chart-legend-name { flex: 1; font-size: 13px; font-weight: 700; }
+        .chart-legend-amt { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; }
+        .chart-legend-pct { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.35); min-width: 34px; text-align: left; }
+
+        /* Bar chart */
+        .bar-chart-wrap { display: flex; flex-direction: column; gap: 9px; }
+        .bar-item { display: flex; flex-direction: column; gap: 4px; }
+        .bar-item-row { display: flex; align-items: center; justify-content: space-between; }
+        .bar-item-name { font-size: 12px; font-weight: 700; }
+        .bar-item-amt { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; }
+        .bar-track { height: 6px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 99px; transition: width .6s cubic-bezier(.4,0,.2,1); }
+
+        .chart-empty {
+          text-align: center; padding: 40px 20px;
+          color: rgba(255,255,255,0.28); font-size: 13px; font-weight: 600;
+        }
+        .chart-empty-icon { font-size: 36px; display: block; margin-bottom: 12px; }
+      </style>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <p style="font-weight:800;font-size:16px;letter-spacing:-0.3px;">תרשימים</p>
+        <span style="font-size:11px;color:var(--muted);font-weight:600">המחזור הנוכחי</span>
+      </div>
+
+      <!-- Balance Summary -->
+      <div class="chart-hero" style="margin-bottom:14px;">
+        <div style="display:flex;gap:10px;margin-bottom:0;">
+          <div style="flex:1;text-align:center;padding:12px 8px;background:rgba(0,230,118,0.07);border:1px solid rgba(0,230,118,0.18);border-radius:14px;">
+            <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:.06em;margin-bottom:4px;">הכנסות</div>
+            <div id="chart-income-total" style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:900;color:var(--green);">₪0</div>
+          </div>
+          <div style="flex:1;text-align:center;padding:12px 8px;background:rgba(255,23,68,0.07);border:1px solid rgba(255,23,68,0.18);border-radius:14px;">
+            <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:.06em;margin-bottom:4px;">הוצאות</div>
+            <div id="chart-expense-total" style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:900;color:var(--red);">₪0</div>
+          </div>
+          <div style="flex:1;text-align:center;padding:12px 8px;background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.16);border-radius:14px;">
+            <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:.06em;margin-bottom:4px;">יתרה</div>
+            <div id="chart-balance-total" style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:900;color:var(--cyan);">₪0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Donut chart — expenses by category -->
+      <div class="chart-hero" style="margin-bottom:14px;">
+        <div class="chart-section-title">הוצאות לפי קטגוריה</div>
+        <div id="donut-wrap">
+          <svg id="donut-svg" viewBox="0 0 190 190">
+            <circle cx="95" cy="95" r="72" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="22"/>
+            <g id="donut-arcs"></g>
+          </svg>
+          <div id="donut-center">
+            <div id="donut-center-label">סה"כ</div>
+            <div id="donut-center-amount">₪0</div>
+          </div>
+        </div>
+        <div id="chart-exp-legend" class="chart-legend"></div>
+      </div>
+
+      <!-- Bar chart — income by category -->
+      <div class="chart-hero" style="margin-bottom:14px;">
+        <div class="chart-section-title">הכנסות לפי קטגוריה</div>
+        <div id="bar-chart-income" class="bar-chart-wrap"></div>
+      </div>
+
+      <!-- Bar chart — expenses bar (budget vs actual) -->
+      <div class="chart-hero" style="margin-bottom:16px;">
+        <div class="chart-section-title">הוצאות — השוואה לתקציב</div>
+        <div id="bar-chart-budget" class="bar-chart-wrap"></div>
+      </div>
+
+    </div><!-- /view-charts -->
 
       <!-- Smart User Card 2026 -->
       <div id="settings-user-card">
@@ -4268,6 +4385,10 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       קטגוריות
     </button>
+    <button class="nav-btn modern-hover" id="nav-charts" onclick="switchView('charts')">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+      תרשימים
+    </button>
     <button class="nav-btn modern-hover" id="nav-settings" onclick="switchView('settings')">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
       הגדרות
@@ -4511,20 +4632,24 @@
     return new Date(d);
   }
 
-  /* ── Toast notifications (replace alert()) ── */
-  function toast(msg, type) {
+  /* ── Toast notifications ── */
+  function toast(msg, type, duration) {
     type = type || 'info';
-    var icons = { success: '✓', error: '✗', info: 'ℹ' };
+    duration = duration || 4500;
+    var icons = { success: '✓', error: '🚨', info: 'ℹ' };
     var container = document.getElementById('toast-container');
     var el = document.createElement('div');
     el.className = 'toast toast-' + type;
-    el.innerHTML = '<span class="toast-icon">' + icons[type] + '</span><span class="toast-msg">' + msg + '</span>';
+    el.innerHTML =
+      '<span class="toast-icon">' + icons[type] + '</span>' +
+      '<span class="toast-msg">' + msg + '</span>' +
+      '<button onclick="this.parentElement.classList.add(\'out\');setTimeout(function(){if(this.parentElement&&this.parentElement.parentNode)this.parentElement.parentNode.removeChild(this.parentElement);}.bind(this),300);" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.35);font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0;transition:color .14s;margin-right:auto;" onmouseover="this.style.color=\'rgba(255,255,255,0.8)\'" onmouseout="this.style.color=\'rgba(255,255,255,0.35)\'">✕</button>';
     container.appendChild(el);
     var timer = setTimeout(function() {
       el.classList.add('out');
       setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 300);
-    }, 3200);
-    el.addEventListener('click', function() {
+    }, duration);
+    el.querySelector('.toast-msg').addEventListener('click', function() {
       clearTimeout(timer);
       el.classList.add('out');
       setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 300);
@@ -4654,15 +4779,20 @@
 
   /* ── Nav ── */
   window.switchView = function(v){
-    hide('view-dashboard'); hide('view-settings'); hide('view-categories');
+    hide('view-dashboard'); hide('view-settings'); hide('view-categories'); hide('view-charts');
     $('nav-dashboard').classList.remove('active');
     $('nav-settings').classList.remove('active');
     $('nav-categories').classList.remove('active');
+    if($('nav-charts')) $('nav-charts').classList.remove('active');
     if (v === 'dashboard'){
       show('view-dashboard'); $('nav-dashboard').classList.add('active');
     } else if (v === 'categories'){
       show('view-categories'); $('nav-categories').classList.add('active');
       renderCategoriesList2();
+    } else if (v === 'charts'){
+      show('view-charts');
+      if($('nav-charts')) $('nav-charts').classList.add('active');
+      renderCharts();
     } else {
       show('view-settings'); $('nav-settings').classList.add('active');
       renderFixedLists(); renderCategoriesList(); renderPhonesList();
@@ -4767,7 +4897,10 @@
           :'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>')+
         '</div>'+
         '<div><p style="font-weight:600;font-size:13px;line-height:1.3;display:flex;align-items:center;flex-wrap:wrap;gap:4px;">'+catHtml+(item.description||'')+waHtml+'</p>'+
-        '<p class="mono" style="font-size:10px;color:var(--muted);margin-top:2px">'+parseDate(item.date).toLocaleDateString('he-IL',{day:'numeric',month:'long'})+'</p></div></div>'+
+        '<p class="mono" style="font-size:10px;color:var(--muted);margin-top:2px">'+
+        parseDate(item.date).toLocaleDateString('he-IL',{day:'numeric',month:'long'})+
+        ' · '+parseDate(item.date).toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})+
+        '</p></div></div>'+
         '<div style="display:flex;align-items:center;gap:8px">'+
         '<span class="mono" style="font-weight:700;font-size:13px;color:'+(isInc?'var(--green)':'var(--text)')+'">'+
         (isInc?'+':'−')+fmt(item.amount)+'</span>'+
@@ -5020,6 +5153,107 @@ window.deletePhoneIdx = function(i) {
 
   function renderAll(){ renderStats(); renderTx(); renderCategoriesList2(); renderDashBudgetAlerts(); }
 
+  /* ══════════════════════════════════════════════
+     CHARTS
+  ══════════════════════════════════════════════ */
+  var CHART_COLORS = [
+    '#00E5FF','#00E676','#FF9800','#AB47BC','#29B6F6',
+    '#66BB6A','#EF5350','#FFA726','#5C6BC0','#26C6DA',
+    '#D4E157','#EC407A','#8D6E63','#42A5F5','#FF7043'
+  ];
+
+  function renderCharts(){
+    var s = cycleStart();
+    var totalInc = calcIncome();
+    var totalExp = calcFixedExp() + calcVarExp();
+    var totalBal = calcBal();
+
+    var ci=$('chart-income-total'), ce=$('chart-expense-total'), cb=$('chart-balance-total');
+    if(ci) ci.textContent = fmt(totalInc);
+    if(ce) ce.textContent = fmt(totalExp);
+    if(cb){ cb.textContent = fmt(totalBal); cb.style.color = totalBal>=0?'var(--cyan)':'var(--red)'; }
+
+    /* ── Donut — expenses by category ── */
+    var expByCat = {};
+    expenses.filter(function(i){ return parseDate(i.date)>=s; }).forEach(function(i){
+      var k = i.category || 'ללא קטגוריה';
+      expByCat[k] = (expByCat[k]||0) + Number(i.amount||0);
+    });
+    var fixedT = calcFixedExp();
+    if(fixedT>0) expByCat['קבועות'] = (expByCat['קבועות']||0) + fixedT;
+    var expEntries = Object.keys(expByCat).map(function(k){ return {name:k,amt:expByCat[k]}; })
+                          .sort(function(a,b){ return b.amt-a.amt; });
+    var donutTotal = expEntries.reduce(function(a,i){ return a+i.amt; },0);
+    var arcsEl=$('donut-arcs'), legEl=$('chart-exp-legend'), centerAmt=$('donut-center-amount');
+    if(centerAmt) centerAmt.textContent = fmt(donutTotal);
+    if(arcsEl){
+      if(!expEntries.length){
+        arcsEl.innerHTML='<circle cx="95" cy="95" r="72" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="22"/>';
+        if(legEl) legEl.innerHTML='<div class="chart-empty"><span class="chart-empty-icon">📊</span>אין הוצאות במחזור הנוכחי</div>';
+      } else {
+        var r=72,circ=2*Math.PI*r,offset=0,svgArcs='';
+        expEntries.forEach(function(item,idx){
+          var pct=donutTotal>0?item.amt/donutTotal:0;
+          var dash=pct*circ, gap=circ-dash;
+          var color=CHART_COLORS[idx%CHART_COLORS.length];
+          svgArcs+='<circle cx="95" cy="95" r="72" fill="none" stroke="'+color+'" stroke-width="21"'+
+            ' stroke-dasharray="'+(dash-1.5).toFixed(2)+' '+(gap+1.5).toFixed(2)+'"'+
+            ' stroke-dashoffset="'+(-offset).toFixed(2)+'"'+
+            ' style="filter:drop-shadow(0 0 6px '+color+'88);transition:stroke-dashoffset .6s;"/>';
+          offset+=dash;
+        });
+        arcsEl.innerHTML=svgArcs;
+        if(legEl) legEl.innerHTML=expEntries.map(function(item,idx){
+          var pct=donutTotal>0?Math.round(item.amt/donutTotal*100):0;
+          var color=CHART_COLORS[idx%CHART_COLORS.length];
+          return '<div class="chart-legend-item">'+
+            '<div class="chart-legend-dot" style="background:'+color+';color:'+color+';"></div>'+
+            '<span class="chart-legend-name">'+item.name+'</span>'+
+            '<span class="chart-legend-amt" style="color:'+color+';">'+fmt(item.amt)+'</span>'+
+            '<span class="chart-legend-pct">'+pct+'%</span></div>';
+        }).join('');
+      }
+    }
+
+    /* ── Bars — income by category ── */
+    var incByCat={};
+    incomes.filter(function(i){ return parseDate(i.date)>=s; }).forEach(function(i){
+      var k=i.category||'ללא קטגוריה'; incByCat[k]=(incByCat[k]||0)+Number(i.amount||0);
+    });
+    var fixedIncT=fixedIncomes.reduce(function(a,i){ return a+Number(i.amount||0); },0);
+    if(fixedIncT>0) incByCat['קבועות']=(incByCat['קבועות']||0)+fixedIncT;
+    var incEntries=Object.keys(incByCat).map(function(k){ return {name:k,amt:incByCat[k]}; })
+                        .sort(function(a,b){ return b.amt-a.amt; });
+    var maxInc=incEntries.length?incEntries[0].amt:1;
+    var barIncEl=$('bar-chart-income');
+    if(barIncEl) barIncEl.innerHTML=!incEntries.length
+      ?'<div class="chart-empty"><span class="chart-empty-icon">💰</span>אין הכנסות בקטגוריות</div>'
+      :incEntries.map(function(item,idx){
+          var pct=maxInc>0?(item.amt/maxInc*100):0;
+          var color=CHART_COLORS[(idx+5)%CHART_COLORS.length];
+          return '<div class="bar-item">'+
+            '<div class="bar-item-row"><span class="bar-item-name">'+item.name+'</span>'+
+            '<span class="bar-item-amt" style="color:'+color+';">'+fmt(item.amt)+'</span></div>'+
+            '<div class="bar-track"><div class="bar-fill" style="width:'+pct.toFixed(1)+'%;background:'+color+';box-shadow:0 0 8px '+color+'55;"></div></div></div>';
+        }).join('');
+
+    /* ── Bars — budget vs actual ── */
+    var budgetEl=$('bar-chart-budget');
+    var catBudget=userCategories.filter(function(c){ return c.type==='expense'&&c.budget>0; });
+    if(budgetEl) budgetEl.innerHTML=!catBudget.length
+      ?'<div class="chart-empty"><span class="chart-empty-icon">📋</span>הוסף תקרת תקציב לקטגוריות כדי לראות השוואה</div>'
+      :catBudget.map(function(cat){
+          var spent=expenses.filter(function(i){ return parseDate(i.date)>=s&&i.category===cat.name; })
+                           .reduce(function(a,i){ return a+Number(i.amount||0); },0);
+          var pct=cat.budget>0?Math.min(spent/cat.budget*100,100):0;
+          var color=spent>=cat.budget?'#FF1744':pct>80?'#FF9800':'#00E676';
+          return '<div class="bar-item">'+
+            '<div class="bar-item-row"><span class="bar-item-name">'+cat.name+'</span>'+
+            '<span class="bar-item-amt" style="color:'+color+';">'+fmt(spent)+' / '+fmt(cat.budget)+'</span></div>'+
+            '<div class="bar-track"><div class="bar-fill" style="width:'+pct.toFixed(1)+'%;background:'+color+';box-shadow:0 0 8px '+color+'55;"></div></div></div>';
+        }).join('');
+  }
+
   function reloadModalCategorySelect(selectedName){
     var opts='<option value="">ללא קטגוריה</option>';
     if(userCategories&&userCategories.length){
@@ -5105,14 +5339,16 @@ window.deletePhoneIdx = function(i) {
      Handles name setup, then launches the app.
   ══════════════════════════════════════════════ */
   function bootApp(user){
-    hide('screen-login'); // מחביא את מסך הלוגין מיד כדי שלא יקפוץ
-    hide('security-loader-overlay');
+    /* Keep security loader visible until we're fully ready — prevents login-screen flash */
+    ['screen-loading','screen-login','screen-setname','app'].forEach(hide);
+    show('security-loader-overlay');
     uid = user.uid;
     /* Try Firestore profile first, fall back gracefully */
     db.collection('users').doc(uid).get().then(function(snap){
       var savedName = snap.exists ? snap.data().displayName : null;
       var authName  = user.displayName || null;
       var name      = savedName || authName || null;
+      hide('security-loader-overlay');
       if(!name){
         showScreen('screen-setname');
         return;
@@ -5126,7 +5362,8 @@ window.deletePhoneIdx = function(i) {
       startListeners();
     }).catch(function(){
       /* Firestore blocked (e.g. NextDNS/Netfree) — still show app with auth name */
-      var name = user.displayName || user.email.split('@')[0];
+      hide('security-loader-overlay');
+      var name = user.displayName || (user.email ? user.email.split('@')[0] : 'משתמש');
       displayName = name;
       showScreen('app');
       var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
@@ -5156,8 +5393,8 @@ window.deletePhoneIdx = function(i) {
       authResolved = true;
       appBooted    = false;
       uid          = null;
+      /* Always hide security loader and reset Google button */
       hide('security-loader-overlay');
-      /* Reset Google button so it works again after sign-out */
       var gBtn = $('btn-google-login');
       if(gBtn){ gBtn.disabled=false; gBtn.style.opacity='1'; }
       showScreen('screen-login');
@@ -5928,50 +6165,24 @@ window.deletePhoneIdx = function(i) {
 
     if (overList.length || nearList.length) {
       overList.forEach(function(item) {
-        alertsHtml +=
-          '<div style="'+
-            'display:flex;align-items:center;gap:12px;'+
-            'background:linear-gradient(135deg,rgba(255,23,68,0.12),rgba(180,0,30,0.08));'+
-            'border:1px solid rgba(255,23,68,0.38);'+
-            'border-radius:16px;padding:13px 15px;margin-bottom:8px;'+
-            'position:relative;overflow:hidden;'+
-            'box-shadow:0 0 0 1px rgba(255,23,68,0.10),0 6px 24px rgba(255,23,68,0.15),inset 0 1px 0 rgba(255,255,255,0.05);'+
-            'animation:overBudgetPulse 2.5s ease-in-out infinite;'+
-          '">'+
-          '<style>@keyframes overBudgetPulse{0%,100%{border-color:rgba(255,23,68,0.38);box-shadow:0 0 0 1px rgba(255,23,68,0.10),0 6px 24px rgba(255,23,68,0.15)}50%{border-color:rgba(255,23,68,0.65);box-shadow:0 0 0 1px rgba(255,23,68,0.18),0 8px 32px rgba(255,23,68,0.28)}}</style>'+
-          '<div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,23,68,0.7),transparent);"></div>'+
-          '<div style="width:40px;height:40px;flex-shrink:0;border-radius:13px;background:linear-gradient(135deg,rgba(255,23,68,0.22),rgba(180,0,30,0.12));border:1px solid rgba(255,23,68,0.40);display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 18px rgba(255,23,68,0.25);">🚨</div>'+
-          '<div style="flex:1;min-width:0;">'+
-            '<div style="font-size:12.5px;font-weight:900;color:#FF6080;margin-bottom:3px;letter-spacing:-0.1px;">'+item.cat.name+' — חרגת מהתקרה!</div>'+
-            '<div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);">הוצאת '+fmt(item.total)+' מתוך '+fmt(item.cat.budget)+'</div>'+
-          '</div>'+
-          '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0;">'+
-            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:13px;font-weight:900;color:#FF1744;">+'+fmt(item.total-item.cat.budget)+'</div>'+
-            '<div style="font-size:9px;font-weight:700;color:rgba(255,80,80,0.55);letter-spacing:0.04em;">חריגה</div>'+
-          '</div>'+
-          '</div>';
+        alertsHtml += '<div class="budget-alert-item alert-over">' +
+          '<span class="budget-alert-icon">🚨</span>' +
+          '<div class="budget-alert-body">' +
+            '<div class="budget-alert-name" style="color:#FF6080;">' + item.cat.name + ' — חרגת מהתקרה!</div>' +
+            '<div class="budget-alert-detail">הוצאת ' + fmt(item.total) + ' מתוך ' + fmt(item.cat.budget) + '</div>' +
+          '</div>' +
+          '<span class="budget-alert-remain over">+' + fmt(item.total - item.cat.budget) + '</span>' +
+        '</div>';
       });
       nearList.forEach(function(item) {
-        alertsHtml +=
-          '<div style="'+
-            'display:flex;align-items:center;gap:12px;'+
-            'background:linear-gradient(135deg,rgba(255,160,0,0.10),rgba(200,100,0,0.06));'+
-            'border:1px solid rgba(255,160,0,0.32);'+
-            'border-radius:16px;padding:13px 15px;margin-bottom:8px;'+
-            'position:relative;overflow:hidden;'+
-            'box-shadow:0 0 0 1px rgba(255,160,0,0.08),0 4px 20px rgba(255,130,0,0.10);'+
-          '">'+
-          '<div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,160,0,0.55),transparent);"></div>'+
-          '<div style="width:40px;height:40px;flex-shrink:0;border-radius:13px;background:linear-gradient(135deg,rgba(255,160,0,0.18),rgba(200,100,0,0.10));border:1px solid rgba(255,160,0,0.35);display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 14px rgba(255,130,0,0.18);">⚠️</div>'+
-          '<div style="flex:1;min-width:0;">'+
-            '<div style="font-size:12.5px;font-weight:900;color:#FFB300;margin-bottom:3px;letter-spacing:-0.1px;">'+item.cat.name+' — מתקרב לתקרה</div>'+
-            '<div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);">הוצאת '+fmt(item.total)+' מתוך '+fmt(item.cat.budget)+'</div>'+
-          '</div>'+
-          '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0;">'+
-            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:13px;font-weight:900;color:#FFB300;">'+fmt(item.remain)+'</div>'+
-            '<div style="font-size:9px;font-weight:700;color:rgba(255,180,0,0.55);letter-spacing:0.04em;">נותר</div>'+
-          '</div>'+
-          '</div>';
+        alertsHtml += '<div class="budget-alert-item alert-near">' +
+          '<span class="budget-alert-icon">⚠️</span>' +
+          '<div class="budget-alert-body">' +
+            '<div class="budget-alert-name" style="color:#FFB300;">' + item.cat.name + ' — מתקרב לתקרה</div>' +
+            '<div class="budget-alert-detail">הוצאת ' + fmt(item.cat.total||item.cat.budget-item.remain) + ' מתוך ' + fmt(item.cat.budget) + '</div>' +
+          '</div>' +
+          '<span class="budget-alert-remain near">נותר ' + fmt(item.remain) + '</span>' +
+        '</div>';
       });
       var banner = $('budget-alerts-banner');
       if (banner) { banner.innerHTML = alertsHtml; banner.classList.remove('hidden'); }
@@ -6058,14 +6269,16 @@ window.deletePhoneIdx = function(i) {
 
       return '<div class="'+tileClass+'" style="border:1px solid '+colBdr+';background:linear-gradient(145deg,'+colBg+',rgba(4,7,18,0.96));'+glowStyle+'"'+
         ' onclick="openModalWithCat(\''+cat.type+'\', \''+cat.name+'\')">'+
-        '<button class="cat-tile-del" onclick="event.stopPropagation(); delItem(\'categories\',\''+cat.id+'\')" aria-label="מחק">✕</button>'+
-        '<button class="cat-tile-budget-btn" onclick="event.stopPropagation(); openBudgetModal(\''+cat.id+'\')" aria-label="הגדר תקרה" title="הגדר תקרת הוצאה">'+
-          '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon></svg>'+
-        '</button>'+
         '<div class="cat-tile-name">'+cat.name+'</div>'+
         '<div class="cat-tile-amount" style="color:'+col+';">'+(isInc?'+':'')+fmt(total)+'</div>'+
         '<div class="cat-tile-count">'+count+' תנועות במחזור</div>'+
         budgetHtml+
+        '<div class="cat-tile-actions">'+
+          '<button class="cat-tile-budget-btn" onclick="event.stopPropagation(); openBudgetModal(\''+cat.id+'\')" aria-label="הגדר תקרה" title="הגדר תקרת הוצאה">'+
+            '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"/></svg>'+
+          '</button>'+
+          '<button class="cat-tile-del" onclick="event.stopPropagation(); delItem(\'categories\',\''+cat.id+'\')" aria-label="מחק">✕</button>'+
+        '</div>'+
         '</div>';
     }
 
@@ -6078,21 +6291,20 @@ window.deletePhoneIdx = function(i) {
     if (!window._budgetAlerted) window._budgetAlerted = {};
     expCats.forEach(function(cat) {
       if (!cat.budget || cat.budget <= 0) return;
-      var src = expenses;
       var s2 = cycleStart();
-      var matched = src.filter(function(i){ return i.category===cat.name && parseDate(i.date)>=s2; });
+      var matched = expenses.filter(function(i){ return i.category===cat.name && parseDate(i.date)>=s2; });
       var total2 = matched.reduce(function(a,i){ return a+Number(i.amount||0); }, 0);
       var key = cat.id + '_' + (new Date().getMonth());
       if (total2 >= cat.budget && !window._budgetAlerted[key]) {
         window._budgetAlerted[key] = true;
-        window._budgetAlerted[key+'_near'] = true; /* suppress near alert if already over */
+        window._budgetAlerted[key+'_near'] = true; /* suppress near once over */
         setTimeout(function() {
-          toast('🚨 חרגת מהתקרה ב"'+cat.name+'"! הוצאת '+fmt(total2)+' מתוך '+fmt(cat.budget), 'error');
+          toast('🚨 חרגת מהתקרה בקטגוריה <strong>"'+cat.name+'"</strong><br><span style="font-size:11px;opacity:.7;">הוצאת '+fmt(total2)+' מתוך תקרה של '+fmt(cat.budget)+'</span>', 'error', 6000);
         }, 600);
       } else if (total2 >= cat.budget * 0.8 && !window._budgetAlerted[key+'_near'] && !window._budgetAlerted[key]) {
         window._budgetAlerted[key+'_near'] = true;
         setTimeout(function() {
-          toast('⚠️ מתקרב לתקרה ב"'+cat.name+'" — נותר '+fmt(cat.budget - total2), 'info');
+          toast('⚠️ מתקרב לתקרה ב<strong>"'+cat.name+'"</strong> — נותר <strong>'+fmt(cat.budget-total2)+'</strong>', 'info', 5000);
         }, 800);
       }
     });
@@ -6430,55 +6642,10 @@ window.exportUserData = function() {
 
   if (!scanBtn || !fileInput) return;
 
-  /* ── פותח את בורר הקבצים עם בדיקת מגבלת 7 סריקות ── */
-  var DAILY_SCAN_LIMIT = 7;
-  function getScanUsageToday() {
-    var today = new Date().toDateString();
-    var stored = localStorage.getItem('ao_scan_usage');
-    if (!stored) return { date: today, count: 0 };
-    try {
-      var obj = JSON.parse(stored);
-      if (obj.date !== today) return { date: today, count: 0 };
-      return obj;
-    } catch(e) { return { date: today, count: 0 }; }
-  }
-  function incrementScanUsage() {
-    var usage = getScanUsageToday();
-    usage.count = (usage.count || 0) + 1;
-    localStorage.setItem('ao_scan_usage', JSON.stringify(usage));
-    return usage.count;
-  }
-
+  /* ── פותח את בורר הקבצים ── */
   scanBtn.onclick = function() {
-    var usage = getScanUsageToday();
-    var remaining = DAILY_SCAN_LIMIT - (usage.count || 0);
-
-    if (remaining <= 0) {
-      /* הראה הודעה יפה — מגבלה הושגה */
-      resultEl.className  = 'scan-doc-result';
-      resultEl.style.display = 'block';
-      resultEl.innerHTML =
-        '<div style="'+
-          'background:linear-gradient(135deg,rgba(255,100,0,0.10),rgba(200,60,0,0.07));'+
-          'border:1px solid rgba(255,120,0,0.35);border-radius:16px;'+
-          'padding:16px;text-align:center;position:relative;overflow:hidden;'+
-        '">'+
-        '<div style="position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,120,0,0.55),transparent);"></div>'+
-        '<div style="font-size:28px;margin-bottom:8px;">⏳</div>'+
-        '<div style="font-size:13px;font-weight:900;color:rgba(255,160,60,0.95);margin-bottom:5px;">הגעת למגבלה היומית</div>'+
-        '<div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);line-height:1.6;">'+
-          'מוגבל עד <strong style="color:rgba(255,180,60,0.90);">7 סריקות ביום</strong><br>'+
-          'המגבלה תתאפס מחר 🌅'+
-        '</div>'+
-        '</div>';
-      return;
-    }
-
     resultEl.className  = 'scan-doc-result hidden';
     resultEl.innerHTML  = '';
-    /* עדכן את כתוביות הכפתור עם מספר הסריקות הנותרות */
-    var subEl = scanBtn.querySelector('.scan-doc-sub');
-    if (subEl) subEl.textContent = 'נותרו '+remaining+' סריקות להיום';
     fileInput.click();
   };
 
@@ -6487,14 +6654,10 @@ window.exportUserData = function() {
     if (!file) return;
     fileInput.value = '';
 
-    /* ── הצגת מצב עיבוד + ספירת שימוש ── */
+    /* ── הצגת מצב עיבוד ── */
     processingEl.classList.remove('hidden');
     scanBtn.style.opacity = '0.5';
     scanBtn.style.pointerEvents = 'none';
-    var newCount = incrementScanUsage();
-    var remaining2 = DAILY_SCAN_LIMIT - newCount;
-    var subEl2 = scanBtn.querySelector('.scan-doc-sub');
-    if (subEl2) subEl2.textContent = remaining2 > 0 ? 'נותרו '+remaining2+' סריקות להיום' : 'הגעת למגבלה היומית';
 
     try {
       var result = await sendToWorker(file);
@@ -6513,11 +6676,9 @@ window.exportUserData = function() {
     var b64 = await fileToBase64(file);
     var mime = file.type || 'image/jpeg';
 
-    /* בניית רשימת קטגוריות לשליחה ל-AI */
-    var catSelect = document.getElementById('modal-category');
-    var cats = catSelect
-      ? Array.from(catSelect.options).filter(function(o){ return o.value; }).map(function(o){ return o.text; }).join(', ')
-      : '';
+    /* בניית רשימת כל הקטגוריות מהנתונים האמיתיים */
+    var catsArr = userCategories.map(function(c){ return c.name + ' (' + (c.type==='income'?'הכנסה':'הוצאה') + ')'; });
+    var cats = catsArr.join(', ');
 
     var resp = await fetch(WORKER_URL, {
       method: 'POST',
@@ -6600,58 +6761,72 @@ window.exportUserData = function() {
 
   /* ── הצגת תוצאה מוצלחת ── */
   function showResult(result) {
-    var amount  = result.amount  ? parseFloat(result.amount) : null;
-    var desc    = result.description || '';
-    var type    = result.type === 'income' ? 'income' : 'expense';
-    var cat     = result.category || '';
-    var isInc   = type === 'income';
-    var sym     = isInc ? '+' : '−';
-    var color   = isInc ? 'result-ok' : 'result-ok';
+    var amount    = result.amount ? parseFloat(result.amount) : null;
+    var desc      = result.description || '';
+    var type      = result.type === 'income' ? 'income' : 'expense';
+    var catRaw    = result.category || '';
+    var isInc     = type === 'income';
+    var sym       = isInc ? '+' : '−';
     var typeLabel = isInc ? 'הכנסה' : 'הוצאה';
-    var typeColor = isInc ? '#00FF88' : '#FF6080';
+    var typeColor = isInc ? '#00E676' : '#FF6080';
+    var typeBg    = isInc ? 'rgba(0,230,118,0.10)' : 'rgba(255,23,68,0.10)';
+    var typeBdr   = isInc ? 'rgba(0,230,118,0.28)' : 'rgba(255,23,68,0.28)';
 
-    resultEl.className  = 'scan-doc-result result-ok';
-    resultEl.innerHTML  =
-      '<div class="result-icon">' +
-        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="' + typeColor + '" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' +
-      '</div>' +
-      '<div class="result-body">' +
-        '<div style="font-size:10px;font-weight:800;letter-spacing:0.10em;color:rgba(255,255,255,0.35);margin-bottom:4px;">זוהה על ידי AI</div>' +
-        (amount ? '<span class="result-amount" style="color:' + typeColor + '">' + sym + ' ₪' + amount.toLocaleString() + '</span>' : '') +
-        '<span style="display:block;font-size:12px;color:rgba(255,255,255,0.7);margin-top:2px;margin-bottom:2px;">' + (desc || '—') + '</span>' +
-        (cat ? '<span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.05);border-radius:6px;padding:2px 7px;margin-bottom:8px;">' + cat + '</span>' : '') +
-        '<div style="margin-top:10px;font-size:11.5px;font-weight:700;color:rgba(255,255,255,0.55);margin-bottom:8px;">האם הפרטים נכונים?</div>' +
-        '<div style="display:flex;gap:8px;">' +
-          '<button onclick="window._scanResult && saveScannedTransaction(window._scanResult)" style="' +
-            'flex:1;' +
-            'background:linear-gradient(135deg,' + (isInc?'rgba(0,255,136,0.18)':'rgba(255,96,128,0.18)') + ',' + (isInc?'rgba(0,200,100,0.08)':'rgba(200,0,50,0.08)') + ');' +
-            'border:1px solid ' + typeColor + '55;' +
-            'border-radius:12px;color:' + typeColor + ';' +
-            'font-family:\'Syne\',sans-serif;font-size:13px;font-weight:900;' +
-            'padding:10px;cursor:pointer;' +
-            'transition:all 0.18s var(--spring);' +
-            '">' +
-            '✓ כן, שמור' +
-          '</button>' +
-          '<button onclick="document.getElementById(\'scan-doc-result\').classList.add(\'hidden\'); window._scanResult=null;" style="' +
-            'flex:1;' +
-            'background:rgba(255,255,255,0.04);' +
-            'border:1px solid rgba(255,255,255,0.10);' +
-            'border-radius:12px;color:rgba(255,255,255,0.45);' +
-            'font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;' +
-            'padding:10px;cursor:pointer;' +
-            'transition:all 0.18s var(--spring);' +
-            '">' +
-            '✕ ביטול' +
-          '</button>' +
-        '</div>' +
+    /* Try to match AI category to a real user category */
+    var matchedCat = '';
+    if (catRaw && userCategories.length) {
+      var lower = catRaw.toLowerCase();
+      var found = userCategories.find(function(c){
+        return c.type === type && (
+          c.name.toLowerCase() === lower ||
+          c.name.toLowerCase().includes(lower) ||
+          lower.includes(c.name.toLowerCase())
+        );
+      });
+      if (found) matchedCat = found.name;
+      else matchedCat = catRaw; /* keep AI suggestion even if no exact match */
+    } else {
+      matchedCat = catRaw;
+    }
+
+    /* Save enriched result */
+    window._scanResult = Object.assign({}, result, { category: matchedCat, type: type, amount: amount, description: desc });
+
+    resultEl.className = 'scan-doc-result result-ok';
+    resultEl.innerHTML =
+      '<div style="position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,'+typeColor+'55,transparent);"></div>'+
+      '<div style="display:flex;align-items:flex-start;gap:12px;">'+
+        '<div style="width:36px;height:36px;flex-shrink:0;border-radius:12px;background:'+typeBg+';border:1px solid '+typeBdr+';display:flex;align-items:center;justify-content:center;margin-top:2px;">'+
+          (isInc
+            ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="'+typeColor+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'
+            : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="'+typeColor+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>')+
+        '</div>'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-size:10px;font-weight:800;letter-spacing:0.10em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:5px;">🤖 זוהה על ידי AI</div>'+
+          (amount
+            ? '<div style="font-family:\'JetBrains Mono\',monospace;font-size:26px;font-weight:900;color:'+typeColor+';text-shadow:0 0 20px '+typeColor+'66;line-height:1;margin-bottom:5px;">'+sym+' ₪'+amount.toLocaleString('he-IL')+'</div>'
+            : '<div style="font-size:13px;color:rgba(255,200,0,0.8);font-weight:700;margin-bottom:5px;">⚠️ לא זוהה סכום</div>')+
+          '<div style="font-size:12.5px;font-weight:700;color:rgba(255,255,255,0.70);margin-bottom:6px;">'+escHtml(desc||'—')+'</div>'+
+          (matchedCat
+            ? '<div style="display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:800;color:'+typeColor+';background:'+typeBg+';border:1px solid '+typeBdr+';border-radius:8px;padding:3px 9px;margin-bottom:10px;">'+
+                '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>'+
+                escHtml(matchedCat)+'</div>'
+            : '')+
+          '<div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.40);margin-bottom:10px;">סוג: '+typeLabel+'</div>'+
+          '<div style="font-size:12px;font-weight:800;color:rgba(255,255,255,0.60);margin-bottom:9px;text-align:center;">האם הפרטים נכונים?</div>'+
+          '<div style="display:flex;gap:8px;">'+
+            '<button onclick="window._scanResult&&saveScannedTransaction(window._scanResult)" style="flex:1;background:linear-gradient(135deg,'+typeBg+','+typeBg.replace('0.10','0.05')+');border:1px solid '+typeBdr+';border-radius:12px;color:'+typeColor+';font-family:\'Syne\',sans-serif;font-size:13px;font-weight:900;padding:11px;cursor:pointer;box-shadow:0 4px 16px '+typeColor+'22;">✓ כן, שמור</button>'+
+            '<button onclick="document.getElementById(\'scan-doc-result\').classList.add(\'hidden\');window._scanResult=null;" style="flex:0.6;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.10);border-radius:12px;color:rgba(255,255,255,0.40);font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;padding:11px;cursor:pointer;">✕ בטל</button>'+
+          '</div>'+
+        '</div>'+
       '</div>';
 
-    /* שמור את התוצאה לשימוש בכפתור */
-    window._scanResult = result;
-
+    resultEl.style.position = 'relative';
+    resultEl.style.overflow = 'hidden';
     resultEl.classList.remove('hidden');
   }
+
+  function escHtml(str){ return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
   /* ── הצגת שגיאה ── */
   function showError(msg) {
