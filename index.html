@@ -382,12 +382,13 @@
 
     /* ── NAV ── */
     #nav {
-      position:fixed; bottom:12px; left:12px; right:12px; display:flex;
+      position:fixed; bottom:12px; left:12px; right:12px; display:none;
       background:rgba(10,16,30,0.88); backdrop-filter:blur(28px); -webkit-backdrop-filter:blur(28px);
       border:1px solid rgba(255,255,255,0.08); border-radius:20px;
       box-shadow:0 8px 32px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.06);
       z-index:100; padding:4px;
     }
+    #nav.visible { display:flex; }
     .nav-btn {
       flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;
       padding:11px 8px; border:none; background:transparent;
@@ -1225,7 +1226,7 @@
     }
 
     /* ── NAV BAR 2026 ── */
-    #nav {
+    #nav.visible {
       background: rgba(4,6,14,0.92) !important;
       backdrop-filter: blur(36px) saturate(180%) !important;
       -webkit-backdrop-filter: blur(36px) saturate(180%) !important;
@@ -3398,7 +3399,7 @@
 
   <div style="padding:16px 16px 0">
 
-    <div id="view-dashboard">
+    <div id="view-dashboard" class="hidden">
       <!-- Dashboard Budget Alerts -->
       <div id="dash-budget-alerts" class="hidden" style="margin-bottom:14px;"></div>
 
@@ -3838,6 +3839,8 @@
       </div>
 
     </div><!-- /view-charts -->
+
+    <div id="view-settings" class="hidden">
 
       <!-- Smart User Card 2026 -->
       <div id="settings-user-card">
@@ -4557,6 +4560,7 @@
 
     </div>
   </div>
+    </div><!-- /view-settings -->
 
   <nav id="nav">
     <button class="nav-btn active modern-hover" id="nav-dashboard" onclick="switchView('dashboard')">
@@ -4807,6 +4811,12 @@
   function showScreen(name){
     ['screen-loading','screen-login','screen-setname','app'].forEach(hide);
     show(name);
+    /* הצג את הסרגל רק כשה-app פעיל */
+    var nav = document.getElementById('nav');
+    if(nav){
+      if(name === 'app'){ nav.classList.add('visible'); }
+      else              { nav.classList.remove('visible'); }
+    }
   }
 
   function parseDate(d) {
@@ -5759,6 +5769,7 @@ window.deletePhoneIdx = function(i) {
       }
       displayName = name;
       showScreen('app');
+      switchView('dashboard');
       var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
       var si=$('settings-name-input'); if(si) si.value=displayName;
       var sun=$('settings-user-name'); if(sun) sun.textContent=displayName;
@@ -5770,6 +5781,7 @@ window.deletePhoneIdx = function(i) {
       var name = user.displayName || (user.email ? user.email.split('@')[0] : 'משתמש');
       displayName = name;
       showScreen('app');
+      switchView('dashboard');
       var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
       var si=$('settings-name-input'); if(si) si.value=displayName;
       startListeners();
@@ -6092,6 +6104,7 @@ window.deletePhoneIdx = function(i) {
       appBooted = true;
       uid = user.uid;
       showScreen('app');
+      switchView('dashboard');
       var hn=$('header-name'); if(hn) hn.textContent='שלום, '+name.split(' ')[0]+'!';
       var si=$('settings-name-input'); if(si) si.value=name;
       var ri=$('reset-day-input'); if(ri) ri.value=resetDay;
