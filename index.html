@@ -1,12 +1,19 @@
 <!DOCTYPE html>
+<!-- AO Budget v2.1.0 — Upgraded 2026 — שודרג ותוקן על ידי Claude Sonnet -->
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AO Budget</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>AO Budget — ניהול תקציב חכם</title>
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#00E5FF">
+  <meta name="theme-color" content="#00E5FF" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#04070E" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="ניהול תקציב אישי חכם עם סנכרון בין מכשירים, קטגוריות, ובוט וואטסאפ.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AO Budget">
+  <meta name="mobile-web-app-capable" content="yes">
 
 <script>
   if ('serviceWorker' in navigator) {
@@ -57,7 +64,7 @@
       else { setCircularFavicon(); }
     })();
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap&font-display=swap" rel="stylesheet">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://a4190656-cloud.github.io/AO-TIMLulll/">
   <meta property="og:title" content="AO ניהול תקציב | התקציב האישי שלכם!">
@@ -65,6 +72,10 @@
   <meta property="og:image" content="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/refs/heads/main/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="AO ניהול תקציב">
+  <meta name="twitter:description" content="ניהול תקציב חכם עם בוט וואטסאפ וסנכרון בין מכשירים.">
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/refs/heads/main/icon-512.png">
   <style>
   /* מסך טעינה מאובטח - גרסת פרימיום AO */
 #security-loader-overlay {
@@ -93,6 +104,27 @@
 }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     .profile-pic-container:hover .profile-pic-overlay { opacity: 1 !important; }
+
+    /* ── PERFORMANCE: GPU-accelerated layers ── */
+    .cat-tile, .sblock, .hero-card, .action-btn-income, .action-btn-expense {
+      will-change: transform;
+    }
+
+    /* ── PREMIUM: Improved tap target size for mobile ── */
+    .del-btn, .cat-tile-del, .cat-tile-budget-btn {
+      min-width: 44px;
+      min-height: 44px;
+    }
+
+    /* ── PREMIUM: Smooth scroll ── */
+    html { scroll-behavior: smooth; }
+
+    /* ── PREMIUM: Better text rendering ── */
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
     :root {
       --bg:         #04070E;
       --card:       rgba(13,19,35,0.72);
@@ -107,6 +139,14 @@
       --muted:      rgba(255,255,255,0.42);
       --glass:      rgba(255,255,255,0.04);
       --glass-border:rgba(255,255,255,0.10);
+      --oled:       #000000;
+      --oled-card:  rgba(8,10,18,0.92);
+      --glass-deep: rgba(6,9,20,0.85);
+      --neon-cyan:  #00E5FF;
+      --neon-green: #00FF88;
+      --neon-red:   #FF1F4E;
+      --spring:     cubic-bezier(0.34, 1.56, 0.64, 1);
+      --elastic:    cubic-bezier(0.68, -0.55, 0.265, 1.55);
     }
 
     html, body { height: 100%; }
@@ -134,7 +174,7 @@
       background-size: 44px 44px;
     }
 
-    #app { position: relative; z-index: 1; padding-bottom: 110px; }
+    #app { position: relative; z-index: 1; padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px)); padding-top: env(safe-area-inset-top, 0px); }
     .hidden { display: none !important; }
 
     .card {
@@ -167,7 +207,7 @@
       animation: scanline 3.5s linear infinite;
       pointer-events: none;
     }
-    @keyframes scanline { 0% { top: -2%; } 100% { top: 108%; } }
+    /* scanline keyframe defined once globally */
 
     /* ── INPUTS ── */
     .inp {
@@ -788,17 +828,7 @@
        ✦  2026 PREMIUM DESIGN SYSTEM — מהפכת עיצוב וממשק  ✦
     ══════════════════════════════════════════════════════ */
 
-    /* ── OLED Deep Dark Mode ── */
-    :root {
-      --oled: #000000;
-      --oled-card: rgba(8,10,18,0.92);
-      --glass-deep: rgba(6,9,20,0.85);
-      --neon-cyan: #00E5FF;
-      --neon-green: #00FF88;
-      --neon-red: #FF1F4E;
-      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-      --elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    }
+    /* ── OLED Deep Dark Mode (merged into main :root above) ── */
     body { background: var(--oled); }
 
     /* ── SPRING/ELASTIC MODAL ANIMATION ── */
@@ -868,7 +898,7 @@
       transition: opacity 0.3s ease;
     }
     .cat-tile:hover::before {
-      opacity: 1.6;
+      opacity: 1;
     }
 
     /* ── Prismatic top edge ── */
@@ -983,7 +1013,53 @@
       100% { left: 130%; opacity: 0; }
     }
 
-    /* ── SETTINGS 2026 — Grouped Lists ── */
+    /* ── PREMIUM 2026: Enhanced nav active indicator ── */
+    .nav-btn.active {
+      position: relative;
+    }
+    .nav-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 3px;
+      background: var(--cyan);
+      border-radius: 99px;
+      box-shadow: 0 0 10px var(--cyan), 0 0 4px var(--cyan);
+      animation: navDotIn 0.3s var(--spring) both;
+    }
+    @keyframes navDotIn {
+      from { width: 0; opacity: 0; }
+      to   { width: 20px; opacity: 1; }
+    }
+
+    /* ── PREMIUM 2026: Input focus ring upgrade ── */
+    .inp:focus {
+      border-color: rgba(0,229,255,0.55);
+      background: rgba(0,229,255,0.04);
+      box-shadow: 0 0 0 3px rgba(0,229,255,0.10), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    /* ── PREMIUM 2026: Number input — hide spinners ── */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=number] { -moz-appearance: textfield; }
+
+    /* ── PREMIUM 2026: Loading shimmer for empty states ── */
+    @keyframes shimmerLoad {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    .shimmer-text {
+      background: linear-gradient(90deg, rgba(255,255,255,0.08) 25%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.08) 75%);
+      background-size: 200% auto;
+      animation: shimmerLoad 1.5s linear infinite;
+      border-radius: 6px;
+      color: transparent !important;
+      -webkit-text-fill-color: transparent !important;
+    }
     .sblock {
       border-radius: 24px !important;
       border: 1px solid rgba(255,255,255,0.07) !important;
@@ -4814,7 +4890,7 @@
   <span class="wa-help-arrow">←</span>
 </a>
 
-<div id="modal-overlay" class="hidden" onclick="handleOverlayClick(event)">
+<div id="modal-overlay" class="hidden" onclick="if(event.target===this) hide('modal-overlay')">
   <div id="modal-sheet" class="slide-up" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
     <h3 id="modal-title" style="text-align:center;font-size:17px;font-weight:700;margin-bottom:18px"></h3>
@@ -4977,9 +5053,9 @@
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 
 <script>
 (function() {
@@ -4997,7 +5073,8 @@
   if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
   const auth = firebase.auth();
   const db   = firebase.firestore();
-  db.settings({ experimentalForceLongPolling: true });
+  // הגדרות Firestore — LongPolling לנייד, גודל cache מוגדל
+  db.settings({ experimentalForceLongPolling: true, cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED });
 
   /* ── שמור משתמש לצמיתות — לא יצטרך להיכנס שוב מאותו דפדפן ── */
   auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(e){
@@ -5013,6 +5090,7 @@
   var modalType = 'income', isRegMode = false, unsubs = [];
   var newCatPanelOpen = false;
   var isUSD = false, exchangeRate = 3.7;
+  var appBooted = false; // האם האפליקציה כבר אותחלה
 
   /* ── Helpers ── */
   function $(id){ return document.getElementById(id); }
@@ -5060,12 +5138,23 @@
       el.classList.add('out');
       setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 300);
     }, duration);
+    // Swipe-to-dismiss on mobile
+    el.addEventListener('touchstart', function(e){ el._touchX = e.touches[0].clientX; }, { passive: true });
+    el.addEventListener('touchend', function(e){
+      if (Math.abs(e.changedTouches[0].clientX - (el._touchX||0)) > 60) {
+        clearTimeout(timer);
+        el.classList.add('out');
+        setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 300);
+      }
+    }, { passive: true });
     el.querySelector('.toast-msg').addEventListener('click', function() {
       clearTimeout(timer);
       el.classList.add('out');
       setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 300);
     });
   }
+  // Expose toast globally for inline onclick handlers
+  window.toast = toast;
 
   /* ── Edit transaction state ── */
   var editingItem = null;
@@ -5096,9 +5185,11 @@
 
   $('edit-modal-submit').onclick = function() {
     if (!editingItem) return;
-    var amount = Number($('edit-modal-amount').value);
+    var rawVal = $('edit-modal-amount').value.replace(/[^\d.]/g,'');
+    var amount = Number(rawVal);
     var desc = $('edit-modal-desc').value.trim();
-    if (!amount) { toast('נא למלא סכום', 'error'); return; }
+    if (!amount || amount <= 0) { toast('נא למלא סכום חיובי', 'error'); return; }
+    if (amount > 9999999) { toast('סכום גדול מדי', 'error'); return; }
     /* אם לא הוזן תיאור — ברירת מחדל לפי סוג */
     if (!desc) desc = (editingItem._t === 'income') ? 'הכנסה כללית' : 'הוצאה כללית';
     var col = editingItem._t === 'income' ? 'incomes' : 'expenses';
@@ -5112,6 +5203,7 @@
 
   window.formatPhone = function(p) {
     var c = p.replace(/\D/g, '');
+    if(c.startsWith('972')) return c;
     if(c.startsWith('0')) return '972' + c.substring(1);
     if(c.startsWith('5')) return '972' + c;
     return c;
@@ -5132,6 +5224,14 @@
 
   /* ── Enter key submits forms ── */
   document.addEventListener('keydown', function(e) {
+    // ESC closes open modals
+    if (e.key === 'Escape') {
+      if (!$('modal-overlay').classList.contains('hidden')) { hide('modal-overlay'); return; }
+      if (!$('edit-modal-overlay').classList.contains('hidden')) { window.closeEditModal && window.closeEditModal(); return; }
+      if (!$('budget-edit-modal').classList.contains('hidden')) { window.closeBudgetModal && window.closeBudgetModal(); return; }
+      if (!$('bug-modal-overlay').classList.contains('hidden')) { $('bug-modal-overlay').classList.remove('open'); return; }
+      return;
+    }
     if (e.key !== 'Enter') return;
     var active = document.activeElement;
     if (!active) return;
@@ -5152,8 +5252,10 @@
     var inp = $('login-pass');
     var isText = inp.type === 'text';
     inp.type = isText ? 'password' : 'text';
-    $('eye-icon-open').style.display  = isText ? 'block' : 'none';
-    $('eye-icon-closed').style.display= isText ? 'none'  : 'block';
+    // isText=true means we're switching back to password (hide), show closed eye
+    // isText=false means we're switching to text (show), show open eye
+    $('eye-icon-open').style.display  = isText ? 'none'  : 'block';
+    $('eye-icon-closed').style.display= isText ? 'block' : 'none';
   };
 
   /* ── Forgot password ── */
@@ -5494,28 +5596,55 @@
   };
 
 window.deletePhoneIdx = function(i) {
-    if(confirm('האם להסיר מספר זה מחיבור לבוט? לאחר ההסרה, המספר יהיה פנוי לחיבור בחשבון אחר.')) {
-        var newArr = userPhones.slice();
-        // הסרת המספר מהמערך המקומי
-        newArr.splice(i, 1);
-        // עדכון המאגר ב-Firebase (משחרר את המספר)
-        updatePhonesInDB(newArr); 
-    }
+    var num = userPhones[i];
+    // Toast-style confirm that works on mobile PWA
+    var container = document.getElementById('toast-container');
+    var el = document.createElement('div');
+    el.className = 'toast toast-error';
+    el.style.flexDirection = 'column';
+    el.style.gap = '10px';
+    el.innerHTML =
+      '<span style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.88);">הסרת מספר ' + num + '?</span>' +
+      '<div style="display:flex;gap:8px;width:100%;">' +
+        '<button onclick="(function(){' +
+          'var newArr=window._pendingDelPhones.slice();newArr.splice(window._pendingDelIdx,1);' +
+          'window.updatePhonesInDB(newArr);' +
+          'this.closest(\'.toast\').parentNode&&this.closest(\'.toast\').parentNode.removeChild(this.closest(\'.toast\'));' +
+        '}).call(this)" style="flex:1;background:rgba(255,23,68,0.20);border:1px solid rgba(255,23,68,0.35);border-radius:10px;color:#FF6080;font-family:\'Syne\',sans-serif;font-size:13px;font-weight:800;padding:9px;cursor:pointer;">הסר</button>' +
+        '<button onclick="this.closest(\'.toast\').parentNode&&this.closest(\'.toast\').parentNode.removeChild(this.closest(\'.toast\'))" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);border-radius:10px;color:rgba(255,255,255,0.55);font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;padding:9px;cursor:pointer;">ביטול</button>' +
+      '</div>';
+    window._pendingDelPhones = userPhones;
+    window._pendingDelIdx = i;
+    container.appendChild(el);
+    setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 8000);
   };
 
   window.editPhoneIdx = function(i) {
     var current = userPhones[i];
-    var p = prompt('ערוך מספר טלפון:', current);
-    if(p !== null && p.trim() !== '') {
-        var fmtP = window.formatPhone(p);
-        if(fmtP !== current && userPhones.includes(fmtP)) {
-           toast('מספר זה כבר קיים ברשימה.', 'error');
-           return;
-        }
-        var newArr = userPhones.slice();
-        newArr[i] = fmtP;
-        updatePhonesInDB(newArr);
-    }
+    var container = document.getElementById('toast-container');
+    var el = document.createElement('div');
+    el.className = 'toast toast-info';
+    el.style.flexDirection = 'column';
+    el.style.gap = '10px';
+    var inputId = 'phone-edit-inp-' + Date.now();
+    el.innerHTML =
+      '<span style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.88);">עריכת מספר טלפון</span>' +
+      '<input id="' + inputId + '" value="' + current + '" style="background:rgba(255,255,255,0.07);border:1px solid rgba(0,229,255,0.25);border-radius:10px;color:#fff;font-family:\'Syne\',sans-serif;font-size:14px;padding:9px 12px;width:100%;direction:ltr;text-align:left;outline:none;" />' +
+      '<div style="display:flex;gap:8px;width:100%;">' +
+        '<button onclick="(function(){' +
+          'var inp=document.getElementById(\'' + inputId + '\');' +
+          'var p=inp?inp.value.trim():\'\';' +
+          'if(p){var fmtP=window.formatPhone(p);' +
+          'if(fmtP!==\'' + current + '\'&&window._editPhoneArr&&window._editPhoneArr.includes(fmtP)){window.toast && window.toast(\'מספר קיים\',\'error\');return;}' +
+          'var newArr=(window._editPhoneArr||[]).slice();newArr[' + i + ']=fmtP;window.updatePhonesInDB(newArr);}' +
+          'this.closest(\'.toast\').parentNode&&this.closest(\'.toast\').parentNode.removeChild(this.closest(\'.toast\'));' +
+        '}).call(this)" style="flex:1;background:rgba(0,229,255,0.12);border:1px solid rgba(0,229,255,0.28);border-radius:10px;color:var(--cyan);font-family:\'Syne\',sans-serif;font-size:13px;font-weight:800;padding:9px;cursor:pointer;">שמור</button>' +
+        '<button onclick="this.closest(\'.toast\').parentNode&&this.closest(\'.toast\').parentNode.removeChild(this.closest(\'.toast\'))" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);border-radius:10px;color:rgba(255,255,255,0.55);font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;padding:9px;cursor:pointer;">ביטול</button>' +
+      '</div>';
+    window._editPhoneArr = userPhones;
+    container.appendChild(el);
+    setTimeout(function(){ var inp = document.getElementById(inputId); if(inp) inp.focus(); }, 80);
+    setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 15000);
   };
 
   /* ── Dashboard budget alerts ── */
@@ -6038,7 +6167,14 @@ window.deletePhoneIdx = function(i) {
         isRegMode = false;
         hide('login-name-wrap');
         $('btn-email-auth').textContent = 'כניסה לחשבון';
-        $('btn-toggle-mode').textContent = 'עוד אין לך חשבון? לחץ כאן ←';
+        // Update the toggle button text properly
+        var toggleBtn = $('btn-toggle-mode');
+        if(toggleBtn){
+          var mainText = toggleBtn.querySelector('.cta-main');
+          var subText = toggleBtn.querySelector('.cta-sub');
+          if(mainText) mainText.textContent = 'עדיין אין חשבון? הצטרפו עכשיו';
+          if(subText) subText.textContent = 'הרשמה בחינם';
+        }
       });
     }).catch(function(e){
       clearInterval(interval);
@@ -6061,12 +6197,16 @@ window.deletePhoneIdx = function(i) {
     }).catch(function(e){
       clearInterval(interval);
       hide('security-loader-overlay');
-      if(e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential'){
+      if(e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential' || e.code === 'auth/invalid-login-credentials'){
         showLoginErr('אימייל או סיסמה שגויים.');
       } else if(e.code === 'auth/invalid-email'){
         showLoginErr('כתובת מייל לא תקינה.');
       } else if(e.code === 'auth/too-many-requests'){
         showLoginErr('יותר מדי ניסיונות. המתן מספר דקות ונסה שוב.');
+      } else if(e.code === 'auth/network-request-failed'){
+        showLoginErr('שגיאת רשת. בדוק את החיבור לאינטרנט.');
+      } else if(e.code === 'auth/user-disabled'){
+        showLoginErr('החשבון הזה הושבת. פנה לתמיכה.');
       } else {
         showLoginErr('שגיאה בכניסה. נסה שוב.');
       }
@@ -6276,7 +6416,7 @@ window.deletePhoneIdx = function(i) {
     });
   };
 
-  window.handleOverlayClick=function(){ hide('modal-overlay'); };
+  /* ── Modal overlay click ── */
 
   /* ── Success animation ── */
   function showSuccess(type,amount){
@@ -6316,10 +6456,12 @@ window.deletePhoneIdx = function(i) {
 
   /* ── Submit modal ── */
   $('modal-submit').onclick=function(){
-    var amount=Number($('modal-amount').value);
+    var rawVal = $('modal-amount').value.replace(/[^\d.]/g,'');
+    var amount=Number(rawVal);
     var desc=$('modal-desc').value.trim();
     var cat=$('modal-category').value;
-    if(!amount){ toast('נא להזין סכום', 'error'); return; }
+    if(!amount || amount <= 0){ toast('נא להזין סכום חיובי', 'error'); return; }
+    if(amount > 9999999){ toast('סכום גדול מדי', 'error'); return; }
     /* אם לא הוזן תיאור — ברירת מחדל לפי סוג */
     if(!desc) desc = (modalType==='income') ? 'הכנסה כללית' : 'הוצאה כללית';
 
@@ -6856,22 +6998,42 @@ window.deletePhoneIdx = function(i) {
     }
   };
   // פונקציה לאיפוס התמונה וחזרה ללוגו המקורי
- // 1. פונקציה לשינוי שם ישירות מהכרטיס
+ // 1. פונקציה לשינוי שם ישירות מהכרטיס — עם UI מוטמע במקום prompt()
 window.editNameFromCard = function() {
-  var newName = prompt("הזן שם חדש:", displayName);
-  if (newName !== null && newName.trim() !== "") {
-    auth.currentUser.updateProfile({displayName: newName.trim()}).then(function() {
-      return db.collection('users').doc(uid).set({displayName: newName.trim()}, {merge: true});
-    }).then(function() {
-      displayName = newName.trim();
-      document.getElementById('header-name').textContent = 'שלום, ' + displayName.split(' ')[0] + '!';
-      document.getElementById('settings-user-name').textContent = displayName;
-      document.getElementById('settings-name-input').value = displayName;
-      toast('השם עודכן בהצלחה!', 'success');
-    }).catch(function(e) {
-      toast('שגיאה בעדכון השם', 'error');
-    });
-  }
+  var container = document.getElementById('toast-container');
+  var el = document.createElement('div');
+  el.className = 'toast toast-info';
+  el.style.flexDirection = 'column';
+  el.style.gap = '10px';
+  var inputId = 'name-edit-inp-' + Date.now();
+  el.innerHTML =
+    '<span style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.88);">שינוי שם תצוגה</span>' +
+    '<input id="' + inputId + '" value="' + (displayName||'') + '" style="background:rgba(255,255,255,0.07);border:1px solid rgba(0,229,255,0.25);border-radius:10px;color:#fff;font-family:\'Syne\',sans-serif;font-size:15px;padding:10px 13px;width:100%;outline:none;" />' +
+    '<div style="display:flex;gap:8px;width:100%;">' +
+      '<button id="' + inputId + '-save" style="flex:1;background:rgba(0,229,255,0.12);border:1px solid rgba(0,229,255,0.28);border-radius:10px;color:var(--cyan);font-family:\'Syne\',sans-serif;font-size:13px;font-weight:800;padding:9px;cursor:pointer;">שמור</button>' +
+      '<button onclick="this.closest(\'.toast\').parentNode&&this.closest(\'.toast\').parentNode.removeChild(this.closest(\'.toast\'))" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);border-radius:10px;color:rgba(255,255,255,0.55);font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;padding:9px;cursor:pointer;">ביטול</button>' +
+    '</div>';
+  container.appendChild(el);
+  setTimeout(function(){
+    var inp = document.getElementById(inputId);
+    if(inp) { inp.focus(); inp.select(); }
+    var saveBtn = document.getElementById(inputId + '-save');
+    if(saveBtn) saveBtn.onclick = function(){
+      var newName = inp ? inp.value.trim() : '';
+      if (!newName) return;
+      auth.currentUser.updateProfile({displayName: newName}).then(function() {
+        return db.collection('users').doc(uid).set({displayName: newName.trim()}, {merge: true});
+      }).then(function() {
+        displayName = newName;
+        document.getElementById('header-name').textContent = 'שלום, ' + displayName.split(' ')[0] + '!';
+        document.getElementById('settings-user-name').textContent = displayName;
+        document.getElementById('settings-name-input').value = displayName;
+        toast('השם עודכן בהצלחה!', 'success');
+      }).catch(function() { toast('שגיאה בעדכון השם', 'error'); });
+      if(el.parentNode) el.parentNode.removeChild(el);
+    };
+  }, 80);
+  setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 20000);
 };
 
 // 2. פונקציה לאיפוס תמונה עם שאלת אישור
@@ -6947,11 +7109,15 @@ window.resetProfilePic = function() {
   };
 
   /* טיימר חכם שממתין שהנתונים ייטענו ואז בודק אם התחלף חודש */
+  var _cycleCheckTries = 0;
   var cycleCheckInterval = setInterval(function() {
+    _cycleCheckTries++;
     // מוודא שהמשתמש מחובר ושההכנסות/הוצאות הקבועות נמשכו מהרשת
     if (uid && typeof fixedExpenses !== 'undefined' && typeof fixedIncomes !== 'undefined') {
       clearInterval(cycleCheckInterval);
       setTimeout(window.checkCyclePrompt, 1500); // ממתין שנייה וחצי לחוויה חלקה
+    } else if (_cycleCheckTries > 30) {
+      clearInterval(cycleCheckInterval); // safety — מניעת דליפת זיכרון לאחר 30 שניות
     }
   }, 1000);
   // פונקציה לייצוא נתוני המשתמש לקובץ CSV
@@ -6994,10 +7160,13 @@ window.exportUserData = function() {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.setAttribute("href", url);
-  link.setAttribute("download", `AO_Budget_Export_${new Date().toLocaleDateString('he-IL')}.csv`);
+  var today = new Date();
+  var isoDate = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+  link.setAttribute("download", 'AO_Budget_Export_' + isoDate + '.csv');
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
   
   toast('הקובץ הורד בהצלחה!', 'success');
 };
