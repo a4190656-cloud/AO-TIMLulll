@@ -1992,7 +1992,8 @@
       var el=document.getElementById('loading-dots');
       if(el){ _d=(_d+1)%4; el.textContent='.'.repeat(_d||1); }
     },500);
-    setTimeout(function(){
+    window._screenLoadingIntervalId = _di;
+    window._screenLoadingTimeoutId = setTimeout(function(){
       clearInterval(_di);
       var b=document.getElementById('btn-loading-manual');
       var m=document.getElementById('loading-msg');
@@ -6209,8 +6210,9 @@ window.deletePhoneIdx = function(i) {
   ══════════════════════════════════════════════ */
   var authResolved = false;
   var appBooted    = false; /* prevent double-boot */
+  var _googleOAuthPending = false; /* set to true when returning from Google OAuth redirect */
   var authTimeout  = setTimeout(function(){
-    if(!authResolved){
+    if(!authResolved && !_googleOAuthPending){
       authResolved = true;
       showScreen('screen-login');
     }
@@ -6310,7 +6312,6 @@ window.deletePhoneIdx = function(i) {
   var REDIRECT_URI = 'https://a4190656-cloud.github.io/AO-TIMLulll/';
 
   /* ── טיפול ב-token שגוגל מחזיר ב-URL hash אחרי הכניסה ── */
-  var _googleOAuthPending = false;
   (function handleOAuthCallback() {
     var hash = window.location.hash;
     if (!hash) return;
@@ -6321,14 +6322,25 @@ window.deletePhoneIdx = function(i) {
     });
     if (!params.access_token) return;
 
-    /* ── מיד כשאנחנו רואים את ה-token — מציגים את ה-loader לפני הכל ── */
+    /* ── מיד — מסתירים screen-loading ומציגים security-loader ── */
     _googleOAuthPending = true;
+
+    // בטל את ה-timeout של screen-loading שמציג "לקח יותר מדי זמן"
+    if (window._screenLoadingTimeoutId) clearTimeout(window._screenLoadingTimeoutId);
+    if (window._screenLoadingIntervalId) clearInterval(window._screenLoadingIntervalId);
+
+    // הסתר כל המסכים והצג את ה-security loader
+    ['screen-loading','screen-login','screen-setname','app'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+    });
     show('security-loader-overlay');
+
     // עדכון הודעות ה-loader לגוגל
     var msgEl = $('security-msg');
-    var enEl  = $('security-msg-en');
+    var subEl = $('security-sub-msg');
     if (msgEl) msgEl.textContent = 'מתחבר עם חשבון גוגל...';
-    if (enEl)  enEl.textContent  = 'Signing in with Google...';
+    if (subEl) subEl.textContent = 'מאמת זהות ומצפין נתונים';
 
     /* Safety timeout — אם לא נכנסנו תוך 15 שניות, מציגים שגיאה */
     var _oauthTimeout = setTimeout(function() {
@@ -6336,6 +6348,7 @@ window.deletePhoneIdx = function(i) {
         _googleOAuthPending = false;
         hide('security-loader-overlay');
         showLoginErr('הכניסה עם גוגל לא הושלמה — נסה שוב.');
+        showScreen('screen-login');
       }
     }, 15000);
 
@@ -6354,6 +6367,7 @@ window.deletePhoneIdx = function(i) {
         _googleOAuthPending = false;
         hide('security-loader-overlay');
         showLoginErr('שגיאה בכניסה עם גוגל: ' + (e.message || e.code));
+        showScreen('screen-login');
       });
   })();
 
