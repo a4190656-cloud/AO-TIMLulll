@@ -558,12 +558,19 @@
     }
     .cat-tile-budget-btn:hover { background:rgba(0,229,255,0.18); color:var(--cyan); }
 
-    /* action row at bottom of tile */
+    /* action row at bottom-right of tile — X on top, pencil below center */
     .cat-tile-actions {
-      display: flex; align-items: center; justify-content: flex-end; gap: 6px;
-      margin-top: 10px;
-      padding-top: 8px;
-      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+    .cat-tile {
+      position: relative;
     }
 
     .cat-tile-name {
@@ -4018,6 +4025,54 @@
         <div id="bar-chart-budget" class="bar-chart-wrap"></div>
       </div>
 
+      <!-- Trend chart — historical income vs expenses -->
+      <div class="chart-hero" style="margin-bottom:16px;" id="trend-chart-wrap">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+          <div class="chart-section-title" style="margin-bottom:0;flex:1;">מגמה היסטורית</div>
+          <div style="display:flex;gap:6px;">
+            <button class="trend-period-btn active" data-period="6" onclick="window.setTrendPeriod(6,this)">6M</button>
+            <button class="trend-period-btn" data-period="12" onclick="window.setTrendPeriod(12,this)">1Y</button>
+            <button class="trend-period-btn" data-period="24" onclick="window.setTrendPeriod(24,this)">2Y</button>
+            <button class="trend-period-btn" data-period="0" onclick="window.setTrendPeriod(0,this)">הכל</button>
+          </div>
+        </div>
+        <div id="trend-chart-inner"></div>
+        <div id="trend-chart-legend" style="display:flex;gap:14px;margin-top:14px;flex-wrap:wrap;justify-content:center;"></div>
+      </div>
+
+      <style>
+        .trend-period-btn {
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.10);
+          border-radius: 8px;
+          color: rgba(255,255,255,0.45);
+          font-family: 'Syne', sans-serif;
+          font-size: 11px; font-weight: 800;
+          padding: 5px 11px; cursor: pointer;
+          transition: all .18s;
+        }
+        .trend-period-btn.active,
+        .trend-period-btn:hover {
+          background: rgba(0,229,255,0.12);
+          border-color: rgba(0,229,255,0.35);
+          color: var(--cyan);
+        }
+        .trend-svg-wrap {
+          width: 100%;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+        .trend-svg-wrap svg { display: block; }
+        .trend-leg-item {
+          display: flex; align-items: center; gap: 5px;
+          font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.55);
+        }
+        .trend-leg-dot {
+          width: 10px; height: 10px; border-radius: 50%; flex-shrink:0;
+          box-shadow: 0 0 6px currentColor;
+        }
+      </style>
+
     </div><!-- /view-charts -->
 
     <div id="view-settings" class="hidden">
@@ -4286,6 +4341,44 @@
             <button id="btn-add-fi" class="fixed-add-btn fixed-add-btn-income">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               הוסף הכנסה
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════
+           בועה דו-חודשית — הכנסות והוצאות פעם בחודשיים
+           ═══════════════════════════════════════════ -->
+      <div class="fixed-block-2026" id="bimonthly-block" style="border-color:rgba(171,71,188,0.28);background:linear-gradient(145deg,rgba(39,16,62,0.80),rgba(18,8,32,0.95));">
+        <div class="fixed-block-header">
+          <div class="fixed-block-icon" style="background:rgba(171,71,188,0.12);border:1px solid rgba(171,71,188,0.28);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#CE93D8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+              <path d="M8 14h4m0 0h4m-4 0v4"/>
+            </svg>
+          </div>
+          <div class="fixed-block-title-col">
+            <div class="fixed-block-title" style="color:#CE93D8;">דו-חודשי</div>
+            <div class="fixed-block-sub">הכנסות / הוצאות פעם בחודשיים</div>
+          </div>
+          <div class="fixed-block-total" id="bim-total-badge" style="color:#CE93D8;">₪0</div>
+        </div>
+        <div class="fixed-items-list" id="bim-list"></div>
+        <div class="fixed-add-wrap">
+          <!-- שורה ראשונה: שם + בחירת סוג -->
+          <div class="fixed-add-row" style="gap:8px;">
+            <input id="bim-name" class="fixed-add-inp" type="text" placeholder="שם (ביטוח שנתי, מנוי...)" style="border-color:rgba(171,71,188,0.28);flex:1;">
+            <select id="bim-type" style="background:rgba(171,71,188,0.08);border:1px solid rgba(171,71,188,0.28);border-radius:12px;color:#CE93D8;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:10px 10px;outline:none;flex:0 0 auto;cursor:pointer;">
+              <option value="expense">הוצאה</option>
+              <option value="income">הכנסה</option>
+            </select>
+          </div>
+          <div class="fixed-add-row" style="gap:8px;">
+            <input id="bim-amount" class="fixed-add-inp" type="number" placeholder="סכום ₪" style="border-color:rgba(171,71,188,0.28);flex:0.6;">
+            <button id="btn-add-bim" class="fixed-add-btn" style="background:rgba(171,71,188,0.15);border-color:rgba(171,71,188,0.35);color:#CE93D8;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              הוסף
             </button>
           </div>
         </div>
@@ -5092,6 +5185,20 @@
   var isUSD = false, exchangeRate = 3.7;
   var appBooted = false; // האם האפליקציה כבר אותחלה
 
+  // ── חשיפה גלובלית של המשתנים הנדרשים ל-IIFE חיצוניים (כמו scan-doc) ──
+  Object.defineProperty(window, '_appUserCategories', {
+    get: function(){ return userCategories; },
+    configurable: true
+  });
+  Object.defineProperty(window, '_appFixedExpenses', {
+    get: function(){ return fixedExpenses; },
+    configurable: true
+  });
+  Object.defineProperty(window, '_appFixedIncomes', {
+    get: function(){ return fixedIncomes; },
+    configurable: true
+  });
+
   /* ── Helpers ── */
   function $(id){ return document.getElementById(id); }
   function show(id){ $(id).classList.remove('hidden'); }
@@ -5792,6 +5899,187 @@ window.deletePhoneIdx = function(i) {
             '<span class="bar-item-amt" style="color:'+color+';">'+fmt(spent)+' / '+fmt(cat.budget)+'</span></div>'+
             '<div class="bar-track"><div class="bar-fill" style="width:'+pct.toFixed(1)+'%;background:'+color+';box-shadow:0 0 8px '+color+'55;"></div></div></div>';
         }).join('');
+
+    /* ── Trend chart ── */
+    renderTrendChart();
+  }
+
+  /* ══════════════════════════════════════════════
+     TREND CHART — historical months line chart
+  ══════════════════════════════════════════════ */
+  var _trendPeriod = 6; // default: 6 months
+
+  window.setTrendPeriod = function(months, btn) {
+    _trendPeriod = months;
+    // update active button
+    document.querySelectorAll('.trend-period-btn').forEach(function(b){ b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+    renderTrendChart();
+  };
+
+  function renderTrendChart() {
+    var el = document.getElementById('trend-chart-inner');
+    var legEl = document.getElementById('trend-chart-legend');
+    if (!el) return;
+
+    // Build monthly buckets from the earliest transaction to now
+    var now = new Date();
+    var allTx = incomes.concat(expenses);
+
+    // Determine start month
+    var startDate;
+    if (_trendPeriod === 0) {
+      // all time — find earliest transaction
+      var earliest = allTx.reduce(function(min, tx) {
+        var d = parseDate(tx.date);
+        return (!min || d < min) ? d : min;
+      }, null);
+      startDate = earliest ? new Date(earliest.getFullYear(), earliest.getMonth(), 1) : new Date(now.getFullYear(), now.getMonth() - 5, 1);
+    } else {
+      startDate = new Date(now.getFullYear(), now.getMonth() - (_trendPeriod - 1), 1);
+    }
+
+    // Build array of months from startDate to now
+    var months = [];
+    var cur = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+    while (cur <= now) {
+      months.push({ year: cur.getFullYear(), month: cur.getMonth() });
+      cur = new Date(cur.getFullYear(), cur.getMonth() + 1, 1);
+    }
+    if (!months.length) {
+      el.innerHTML = '<div class="chart-empty"><span class="chart-empty-icon">📈</span>אין מספיק נתונים להצגת מגמה</div>';
+      if (legEl) legEl.innerHTML = '';
+      return;
+    }
+
+    // Sum income + expenses per month
+    var fixedExpAmt = fixedExpenses.reduce(function(a,i){ return a+Number(i.amount||0); }, 0);
+    var fixedIncAmt = fixedIncomes.reduce(function(a,i){ return a+Number(i.amount||0); }, 0);
+
+    var data = months.map(function(m) {
+      var mStart = new Date(m.year, m.month, 1);
+      var mEnd   = new Date(m.year, m.month + 1, 0, 23, 59, 59);
+      var isCurrent = (m.year === now.getFullYear() && m.month === now.getMonth());
+
+      var inc = incomes.filter(function(tx){ var d=parseDate(tx.date); return d>=mStart&&d<=mEnd; })
+                       .reduce(function(a,tx){ return a+Number(tx.amount||0); }, 0);
+      var exp = expenses.filter(function(tx){ var d=parseDate(tx.date); return d>=mStart&&d<=mEnd; })
+                        .reduce(function(a,tx){ return a+Number(tx.amount||0); }, 0);
+
+      // Add fixed monthly amounts to every completed month (and current)
+      inc += fixedIncAmt;
+      exp += fixedExpAmt;
+
+      var bal = inc - exp;
+      var label = _hebrewMonthShort(m.month) + '\'' + String(m.year).slice(2);
+      return { label: label, inc: inc, exp: exp, bal: bal, isCurrent: isCurrent };
+    });
+
+    // SVG dimensions
+    var W = Math.max(data.length * 52, 280);
+    var H = 180;
+    var PAD = { top: 20, right: 14, bottom: 38, left: 14 };
+    var plotW = W - PAD.left - PAD.right;
+    var plotH = H - PAD.top - PAD.bottom;
+
+    var allVals = data.reduce(function(arr, d){ return arr.concat([d.inc, d.exp, d.bal]); }, []);
+    var maxV = Math.max.apply(null, allVals.map(Math.abs)) || 1;
+    var minV = Math.min.apply(null, allVals);
+    // give 10% headroom
+    var yMax = maxV * 1.12;
+    var yMin = Math.min(0, minV * 1.12);
+    var yRange = yMax - yMin || 1;
+
+    function scaleX(i) { return PAD.left + (i / Math.max(data.length - 1, 1)) * plotW; }
+    function scaleY(v) { return PAD.top + plotH - ((v - yMin) / yRange) * plotH; }
+
+    function makePath(arr, key) {
+      return arr.map(function(d,i){ return (i===0?'M':'L') + scaleX(i).toFixed(1)+','+scaleY(d[key]).toFixed(1); }).join(' ');
+    }
+    function makeArea(arr, key, color) {
+      var path = arr.map(function(d,i){ return (i===0?'M':'L') + scaleX(i).toFixed(1)+','+scaleY(d[key]).toFixed(1); }).join(' ');
+      var base = scaleY(0).toFixed(1);
+      path += ' L'+scaleX(arr.length-1).toFixed(1)+','+base+' L'+scaleX(0).toFixed(1)+','+base+' Z';
+      return path;
+    }
+
+    // Zero line Y
+    var zeroY = scaleY(0).toFixed(1);
+
+    // Build SVG
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:' + Math.min(W, 360) + 'px;height:' + H + 'px;">';
+
+    // Defs for gradients
+    svg += '<defs>' +
+      '<linearGradient id="tg-inc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00E676" stop-opacity=".25"/><stop offset="100%" stop-color="#00E676" stop-opacity=".02"/></linearGradient>' +
+      '<linearGradient id="tg-exp" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FF1744" stop-opacity=".22"/><stop offset="100%" stop-color="#FF1744" stop-opacity=".02"/></linearGradient>' +
+      '<linearGradient id="tg-bal-pos" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00E5FF" stop-opacity=".20"/><stop offset="100%" stop-color="#00E5FF" stop-opacity=".02"/></linearGradient>' +
+    '</defs>';
+
+    // Grid lines (3 horizontal)
+    [0.25, 0.5, 0.75].forEach(function(t) {
+      var gy = PAD.top + plotH * (1 - t);
+      svg += '<line x1="' + PAD.left + '" y1="' + gy.toFixed(1) + '" x2="' + (W - PAD.right) + '" y2="' + gy.toFixed(1) + '" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>';
+    });
+
+    // Zero line
+    svg += '<line x1="' + PAD.left + '" y1="' + zeroY + '" x2="' + (W - PAD.right) + '" y2="' + zeroY + '" stroke="rgba(255,255,255,0.14)" stroke-width="1" stroke-dasharray="3,3"/>';
+
+    // Areas (filled under lines)
+    svg += '<path d="' + makeArea(data, 'inc', '#00E676') + '" fill="url(#tg-inc)"/>';
+    svg += '<path d="' + makeArea(data, 'exp', '#FF1744') + '" fill="url(#tg-exp)"/>';
+
+    // Balance area (only above zero)
+    svg += '<path d="' + makeArea(data, 'bal', '#00E5FF') + '" fill="url(#tg-bal-pos)" opacity="0.7"/>';
+
+    // Lines
+    svg += '<path d="' + makePath(data, 'inc') + '" fill="none" stroke="#00E676" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 5px #00E67688)"/>';
+    svg += '<path d="' + makePath(data, 'exp') + '" fill="none" stroke="#FF1744" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 5px #FF174488)"/>';
+    svg += '<path d="' + makePath(data, 'bal') + '" fill="none" stroke="#00E5FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5,3" style="filter:drop-shadow(0 0 6px #00E5FFAA)"/>';
+
+    // Dots + X labels + current month highlight
+    data.forEach(function(d, i) {
+      var x = scaleX(i);
+      // current month highlight band
+      if (d.isCurrent) {
+        svg += '<rect x="' + (x - 20).toFixed(1) + '" y="' + PAD.top + '" width="40" height="' + plotH + '" fill="rgba(0,229,255,0.04)" rx="4"/>';
+      }
+      // X label
+      svg += '<text x="' + x.toFixed(1) + '" y="' + (H - 6) + '" text-anchor="middle" font-family="\'Syne\',sans-serif" font-size="9" font-weight="700" fill="rgba(255,255,255,' + (d.isCurrent ? '0.7' : '0.32') + ')">' + d.label + '</text>';
+      // Dots for each line
+      [['inc','#00E676'],['exp','#FF1744'],['bal','#00E5FF']].forEach(function(pair) {
+        var yv = scaleY(d[pair[0]]);
+        svg += '<circle cx="' + x.toFixed(1) + '" cy="' + yv.toFixed(1) + '" r="3" fill="' + pair[1] + '" opacity="0.85" style="filter:drop-shadow(0 0 3px ' + pair[1] + ')"/>';
+      });
+      // Balance label at each point (small, only if points are spread enough)
+      if (data.length <= 12 || d.isCurrent) {
+        var balY = scaleY(d.bal);
+        var labelY = d.bal >= 0 ? balY - 7 : balY + 14;
+        var color = d.bal >= 0 ? '#00E5FF' : '#FF6080';
+        svg += '<text x="' + x.toFixed(1) + '" y="' + labelY.toFixed(1) + '" text-anchor="middle" font-family="\'JetBrains Mono\',monospace" font-size="8.5" font-weight="800" fill="' + color + '" opacity="0.85">₪' + _compactNum(Math.abs(d.bal)) + '</text>';
+      }
+    });
+
+    svg += '</svg>';
+
+    el.innerHTML = '<div class="trend-svg-wrap">' + svg + '</div>';
+
+    // Legend
+    if (legEl) {
+      legEl.innerHTML =
+        '<div class="trend-leg-item"><div class="trend-leg-dot" style="background:#00E676;color:#00E676;"></div>הכנסות</div>' +
+        '<div class="trend-leg-item"><div class="trend-leg-dot" style="background:#FF1744;color:#FF1744;"></div>הוצאות</div>' +
+        '<div class="trend-leg-item"><div class="trend-leg-dot" style="background:#00E5FF;color:#00E5FF;"></div>יתרה נטו</div>';
+    }
+  }
+
+  function _hebrewMonthShort(m) {
+    return ['ינו','פבר','מרץ','אפר','מאי','יוני','יולי','אוג','ספט','אוק','נוב','דצמ'][m];
+  }
+  function _compactNum(n) {
+    if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+    if (n >= 1000)    return (n/1000).toFixed(1) + 'K';
+    return Math.round(n).toString();
   }
 
   function reloadModalCategorySelect(selectedName){
@@ -5872,6 +6160,7 @@ window.deletePhoneIdx = function(i) {
     snapCol('expenses',   function(v){ expenses=v; });
     snapCol('fixed_settings', function(v){ fixedExpenses=v; }, renderFixedLists);
     snapCol('fixed_incomes',  function(v){ fixedIncomes=v; },  renderFixedLists);
+    snapCol('bimonthly_items', function(v){ bimonthlyItems=v; renderBimonthlyList(); });
   }
 
   /* ══════════════════════════════════════════════
@@ -5932,6 +6221,9 @@ window.deletePhoneIdx = function(i) {
     clearTimeout(authTimeout);
 
     if(!user){
+      /* אם יש Google OAuth pending — לא מציגים מסך login, ממתינים לתוצאה */
+      if (_googleOAuthPending) return;
+
       authResolved = true;
       appBooted    = false;
       uid          = null;
@@ -5942,6 +6234,9 @@ window.deletePhoneIdx = function(i) {
       showScreen('screen-login');
       return;
     }
+
+    /* התחברות הצליחה — מנקים את ה-pending flag */
+    _googleOAuthPending = false;
 
     /* Mark resolved so timeout doesn't fire */
     authResolved = true;
@@ -6015,6 +6310,7 @@ window.deletePhoneIdx = function(i) {
   var REDIRECT_URI = 'https://a4190656-cloud.github.io/AO-TIMLulll/';
 
   /* ── טיפול ב-token שגוגל מחזיר ב-URL hash אחרי הכניסה ── */
+  var _googleOAuthPending = false;
   (function handleOAuthCallback() {
     var hash = window.location.hash;
     if (!hash) return;
@@ -6025,14 +6321,40 @@ window.deletePhoneIdx = function(i) {
     });
     if (!params.access_token) return;
 
+    /* ── מיד כשאנחנו רואים את ה-token — מציגים את ה-loader לפני הכל ── */
+    _googleOAuthPending = true;
+    show('security-loader-overlay');
+    // עדכון הודעות ה-loader לגוגל
+    var msgEl = $('security-msg');
+    var enEl  = $('security-msg-en');
+    if (msgEl) msgEl.textContent = 'מתחבר עם חשבון גוגל...';
+    if (enEl)  enEl.textContent  = 'Signing in with Google...';
+
+    /* Safety timeout — אם לא נכנסנו תוך 15 שניות, מציגים שגיאה */
+    var _oauthTimeout = setTimeout(function() {
+      if (_googleOAuthPending) {
+        _googleOAuthPending = false;
+        hide('security-loader-overlay');
+        showLoginErr('הכניסה עם גוגל לא הושלמה — נסה שוב.');
+      }
+    }, 15000);
+
     /* נקה את ה-hash מה-URL בלי לרענן */
     history.replaceState(null, '', window.location.pathname + window.location.search);
 
     /* כנס ל-Firebase עם ה-access_token */
     var credential = firebase.auth.GoogleAuthProvider.credential(null, params.access_token);
-    auth.signInWithCredential(credential).catch(function(e) {
-      showLoginErr('שגיאה בכניסה עם גוגל: ' + (e.message || e.code));
-    });
+    auth.signInWithCredential(credential)
+      .then(function() {
+        clearTimeout(_oauthTimeout);
+        /* onAuthStateChanged יטפל בהמשך — לא מסתירים loader כאן */
+      })
+      .catch(function(e) {
+        clearTimeout(_oauthTimeout);
+        _googleOAuthPending = false;
+        hide('security-loader-overlay');
+        showLoginErr('שגיאה בכניסה עם גוגל: ' + (e.message || e.code));
+      });
   })();
 
  /* ══════════════════════════════════════════════
@@ -6041,16 +6363,20 @@ window.deletePhoneIdx = function(i) {
   
   // 1. הפונקציה שתקבל את הנתונים מהאפליקציה (Flutter יקרא לה מבחוץ!)
   window.receiveGoogleToken = function(idToken, accessToken) {
+    _googleOAuthPending = true;
     show('security-loader-overlay'); // מציג מסך טעינה מאובטח
+    var msgEl2 = $('security-msg');
+    if (msgEl2) msgEl2.textContent = 'מתחבר עם חשבון גוגל...';
     
     // בונה תעודת זהות של גוגל מתוך האסימונים שקיבלנו מהמכשיר
     var credential = firebase.auth.GoogleAuthProvider.credential(idToken, accessToken);
     
     // נכנס ל-Firebase
     auth.signInWithCredential(credential).then(function(result) {
+      _googleOAuthPending = false;
       // הצלחה! onAuthStateChanged (שכבר קיים בקוד) יעביר אותנו לאפליקציה
-      hide('security-loader-overlay');
     }).catch(function(error) {
+      _googleOAuthPending = false;
       hide('security-loader-overlay');
       showLoginErr('שגיאה בחיבור לחשבון: ' + error.message);
       var gBtn = $('btn-google-login');
@@ -6615,6 +6941,105 @@ window.deletePhoneIdx = function(i) {
       .then(function(){ $('fi-name').value=''; $('fi-amount').value=''; toast('הכנסה קבועה נוספה!', 'success'); });
   };
 
+  /* ════════════════════════════════════════
+     דו-חודשי — הכנסות והוצאות פעם בחודשיים
+     ════════════════════════════════════════ */
+  var bimonthlyItems = [];
+
+  function renderBimonthlyList() {
+    var el = $('bim-list');
+    var badge = $('bim-total-badge');
+    if (!el) return;
+    if (!bimonthlyItems.length) {
+      el.innerHTML = '<div class="fixed-empty-row" style="color:rgba(206,147,216,0.5);">אין פריטים דו-חודשיים עדיין</div>';
+      if (badge) badge.textContent = '₪0';
+      return;
+    }
+    // Total (sum / 2 to show monthly equivalent)
+    var total = bimonthlyItems.reduce(function(a,i){ return a + Number(i.amount||0); }, 0);
+    if (badge) badge.textContent = '₪' + fmt(total);
+
+    el.innerHTML = bimonthlyItems.map(function(item) {
+      var isExp = item.itemType === 'expense';
+      var col   = isExp ? 'rgba(255,100,128,0.85)' : 'rgba(0,220,110,0.85)';
+      var emoji = isExp ? '💳' : '💰';
+      return '<div class="fixed-item-row" style="border-right:3px solid rgba(171,71,188,0.50);">' +
+        '<span class="fixed-item-icon">' + emoji + '</span>' +
+        '<div class="fixed-item-info">' +
+          '<div class="fixed-item-name">' + (item.name||'—') + '</div>' +
+          '<div class="fixed-item-amount" style="color:' + col + ';">₪' + fmt(item.amount) + ' / פעמיים בשנה</div>' +
+        '</div>' +
+        '<div class="fixed-item-actions">' +
+          '<button class="fixed-item-btn edit" onclick="openBimEdit(\'' + item.id + '\',\'' + (item.name||'').replace(/\'/g,"\\'") + '\',' + item.amount + ',\'' + (item.itemType||'expense') + '\')" title="ערוך">' +
+            '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"/></svg>' +
+          '</button>' +
+          '<button class="fixed-item-btn del" onclick="delItem(\'bimonthly_items\',\'' + item.id + '\')" title="מחק">' +
+            '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  $('btn-add-bim').onclick = function() {
+    var name   = $('bim-name').value.trim();
+    var amount = Number($('bim-amount').value);
+    var type   = $('bim-type').value;
+    if (!name || !amount) { toast('נא למלא שם וסכום', 'error'); return; }
+    db.collection('users').doc(uid).collection('bimonthly_items').add({ name: name, amount: amount, itemType: type })
+      .then(function() {
+        $('bim-name').value = '';
+        $('bim-amount').value = '';
+        toast('פריט דו-חודשי נוסף!', 'success');
+      })
+      .catch(function() { toast('שגיאה בשמירה', 'error'); });
+  };
+
+  // ── Edit bimonthly ──
+  var _editBimId = null;
+  window.openBimEdit = function(id, name, amount, type) {
+    _editBimId = id;
+    var container = document.getElementById('toast-container');
+    var el = document.createElement('div');
+    el.className = 'toast toast-info';
+    el.style.cssText = 'flex-direction:column;gap:10px;min-width:280px;';
+    var nId = 'bim-edit-n-' + Date.now();
+    var aId = 'bim-edit-a-' + Date.now();
+    var tId = 'bim-edit-t-' + Date.now();
+    el.innerHTML =
+      '<span style="font-size:13px;font-weight:800;color:rgba(206,147,216,0.9);">עריכת פריט דו-חודשי</span>' +
+      '<input id="' + nId + '" value="' + name + '" placeholder="שם" style="background:rgba(255,255,255,0.07);border:1px solid rgba(171,71,188,0.30);border-radius:10px;color:#fff;font-family:\'Syne\',sans-serif;font-size:14px;padding:9px 12px;width:100%;outline:none;">' +
+      '<div style="display:flex;gap:8px;">' +
+        '<input id="' + aId + '" type="number" value="' + amount + '" placeholder="סכום ₪" style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(171,71,188,0.30);border-radius:10px;color:#fff;font-family:\'Syne\',sans-serif;font-size:14px;padding:9px 12px;outline:none;">' +
+        '<select id="' + tId + '" style="background:rgba(171,71,188,0.10);border:1px solid rgba(171,71,188,0.28);border-radius:10px;color:#CE93D8;font-family:\'Syne\',sans-serif;font-size:13px;padding:9px 10px;outline:none;">' +
+          '<option value="expense"' + (type==='expense'?' selected':'') + '>הוצאה</option>' +
+          '<option value="income"' + (type==='income'?' selected':'') + '>הכנסה</option>' +
+        '</select>' +
+      '</div>' +
+      '<div style="display:flex;gap:8px;">' +
+        '<button id="' + nId + '-save" style="flex:1;background:rgba(171,71,188,0.18);border:1px solid rgba(171,71,188,0.35);border-radius:10px;color:#CE93D8;font-family:\'Syne\',sans-serif;font-size:13px;font-weight:800;padding:9px;cursor:pointer;">שמור</button>' +
+        '<button onclick="this.closest(\'.toast\').parentNode&&this.closest(\'.toast\').parentNode.removeChild(this.closest(\'.toast\'))" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);border-radius:10px;color:rgba(255,255,255,0.55);font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;padding:9px;cursor:pointer;">ביטול</button>' +
+      '</div>';
+    container.appendChild(el);
+    setTimeout(function() {
+      var inp = document.getElementById(nId); if (inp) { inp.focus(); inp.select(); }
+      var sBtn = document.getElementById(nId + '-save');
+      if (sBtn) sBtn.onclick = function() {
+        var n = document.getElementById(nId).value.trim();
+        var a = Number(document.getElementById(aId).value);
+        var t = document.getElementById(tId).value;
+        if (!n || !a) { toast('נא למלא שם וסכום', 'error'); return; }
+        db.collection('users').doc(uid).collection('bimonthly_items').doc(_editBimId)
+          .update({ name: n, amount: a, itemType: t })
+          .then(function() { toast('עודכן!', 'success'); })
+          .catch(function() { toast('שגיאה', 'error'); });
+        if (el.parentNode) el.parentNode.removeChild(el);
+      };
+    }, 80);
+    setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 20000);
+  };
+  window._appBimonthly = function(){ return bimonthlyItems; };
+
   /* ── Category tiles ── */
   /* ── Budget edit modal ── */
   var budgetEditCat = null;
@@ -6732,24 +7157,29 @@ window.deletePhoneIdx = function(i) {
     });
 
     if (overList.length || nearList.length) {
+      var bannerWrap = '<div style="position:relative;">';
       overList.forEach(function(item) {
-        alertsHtml += '<div class="budget-alert-item alert-over">' +
+        var _id = 'alert-over-' + item.cat.id;
+        alertsHtml += '<div class="budget-alert-item alert-over" id="' + _id + '">' +
           '<span class="budget-alert-icon">🚨</span>' +
           '<div class="budget-alert-body">' +
             '<div class="budget-alert-name" style="color:#FF6080;">' + item.cat.name + ' — חרגת מהתקרה!</div>' +
             '<div class="budget-alert-detail">הוצאת ' + fmt(item.total) + ' מתוך ' + fmt(item.cat.budget) + '</div>' +
           '</div>' +
           '<span class="budget-alert-remain over">+' + fmt(item.total - item.cat.budget) + '</span>' +
+          '<button onclick="var el=document.getElementById(\'' + _id + '\');if(el){el.style.opacity=\'0\';el.style.transform=\'scale(0.9)\';el.style.transition=\'all .2s\';setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},200);}" style="background:none;border:none;cursor:pointer;color:rgba(255,100,128,0.6);font-size:16px;line-height:1;padding:3px 5px;flex-shrink:0;transition:color .14s;margin-right:-4px;" title="סגור">✕</button>' +
         '</div>';
       });
       nearList.forEach(function(item) {
-        alertsHtml += '<div class="budget-alert-item alert-near">' +
+        var _id2 = 'alert-near-' + item.cat.id;
+        alertsHtml += '<div class="budget-alert-item alert-near" id="' + _id2 + '">' +
           '<span class="budget-alert-icon">⚠️</span>' +
           '<div class="budget-alert-body">' +
             '<div class="budget-alert-name" style="color:#FFB300;">' + item.cat.name + ' — מתקרב לתקרה</div>' +
             '<div class="budget-alert-detail">הוצאת ' + fmt(item.cat.total||item.cat.budget-item.remain) + ' מתוך ' + fmt(item.cat.budget) + '</div>' +
           '</div>' +
           '<span class="budget-alert-remain near">נותר ' + fmt(item.remain) + '</span>' +
+          '<button onclick="var el=document.getElementById(\'' + _id2 + '\');if(el){el.style.opacity=\'0\';el.style.transform=\'scale(0.9)\';el.style.transition=\'all .2s\';setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},200);}" style="background:none;border:none;cursor:pointer;color:rgba(255,179,0,0.6);font-size:16px;line-height:1;padding:3px 5px;flex-shrink:0;transition:color .14s;margin-right:-4px;" title="סגור">✕</button>' +
         '</div>';
       });
       var banner = $('budget-alerts-banner');
@@ -6842,10 +7272,10 @@ window.deletePhoneIdx = function(i) {
         '<div class="cat-tile-count">'+count+' תנועות במחזור</div>'+
         budgetHtml+
         '<div class="cat-tile-actions">'+
-          '<button class="cat-tile-budget-btn" onclick="event.stopPropagation(); openBudgetModal(\''+cat.id+'\')" aria-label="הגדר תקרה" title="הגדר תקרת הוצאה">'+
+          '<button class="cat-tile-budget-btn" onclick="event.stopPropagation(); openBudgetModal(\''+cat.id+'\')" aria-label="הגדר תקרה" title="הגדר תקרת הוצאה" style="margin-top:14px;">'+
             '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"/></svg>'+
           '</button>'+
-          '<button class="cat-tile-del" onclick="event.stopPropagation(); delItem(\'categories\',\''+cat.id+'\')" aria-label="מחק">✕</button>'+
+          '<button class="cat-tile-del" onclick="event.stopPropagation(); delItem(\'categories\',\''+cat.id+'\')" aria-label="מחק" style="align-self:flex-start;">✕</button>'+
         '</div>'+
         '</div>';
     }
@@ -7272,7 +7702,8 @@ window.exportUserData = function() {
     var mime = file.type || 'image/jpeg';
 
     /* בניית רשימת כל הקטגוריות מהנתונים האמיתיים */
-    var catsArr = userCategories.map(function(c){ return c.name + ' (' + (c.type==='income'?'הכנסה':'הוצאה') + ')'; });
+    var _cats = (window._appUserCategories || []);
+    var catsArr = _cats.map(function(c){ return c.name + ' (' + (c.type==='income'?'הכנסה':'הוצאה') + ')'; });
     var cats = catsArr.join(', ');
 
     var resp = await fetch(WORKER_URL, {
@@ -7369,9 +7800,10 @@ window.exportUserData = function() {
 
     /* Try to match AI category to a real user category */
     var matchedCat = '';
-    if (catRaw && userCategories.length) {
+    var _cats2 = (window._appUserCategories || []);
+    if (catRaw && _cats2.length) {
       var lower = catRaw.toLowerCase();
-      var found = userCategories.find(function(c){
+      var found = _cats2.find(function(c){
         return c.type === type && (
           c.name.toLowerCase() === lower ||
           c.name.toLowerCase().includes(lower) ||
