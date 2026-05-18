@@ -2507,54 +2507,220 @@
 
     <!-- ── בועת אבטחה תחתונה ── -->
     <div id="login-sec-bubble">
-      <div class="lsb-icon-wrap">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      </div>
-      <div class="lsb-content">
-        <!-- ✦ SPAM MEGA ALERT ✦ -->
-        <style>
-          @keyframes spamFlash {
-            0%,100% { box-shadow: 0 0 0 0 rgba(255,80,80,0); border-color: rgba(255,80,80,0.28); }
-            50%      { box-shadow: 0 0 22px rgba(255,80,80,0.28), 0 0 6px rgba(255,80,80,0.20); border-color: rgba(255,80,80,0.55); }
-          }
-          .spam-mega-badge {
-            display: flex; align-items: center; gap: 11px;
-            background: linear-gradient(135deg, rgba(255,50,50,0.10) 0%, rgba(255,120,0,0.07) 100%);
-            border: 1px solid rgba(255,80,80,0.30);
-            border-radius: 14px;
-            padding: 12px 14px;
-            margin-top: 10px;
-            position: relative; overflow: hidden;
-            animation: spamFlash 2.8s ease-in-out infinite;
-          }
-          .spam-mega-badge::before {
-            content: '';
-            position: absolute; top: 0; left: 8%; right: 8%; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,90,90,0.55), transparent);
-          }
-          .spam-icon-circle {
-            width: 36px; height: 36px; flex-shrink: 0;
-            background: linear-gradient(135deg, rgba(255,60,60,0.20), rgba(255,100,0,0.12));
-            border: 1px solid rgba(255,70,70,0.40);
-            border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 17px; line-height: 1;
-            box-shadow: 0 0 16px rgba(255,60,60,0.25);
-          }
-          .spam-text-block { flex: 1; }
-          .spam-line1 { font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.45); letter-spacing: 0.02em; margin-bottom: 3px; }
-          .spam-line2 { font-size: 13.5px; font-weight: 900; background: linear-gradient(135deg, #FF6B6B, #FF9F43); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.1px; line-height: 1.2; }
-          .spam-line3 { font-size: 10px; font-weight: 600; color: rgba(255,160,100,0.70); margin-top: 2px; letter-spacing: 0.01em; }
-        </style>
-        <div class="spam-mega-badge">
-          <div class="spam-icon-circle">📬</div>
-          <div class="spam-text-block">
-            <div class="spam-line1">לא קיבלתם מייל אימות?</div>
-            <div class="spam-line2">בדקו את תיקיית הספאם!</div>
-            <div class="spam-line3">המייל עלול להגיע לג'אנק / קידומי מכירות</div>
+
+      <style>
+        #login-sec-bubble {
+          padding: 0 !important;
+          border: none !important;
+          background: none !important;
+          backdrop-filter: none !important;
+          box-shadow: none !important;
+          overflow: visible !important;
+        }
+        #login-sec-bubble::before { display: none !important; }
+
+        /* ── SPAM CARD 2026 ── */
+        .spam-card-2026 {
+          width: 100%;
+          position: relative;
+          border-radius: 20px;
+          overflow: hidden;
+          background: linear-gradient(145deg,
+            rgba(8, 10, 22, 0.96) 0%,
+            rgba(5, 7, 16, 0.98) 100%
+          );
+          border: 1px solid rgba(255, 200, 80, 0.20);
+          box-shadow:
+            0 0 0 1px rgba(255, 180, 40, 0.06),
+            0 8px 32px rgba(0, 0, 0, 0.45),
+            0 0 40px rgba(255, 160, 0, 0.04),
+            inset 0 1px 0 rgba(255, 255, 255, 0.04);
+          animation: spamCardIn 0.65s cubic-bezier(0.16,1,0.3,1) 0.3s both,
+                     spamCardGlow 4s ease-in-out 1s infinite;
+        }
+
+        @keyframes spamCardIn {
+          0%   { opacity: 0; transform: translateY(16px) scale(0.97); }
+          100% { opacity: 1; transform: translateY(0)    scale(1);    }
+        }
+        @keyframes spamCardGlow {
+          0%,100% { border-color: rgba(255,200,80,0.18); box-shadow: 0 0 0 1px rgba(255,180,40,0.05), 0 8px 32px rgba(0,0,0,0.45); }
+          50%      { border-color: rgba(255,200,80,0.34); box-shadow: 0 0 0 1px rgba(255,180,40,0.09), 0 8px 40px rgba(0,0,0,0.50), 0 0 50px rgba(255,160,0,0.07); }
+        }
+
+        /* קו זוהר עליון */
+        .spam-card-2026::before {
+          content: '';
+          position: absolute; top: 0; left: 8%; right: 8%; height: 1px;
+          background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 200, 60, 0.55) 40%,
+            rgba(255, 160, 0, 0.70) 60%,
+            transparent
+          );
+        }
+
+        /* שימר נע */
+        .spam-card-2026::after {
+          content: '';
+          position: absolute; inset: 0; pointer-events: none;
+          background: linear-gradient(
+            108deg,
+            transparent 35%,
+            rgba(255,200,60,0.04) 50%,
+            transparent 65%
+          );
+          background-size: 200% 100%;
+          animation: spamShimmer 4s linear 2s infinite;
+        }
+        @keyframes spamShimmer {
+          0%   { background-position: 200% center; }
+          100% { background-position: -200% center; }
+        }
+
+        /* ── header row ── */
+        .spam-card-header {
+          display: flex; align-items: center; gap: 12px;
+          padding: 16px 18px 12px;
+          border-bottom: 1px solid rgba(255,200,60,0.08);
+          position: relative; z-index: 1;
+        }
+
+        /* אייקון */
+        .spam-icon-box {
+          width: 42px; height: 42px; flex-shrink: 0;
+          border-radius: 14px;
+          background: linear-gradient(135deg, rgba(255,190,40,0.16), rgba(255,130,0,0.08));
+          border: 1px solid rgba(255,190,40,0.30);
+          display: flex; align-items: center; justify-content: center;
+          box-shadow: 0 0 20px rgba(255,160,0,0.18), inset 0 1px 0 rgba(255,255,255,0.06);
+          position: relative; overflow: hidden;
+        }
+        /* pulse ring על האייקון */
+        .spam-icon-box::before {
+          content: '';
+          position: absolute; inset: -5px;
+          border-radius: 19px;
+          border: 1.5px solid rgba(255,190,40,0.35);
+          animation: spamIconPing 2.8s ease-out 1.5s infinite;
+        }
+        @keyframes spamIconPing {
+          0%   { transform: scale(1);    opacity: 0.8; }
+          70%  { transform: scale(1.35); opacity: 0;   }
+          100% { transform: scale(1.35); opacity: 0;   }
+        }
+        .spam-icon-emoji {
+          font-size: 20px; line-height: 1;
+          position: relative; z-index: 1;
+          filter: drop-shadow(0 0 6px rgba(255,180,0,0.55));
+          animation: spamIconWiggle 3s ease-in-out 2s infinite;
+        }
+        @keyframes spamIconWiggle {
+          0%,100% { transform: rotate(0deg) scale(1);   }
+          20%     { transform: rotate(-8deg) scale(1.1); }
+          40%     { transform: rotate(6deg)  scale(1.05); }
+          60%     { transform: rotate(-4deg) scale(1);   }
+          80%     { transform: rotate(2deg)  scale(1);   }
+        }
+
+        /* כותרת */
+        .spam-title-col { flex: 1; }
+        .spam-tag-row {
+          display: inline-flex; align-items: center; gap: 5px;
+          background: linear-gradient(135deg, rgba(255,190,40,0.14), rgba(255,130,0,0.08));
+          border: 1px solid rgba(255,185,40,0.32);
+          border-radius: 7px; padding: 2px 9px;
+          font-family: 'Syne', sans-serif;
+          font-size: 8.5px; font-weight: 900; letter-spacing: 0.16em;
+          color: rgba(255,210,80,0.90);
+          text-transform: uppercase;
+          margin-bottom: 5px;
+        }
+        .spam-tag-dot {
+          width: 5px; height: 5px; border-radius: 50%;
+          background: rgba(255,200,60,0.90);
+          box-shadow: 0 0 5px rgba(255,190,0,0.80);
+          animation: spamTagPulse 2s ease-in-out infinite;
+        }
+        @keyframes spamTagPulse {
+          0%,100% { opacity:1; transform:scale(1);   }
+          50%     { opacity:0.5; transform:scale(0.7); }
+        }
+        .spam-headline {
+          font-family: 'Syne', sans-serif;
+          font-size: 15px; font-weight: 900;
+          color: rgba(255,255,255,0.92);
+          letter-spacing: -0.3px; line-height: 1.2;
+        }
+
+        /* ── body ── */
+        .spam-card-body {
+          padding: 12px 18px 16px;
+          position: relative; z-index: 1;
+          display: flex; flex-direction: column; gap: 8px;
+        }
+
+        /* שורת טיפ */
+        .spam-tip-row {
+          display: flex; align-items: center; gap: 10px;
+          padding: 10px 13px;
+          border-radius: 12px;
+          transition: background 0.2s;
+        }
+        .spam-tip-row:first-child {
+          background: linear-gradient(135deg, rgba(255,185,40,0.08), rgba(255,130,0,0.04));
+          border: 1px solid rgba(255,185,40,0.16);
+        }
+        .spam-tip-row:last-child {
+          background: rgba(255,255,255,0.03);
+          border: 1px solid rgba(255,255,255,0.06);
+        }
+        .spam-tip-icon {
+          font-size: 15px; flex-shrink: 0;
+          filter: drop-shadow(0 0 4px rgba(255,180,0,0.35));
+        }
+        .spam-tip-text {
+          font-family: 'Syne', sans-serif;
+          font-size: 12px; font-weight: 600;
+          color: rgba(255,255,255,0.55);
+          line-height: 1.5; flex: 1;
+        }
+        .spam-tip-text strong {
+          font-weight: 800;
+          color: rgba(255,220,80,0.90);
+        }
+        .spam-tip-text em {
+          font-style: normal;
+          color: rgba(255,255,255,0.72);
+          font-weight: 700;
+        }
+      </style>
+
+      <div class="spam-card-2026">
+        <div class="spam-card-header">
+          <div class="spam-icon-box">
+            <span class="spam-icon-emoji">📬</span>
+          </div>
+          <div class="spam-title-col">
+            <div class="spam-tag-row">
+              <span class="spam-tag-dot"></span>
+              שימו לב
+            </div>
+            <div class="spam-headline">לא קיבלתם מייל אימות?</div>
+          </div>
+        </div>
+        <div class="spam-card-body">
+          <div class="spam-tip-row">
+            <span class="spam-tip-icon">🗂️</span>
+            <span class="spam-tip-text">בדקו את תיקיית <strong>ספאם / Junk</strong> — המייל שלנו לפעמים מגיע לשם</span>
+          </div>
+          <div class="spam-tip-row">
+            <span class="spam-tip-icon">📢</span>
+            <span class="spam-tip-text">ב-Gmail? חפשו גם ב<em>קידומי מכירות</em> ובלשונית <em>עדכונים</em></span>
           </div>
         </div>
       </div>
+
     </div>
 
   </div><!-- /login-inner -->
