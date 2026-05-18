@@ -382,12 +382,13 @@
 
     /* ── NAV ── */
     #nav {
-      position:fixed; bottom:12px; left:12px; right:12px; display:flex;
+      position:fixed; bottom:12px; left:12px; right:12px; display:none;
       background:rgba(10,16,30,0.88); backdrop-filter:blur(28px); -webkit-backdrop-filter:blur(28px);
       border:1px solid rgba(255,255,255,0.08); border-radius:20px;
       box-shadow:0 8px 32px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.06);
       z-index:100; padding:4px;
     }
+    #nav.visible { display: flex; }
     .nav-btn {
       flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;
       padding:11px 8px; border:none; background:transparent;
@@ -1222,7 +1223,7 @@
     }
 
     /* ── NAV BAR 2026 ── */
-    #nav {
+    #nav.visible {
       background: rgba(4,6,14,0.92) !important;
       backdrop-filter: blur(36px) saturate(180%) !important;
       -webkit-backdrop-filter: blur(36px) saturate(180%) !important;
@@ -3395,7 +3396,7 @@
 
   <div style="padding:16px 16px 0">
 
-    <div id="view-dashboard">
+    <div id="view-dashboard" class="hidden">
       <!-- Dashboard Budget Alerts -->
       <div id="dash-budget-alerts" class="hidden" style="margin-bottom:14px;"></div>
 
@@ -3777,6 +3778,7 @@
 
     </div><!-- /view-charts -->
 
+    <div id="view-settings" class="hidden">
       <!-- Smart User Card 2026 -->
       <div id="settings-user-card">
         <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;position:relative;z-index:1;">
@@ -4269,19 +4271,252 @@
         </div>
       </div>
 
-      <div class="sblock modern-hover">
+      <div class="sblock modern-hover" id="reset-day-card">
         <div class="sblock-head">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           יום איפוס תקציב
         </div>
-        <div class="sblock-body">
-          <p style="color:var(--muted);font-size:13px;margin-bottom:12px">באיזה יום מתאפס המחזור החודשי?</p>
-          <div style="display:flex;align-items:center;gap:11px">
-            <input id="reset-day-input" class="inp mono" type="number" min="1" max="31" autocomplete="off" style="max-width:85px;text-align:center;font-size:19px;padding:11px 8px">
-            <span style="color:var(--muted);font-weight:600;font-size:14px">לחודש</span>
+        <div class="sblock-body" style="padding:16px 18px 20px;">
+          <input id="reset-day-input" type="hidden" value="1">
+
+          <!-- תצוגת יום נוכחי -->
+          <div id="reset-day-current-wrap" style="
+            display:flex; align-items:center; justify-content:space-between;
+            background:linear-gradient(135deg,rgba(0,229,255,0.07),rgba(0,183,255,0.03));
+            border:1px solid rgba(0,229,255,0.18); border-radius:16px;
+            padding:13px 16px; margin-bottom:14px; position:relative; overflow:hidden;
+          ">
+            <div style="position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,0.40),transparent);"></div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:38px;height:38px;border-radius:12px;background:rgba(0,229,255,0.12);border:1px solid rgba(0,229,255,0.28);display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(0,229,255,0.18);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+              <div>
+                <div style="font-size:10px;font-weight:700;color:rgba(0,229,255,0.55);letter-spacing:0.10em;text-transform:uppercase;margin-bottom:2px;">מחזור חודשי מתאפס ב</div>
+                <div id="reset-day-display" style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:900;color:#fff;letter-spacing:-0.5px;line-height:1;">יום 1</div>
+              </div>
+            </div>
+            <div id="reset-day-saved-badge" style="
+              display:none; align-items:center; gap:5px;
+              background:rgba(0,230,118,0.12); border:1px solid rgba(0,230,118,0.30);
+              border-radius:10px; padding:5px 11px;
+              font-size:11px; font-weight:800; color:#00E676;
+            ">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              נשמר!
+            </div>
           </div>
+
+          <!-- הסבר -->
+          <p style="font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.38);margin-bottom:12px;line-height:1.55;">
+            בחרו את היום בחודש שבו מתחיל המחזור הכספי שלכם (משכורת, ראשון לחודש, וכו׳)
+          </p>
+
+          <!-- גריד ימים -->
+          <div id="reset-day-grid" style="
+            display:grid; grid-template-columns:repeat(7,1fr); gap:5px; margin-bottom:14px;
+          "></div>
+
+          <!-- כפתור שמירה -->
+          <button id="btn-save-reset-day" style="
+            width:100%; padding:13px;
+            background:linear-gradient(135deg,#00E5FF,#00BFFF);
+            color:#020C14; border:none; border-radius:14px;
+            font-family:'Syne',sans-serif; font-size:14px; font-weight:900;
+            cursor:pointer; position:relative; overflow:hidden;
+            box-shadow:0 6px 24px rgba(0,229,255,0.30), inset 0 1px 0 rgba(255,255,255,0.25);
+            transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s ease, opacity 0.2s;
+            display:flex; align-items:center; justify-content:center; gap:8px;
+            opacity:0.4; pointer-events:none;
+          ">
+            <svg id="btn-save-rd-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <span id="btn-save-rd-text">בחרו יום לשמירה</span>
+          </button>
+
         </div>
       </div>
+
+      <style>
+        /* ── Reset Day Grid Buttons ── */
+        .rd-btn {
+          aspect-ratio:1;
+          display:flex; align-items:center; justify-content:center;
+          border:1px solid rgba(255,255,255,0.07);
+          border-radius:11px;
+          background:rgba(255,255,255,0.04);
+          color:rgba(255,255,255,0.55);
+          font-family:'Syne',sans-serif;
+          font-size:12px; font-weight:700;
+          cursor:pointer;
+          transition:all 0.18s cubic-bezier(0.34,1.2,0.64,1);
+          -webkit-tap-highlight-color:transparent;
+          position:relative; overflow:hidden;
+        }
+        .rd-btn:hover {
+          background:rgba(0,229,255,0.10);
+          border-color:rgba(0,229,255,0.28);
+          color:#fff;
+          transform:scale(1.08);
+        }
+        .rd-btn:active { transform:scale(0.93); }
+        .rd-btn.selected {
+          background:linear-gradient(135deg,rgba(0,229,255,0.22),rgba(0,183,255,0.12));
+          border-color:rgba(0,229,255,0.55);
+          color:var(--cyan);
+          font-weight:900;
+          box-shadow:0 0 16px rgba(0,229,255,0.20), inset 0 1px 0 rgba(255,255,255,0.12);
+          transform:scale(1.10);
+        }
+        .rd-btn.saved {
+          background:linear-gradient(135deg,rgba(0,230,118,0.20),rgba(0,200,80,0.10));
+          border-color:rgba(0,230,118,0.50);
+          color:#00E676;
+          font-weight:900;
+          box-shadow:0 0 16px rgba(0,230,118,0.22), inset 0 1px 0 rgba(255,255,255,0.10);
+          transform:scale(1.10);
+        }
+        .rd-btn.today-mark::after {
+          content:'';
+          position:absolute; bottom:3px; left:50%; transform:translateX(-50%);
+          width:4px; height:4px; border-radius:50%;
+          background:var(--cyan); box-shadow:0 0 5px var(--cyan);
+        }
+        @keyframes rdSavePop {
+          0%   { transform:scale(1.10); }
+          40%  { transform:scale(1.22); box-shadow:0 0 28px rgba(0,230,118,0.45); }
+          70%  { transform:scale(1.05); }
+          100% { transform:scale(1.10); }
+        }
+        .rd-btn.save-anim { animation:rdSavePop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+        #btn-save-reset-day::before {
+          content:'';
+          position:absolute; inset:0;
+          background:linear-gradient(135deg,rgba(255,255,255,0.18) 0%,transparent 60%);
+          pointer-events:none;
+        }
+        #btn-save-reset-day.active-save {
+          opacity:1 !important;
+          pointer-events:auto !important;
+        }
+        #btn-save-reset-day.active-save:hover { transform:translateY(-2px); box-shadow:0 10px 32px rgba(0,229,255,0.40); }
+        #btn-save-reset-day.active-save:active { transform:scale(0.96); }
+        #btn-save-reset-day.saving-state {
+          opacity:0.7 !important;
+          pointer-events:none !important;
+        }
+        @keyframes btnSaveSuccess {
+          0%   { background:linear-gradient(135deg,#00E5FF,#00BFFF); }
+          30%  { background:linear-gradient(135deg,#00E676,#00C853); box-shadow:0 6px 28px rgba(0,230,118,0.45); }
+          100% { background:linear-gradient(135deg,#00E5FF,#00BFFF); }
+        }
+        #btn-save-reset-day.success-flash { animation:btnSaveSuccess 1.2s ease forwards; }
+      </style>
+
+      <script>
+      (function(){
+        var pendingDay = null;
+        var savedDay   = null;
+
+        function buildGrid(){
+          var grid = document.getElementById('reset-day-grid');
+          if(!grid) return;
+          var today = new Date().getDate();
+          grid.innerHTML = '';
+          for(var d=1; d<=31; d++){
+            (function(day){
+              var btn = document.createElement('button');
+              btn.type = 'button';
+              btn.className = 'rd-btn';
+              btn.textContent = day;
+              btn.dataset.day = day;
+              if(day === today) btn.classList.add('today-mark');
+              btn.addEventListener('click', function(){
+                pendingDay = day;
+                // עדכן highlight
+                document.querySelectorAll('.rd-btn').forEach(function(b){
+                  b.classList.remove('selected');
+                });
+                btn.classList.add('selected');
+                // עדכן תצוגה
+                var disp = document.getElementById('reset-day-display');
+                if(disp) disp.textContent = 'יום ' + day;
+                // הפעל כפתור שמירה
+                var saveBtn = document.getElementById('btn-save-reset-day');
+                var saveTxt = document.getElementById('btn-save-rd-text');
+                if(saveBtn){
+                  saveBtn.classList.add('active-save');
+                  if(saveTxt) saveTxt.textContent = 'שמור יום ' + day + ' לחודש';
+                }
+              });
+              grid.appendChild(btn);
+            })(d);
+          }
+        }
+
+        function initResetDay(day){
+          savedDay   = day;
+          pendingDay = day;
+          var disp = document.getElementById('reset-day-display');
+          if(disp) disp.textContent = 'יום ' + day;
+          // הגדר כפתור שמירה כמוגדר (אפשרי לשנות)
+          var saveBtn = document.getElementById('btn-save-reset-day');
+          var saveTxt = document.getElementById('btn-save-rd-text');
+          if(saveBtn){
+            saveBtn.classList.add('active-save');
+            if(saveTxt) saveTxt.textContent = 'שמור יום ' + day + ' לחודש';
+          }
+          // סמן כ-saved בגריד
+          document.querySelectorAll('.rd-btn').forEach(function(b){
+            var d = parseInt(b.dataset.day);
+            b.classList.remove('selected','saved');
+            if(d === day) b.classList.add('saved');
+          });
+        }
+
+        buildGrid();
+
+        // מאזין לעדכון מהמערכת (כשנטען הערך מ-Firestore)
+        var origValSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value') && null;
+        window._initResetDayPicker = initResetDay;
+
+        // כפתור שמירה
+        var saveBtn = document.getElementById('btn-save-reset-day');
+        if(saveBtn){
+          saveBtn.addEventListener('click', function(){
+            if(!pendingDay || pendingDay === savedDay) return;
+            var day = pendingDay;
+            saveBtn.classList.add('saving-state');
+            // קרא לשמירה ב-Firestore דרך האפליקציה
+            if(typeof window._saveResetDay === 'function'){
+              window._saveResetDay(day, function(){
+                savedDay = day;
+                saveBtn.classList.remove('saving-state');
+                saveBtn.classList.add('success-flash');
+                var saveTxt = document.getElementById('btn-save-rd-text');
+                var saveIcon = document.getElementById('btn-save-rd-icon');
+                if(saveTxt) saveTxt.textContent = '✓  יום ' + day + ' נשמר!';
+                if(saveIcon) saveIcon.innerHTML = '<polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
+                // Badge
+                var badge = document.getElementById('reset-day-saved-badge');
+                if(badge){ badge.style.display='flex'; setTimeout(function(){ badge.style.display='none'; },3000); }
+                // פעימה על הכפתור שנבחר
+                document.querySelectorAll('.rd-btn').forEach(function(b){
+                  b.classList.remove('selected','saved','save-anim');
+                });
+                var chosen = document.querySelector('.rd-btn[data-day="'+day+'"]');
+                if(chosen){ chosen.classList.add('saved','save-anim'); }
+                // איפוס כפתור
+                setTimeout(function(){
+                  saveBtn.classList.remove('success-flash');
+                  if(saveTxt) saveTxt.textContent = 'שמור יום ' + day + ' לחודש';
+                  if(saveIcon) saveIcon.innerHTML = '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/><polyline points="17 21 17 13 7 13 7 21" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 3 7 8 15 8" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>';
+                }, 2500);
+              });
+            }
+          });
+        }
+      })();
+      </script>
 
       <div class="sblock modern-hover">
         <div class="sblock-head">
@@ -4374,6 +4609,7 @@
       </div>
 
     </div>
+    </div><!-- /view-settings -->
   </div>
 
   <nav id="nav">
@@ -4623,6 +4859,15 @@
   function showScreen(name){
     ['screen-loading','screen-login','screen-setname','app'].forEach(hide);
     show(name);
+    // הצג nav רק כשה-app מוצג
+    var nav = document.getElementById('nav');
+    if (nav) {
+      if (name === 'app') {
+        nav.classList.add('visible');
+      } else {
+        nav.classList.remove('visible');
+      }
+    }
   }
 
   function parseDate(d) {
@@ -5279,7 +5524,7 @@ window.deletePhoneIdx = function(i) {
     function loadUserDoc(doc) {
       if(!doc.exists) return;
       var d = doc.data();
-      if(d.resetDay){ resetDay=d.resetDay; var ri=$('reset-day-input'); if(ri) ri.value=resetDay; }
+      if(d.resetDay){ resetDay=d.resetDay; var ri=$('reset-day-input'); if(ri) ri.value=resetDay; if(typeof window._initResetDayPicker==='function') window._initResetDayPicker(resetDay); }
       if(d.displayName){
         displayName=d.displayName;
         var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
@@ -5355,10 +5600,11 @@ window.deletePhoneIdx = function(i) {
       }
       displayName = name;
       showScreen('app');
+      switchView('dashboard');
       var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
       var si=$('settings-name-input'); if(si) si.value=displayName;
       var sun=$('settings-user-name'); if(sun) sun.textContent=displayName;
-      var ri=$('reset-day-input'); if(ri) ri.value=resetDay;
+      var ri=$('reset-day-input'); if(ri) ri.value=resetDay; if(typeof window._initResetDayPicker==='function') window._initResetDayPicker(resetDay);
       startListeners();
     }).catch(function(){
       /* Firestore blocked (e.g. NextDNS/Netfree) — still show app with auth name */
@@ -5366,6 +5612,7 @@ window.deletePhoneIdx = function(i) {
       var name = user.displayName || (user.email ? user.email.split('@')[0] : 'משתמש');
       displayName = name;
       showScreen('app');
+      switchView('dashboard');
       var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
       var si=$('settings-name-input'); if(si) si.value=displayName;
       startListeners();
@@ -5688,9 +5935,10 @@ window.deletePhoneIdx = function(i) {
       appBooted = true;
       uid = user.uid;
       showScreen('app');
+      switchView('dashboard');
       var hn=$('header-name'); if(hn) hn.textContent='שלום, '+name.split(' ')[0]+'!';
       var si=$('settings-name-input'); if(si) si.value=name;
-      var ri=$('reset-day-input'); if(ri) ri.value=resetDay;
+      var ri=$('reset-day-input'); if(ri) ri.value=resetDay; if(typeof window._initResetDayPicker==='function') window._initResetDayPicker(resetDay);
       startListeners();
       // אונבורדינג למשתמש חדש
       setTimeout(function(){ showOnboarding(); }, 600);
@@ -5777,11 +6025,23 @@ window.deletePhoneIdx = function(i) {
     });
   };
 
-  /* ── Reset day ── */
-  $('reset-day-input').oninput=function(){
-    var v=parseInt(this.value);
-    if(v>=1&&v<=31){ resetDay=v; db.collection('users').doc(uid).set({resetDay:v},{merge:true}); renderAll(); }
+  /* ── Reset day — new picker API ── */
+  window._saveResetDay = function(day, callback){
+    resetDay = day;
+    renderAll();
+    db.collection('users').doc(uid).set({resetDay: day}, {merge: true})
+      .then(function(){ if(callback) callback(); })
+      .catch(function(){ toast('שגיאה בשמירת יום האיפוס', 'error'); });
   };
+
+  /* ── Reset day (legacy input — kept for compatibility) ── */
+  var _rdInput = $('reset-day-input');
+  if(_rdInput){
+    _rdInput.oninput = function(){
+      var v = parseInt(this.value);
+      if(v>=1&&v<=31){ resetDay=v; db.collection('users').doc(uid).set({resetDay:v},{merge:true}); renderAll(); }
+    };
+  }
 
   /* ── Save name ── */
   $('btn-save-name').onclick=function(){
