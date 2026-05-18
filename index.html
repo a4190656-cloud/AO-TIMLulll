@@ -382,13 +382,12 @@
 
     /* ── NAV ── */
     #nav {
-      position:fixed; bottom:12px; left:12px; right:12px; display:none;
+      position:fixed; bottom:12px; left:12px; right:12px; display:flex;
       background:rgba(10,16,30,0.88); backdrop-filter:blur(28px); -webkit-backdrop-filter:blur(28px);
       border:1px solid rgba(255,255,255,0.08); border-radius:20px;
       box-shadow:0 8px 32px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.06);
       z-index:100; padding:4px;
     }
-    #nav.visible { display: flex; }
     .nav-btn {
       flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;
       padding:11px 8px; border:none; background:transparent;
@@ -520,11 +519,14 @@
 
     /* action row at bottom of tile */
     .cat-tile-actions {
-      display: flex; align-items: center; justify-content: flex-end; gap: 6px;
+      display: flex; align-items: center; justify-content: flex-end; gap: 8px;
       margin-top: 10px;
       padding-top: 8px;
       border-top: 1px solid rgba(255,255,255,0.06);
     }
+    /* ✕ stays top-right, pencil is offset below it */
+    .cat-tile-del { align-self: flex-start; }
+    .cat-tile-budget-btn { align-self: flex-end; margin-bottom: 2px; }
 
     .cat-tile-name {
       font-weight: 800;
@@ -1223,7 +1225,7 @@
     }
 
     /* ── NAV BAR 2026 ── */
-    #nav.visible {
+    #nav {
       background: rgba(4,6,14,0.92) !important;
       backdrop-filter: blur(36px) saturate(180%) !important;
       -webkit-backdrop-filter: blur(36px) saturate(180%) !important;
@@ -2507,220 +2509,54 @@
 
     <!-- ── בועת אבטחה תחתונה ── -->
     <div id="login-sec-bubble">
-
-      <style>
-        #login-sec-bubble {
-          padding: 0 !important;
-          border: none !important;
-          background: none !important;
-          backdrop-filter: none !important;
-          box-shadow: none !important;
-          overflow: visible !important;
-        }
-        #login-sec-bubble::before { display: none !important; }
-
-        /* ── SPAM CARD 2026 ── */
-        .spam-card-2026 {
-          width: 100%;
-          position: relative;
-          border-radius: 20px;
-          overflow: hidden;
-          background: linear-gradient(145deg,
-            rgba(8, 10, 22, 0.96) 0%,
-            rgba(5, 7, 16, 0.98) 100%
-          );
-          border: 1px solid rgba(255, 200, 80, 0.20);
-          box-shadow:
-            0 0 0 1px rgba(255, 180, 40, 0.06),
-            0 8px 32px rgba(0, 0, 0, 0.45),
-            0 0 40px rgba(255, 160, 0, 0.04),
-            inset 0 1px 0 rgba(255, 255, 255, 0.04);
-          animation: spamCardIn 0.65s cubic-bezier(0.16,1,0.3,1) 0.3s both,
-                     spamCardGlow 4s ease-in-out 1s infinite;
-        }
-
-        @keyframes spamCardIn {
-          0%   { opacity: 0; transform: translateY(16px) scale(0.97); }
-          100% { opacity: 1; transform: translateY(0)    scale(1);    }
-        }
-        @keyframes spamCardGlow {
-          0%,100% { border-color: rgba(255,200,80,0.18); box-shadow: 0 0 0 1px rgba(255,180,40,0.05), 0 8px 32px rgba(0,0,0,0.45); }
-          50%      { border-color: rgba(255,200,80,0.34); box-shadow: 0 0 0 1px rgba(255,180,40,0.09), 0 8px 40px rgba(0,0,0,0.50), 0 0 50px rgba(255,160,0,0.07); }
-        }
-
-        /* קו זוהר עליון */
-        .spam-card-2026::before {
-          content: '';
-          position: absolute; top: 0; left: 8%; right: 8%; height: 1px;
-          background: linear-gradient(90deg,
-            transparent,
-            rgba(255, 200, 60, 0.55) 40%,
-            rgba(255, 160, 0, 0.70) 60%,
-            transparent
-          );
-        }
-
-        /* שימר נע */
-        .spam-card-2026::after {
-          content: '';
-          position: absolute; inset: 0; pointer-events: none;
-          background: linear-gradient(
-            108deg,
-            transparent 35%,
-            rgba(255,200,60,0.04) 50%,
-            transparent 65%
-          );
-          background-size: 200% 100%;
-          animation: spamShimmer 4s linear 2s infinite;
-        }
-        @keyframes spamShimmer {
-          0%   { background-position: 200% center; }
-          100% { background-position: -200% center; }
-        }
-
-        /* ── header row ── */
-        .spam-card-header {
-          display: flex; align-items: center; gap: 12px;
-          padding: 16px 18px 12px;
-          border-bottom: 1px solid rgba(255,200,60,0.08);
-          position: relative; z-index: 1;
-        }
-
-        /* אייקון */
-        .spam-icon-box {
-          width: 42px; height: 42px; flex-shrink: 0;
-          border-radius: 14px;
-          background: linear-gradient(135deg, rgba(255,190,40,0.16), rgba(255,130,0,0.08));
-          border: 1px solid rgba(255,190,40,0.30);
-          display: flex; align-items: center; justify-content: center;
-          box-shadow: 0 0 20px rgba(255,160,0,0.18), inset 0 1px 0 rgba(255,255,255,0.06);
-          position: relative; overflow: hidden;
-        }
-        /* pulse ring על האייקון */
-        .spam-icon-box::before {
-          content: '';
-          position: absolute; inset: -5px;
-          border-radius: 19px;
-          border: 1.5px solid rgba(255,190,40,0.35);
-          animation: spamIconPing 2.8s ease-out 1.5s infinite;
-        }
-        @keyframes spamIconPing {
-          0%   { transform: scale(1);    opacity: 0.8; }
-          70%  { transform: scale(1.35); opacity: 0;   }
-          100% { transform: scale(1.35); opacity: 0;   }
-        }
-        .spam-icon-emoji {
-          font-size: 20px; line-height: 1;
-          position: relative; z-index: 1;
-          filter: drop-shadow(0 0 6px rgba(255,180,0,0.55));
-          animation: spamIconWiggle 3s ease-in-out 2s infinite;
-        }
-        @keyframes spamIconWiggle {
-          0%,100% { transform: rotate(0deg) scale(1);   }
-          20%     { transform: rotate(-8deg) scale(1.1); }
-          40%     { transform: rotate(6deg)  scale(1.05); }
-          60%     { transform: rotate(-4deg) scale(1);   }
-          80%     { transform: rotate(2deg)  scale(1);   }
-        }
-
-        /* כותרת */
-        .spam-title-col { flex: 1; }
-        .spam-tag-row {
-          display: inline-flex; align-items: center; gap: 5px;
-          background: linear-gradient(135deg, rgba(255,190,40,0.14), rgba(255,130,0,0.08));
-          border: 1px solid rgba(255,185,40,0.32);
-          border-radius: 7px; padding: 2px 9px;
-          font-family: 'Syne', sans-serif;
-          font-size: 8.5px; font-weight: 900; letter-spacing: 0.16em;
-          color: rgba(255,210,80,0.90);
-          text-transform: uppercase;
-          margin-bottom: 5px;
-        }
-        .spam-tag-dot {
-          width: 5px; height: 5px; border-radius: 50%;
-          background: rgba(255,200,60,0.90);
-          box-shadow: 0 0 5px rgba(255,190,0,0.80);
-          animation: spamTagPulse 2s ease-in-out infinite;
-        }
-        @keyframes spamTagPulse {
-          0%,100% { opacity:1; transform:scale(1);   }
-          50%     { opacity:0.5; transform:scale(0.7); }
-        }
-        .spam-headline {
-          font-family: 'Syne', sans-serif;
-          font-size: 15px; font-weight: 900;
-          color: rgba(255,255,255,0.92);
-          letter-spacing: -0.3px; line-height: 1.2;
-        }
-
-        /* ── body ── */
-        .spam-card-body {
-          padding: 12px 18px 16px;
-          position: relative; z-index: 1;
-          display: flex; flex-direction: column; gap: 8px;
-        }
-
-        /* שורת טיפ */
-        .spam-tip-row {
-          display: flex; align-items: center; gap: 10px;
-          padding: 10px 13px;
-          border-radius: 12px;
-          transition: background 0.2s;
-        }
-        .spam-tip-row:first-child {
-          background: linear-gradient(135deg, rgba(255,185,40,0.08), rgba(255,130,0,0.04));
-          border: 1px solid rgba(255,185,40,0.16);
-        }
-        .spam-tip-row:last-child {
-          background: rgba(255,255,255,0.03);
-          border: 1px solid rgba(255,255,255,0.06);
-        }
-        .spam-tip-icon {
-          font-size: 15px; flex-shrink: 0;
-          filter: drop-shadow(0 0 4px rgba(255,180,0,0.35));
-        }
-        .spam-tip-text {
-          font-family: 'Syne', sans-serif;
-          font-size: 12px; font-weight: 600;
-          color: rgba(255,255,255,0.55);
-          line-height: 1.5; flex: 1;
-        }
-        .spam-tip-text strong {
-          font-weight: 800;
-          color: rgba(255,220,80,0.90);
-        }
-        .spam-tip-text em {
-          font-style: normal;
-          color: rgba(255,255,255,0.72);
-          font-weight: 700;
-        }
-      </style>
-
-      <div class="spam-card-2026">
-        <div class="spam-card-header">
-          <div class="spam-icon-box">
-            <span class="spam-icon-emoji">📬</span>
-          </div>
-          <div class="spam-title-col">
-            <div class="spam-tag-row">
-              <span class="spam-tag-dot"></span>
-              שימו לב
-            </div>
-            <div class="spam-headline">לא קיבלתם מייל אימות?</div>
-          </div>
-        </div>
-        <div class="spam-card-body">
-          <div class="spam-tip-row">
-            <span class="spam-tip-icon">🗂️</span>
-            <span class="spam-tip-text">בדקו את תיקיית <strong>ספאם / Junk</strong> — המייל שלנו לפעמים מגיע לשם</span>
-          </div>
-          <div class="spam-tip-row">
-            <span class="spam-tip-icon">📢</span>
-            <span class="spam-tip-text">ב-Gmail? חפשו גם ב<em>קידומי מכירות</em> ובלשונית <em>עדכונים</em></span>
+      <div class="lsb-icon-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="lsb-content">
+        <!-- ✦ SPAM MEGA ALERT ✦ -->
+        <style>
+          @keyframes spamFlash {
+            0%,100% { box-shadow: 0 0 0 0 rgba(255,80,80,0); border-color: rgba(255,80,80,0.28); }
+            50%      { box-shadow: 0 0 22px rgba(255,80,80,0.28), 0 0 6px rgba(255,80,80,0.20); border-color: rgba(255,80,80,0.55); }
+          }
+          .spam-mega-badge {
+            display: flex; align-items: center; gap: 11px;
+            background: linear-gradient(135deg, rgba(255,50,50,0.10) 0%, rgba(255,120,0,0.07) 100%);
+            border: 1px solid rgba(255,80,80,0.30);
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-top: 10px;
+            position: relative; overflow: hidden;
+            animation: spamFlash 2.8s ease-in-out infinite;
+          }
+          .spam-mega-badge::before {
+            content: '';
+            position: absolute; top: 0; left: 8%; right: 8%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,90,90,0.55), transparent);
+          }
+          .spam-icon-circle {
+            width: 36px; height: 36px; flex-shrink: 0;
+            background: linear-gradient(135deg, rgba(255,60,60,0.20), rgba(255,100,0,0.12));
+            border: 1px solid rgba(255,70,70,0.40);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 17px; line-height: 1;
+            box-shadow: 0 0 16px rgba(255,60,60,0.25);
+          }
+          .spam-text-block { flex: 1; }
+          .spam-line1 { font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.45); letter-spacing: 0.02em; margin-bottom: 3px; }
+          .spam-line2 { font-size: 13.5px; font-weight: 900; background: linear-gradient(135deg, #FF6B6B, #FF9F43); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.1px; line-height: 1.2; }
+          .spam-line3 { font-size: 10px; font-weight: 600; color: rgba(255,160,100,0.70); margin-top: 2px; letter-spacing: 0.01em; }
+        </style>
+        <div class="spam-mega-badge">
+          <div class="spam-icon-circle">📬</div>
+          <div class="spam-text-block">
+            <div class="spam-line1">לא קיבלתם מייל אימות?</div>
+            <div class="spam-line2">בדקו את תיקיית הספאם!</div>
+            <div class="spam-line3">המייל עלול להגיע לג'אנק / קידומי מכירות</div>
           </div>
         </div>
       </div>
-
     </div>
 
   </div><!-- /login-inner -->
@@ -3562,7 +3398,7 @@
 
   <div style="padding:16px 16px 0">
 
-    <div id="view-dashboard" class="hidden">
+    <div id="view-dashboard">
       <!-- Dashboard Budget Alerts -->
       <div id="dash-budget-alerts" class="hidden" style="margin-bottom:14px;"></div>
 
@@ -3937,14 +3773,72 @@
       </div>
 
       <!-- Bar chart — expenses bar (budget vs actual) -->
-      <div class="chart-hero" style="margin-bottom:16px;">
+      <div class="chart-hero" style="margin-bottom:14px;">
         <div class="chart-section-title">הוצאות — השוואה לתקציב</div>
         <div id="bar-chart-budget" class="bar-chart-wrap"></div>
       </div>
 
+      <!-- History chart — monthly trend -->
+      <div class="chart-hero" style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div class="chart-section-title" style="margin-bottom:0;flex:1;">מגמה היסטורית</div>
+          <div style="display:flex;gap:4px;">
+            <button class="hist-range-btn active" data-months="6" onclick="window._setHistRange(6,this)">6 חודשים</button>
+            <button class="hist-range-btn" data-months="12" onclick="window._setHistRange(12,this)">שנה</button>
+            <button class="hist-range-btn" data-months="24" onclick="window._setHistRange(24,this)">2 שנים</button>
+          </div>
+        </div>
+        <style>
+          .hist-range-btn {
+            padding:5px 10px; border-radius:8px; font-size:10px; font-weight:800;
+            border:1px solid rgba(255,255,255,0.10); background:rgba(255,255,255,0.04);
+            color:rgba(255,255,255,0.40); cursor:pointer;
+            font-family:'Syne',sans-serif; transition:all 0.15s;
+          }
+          .hist-range-btn.active {
+            background:rgba(0,229,255,0.14); border-color:rgba(0,229,255,0.40);
+            color:var(--cyan);
+          }
+          #hist-chart-wrap {
+            width:100%; overflow-x:auto; padding-bottom:4px;
+          }
+          #hist-svg-container {
+            min-width:260px; width:100%; position:relative;
+          }
+          .hist-tooltip {
+            position:absolute; background:rgba(8,14,28,0.96);
+            border:1px solid rgba(0,229,255,0.25); border-radius:12px;
+            padding:8px 12px; font-size:11px; font-weight:700;
+            pointer-events:none; opacity:0; transition:opacity 0.15s;
+            white-space:nowrap; z-index:10;
+          }
+          .hist-legend {
+            display:flex; gap:14px; justify-content:center;
+            margin-top:12px; flex-wrap:wrap;
+          }
+          .hist-leg-item {
+            display:flex; align-items:center; gap:5px;
+            font-size:10.5px; font-weight:700; color:rgba(255,255,255,0.50);
+          }
+          .hist-leg-dot { width:8px; height:8px; border-radius:50%; }
+          #hist-loading { text-align:center; padding:40px; color:rgba(255,255,255,0.25); font-size:12px; font-weight:600; }
+        </style>
+        <div id="hist-loading">טוען נתונים...</div>
+        <div id="hist-chart-wrap" style="display:none;">
+          <div id="hist-svg-container">
+            <svg id="hist-svg" width="100%" height="180" viewBox="0 0 320 180" preserveAspectRatio="none"></svg>
+            <div class="hist-tooltip" id="hist-tooltip"></div>
+          </div>
+          <div class="hist-legend">
+            <div class="hist-leg-item"><div class="hist-leg-dot" style="background:#00E676;box-shadow:0 0 6px #00E67699;"></div>הכנסות</div>
+            <div class="hist-leg-item"><div class="hist-leg-dot" style="background:#FF1744;box-shadow:0 0 6px #FF174499;"></div>הוצאות</div>
+            <div class="hist-leg-item"><div class="hist-leg-dot" style="background:rgba(0,229,255,0.8);box-shadow:0 0 6px rgba(0,229,255,0.5);"></div>יתרה</div>
+          </div>
+        </div>
+      </div>
+
     </div><!-- /view-charts -->
 
-    <div id="view-settings" class="hidden">
       <!-- Smart User Card 2026 -->
       <div id="settings-user-card">
         <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;position:relative;z-index:1;">
@@ -4215,6 +4109,126 @@
         </div>
       </div>
 
+      <!-- ══ הוצאות/הכנסות דו-חודשיות ══ -->
+      <div class="settings-section-title" style="margin-top:6px;">תשלומים דו-חודשיים</div>
+
+      <style>
+        /* ── Bi-monthly block 2026 ── */
+        #bimonthly-card {
+          background: linear-gradient(150deg, rgba(10,8,28,0.97), rgba(6,5,18,0.99));
+          border: 1px solid rgba(171,71,188,0.20);
+          border-radius: 22px; overflow: hidden;
+          margin-bottom: 12px;
+          box-shadow: 0 4px 24px rgba(0,0,0,0.40), inset 0 1px 0 rgba(171,71,188,0.06);
+          position: relative;
+        }
+        #bimonthly-card::before {
+          content:''; position:absolute; top:0; left:8%; right:8%; height:1px;
+          background: linear-gradient(90deg, transparent, rgba(171,71,188,0.55), transparent);
+        }
+        .bim-header {
+          display:flex; align-items:center; gap:12px;
+          padding:16px 18px 14px;
+          border-bottom: 1px solid rgba(171,71,188,0.10);
+        }
+        .bim-icon {
+          width:38px; height:38px; flex-shrink:0;
+          border-radius:12px;
+          background: rgba(171,71,188,0.12); border:1px solid rgba(171,71,188,0.28);
+          display:flex; align-items:center; justify-content:center;
+          box-shadow: 0 0 14px rgba(171,71,188,0.16);
+          font-size:18px;
+        }
+        .bim-title { font-weight:900; font-size:14px; color:#CE93D8; line-height:1.2; }
+        .bim-sub   { font-size:10px; font-weight:600; color:rgba(255,255,255,0.35); margin-top:2px; }
+        .bim-body  { padding:14px 18px 18px; }
+        .bim-items-list { display:flex; flex-direction:column; gap:7px; margin-bottom:12px; }
+        .bim-item-row {
+          display:flex; align-items:center; gap:10px;
+          padding:10px 13px;
+          background:rgba(171,71,188,0.06); border:1px solid rgba(171,71,188,0.14);
+          border-radius:13px;
+          transition: background 0.15s;
+        }
+        .bim-item-emoji { font-size:16px; flex-shrink:0; }
+        .bim-item-info { flex:1; min-width:0; }
+        .bim-item-name { font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .bim-item-meta { font-size:10px; font-weight:600; color:rgba(255,255,255,0.35); margin-top:1px; }
+        .bim-item-type { font-size:10px; font-weight:800; border-radius:6px; padding:2px 7px; flex-shrink:0; }
+        .bim-item-type.income { background:rgba(0,230,118,0.10); color:#00E676; border:1px solid rgba(0,230,118,0.22); }
+        .bim-item-type.expense { background:rgba(255,23,68,0.10); color:#FF6080; border:1px solid rgba(255,23,68,0.22); }
+        .bim-item-amount { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:900; flex-shrink:0; }
+        .bim-item-del {
+          width:24px; height:24px; border-radius:7px; flex-shrink:0;
+          background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08);
+          display:flex; align-items:center; justify-content:center;
+          cursor:pointer; color:rgba(255,255,255,0.30); font-size:11px;
+          transition:all 0.15s;
+        }
+        .bim-item-del:hover { background:rgba(255,23,68,0.15); color:#FF6080; border-color:rgba(255,23,68,0.25); }
+        .bim-empty-row { text-align:center; padding:18px; font-size:12px; font-weight:600; color:rgba(255,255,255,0.25); }
+        /* form */
+        .bim-add-form {
+          display:flex; flex-direction:column; gap:8px;
+          background:rgba(255,255,255,0.02); border:1px solid rgba(171,71,188,0.12);
+          border-radius:15px; padding:13px;
+        }
+        .bim-row { display:flex; gap:8px; }
+        .bim-inp {
+          flex:1; padding:10px 12px; border-radius:11px;
+          border:1px solid rgba(171,71,188,0.20);
+          background:rgba(171,71,188,0.06); color:#fff;
+          font-family:'Syne',sans-serif; font-size:13px; font-weight:600;
+          outline:none; transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .bim-inp::placeholder { color:rgba(255,255,255,0.25); }
+        .bim-inp:focus { border-color:rgba(171,71,188,0.50); box-shadow:0 0 12px rgba(171,71,188,0.14); }
+        .bim-select {
+          flex:0.9; padding:10px 12px; border-radius:11px;
+          border:1px solid rgba(171,71,188,0.20);
+          background:rgba(171,71,188,0.06); color:#fff;
+          font-family:'Syne',sans-serif; font-size:12px; font-weight:700;
+          outline:none;
+        }
+        .bim-add-btn {
+          width:100%; padding:12px; border-radius:13px; border:none;
+          background:linear-gradient(135deg,rgba(171,71,188,0.75),rgba(123,31,162,0.55));
+          color:#fff; font-family:'Syne',sans-serif; font-size:13px; font-weight:800;
+          cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px;
+          box-shadow:0 4px 18px rgba(171,71,188,0.22);
+          transition:all 0.2s cubic-bezier(0.34,1.2,0.64,1);
+        }
+        .bim-add-btn:hover { transform:translateY(-2px); box-shadow:0 6px 24px rgba(171,71,188,0.35); }
+        .bim-add-btn:active { transform:scale(0.96); }
+      </style>
+
+      <div id="bimonthly-card">
+        <div class="bim-header">
+          <div class="bim-icon">🔄</div>
+          <div>
+            <div class="bim-title">הוצאות / הכנסות דו-חודשיות</div>
+            <div class="bim-sub">תשלומים שחוזרים פעם בכל חודשיים (אופציונלי)</div>
+          </div>
+        </div>
+        <div class="bim-body">
+          <div class="bim-items-list" id="bim-list"></div>
+          <div class="bim-add-form">
+            <input id="bim-name" class="bim-inp" type="text" placeholder="שם התשלום (ביטוח, מנוי...)" autocomplete="off">
+            <div class="bim-row">
+              <input id="bim-amount" class="bim-inp" type="number" placeholder="סכום ₪" style="flex:0.7;">
+              <select id="bim-type" class="bim-select">
+                <option value="expense">הוצאה</option>
+                <option value="income">הכנסה</option>
+              </select>
+            </div>
+            <button id="btn-add-bim" class="bim-add-btn" type="button">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              הוסף תשלום דו-חודשי
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div class="settings-section-title" style="margin-top:6px;" id="settings-phones-section">חיבור מספרי וואטסאפ לבוט</div>
 
       <style>
@@ -4437,252 +4451,19 @@
         </div>
       </div>
 
-      <div class="sblock modern-hover" id="reset-day-card">
+      <div class="sblock modern-hover">
         <div class="sblock-head">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           יום איפוס תקציב
         </div>
-        <div class="sblock-body" style="padding:16px 18px 20px;">
-          <input id="reset-day-input" type="hidden" value="1">
-
-          <!-- תצוגת יום נוכחי -->
-          <div id="reset-day-current-wrap" style="
-            display:flex; align-items:center; justify-content:space-between;
-            background:linear-gradient(135deg,rgba(0,229,255,0.07),rgba(0,183,255,0.03));
-            border:1px solid rgba(0,229,255,0.18); border-radius:16px;
-            padding:13px 16px; margin-bottom:14px; position:relative; overflow:hidden;
-          ">
-            <div style="position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,0.40),transparent);"></div>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <div style="width:38px;height:38px;border-radius:12px;background:rgba(0,229,255,0.12);border:1px solid rgba(0,229,255,0.28);display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(0,229,255,0.18);">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              </div>
-              <div>
-                <div style="font-size:10px;font-weight:700;color:rgba(0,229,255,0.55);letter-spacing:0.10em;text-transform:uppercase;margin-bottom:2px;">מחזור חודשי מתאפס ב</div>
-                <div id="reset-day-display" style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:900;color:#fff;letter-spacing:-0.5px;line-height:1;">יום 1</div>
-              </div>
-            </div>
-            <div id="reset-day-saved-badge" style="
-              display:none; align-items:center; gap:5px;
-              background:rgba(0,230,118,0.12); border:1px solid rgba(0,230,118,0.30);
-              border-radius:10px; padding:5px 11px;
-              font-size:11px; font-weight:800; color:#00E676;
-            ">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              נשמר!
-            </div>
+        <div class="sblock-body">
+          <p style="color:var(--muted);font-size:13px;margin-bottom:12px">באיזה יום מתאפס המחזור החודשי?</p>
+          <div style="display:flex;align-items:center;gap:11px">
+            <input id="reset-day-input" class="inp mono" type="number" min="1" max="31" autocomplete="off" style="max-width:85px;text-align:center;font-size:19px;padding:11px 8px">
+            <span style="color:var(--muted);font-weight:600;font-size:14px">לחודש</span>
           </div>
-
-          <!-- הסבר -->
-          <p style="font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.38);margin-bottom:12px;line-height:1.55;">
-            בחרו את היום בחודש שבו מתחיל המחזור הכספי שלכם (משכורת, ראשון לחודש, וכו׳)
-          </p>
-
-          <!-- גריד ימים -->
-          <div id="reset-day-grid" style="
-            display:grid; grid-template-columns:repeat(7,1fr); gap:5px; margin-bottom:14px;
-          "></div>
-
-          <!-- כפתור שמירה -->
-          <button id="btn-save-reset-day" style="
-            width:100%; padding:13px;
-            background:linear-gradient(135deg,#00E5FF,#00BFFF);
-            color:#020C14; border:none; border-radius:14px;
-            font-family:'Syne',sans-serif; font-size:14px; font-weight:900;
-            cursor:pointer; position:relative; overflow:hidden;
-            box-shadow:0 6px 24px rgba(0,229,255,0.30), inset 0 1px 0 rgba(255,255,255,0.25);
-            transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s ease, opacity 0.2s;
-            display:flex; align-items:center; justify-content:center; gap:8px;
-            opacity:0.4; pointer-events:none;
-          ">
-            <svg id="btn-save-rd-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-            <span id="btn-save-rd-text">בחרו יום לשמירה</span>
-          </button>
-
         </div>
       </div>
-
-      <style>
-        /* ── Reset Day Grid Buttons ── */
-        .rd-btn {
-          aspect-ratio:1;
-          display:flex; align-items:center; justify-content:center;
-          border:1px solid rgba(255,255,255,0.07);
-          border-radius:11px;
-          background:rgba(255,255,255,0.04);
-          color:rgba(255,255,255,0.55);
-          font-family:'Syne',sans-serif;
-          font-size:12px; font-weight:700;
-          cursor:pointer;
-          transition:all 0.18s cubic-bezier(0.34,1.2,0.64,1);
-          -webkit-tap-highlight-color:transparent;
-          position:relative; overflow:hidden;
-        }
-        .rd-btn:hover {
-          background:rgba(0,229,255,0.10);
-          border-color:rgba(0,229,255,0.28);
-          color:#fff;
-          transform:scale(1.08);
-        }
-        .rd-btn:active { transform:scale(0.93); }
-        .rd-btn.selected {
-          background:linear-gradient(135deg,rgba(0,229,255,0.22),rgba(0,183,255,0.12));
-          border-color:rgba(0,229,255,0.55);
-          color:var(--cyan);
-          font-weight:900;
-          box-shadow:0 0 16px rgba(0,229,255,0.20), inset 0 1px 0 rgba(255,255,255,0.12);
-          transform:scale(1.10);
-        }
-        .rd-btn.saved {
-          background:linear-gradient(135deg,rgba(0,230,118,0.20),rgba(0,200,80,0.10));
-          border-color:rgba(0,230,118,0.50);
-          color:#00E676;
-          font-weight:900;
-          box-shadow:0 0 16px rgba(0,230,118,0.22), inset 0 1px 0 rgba(255,255,255,0.10);
-          transform:scale(1.10);
-        }
-        .rd-btn.today-mark::after {
-          content:'';
-          position:absolute; bottom:3px; left:50%; transform:translateX(-50%);
-          width:4px; height:4px; border-radius:50%;
-          background:var(--cyan); box-shadow:0 0 5px var(--cyan);
-        }
-        @keyframes rdSavePop {
-          0%   { transform:scale(1.10); }
-          40%  { transform:scale(1.22); box-shadow:0 0 28px rgba(0,230,118,0.45); }
-          70%  { transform:scale(1.05); }
-          100% { transform:scale(1.10); }
-        }
-        .rd-btn.save-anim { animation:rdSavePop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards; }
-        #btn-save-reset-day::before {
-          content:'';
-          position:absolute; inset:0;
-          background:linear-gradient(135deg,rgba(255,255,255,0.18) 0%,transparent 60%);
-          pointer-events:none;
-        }
-        #btn-save-reset-day.active-save {
-          opacity:1 !important;
-          pointer-events:auto !important;
-        }
-        #btn-save-reset-day.active-save:hover { transform:translateY(-2px); box-shadow:0 10px 32px rgba(0,229,255,0.40); }
-        #btn-save-reset-day.active-save:active { transform:scale(0.96); }
-        #btn-save-reset-day.saving-state {
-          opacity:0.7 !important;
-          pointer-events:none !important;
-        }
-        @keyframes btnSaveSuccess {
-          0%   { background:linear-gradient(135deg,#00E5FF,#00BFFF); }
-          30%  { background:linear-gradient(135deg,#00E676,#00C853); box-shadow:0 6px 28px rgba(0,230,118,0.45); }
-          100% { background:linear-gradient(135deg,#00E5FF,#00BFFF); }
-        }
-        #btn-save-reset-day.success-flash { animation:btnSaveSuccess 1.2s ease forwards; }
-      </style>
-
-      <script>
-      (function(){
-        var pendingDay = null;
-        var savedDay   = null;
-
-        function buildGrid(){
-          var grid = document.getElementById('reset-day-grid');
-          if(!grid) return;
-          var today = new Date().getDate();
-          grid.innerHTML = '';
-          for(var d=1; d<=31; d++){
-            (function(day){
-              var btn = document.createElement('button');
-              btn.type = 'button';
-              btn.className = 'rd-btn';
-              btn.textContent = day;
-              btn.dataset.day = day;
-              if(day === today) btn.classList.add('today-mark');
-              btn.addEventListener('click', function(){
-                pendingDay = day;
-                // עדכן highlight
-                document.querySelectorAll('.rd-btn').forEach(function(b){
-                  b.classList.remove('selected');
-                });
-                btn.classList.add('selected');
-                // עדכן תצוגה
-                var disp = document.getElementById('reset-day-display');
-                if(disp) disp.textContent = 'יום ' + day;
-                // הפעל כפתור שמירה
-                var saveBtn = document.getElementById('btn-save-reset-day');
-                var saveTxt = document.getElementById('btn-save-rd-text');
-                if(saveBtn){
-                  saveBtn.classList.add('active-save');
-                  if(saveTxt) saveTxt.textContent = 'שמור יום ' + day + ' לחודש';
-                }
-              });
-              grid.appendChild(btn);
-            })(d);
-          }
-        }
-
-        function initResetDay(day){
-          savedDay   = day;
-          pendingDay = day;
-          var disp = document.getElementById('reset-day-display');
-          if(disp) disp.textContent = 'יום ' + day;
-          // הגדר כפתור שמירה כמוגדר (אפשרי לשנות)
-          var saveBtn = document.getElementById('btn-save-reset-day');
-          var saveTxt = document.getElementById('btn-save-rd-text');
-          if(saveBtn){
-            saveBtn.classList.add('active-save');
-            if(saveTxt) saveTxt.textContent = 'שמור יום ' + day + ' לחודש';
-          }
-          // סמן כ-saved בגריד
-          document.querySelectorAll('.rd-btn').forEach(function(b){
-            var d = parseInt(b.dataset.day);
-            b.classList.remove('selected','saved');
-            if(d === day) b.classList.add('saved');
-          });
-        }
-
-        buildGrid();
-
-        // מאזין לעדכון מהמערכת (כשנטען הערך מ-Firestore)
-        var origValSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value') && null;
-        window._initResetDayPicker = initResetDay;
-
-        // כפתור שמירה
-        var saveBtn = document.getElementById('btn-save-reset-day');
-        if(saveBtn){
-          saveBtn.addEventListener('click', function(){
-            if(!pendingDay || pendingDay === savedDay) return;
-            var day = pendingDay;
-            saveBtn.classList.add('saving-state');
-            // קרא לשמירה ב-Firestore דרך האפליקציה
-            if(typeof window._saveResetDay === 'function'){
-              window._saveResetDay(day, function(){
-                savedDay = day;
-                saveBtn.classList.remove('saving-state');
-                saveBtn.classList.add('success-flash');
-                var saveTxt = document.getElementById('btn-save-rd-text');
-                var saveIcon = document.getElementById('btn-save-rd-icon');
-                if(saveTxt) saveTxt.textContent = '✓  יום ' + day + ' נשמר!';
-                if(saveIcon) saveIcon.innerHTML = '<polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
-                // Badge
-                var badge = document.getElementById('reset-day-saved-badge');
-                if(badge){ badge.style.display='flex'; setTimeout(function(){ badge.style.display='none'; },3000); }
-                // פעימה על הכפתור שנבחר
-                document.querySelectorAll('.rd-btn').forEach(function(b){
-                  b.classList.remove('selected','saved','save-anim');
-                });
-                var chosen = document.querySelector('.rd-btn[data-day="'+day+'"]');
-                if(chosen){ chosen.classList.add('saved','save-anim'); }
-                // איפוס כפתור
-                setTimeout(function(){
-                  saveBtn.classList.remove('success-flash');
-                  if(saveTxt) saveTxt.textContent = 'שמור יום ' + day + ' לחודש';
-                  if(saveIcon) saveIcon.innerHTML = '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/><polyline points="17 21 17 13 7 13 7 21" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 3 7 8 15 8" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>';
-                }, 2500);
-              });
-            }
-          });
-        }
-      })();
-      </script>
 
       <div class="sblock modern-hover">
         <div class="sblock-head">
@@ -4775,7 +4556,6 @@
       </div>
 
     </div>
-    </div><!-- /view-settings -->
   </div>
 
   <nav id="nav">
@@ -5009,6 +4789,8 @@
   /* ── State ── */
   var uid = null, resetDay = 1, displayName = '';
   var incomes = [], expenses = [], fixedExpenses = [], fixedIncomes = [], userCategories = [];
+  /* expose לגישה מ-scripts חיצוניים (סריקת מסמכים) */
+  Object.defineProperty(window, 'userCategories', { get: function(){ return userCategories; } });
   var userPhones = []; // מערך מספרי טלפון לחשבון
   var modalType = 'income', isRegMode = false, unsubs = [];
   var newCatPanelOpen = false;
@@ -5025,15 +4807,6 @@
   function showScreen(name){
     ['screen-loading','screen-login','screen-setname','app'].forEach(hide);
     show(name);
-    // הצג nav רק כשה-app מוצג
-    var nav = document.getElementById('nav');
-    if (nav) {
-      if (name === 'app') {
-        nav.classList.add('visible');
-      } else {
-        nav.classList.remove('visible');
-      }
-    }
   }
 
   function parseDate(d) {
@@ -5204,9 +4977,10 @@
       show('view-charts');
       if($('nav-charts')) $('nav-charts').classList.add('active');
       renderCharts();
+      renderHistChart();
     } else {
       show('view-settings'); $('nav-settings').classList.add('active');
-      renderFixedLists(); renderCategoriesList(); renderPhonesList();
+      renderFixedLists(); renderCategoriesList(); renderPhonesList(); initBimUI();
     }
   };
 
@@ -5367,7 +5141,73 @@
       : '<div class="fixed-empty-row">אין הכנסות קבועות — הוסיפו את הראשונה</div>';
   }
 
-  /* ── עריכת פריט קבוע ── */
+  /* ══════════════════════════════════════════════
+     BI-MONTHLY — הוצאות/הכנסות דו-חודשיות
+  ══════════════════════════════════════════════ */
+  var biMonthlyItems = [];
+
+  function renderBimList(){
+    var el = $('bim-list');
+    if(!el) return;
+    if(!biMonthlyItems.length){
+      el.innerHTML='<div class="bim-empty-row">אין תשלומים דו-חודשיים — הוסיפו למטה</div>';
+      return;
+    }
+    el.innerHTML = biMonthlyItems.map(function(item){
+      var isInc = item.type === 'income';
+      var amtColor = isInc ? '#00E676' : '#FF6080';
+      var emoji = isInc ? '💰' : '💳';
+      return '<div class="bim-item-row">'+
+        '<span class="bim-item-emoji">'+emoji+'</span>'+
+        '<div class="bim-item-info">'+
+          '<div class="bim-item-name">'+(item.name||'—')+'</div>'+
+          '<div class="bim-item-meta">כל חודשיים</div>'+
+        '</div>'+
+        '<span class="bim-item-type '+(isInc?'income':'expense')+'">'+(isInc?'הכנסה':'הוצאה')+'</span>'+
+        '<span class="bim-item-amount" style="color:'+amtColor+';">₪'+fmt(item.amount)+'</span>'+
+        '<button class="bim-item-del" onclick="delBimItem(\''+item.id+'\')">✕</button>'+
+      '</div>';
+    }).join('');
+  }
+
+  window.delBimItem = function(id){
+    if(!confirm('מחק תשלום דו-חודשי?')) return;
+    db.collection('users').doc(uid).collection('bimonthly').doc(id).delete()
+      .then(function(){ toast('נמחק בהצלחה','success'); })
+      .catch(function(){ toast('שגיאה במחיקה','error'); });
+  };
+
+  /* ── כפתור הוסף ── */
+  var _bimReady = false;
+  function initBimUI(){
+    if(_bimReady) return; _bimReady=true;
+    var addBtn = $('btn-add-bim');
+    if(!addBtn) return;
+    addBtn.addEventListener('click', function(){
+      var name   = ($('bim-name').value||'').trim();
+      var amount = parseFloat($('bim-amount').value||'0');
+      var type   = $('bim-type').value;
+      if(!name||!amount||amount<=0){ toast('מלאו שם וסכום','error'); return; }
+      addBtn.disabled=true; addBtn.style.opacity='0.6';
+      db.collection('users').doc(uid).collection('bimonthly').add({name:name,amount:amount,type:type,createdAt:new Date().toISOString()})
+        .then(function(){
+          $('bim-name').value=''; $('bim-amount').value='';
+          toast('תשלום דו-חודשי נוסף!','success');
+          addBtn.disabled=false; addBtn.style.opacity='1';
+        })
+        .catch(function(){ toast('שגיאה בשמירה','error'); addBtn.disabled=false; addBtn.style.opacity='1'; });
+    });
+  }
+
+  /* ── Listener ── */
+  function startBimListener(){
+    db.collection('users').doc(uid).collection('bimonthly').onSnapshot(function(snap){
+      biMonthlyItems = snap.docs.map(function(d){ return Object.assign({id:d.id},d.data()); });
+      renderBimList();
+    }, function(){});
+  }
+
+  /* ── Firestore listener integration ── */
   var _editFixedMeta = null;
   window.openFixedEdit = function(col, id, name, amount) {
     _editFixedMeta = { col:col, id:id };
@@ -5537,7 +5377,7 @@ window.deletePhoneIdx = function(i) {
       el.classList.add('hidden');
       return;
     }
-    var html = '';
+    var html = '<button onclick="var e=document.getElementById(\'dash-budget-alerts\');e.innerHTML=\'\';e.classList.add(\'hidden\');" style="position:absolute;top:6px;left:8px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.10);border-radius:8px;width:22px;height:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,0.35);font-size:11px;line-height:1;">✕</button>';
     overItems.forEach(function(item) {
       html += '<div class="budget-alert-item alert-over" style="cursor:pointer;" onclick="switchView(\'categories\')">' +
         '<span class="budget-alert-icon">🚨</span>' +
@@ -5560,6 +5400,7 @@ window.deletePhoneIdx = function(i) {
     });
     el.innerHTML = html;
     el.classList.remove('hidden');
+    el.style.position = 'relative';
   }
 
   function renderAll(){ renderStats(); renderTx(); renderCategoriesList2(); renderDashBudgetAlerts(); }
@@ -5665,6 +5506,157 @@ window.deletePhoneIdx = function(i) {
         }).join('');
   }
 
+  /* ══════════════════════════════════════════════
+     HISTORY CHART — monthly trend since inception
+  ══════════════════════════════════════════════ */
+  var _histData = null; /* cache */
+  var _histMonths = 6;
+
+  function renderHistChart(){
+    var wrap = document.getElementById('hist-chart-wrap');
+    var loading = document.getElementById('hist-loading');
+    if(!wrap || !loading) return;
+
+    if(_histData){ _drawHistChart(_histData); return; }
+    loading.style.display='block'; wrap.style.display='none';
+
+    /* קרא את כל ה-incomes וה-expenses מ-Firestore */
+    var p1 = db.collection('users').doc(uid).collection('incomes').get();
+    var p2 = db.collection('users').doc(uid).collection('expenses').get();
+
+    Promise.all([p1, p2]).then(function(results){
+      var allInc = results[0].docs.map(function(d){ return Object.assign({id:d.id},d.data()); });
+      var allExp = results[1].docs.map(function(d){ return Object.assign({id:d.id},d.data()); });
+
+      /* קבץ לפי חודש */
+      var byMonth = {};
+      function addToMonth(arr, key){
+        arr.forEach(function(item){
+          var d = parseDate(item.date);
+          if(!d) return;
+          var mk = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+          if(!byMonth[mk]) byMonth[mk]={inc:0,exp:0};
+          byMonth[mk][key] += Number(item.amount||0);
+        });
+      }
+      addToMonth(allInc,'inc');
+      addToMonth(allExp,'exp');
+
+      /* הוסף קבועים לכל חודש שנמצא */
+      var fincT = fixedIncomes.reduce(function(a,i){ return a+Number(i.amount||0); },0);
+      var fexpT = fixedExpenses.reduce(function(a,i){ return a+Number(i.amount||0); },0);
+      Object.keys(byMonth).forEach(function(mk){
+        byMonth[mk].inc += fincT;
+        byMonth[mk].exp += fexpT;
+      });
+
+      _histData = byMonth;
+      loading.style.display='none'; wrap.style.display='block';
+      _drawHistChart(byMonth);
+    }).catch(function(){
+      loading.textContent = 'לא ניתן לטעון היסטוריה';
+    });
+  }
+
+  function _drawHistChart(byMonth){
+    var svg = document.getElementById('hist-svg');
+    var wrap = document.getElementById('hist-chart-wrap');
+    if(!svg||!wrap) return;
+
+    /* מיין חודשים ולקח N אחרונים */
+    var keys = Object.keys(byMonth).sort();
+    if(keys.length > _histMonths) keys = keys.slice(keys.length - _histMonths);
+    if(!keys.length){ svg.innerHTML='<text x="160" y="90" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-size="12" font-family="Syne,sans-serif">אין נתונים היסטוריים</text>'; return; }
+
+    var W=320, H=180, padL=8, padR=8, padT=16, padB=32;
+    var gW=W-padL-padR, gH=H-padT-padB;
+    var n=keys.length;
+
+    /* ערכים */
+    var incArr=keys.map(function(k){ return byMonth[k].inc; });
+    var expArr=keys.map(function(k){ return byMonth[k].exp; });
+    var balArr=keys.map(function(k){ return byMonth[k].inc - byMonth[k].exp; });
+    var allVals=incArr.concat(expArr).concat(balArr);
+    var minV=Math.min.apply(null,allVals.concat([0]));
+    var maxV=Math.max.apply(null,allVals.concat([1]));
+    var range=maxV-minV||1;
+
+    function xOf(i){ return padL + (n>1 ? i/(n-1)*gW : gW/2); }
+    function yOf(v){ return padT + (1-(v-minV)/range)*gH; }
+
+    function makePath(arr, color, fill){
+      var pts=arr.map(function(v,i){ return xOf(i)+','+yOf(v).toFixed(1); }).join(' ');
+      var line='<polyline points="'+pts+'" fill="none" stroke="'+color+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 4px '+color+'88);"/>';
+      var areaClose=' L'+xOf(n-1).toFixed(1)+','+yOf(0).toFixed(1)+' L'+xOf(0).toFixed(1)+','+yOf(0).toFixed(1)+' Z';
+      var areaPoints='M'+arr.map(function(v,i){ return xOf(i).toFixed(1)+','+yOf(v).toFixed(1); }).join(' L')+areaClose;
+      var area='<path d="'+areaPoints+'" fill="'+color+'" fill-opacity="0.06"/>';
+      /* נקודות על כל עמוד */
+      var dots=arr.map(function(v,i){
+        return '<circle cx="'+xOf(i).toFixed(1)+'" cy="'+yOf(v).toFixed(1)+'" r="3.5" fill="'+color+'" stroke="rgba(4,7,18,0.9)" stroke-width="1.5"'+
+          ' style="cursor:pointer;filter:drop-shadow(0 0 4px '+color+');"/>'+
+          '<circle cx="'+xOf(i).toFixed(1)+'" cy="'+yOf(v).toFixed(1)+'" r="10" fill="transparent"'+
+          ' data-idx="'+i+'" data-color="'+color+'" class="hist-dot-area" style="cursor:pointer;"/>';
+      }).join('');
+      return area+line+dots;
+    }
+
+    /* ציר X — תוויות חודש */
+    var labels=keys.map(function(k){
+      var parts=k.split('-');
+      var months=['ינו','פבר','מרץ','אפר','מאי','יונ','יול','אוג','ספט','אוק','נוב','דצ'];
+      return months[parseInt(parts[1])-1]+' '+parts[0].slice(2);
+    });
+    var step=Math.max(1,Math.floor(n/5));
+    var xLabels=labels.map(function(lbl,i){
+      if(i%step!==0&&i!==n-1) return '';
+      return '<text x="'+xOf(i).toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle"'+
+        ' fill="rgba(255,255,255,0.28)" font-size="8" font-family="Syne,sans-serif" font-weight="600">'+lbl+'</text>';
+    }).join('');
+
+    /* קו אפס */
+    var zeroY=yOf(0);
+    var zeroLine='<line x1="'+padL+'" y1="'+zeroY.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+zeroY.toFixed(1)+'"'+
+      ' stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="4,3"/>';
+
+    svg.innerHTML=
+      zeroLine+
+      makePath(expArr,'#FF1744',true)+
+      makePath(incArr,'#00E676',true)+
+      makePath(balArr,'rgba(0,229,255,0.85)',false)+
+      xLabels;
+
+    /* tooltip על hover */
+    svg.querySelectorAll('.hist-dot-area').forEach(function(el){
+      el.addEventListener('mouseenter', function(e){
+        var i=parseInt(el.dataset.idx);
+        var tip=document.getElementById('hist-tooltip');
+        if(!tip) return;
+        var inc=fmt(incArr[i]), exp=fmt(expArr[i]), bal=balArr[i];
+        var balColor=bal>=0?'#00E676':'#FF1744';
+        tip.innerHTML='<div style="font-size:10px;color:rgba(255,255,255,0.45);margin-bottom:4px;">'+labels[i]+'</div>'+
+          '<div style="color:#00E676;">↑ הכנסות '+inc+'</div>'+
+          '<div style="color:#FF1744;">↓ הוצאות '+exp+'</div>'+
+          '<div style="color:'+balColor+'; font-size:12px;font-weight:900;">= יתרה '+fmt(Math.abs(bal))+(bal<0?' −':' +')+'</div>';
+        var rect=svg.getBoundingClientRect();
+        var ex=parseFloat(el.getAttribute('cx')), ey=parseFloat(el.getAttribute('cy'));
+        var svgRect=svg.getBoundingClientRect();
+        var scaleX=svgRect.width/W;
+        var left=ex*scaleX; var top=ey*(svgRect.height/H);
+        tip.style.left=(left+8)+'px'; tip.style.top=(top-20)+'px'; tip.style.opacity='1';
+      });
+      el.addEventListener('mouseleave', function(){
+        var tip=document.getElementById('hist-tooltip'); if(tip) tip.style.opacity='0';
+      });
+    });
+  }
+
+  window._setHistRange = function(months, btn){
+    _histMonths = months;
+    document.querySelectorAll('.hist-range-btn').forEach(function(b){ b.classList.remove('active'); });
+    if(btn) btn.classList.add('active');
+    _drawHistChart(_histData||{});
+  };
+
   function reloadModalCategorySelect(selectedName){
     var opts='<option value="">ללא קטגוריה</option>';
     if(userCategories&&userCategories.length){
@@ -5690,7 +5682,7 @@ window.deletePhoneIdx = function(i) {
     function loadUserDoc(doc) {
       if(!doc.exists) return;
       var d = doc.data();
-      if(d.resetDay){ resetDay=d.resetDay; var ri=$('reset-day-input'); if(ri) ri.value=resetDay; if(typeof window._initResetDayPicker==='function') window._initResetDayPicker(resetDay); }
+      if(d.resetDay){ resetDay=d.resetDay; var ri=$('reset-day-input'); if(ri) ri.value=resetDay; }
       if(d.displayName){
         displayName=d.displayName;
         var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
@@ -5743,6 +5735,7 @@ window.deletePhoneIdx = function(i) {
     snapCol('expenses',   function(v){ expenses=v; });
     snapCol('fixed_settings', function(v){ fixedExpenses=v; }, renderFixedLists);
     snapCol('fixed_incomes',  function(v){ fixedIncomes=v; },  renderFixedLists);
+    startBimListener();
   }
 
   /* ══════════════════════════════════════════════
@@ -5766,11 +5759,10 @@ window.deletePhoneIdx = function(i) {
       }
       displayName = name;
       showScreen('app');
-      switchView('dashboard');
       var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
       var si=$('settings-name-input'); if(si) si.value=displayName;
       var sun=$('settings-user-name'); if(sun) sun.textContent=displayName;
-      var ri=$('reset-day-input'); if(ri) ri.value=resetDay; if(typeof window._initResetDayPicker==='function') window._initResetDayPicker(resetDay);
+      var ri=$('reset-day-input'); if(ri) ri.value=resetDay;
       startListeners();
     }).catch(function(){
       /* Firestore blocked (e.g. NextDNS/Netfree) — still show app with auth name */
@@ -5778,7 +5770,6 @@ window.deletePhoneIdx = function(i) {
       var name = user.displayName || (user.email ? user.email.split('@')[0] : 'משתמש');
       displayName = name;
       showScreen('app');
-      switchView('dashboard');
       var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
       var si=$('settings-name-input'); if(si) si.value=displayName;
       startListeners();
@@ -6101,10 +6092,9 @@ window.deletePhoneIdx = function(i) {
       appBooted = true;
       uid = user.uid;
       showScreen('app');
-      switchView('dashboard');
       var hn=$('header-name'); if(hn) hn.textContent='שלום, '+name.split(' ')[0]+'!';
       var si=$('settings-name-input'); if(si) si.value=name;
-      var ri=$('reset-day-input'); if(ri) ri.value=resetDay; if(typeof window._initResetDayPicker==='function') window._initResetDayPicker(resetDay);
+      var ri=$('reset-day-input'); if(ri) ri.value=resetDay;
       startListeners();
       // אונבורדינג למשתמש חדש
       setTimeout(function(){ showOnboarding(); }, 600);
@@ -6191,23 +6181,11 @@ window.deletePhoneIdx = function(i) {
     });
   };
 
-  /* ── Reset day — new picker API ── */
-  window._saveResetDay = function(day, callback){
-    resetDay = day;
-    renderAll();
-    db.collection('users').doc(uid).set({resetDay: day}, {merge: true})
-      .then(function(){ if(callback) callback(); })
-      .catch(function(){ toast('שגיאה בשמירת יום האיפוס', 'error'); });
+  /* ── Reset day ── */
+  $('reset-day-input').oninput=function(){
+    var v=parseInt(this.value);
+    if(v>=1&&v<=31){ resetDay=v; db.collection('users').doc(uid).set({resetDay:v},{merge:true}); renderAll(); }
   };
-
-  /* ── Reset day (legacy input — kept for compatibility) ── */
-  var _rdInput = $('reset-day-input');
-  if(_rdInput){
-    _rdInput.oninput = function(){
-      var v = parseInt(this.value);
-      if(v>=1&&v<=31){ resetDay=v; db.collection('users').doc(uid).set({resetDay:v},{merge:true}); renderAll(); }
-    };
-  }
 
   /* ── Save name ── */
   $('btn-save-name').onclick=function(){
