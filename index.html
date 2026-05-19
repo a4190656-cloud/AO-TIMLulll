@@ -5536,23 +5536,18 @@
     var pctEl=$('budget-percent'), ringEl=$('budget-progress-ring');
     pctEl.textContent=pct+'%';
 
-    var circ=150.8;
-    var absPct=Math.max(0,Math.min(100,Math.abs(pct)));
-    var targetOffset = circ-(absPct/100)*circ;
+    var circ = 150.8;
+    var absPct = Math.max(0, Math.min(100, Math.abs(pct)));
+    var targetOffset = +(circ - (absPct / 100) * circ).toFixed(2);
 
-    // Force transition: reset to start value first, then animate to target
-    // This ensures the CSS transition fires even if the DOM was just created
-    if (!ringEl._animated) {
-      ringEl.style.strokeDashoffset = '150.8';
-      ringEl._animated = true;
-      requestAnimationFrame(function(){
-        requestAnimationFrame(function(){
-          ringEl.style.strokeDashoffset = targetOffset;
-        });
-      });
-    } else {
+    // תמיד מנפיש — מאפסים ל-150.8 ואז מגדירים בframe הבא
+    // כך ה-CSS transition מופעל בכל שינוי ערך
+    ringEl.style.transition = 'none';
+    ringEl.style.strokeDashoffset = '150.8';
+    requestAnimationFrame(function() {
+      ringEl.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(0.34,1.0,0.64,1), stroke 0.4s ease, filter 0.4s ease';
       ringEl.style.strokeDashoffset = targetOffset;
-    }
+    });
 
     var isNeg=bal<0;
     var col=isNeg?'var(--red)':'var(--green)';
