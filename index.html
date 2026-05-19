@@ -550,27 +550,71 @@
     }
     .cat-tile-del:hover { background:rgba(255,23,68,0.22); color:#FF6080; }
 
-    /* budget edit pencil button */
-    .cat-tile-budget-btn {
-      background:rgba(0,229,255,0.07); border:1px solid rgba(0,229,255,0.18); border-radius:8px;
-      width:26px; height:26px; display:flex; align-items:center; justify-content:center;
-      cursor:pointer; color:rgba(0,229,255,0.50); font-size:10px; transition:all .15s; flex-shrink:0;
-    }
-    .cat-tile-budget-btn:hover { background:rgba(0,229,255,0.18); color:var(--cyan); }
-
-    /* action row at bottom-right of tile — X on top, pencil below center */
-    .cat-tile-actions {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 0;
+    /* ── כפתור מחיקה — פינה עליונה שמאלית ── */
+    .cat-tile-del {
       position: absolute;
-      top: 10px;
-      left: 10px;
+      top: 8px;
+      left: 8px;
+      width: 24px;
+      height: 24px;
+      background: rgba(255,23,68,0.10);
+      border: 1px solid rgba(255,23,68,0.20);
+      border-radius: 8px;
+      color: rgba(255,80,100,0.55);
+      font-size: 13px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s;
+      z-index: 3;
+      padding: 0;
+      flex-shrink: 0;
     }
+    .cat-tile-del:hover { background:rgba(255,23,68,0.22); color:#FF6080; border-color:rgba(255,23,68,0.45); }
+
+    /* ── כפתור עריכת תקרה — תחתית הטייל, גדול וברור ── */
+    .cat-tile-budget-btn {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 36px;
+      background: rgba(0,229,255,0.06);
+      border: none;
+      border-top: 1px solid rgba(0,229,255,0.12);
+      border-radius: 0 0 18px 18px;
+      color: rgba(0,229,255,0.55);
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all .18s;
+      z-index: 3;
+      letter-spacing: 0.03em;
+      min-width: unset;
+      min-height: unset;
+      padding: 0;
+    }
+    .cat-tile-budget-btn:hover {
+      background: rgba(0,229,255,0.14);
+      color: var(--cyan);
+      border-top-color: rgba(0,229,255,0.30);
+    }
+    .cat-tile-budget-btn:active { transform: scale(0.98); }
+
+    /* ── actions wrapper no longer needed as absolute container ── */
+    .cat-tile-actions { display: none; }
+
+    /* ── tile needs padding-bottom for the button strip ── */
     .cat-tile {
       position: relative;
+      padding-bottom: 36px !important;
     }
 
     .cat-tile-name {
@@ -4987,7 +5031,13 @@
 <div id="modal-overlay" class="hidden" onclick="if(event.target===this) hide('modal-overlay')">
   <div id="modal-sheet" class="slide-up" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
-    <h3 id="modal-title" style="text-align:center;font-size:17px;font-weight:700;margin-bottom:18px"></h3>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding:0 2px;">
+      <button onclick="hide('modal-overlay')" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);border-radius:12px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,0.55);flex-shrink:0;transition:all .15s;" onmouseover="this.style.background='rgba(255,255,255,0.11)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'" aria-label="חזרה">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h3 id="modal-title" style="font-size:17px;font-weight:700;text-align:center;flex:1;margin:0;"></h3>
+      <div style="width:38px;flex-shrink:0;"></div>
+    </div>
     <form autocomplete="off" role="presentation" style="display:contents">
       <input id="modal-amount" class="inp mono modern-hover" type="text" inputmode="decimal"
         placeholder="0" autocomplete="off" name="budget-amount" role="presentation"
@@ -5095,7 +5145,13 @@
 <div id="edit-modal-overlay" class="hidden" onclick="if(event.target===this) closeEditModal()">
   <div id="edit-modal-sheet" class="slide-up" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
-    <h3 id="edit-modal-title" style="text-align:center;font-size:17px;font-weight:700;margin-bottom:18px">עריכת תנועה</h3>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding:0 2px;">
+      <button onclick="closeEditModal()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);border-radius:12px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,0.55);flex-shrink:0;transition:all .15s;" onmouseover="this.style.background='rgba(255,255,255,0.11)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'" aria-label="חזרה">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h3 id="edit-modal-title" style="font-size:17px;font-weight:700;text-align:center;flex:1;margin:0;">עריכת תנועה</h3>
+      <div style="width:38px;flex-shrink:0;"></div>
+    </div>
     <input id="edit-modal-amount" class="inp mono modern-hover" type="text" inputmode="decimal"
       placeholder="0" autocomplete="off"
       style="font-size:36px;font-weight:800;text-align:center;padding:16px 10px;margin-bottom:11px">
@@ -5776,23 +5832,27 @@ window.deletePhoneIdx = function(i) {
     }
     var html = '';
     overItems.forEach(function(item) {
-      html += '<div class="budget-alert-item alert-over" style="cursor:pointer;" onclick="switchView(\'categories\')">' +
-        '<span class="budget-alert-icon">🚨</span>' +
-        '<div class="budget-alert-body">' +
+      var _oid = 'dash-alert-over-' + item.cat.id;
+      html += '<div class="budget-alert-item alert-over" id="' + _oid + '" style="cursor:pointer;">' +
+        '<span class="budget-alert-icon" onclick="switchView(\'categories\')">🚨</span>' +
+        '<div class="budget-alert-body" onclick="switchView(\'categories\')">' +
           '<div class="budget-alert-name" style="color:#FF6080;">' + item.cat.name + '</div>' +
           '<div class="budget-alert-detail">חרגת ב-' + fmt(item.total - item.cat.budget) + ' מתוך ' + fmt(item.cat.budget) + '</div>' +
         '</div>' +
-        '<span class="budget-alert-remain over">חריגה!</span>' +
+        '<span class="budget-alert-remain over" onclick="switchView(\'categories\')">חריגה!</span>' +
+        '<button onclick="event.stopPropagation();(function(el){el.style.opacity=\'0\';el.style.transform=\'scale(0.92)\';el.style.transition=\'all .2s\';setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},200);})(document.getElementById(\'' + _oid + '\'))" style="background:none;border:none;cursor:pointer;color:rgba(255,100,128,0.5);font-size:15px;padding:4px 6px;flex-shrink:0;transition:color .14s;margin-right:-4px;" title="סגור">✕</button>' +
       '</div>';
     });
     nearItems.forEach(function(item) {
-      html += '<div class="budget-alert-item alert-near" style="cursor:pointer;" onclick="switchView(\'categories\')">' +
-        '<span class="budget-alert-icon">⚠️</span>' +
-        '<div class="budget-alert-body">' +
+      var _nid = 'dash-alert-near-' + item.cat.id;
+      html += '<div class="budget-alert-item alert-near" id="' + _nid + '" style="cursor:pointer;">' +
+        '<span class="budget-alert-icon" onclick="switchView(\'categories\')">⚠️</span>' +
+        '<div class="budget-alert-body" onclick="switchView(\'categories\')">' +
           '<div class="budget-alert-name" style="color:#FFB300;">' + item.cat.name + '</div>' +
           '<div class="budget-alert-detail">נותר ' + fmt(item.remain) + ' מתוך ' + fmt(item.cat.budget) + '</div>' +
         '</div>' +
-        '<span class="budget-alert-remain near">' + fmt(item.remain) + '</span>' +
+        '<span class="budget-alert-remain near" onclick="switchView(\'categories\')">' + fmt(item.remain) + '</span>' +
+        '<button onclick="event.stopPropagation();(function(el){el.style.opacity=\'0\';el.style.transform=\'scale(0.92)\';el.style.transition=\'all .2s\';setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},200);})(document.getElementById(\'' + _nid + '\'))" style="background:none;border:none;cursor:pointer;color:rgba(255,179,0,0.5);font-size:15px;padding:4px 6px;flex-shrink:0;transition:color .14s;margin-right:-4px;" title="סגור">✕</button>' +
       '</div>';
     });
     el.innerHTML = html;
@@ -6311,65 +6371,8 @@ window.deletePhoneIdx = function(i) {
   var GOOGLE_CLIENT_ID = '53506652532-at4qsgo7pl1oags2unpc955qladic9rv.apps.googleusercontent.com';
   var REDIRECT_URI = 'https://a4190656-cloud.github.io/AO-TIMLulll/';
 
-  /* ── טיפול ב-token שגוגל מחזיר ב-URL hash אחרי הכניסה ── */
-  (function handleOAuthCallback() {
-    var hash = window.location.hash;
-    if (!hash) return;
-    var params = {};
-    hash.replace(/^#/, '').split('&').forEach(function(p) {
-      var kv = p.split('=');
-      params[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1] || '');
-    });
-    if (!params.access_token) return;
-
-    /* ── מיד — מסתירים screen-loading ומציגים security-loader ── */
-    _googleOAuthPending = true;
-
-    // בטל את ה-timeout של screen-loading שמציג "לקח יותר מדי זמן"
-    if (window._screenLoadingTimeoutId) clearTimeout(window._screenLoadingTimeoutId);
-    if (window._screenLoadingIntervalId) clearInterval(window._screenLoadingIntervalId);
-
-    // הסתר כל המסכים והצג את ה-security loader
-    ['screen-loading','screen-login','screen-setname','app'].forEach(function(id){
-      var el = document.getElementById(id);
-      if (el) el.classList.add('hidden');
-    });
-    show('security-loader-overlay');
-
-    // עדכון הודעות ה-loader לגוגל
-    var msgEl = $('security-msg');
-    var subEl = $('security-sub-msg');
-    if (msgEl) msgEl.textContent = 'מתחבר עם חשבון גוגל...';
-    if (subEl) subEl.textContent = 'מאמת זהות ומצפין נתונים';
-
-    /* Safety timeout — אם לא נכנסנו תוך 15 שניות, מציגים שגיאה */
-    var _oauthTimeout = setTimeout(function() {
-      if (_googleOAuthPending) {
-        _googleOAuthPending = false;
-        hide('security-loader-overlay');
-        showLoginErr('הכניסה עם גוגל לא הושלמה — נסה שוב.');
-        showScreen('screen-login');
-      }
-    }, 15000);
-
-    /* נקה את ה-hash מה-URL בלי לרענן */
-    history.replaceState(null, '', window.location.pathname + window.location.search);
-
-    /* כנס ל-Firebase עם ה-access_token */
-    var credential = firebase.auth.GoogleAuthProvider.credential(null, params.access_token);
-    auth.signInWithCredential(credential)
-      .then(function() {
-        clearTimeout(_oauthTimeout);
-        /* onAuthStateChanged יטפל בהמשך — לא מסתירים loader כאן */
-      })
-      .catch(function(e) {
-        clearTimeout(_oauthTimeout);
-        _googleOAuthPending = false;
-        hide('security-loader-overlay');
-        showLoginErr('שגיאה בכניסה עם גוגל: ' + (e.message || e.code));
-        showScreen('screen-login');
-      });
-  })();
+  /* ── Google OAuth ── Firebase signInWithRedirect מטפל בה-token אוטומטית ── */
+  /* handleOAuthCallback הוסר — getRedirectResult() מטפל בחזרה מגוגל */
 
  /* ══════════════════════════════════════════════
      NATIVE GOOGLE LOGIN — הגשר לאפליקציה
@@ -6411,24 +6414,72 @@ window.deletePhoneIdx = function(i) {
       // אם אנחנו באפליקציה -> שולחים פקודה ל-Flutter לפתוח את החלון הנייטיב!
       window.flutter_inappwebview.callHandler('NativeGoogleLogin');
     } else {
-      // אם אנחנו בדפדפן רגיל -> התנהגות רגילה כמו מקודם
-      var oauthUrl = 'https://accounts.google.com/o/oauth2/v2/auth' +
-        '?client_id=' + encodeURIComponent(GOOGLE_CLIENT_ID) +
-        '&redirect_uri=' + encodeURIComponent(REDIRECT_URI) +
-        '&response_type=token' +
-        '&scope=' + encodeURIComponent('email profile openid') +
-        '&prompt=select_account';
-      
-      window.location.href = oauthUrl;
+      // כניסה עם Firebase redirect — הדרך הנכונה והמאובטחת
+      var provider = new firebase.auth.GoogleAuthProvider();
+      provider.addScope('profile');
+      provider.addScope('email');
+      provider.setCustomParameters({ prompt: 'select_account' });
+
+      // הצג loader לפני ה-redirect
+      _googleOAuthPending = true;
+      if (window._screenLoadingTimeoutId) clearTimeout(window._screenLoadingTimeoutId);
+      if (window._screenLoadingIntervalId) clearInterval(window._screenLoadingIntervalId);
+      ['screen-loading','screen-login','screen-setname','app'].forEach(function(id){
+        var el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+      });
+      show('security-loader-overlay');
+      var msgEl3 = $('security-msg');
+      var subEl3 = $('security-sub-msg');
+      if (msgEl3) msgEl3.textContent = 'מעביר לגוגל...';
+      if (subEl3) subEl3.textContent = 'אנא המתן';
+
+      auth.signInWithRedirect(provider).catch(function(e) {
+        _googleOAuthPending = false;
+        sessionStorage.removeItem('_googleRedirectPending');
+        hide('security-loader-overlay');
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        showLoginErr('שגיאה בכניסה עם גוגל: ' + (e.message || e.code));
+        showScreen('screen-login');
+      });
+      // שומר ב-sessionStorage שיש redirect בתהליך — כדי שבחזרה נדע להציג loader
+      sessionStorage.setItem('_googleRedirectPending', '1');
     }
   };
-  /* Handle redirect result on page load (for Netfree / popup-blocked fallback) */
+  /* ── טיפול בחזרה מ-signInWithRedirect של Firebase ── */
+  // Firebase מזהה את ה-token בעצמו — אנחנו רק צריכים להמתין
+  // בודק אם יש redirect בתהליך לפי sessionStorage
+  var _hasRedirectPending = sessionStorage.getItem('_googleRedirectPending') === '1';
+  if (_hasRedirectPending) {
+    _googleOAuthPending = true;
+    if (window._screenLoadingTimeoutId) clearTimeout(window._screenLoadingTimeoutId);
+    if (window._screenLoadingIntervalId) clearInterval(window._screenLoadingIntervalId);
+    ['screen-loading','screen-login','screen-setname','app'].forEach(function(id){
+      var el = document.getElementById(id); if (el) el.classList.add('hidden');
+    });
+    show('security-loader-overlay');
+    var _smsg = $('security-msg'); if (_smsg) _smsg.textContent = 'מתחבר עם חשבון גוגל...';
+    var _ssub = $('security-sub-msg'); if (_ssub) _ssub.textContent = 'מאמת זהות ומצפין נתונים';
+    sessionStorage.removeItem('_googleRedirectPending');
+  }
+
   auth.getRedirectResult().then(function(result){
-    /* If redirect login succeeded — onAuthStateChanged handles it */
+    _googleOAuthPending = false;
+    if (result && result.user) {
+      // הצלחה — onAuthStateChanged יטפל בכניסה לאפליקציה
+    }
+    // אם result.user === null — אין redirect בתהליך, המשך רגיל
   }).catch(function(e){
+    _googleOAuthPending = false;
+    hide('security-loader-overlay');
+    sessionStorage.removeItem('_googleRedirectPending');
     if(e.code === 'auth/account-exists-with-different-credential'){
       showLoginErr('חשבון עם מייל זה כבר קיים. השתמש בכניסה עם מייל וסיסמה.');
+    } else if (e.code && e.code !== 'auth/null-user') {
+      showLoginErr('שגיאה בכניסה עם גוגל: ' + (e.message || e.code));
     }
+    showScreen('screen-login');
   });
 
   /* ══════════════════════════════════════════════
@@ -7279,18 +7330,19 @@ window.deletePhoneIdx = function(i) {
         glowStyle = 'box-shadow:0 4px 24px rgba(0,0,0,0.4);';
       }
 
-      return '<div class="'+tileClass+'" style="border:1px solid '+colBdr+';background:linear-gradient(145deg,'+colBg+',rgba(4,7,18,0.96));'+glowStyle+'"'+
+      return '<div class="'+tileClass+'" style="position:relative;border:1px solid '+colBdr+';background:linear-gradient(145deg,'+colBg+',rgba(4,7,18,0.96));'+glowStyle+'padding-bottom:38px;"'+
         ' onclick="openModalWithCat(\''+cat.type+'\', \''+cat.name+'\')">'+
-        '<div class="cat-tile-name">'+cat.name+'</div>'+
+        /* X — פינה עליונה שמאלית */
+        '<button onclick="event.stopPropagation(); delItem(\'categories\',\''+cat.id+'\')" aria-label="מחק" style="position:absolute;top:8px;left:8px;width:26px;height:26px;background:rgba(255,23,68,0.10);border:1px solid rgba(255,23,68,0.20);border-radius:8px;color:rgba(255,80,100,0.55);font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:3;padding:0;transition:all .15s;" onmouseover="this.style.background=\'rgba(255,23,68,0.22)\';this.style.color=\'#FF6080\'" onmouseout="this.style.background=\'rgba(255,23,68,0.10)\';this.style.color=\'rgba(255,80,100,0.55)\'">✕</button>'+
+        '<div class="cat-tile-name" style="padding-right:0;">'+cat.name+'</div>'+
         '<div class="cat-tile-amount" style="color:'+col+';">'+(isInc?'+':'')+fmt(total)+'</div>'+
         '<div class="cat-tile-count">'+count+' תנועות במחזור</div>'+
         budgetHtml+
-        '<div class="cat-tile-actions">'+
-          '<button class="cat-tile-budget-btn" onclick="event.stopPropagation(); openBudgetModal(\''+cat.id+'\')" aria-label="הגדר תקרה" title="הגדר תקרת הוצאה" style="margin-top:14px;">'+
-            '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"/></svg>'+
-          '</button>'+
-          '<button class="cat-tile-del" onclick="event.stopPropagation(); delItem(\'categories\',\''+cat.id+'\')" aria-label="מחק" style="align-self:flex-start;">✕</button>'+
-        '</div>'+
+        /* כפתור עריכת תקרה — תחתית הטייל, גדול וברור */
+        '<button onclick="event.stopPropagation(); openBudgetModal(\''+cat.id+'\')" aria-label="הגדר תקרה" title="עריכת תקרת הוצאה" style="position:absolute;bottom:0;left:0;right:0;height:38px;background:rgba(0,229,255,0.06);border:none;border-top:1px solid rgba(0,229,255,0.13);border-radius:0 0 18px 18px;color:rgba(0,229,255,0.60);font-family:\'Syne\',sans-serif;font-size:11px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;z-index:3;letter-spacing:0.03em;transition:all .18s;width:100%;" onmouseover="this.style.background=\'rgba(0,229,255,0.14)\';this.style.color=\'#00E5FF\';this.style.borderTopColor=\'rgba(0,229,255,0.30)\'" onmouseout="this.style.background=\'rgba(0,229,255,0.06)\';this.style.color=\'rgba(0,229,255,0.60)\';this.style.borderTopColor=\'rgba(0,229,255,0.13)\'">'+
+          '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"/></svg>'+
+          (isInc ? 'יעד הכנסה' : 'עריכת תקרה')+
+        '</button>'+
         '</div>';
     }
 
