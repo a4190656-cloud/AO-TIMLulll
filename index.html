@@ -5550,15 +5550,26 @@
     var absPct = Math.max(0, Math.min(100, Math.abs(pct)));
     var targetOffset = +(circ - (absPct / 100) * circ).toFixed(2);
 
-    // מאפסים ל-0 ללא transition, ואז אחרי frame מלא מנפישים לערך האמיתי
-    ringEl.style.transition = 'none';
-    ringEl.style.strokeDashoffset = '' + circ;
-    // setTimeout מבטיח שהדפדפן צייר את ה-reset לפני שמתחיל ה-animation
-    clearTimeout(ringEl._animTimer);
-    ringEl._animTimer = setTimeout(function() {
-      ringEl.style.transition = 'stroke-dashoffset 1.3s cubic-bezier(0.22,1,0.36,1), stroke 0.4s ease, filter 0.4s ease';
-      ringEl.style.strokeDashoffset = '' + targetOffset;
-    }, 30);
+    // אנימציה ב-JS טהור — עובד בכל סביבה כולל Flutter WebView
+    // (CSS transition על SVG stroke-dashoffset לא אמין בכל WebView)
+    if (ringEl._rafId) cancelAnimationFrame(ringEl._rafId);
+    var startOffset = parseFloat(ringEl.style.strokeDashoffset) || circ;
+    var startTime = null;
+    var duration = 900; // ms
+    function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+    function animateRing(ts) {
+      if (!startTime) startTime = ts;
+      var elapsed = ts - startTime;
+      var progress = Math.min(elapsed / duration, 1);
+      var eased = easeOut(progress);
+      var current = startOffset + (targetOffset - startOffset) * eased;
+      ringEl.style.strokeDashoffset = current.toFixed(2);
+      ringEl.style.transition = 'none';
+      if (progress < 1) {
+        ringEl._rafId = requestAnimationFrame(animateRing);
+      }
+    }
+    ringEl._rafId = requestAnimationFrame(animateRing);
 
     var isNeg=bal<0;
     var col=isNeg?'var(--red)':'var(--green)';
