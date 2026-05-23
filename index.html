@@ -422,7 +422,6 @@
     #ticker-inner {
       display:flex; white-space:nowrap; flex-shrink:0;
       font-family:'JetBrains Mono',monospace; font-size:11.5px;
-      animation:ticker-scroll 45s linear infinite;
       will-change:transform;
     }
     #ticker-inner span { padding:0 10px; color:rgba(255,255,255,0.38); font-weight:600; }
@@ -3147,19 +3146,60 @@
     <div id="ticker-live-dot">LIVE</div>
   </div>
   <script>
-  // מילוי מיידי של הטיקר — לפני טעינת נתונים
+  // ── Seamless ticker engine ──
   (function(){
-    var staticSeg =
+    var inner = document.getElementById('ticker-inner');
+    if(!inner) return;
+
+    var seg =
       '<span class="t-brand">AO BUDGET</span><span class="dot">◆</span>'+
-      '<span class="t-label">יתרה</span><span class="t-bal">טוען...</span><span class="dot">◆</span>'+
-      '<span class="t-label">הכנסות</span><span class="t-inc">טוען...</span><span class="dot">◆</span>'+
-      '<span class="t-label">הוצאות</span><span class="t-exp">טוען...</span><span class="dot">◆</span>'+
+      '<span class="t-label">יתרה</span><span class="t-bal" id="tk-bal">טוען...</span><span class="dot">◆</span>'+
+      '<span class="t-label">הכנסות</span><span class="t-inc" id="tk-inc">טוען...</span><span class="dot">◆</span>'+
+      '<span class="t-label">הוצאות</span><span class="t-exp" id="tk-exp">טוען...</span><span class="dot">◆</span>'+
+      '<span class="t-label">משתנות</span><span class="t-exp" id="tk-var">טוען...</span><span class="dot">◆</span>'+
       '<span>ניהול תקציב חכם</span><span class="dot">◆</span>'+
       '<span>בוט וואטסאפ</span><span class="dot">◆</span>'+
       '<span>סנכרון בזמן אמת</span><span class="dot">◆</span>'+
-      '<span>2026 ✦</span><span class="dot">◆</span>';
-    var half = staticSeg.repeat(10);
-    document.getElementById('ticker-inner').innerHTML = half + half;
+      '<span class="t-brand">✦ 2026</span><span class="dot">◆</span>';
+
+    // בנה segment ארוך מספיק — clone א' ו-ב' זהים
+    var repeated = seg.repeat(30);
+    inner.innerHTML = repeated + repeated;
+
+    var pos = 0;
+    var speed = 0.45; // px per frame — מהיר מספיק לקרוא, איטי מספיק להנות
+    var halfW = 0;
+
+    function getHalfW(){
+      // חצי מהרוחב הכולל = נקודת האיפוס החלקה
+      halfW = inner.scrollWidth / 2;
+    }
+
+    var raf;
+    function tick(){
+      pos += speed;
+      if(pos >= halfW) pos -= halfW; // reset חלק — חוזר לאותו מקום בדיוק
+      inner.style.transform = 'translateX(-' + pos.toFixed(2) + 'px)';
+      raf = requestAnimationFrame(tick);
+    }
+
+    // מתחיל אחרי render ראשון
+    requestAnimationFrame(function(){
+      getHalfW();
+      tick();
+    });
+
+    window.addEventListener('resize', getHalfW);
+
+    // עדכון ערכים חיים בלי לשבש את ה-scroll
+    window._tickerUpdate = function(bal, inc, fixedExp, varExp){
+      var nodes = inner.querySelectorAll('[id^="tk-"]');
+      // עדכן את כל הזוגות (clone א' + clone ב')
+      inner.querySelectorAll('#tk-bal').forEach(function(el){ el.textContent = bal; el.className = Number(bal.replace(/[^\d.-]/g,'')) >= 0 ? 't-bal' : 't-exp'; });
+      inner.querySelectorAll('#tk-inc').forEach(function(el){ el.textContent = inc; });
+      inner.querySelectorAll('#tk-exp').forEach(function(el){ el.textContent = fixedExp; });
+      inner.querySelectorAll('#tk-var').forEach(function(el){ el.textContent = varExp; });
+    };
   })();
   </script>
 
@@ -6114,28 +6154,7 @@
   /* ── Render stats ── */
   function updateTicker(){
     var bal = calcBal(), inc = calcIncome(), fixedExp = calcFixedExp(), varExp = calcVarExp();
-    var balColor = bal >= 0 ? 't-bal' : 't-exp';
-    var date = new Date();
-    var months = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
-    var seg =
-      '<span class="t-brand">AO BUDGET</span><span class="dot">◆</span>'+
-      '<span class="t-label">יתרה פנויה</span><span class="'+balColor+'">'+fmt(bal)+'</span><span class="dot">◆</span>'+
-      '<span class="t-label">הכנסות</span><span class="t-inc">'+fmt(inc)+'</span><span class="dot">◆</span>'+
-      '<span class="t-label">קבועות</span><span class="t-exp">'+fmt(fixedExp)+'</span><span class="dot">◆</span>'+
-      '<span class="t-label">משתנות</span><span class="t-exp">'+fmt(varExp)+'</span><span class="dot">◆</span>'+
-      '<span>'+months[date.getMonth()]+' '+date.getFullYear()+'</span><span class="dot">◆</span>'+
-      '<span>בוט וואטסאפ</span><span class="dot">◆</span>'+
-      '<span>סנכרון בזמן אמת</span><span class="dot">◆</span>'+
-      '<span class="t-brand">✦ 2026</span><span class="dot">◆</span>';
-    var inner = document.getElementById('ticker-inner');
-    if (!inner) return;
-    var style = window.getComputedStyle(inner);
-    var playTime = style.animationDelay;
-    var half = seg.repeat(10);
-    inner.style.animationPlayState = 'paused';
-    inner.innerHTML = half + half;
-    inner.style.animationDelay = playTime;
-    inner.style.animationPlayState = 'running';
+    if(window._tickerUpdate) window._tickerUpdate(fmt(bal), fmt(inc), fmt(fixedExp), fmt(varExp));
   }
 
   function renderStats(){
