@@ -403,16 +403,20 @@
     #ticker-wrap {
       overflow:hidden; background:rgba(13,19,35,0.80); backdrop-filter:blur(12px);
       border-bottom:1px solid rgba(255,255,255,0.06); height:28px; display:flex; align-items:center;
+      position:relative;
     }
     #ticker-inner {
-      display:flex; white-space:nowrap;
+      display:flex; white-space:nowrap; flex-shrink:0;
       font-family:'JetBrains Mono',monospace; font-size:11px; color:rgba(255,255,255,0.32);
-      animation:ticker 38s linear infinite;
+      animation:ticker-scroll 55s linear infinite;
       will-change:transform;
     }
-    #ticker-inner span { padding:0 16px; }
-    #ticker-inner .dot { color:var(--cyan); padding:0 4px; }
-    @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+    #ticker-inner span { padding:0 14px; }
+    #ticker-inner .dot { color:var(--cyan); padding:0 4px; opacity:0.7; }
+    @keyframes ticker-scroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
 
     /* ── ANIMATIONS ── */
     @keyframes floatUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
@@ -3102,7 +3106,23 @@
 
 <div id="app" class="hidden">
 
-  <div id="ticker-wrap"><div id="ticker-inner"><span>AO Budget</span><span class="dot">●</span><span>ניהול תקציב אישי</span><span class="dot">●</span><span>יתרה פנויה</span><span class="dot">●</span><span>הכנסות החודש</span><span class="dot">●</span><span>הוצאות קבועות</span><span class="dot">●</span><span>מעקב חכם</span><span class="dot">●</span><span>AO Budget</span><span class="dot">●</span><span>ניהול תקציב אישי</span><span class="dot">●</span><span>יתרה פנויה</span><span class="dot">●</span><span>הכנסות החודש</span><span class="dot">●</span><span>הוצאות קבועות</span><span class="dot">●</span><span>מעקב חכם</span><span class="dot">●</span><span>AO Budget</span><span class="dot">●</span><span>ניהול תקציב אישי</span><span class="dot">●</span><span>יתרה פנויה</span><span class="dot">●</span><span>הכנסות החודש</span><span class="dot">●</span><span>הוצאות קבועות</span><span class="dot">●</span><span>מעקב חכם</span><span class="dot">●</span><span>AO Budget</span><span class="dot">●</span><span>ניהול תקציב אישי</span><span class="dot">●</span><span>יתרה פנויה</span><span class="dot">●</span><span>הכנסות החודש</span><span class="dot">●</span><span>הוצאות קבועות</span><span class="dot">●</span><span>מעקב חכם</span><span class="dot">●</span></div></div>
+  <div id="ticker-wrap"><div id="ticker-inner"></div></div>
+  <script>
+  // מילוי מיידי של הטיקר — לפני טעינת נתונים
+  (function(){
+    var staticSeg = '<span style="color:rgba(0,229,255,0.55);font-weight:700;">AO Budget</span>' +
+      '<span class="dot">●</span><span>ניהול תקציב אישי חכם</span>' +
+      '<span class="dot">●</span><span>הכנסות החודש</span>' +
+      '<span class="dot">●</span><span>הוצאות קבועות</span>' +
+      '<span class="dot">●</span><span>יתרה פנויה</span>' +
+      '<span class="dot">●</span><span>מעקב בזמן אמת</span>' +
+      '<span class="dot">●</span><span>בוט וואטסאפ</span>' +
+      '<span class="dot">●</span>';
+    // כפל 12 פעמים לכל חצי — סה"כ 24 לאנימציה seamless
+    var half = staticSeg.repeat(12);
+    document.getElementById('ticker-inner').innerHTML = half + half;
+  })();
+  </script>
 
   <!-- ✦ BETA BANNER → BUBBLE 2026 ✦ -->
   <style>
@@ -5540,18 +5560,24 @@
   function updateTicker(){
     var bal = calcBal(), inc = calcIncome(), fixedExp = calcFixedExp(), varExp = calcVarExp();
     var seg =
-      '<span>AO Budget</span><span class="dot">●</span>'+
+      '<span style="color:rgba(0,229,255,0.7);font-weight:800;">AO Budget</span><span class="dot">●</span>'+
       '<span>יתרה: <span style="color:var(--cyan);font-weight:700;">'+fmt(bal)+'</span></span><span class="dot">●</span>'+
-      '<span>הכנסות: <span style="color:var(--green);">'+fmt(inc)+'</span></span><span class="dot">●</span>'+
-      '<span>קבועות: <span style="color:rgba(255,100,100,0.8);">'+fmt(fixedExp)+'</span></span><span class="dot">●</span>'+
-      '<span>משתנות: <span style="color:rgba(255,150,80,0.8);">'+fmt(varExp)+'</span></span><span class="dot">●</span>';
-    // שכפול 8 פעמים — מבטיח מילוי מלא בכל מסך
-    var full = seg.repeat(8);
+      '<span>הכנסות: <span style="color:var(--green);font-weight:700;">'+fmt(inc)+'</span></span><span class="dot">●</span>'+
+      '<span>קבועות: <span style="color:rgba(255,100,100,0.85);">'+fmt(fixedExp)+'</span></span><span class="dot">●</span>'+
+      '<span>משתנות: <span style="color:rgba(255,170,80,0.85);">'+fmt(varExp)+'</span></span><span class="dot">●</span>'+
+      '<span>מעקב בזמן אמת</span><span class="dot">●</span>'+
+      '<span>בוט וואטסאפ</span><span class="dot">●</span>';
     var inner = document.getElementById('ticker-inner');
     if (!inner) return;
-    inner.innerHTML = full + full; // כפל של 16 — 50% ל-animation
-    // מהירות יחסית לאורך — לא מהיר מדי ולא איטי
-    inner.style.animationDuration = '60s';
+    // שמור את מצב ה-animation לפני השינוי
+    var style = window.getComputedStyle(inner);
+    var playTime = style.animationDelay; // ערך שלילי = זמן שעבר
+    var half = seg.repeat(12);
+    inner.style.animationPlayState = 'paused';
+    inner.innerHTML = half + half;
+    // שחזר את נקודת ה-animation
+    inner.style.animationDelay = playTime;
+    inner.style.animationPlayState = 'running';
   }
 
   function renderStats(){
@@ -5568,32 +5594,40 @@
     var absPct = Math.max(0, Math.min(100, Math.abs(pct)));
     var targetOffset = +(circ - (absPct / 100) * circ).toFixed(2);
 
-    // ביטול animation קודם
+    // ביטול interval קודם
     if (ringEl._intervalId) { clearInterval(ringEl._intervalId); ringEl._intervalId = null; }
 
-    var currentVal = parseFloat(ringEl.getAttribute('stroke-dashoffset') || ringEl.style.strokeDashoffset || circ);
-    if (isNaN(currentVal)) currentVal = circ;
-
-    var startVal = currentVal;
+    // קרא את הערך הנוכחי ממשתנה JS (לא מה-DOM שלא מתעדכן)
+    if (typeof ringEl._currentOffset === 'undefined') ringEl._currentOffset = circ;
+    var startVal = ringEl._currentOffset;
     var diff = targetOffset - startVal;
-    var steps = 45; // ~750ms at 60fps
-    var step = 0;
+    if (Math.abs(diff) < 0.5) {
+      // כבר שם — עדכן ישירות
+      ringEl._currentOffset = targetOffset;
+      ringEl.style.strokeDashoffset = targetOffset;
+      ringEl.setAttribute('stroke-dashoffset', targetOffset);
+    } else {
 
+    var steps = 50;
+    var step = 0;
     function easeOutCubic(t){ return 1 - Math.pow(1-t, 3); }
 
     ringEl._intervalId = setInterval(function(){
       step++;
-      var t = easeOutCubic(step / steps);
+      var t = easeOutCubic(Math.min(step / steps, 1));
       var val = +(startVal + diff * t).toFixed(2);
+      ringEl._currentOffset = val;
       ringEl.style.strokeDashoffset = val;
       ringEl.setAttribute('stroke-dashoffset', val);
       if (step >= steps) {
         clearInterval(ringEl._intervalId);
         ringEl._intervalId = null;
+        ringEl._currentOffset = targetOffset;
         ringEl.style.strokeDashoffset = targetOffset;
         ringEl.setAttribute('stroke-dashoffset', targetOffset);
       }
     }, 16);
+    } // end else
 
     var isNeg=bal<0;
     var col=isNeg?'var(--red)':'var(--green)';
@@ -6336,13 +6370,13 @@ window.deletePhoneIdx = function(i) {
         nearBudget ?
         'box-shadow:0 0 0 1.5px rgba(255,160,0,0.35),0 0 22px rgba(255,160,0,0.14),0 8px 32px rgba(0,0,0,0.5);' :
         'box-shadow:0 4px 24px rgba(0,0,0,0.4);') : 'box-shadow:0 4px 24px rgba(0,0,0,0.4);';
-      return '<div class="'+tileClass+'" style="position:relative;border:1px solid '+colBdr+';background:linear-gradient(145deg,'+colBg+',rgba(4,7,18,0.96));'+glowStyle+'padding-bottom:38px;" onclick="openModalWithCat(\''+cat.type+'\',\''+cat.name+'\')">'+
+      return '<div class="'+tileClass+'" style="position:relative;border:1px solid '+colBdr+';background:linear-gradient(145deg,'+colBg+',rgba(4,7,18,0.96));'+glowStyle+'padding-bottom:'+(budget>0&&isInc?'48':'38')+'px;" onclick="openModalWithCat(\''+cat.type+'\',\''+cat.name+'\')">'+
         '<button onclick="event.stopPropagation();delItem(\'categories\',\''+cat.id+'\')" aria-label="מחק" style="position:absolute;top:8px;left:8px;width:26px;height:26px;background:rgba(255,23,68,0.10);border:1px solid rgba(255,23,68,0.20);border-radius:8px;color:rgba(255,80,100,0.55);font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:3;padding:0;transition:all .15s;" onmouseover="this.style.background=\'rgba(255,23,68,0.22)\';this.style.color=\'#FF6080\'" onmouseout="this.style.background=\'rgba(255,23,68,0.10)\';this.style.color=\'rgba(255,80,100,0.55)\'">✕</button>'+
         '<div class="cat-tile-name" style="padding-right:0;">'+cat.name+'</div>'+
         '<div class="cat-tile-amount" style="color:'+col+';">'+(isInc?'+':'')+fmt(total)+'</div>'+
         '<div class="cat-tile-count">'+count+' תנועות במחזור</div>'+
         budgetHtml+
-        (isInc?'<div style="text-align:center;margin-top:8px;font-size:10px;font-weight:700;color:rgba(0,230,118,0.35);letter-spacing:0.02em;">לחצו להוספת תנועה</div>':'')+
+        (isInc && !goalReached && budget<=0 ? '<div style="text-align:center;margin-top:8px;font-size:10px;font-weight:700;color:rgba(0,230,118,0.35);letter-spacing:0.02em;">לחצו להוספת תנועה</div>' : '')+
         '<button onclick="event.stopPropagation();openBudgetModal(\''+cat.id+'\')" style="position:absolute;bottom:0;left:0;right:0;height:38px;background:rgba(0,229,255,0.06);border:none;border-top:1px solid rgba(0,229,255,0.13);border-radius:0 0 18px 18px;color:rgba(0,229,255,0.60);font-family:\'Syne\',sans-serif;font-size:11px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;z-index:3;transition:all .18s;width:100%;" onmouseover="this.style.background=\'rgba(0,229,255,0.14)\';this.style.color=\'#00E5FF\'" onmouseout="this.style.background=\'rgba(0,229,255,0.06)\';this.style.color=\'rgba(0,229,255,0.60)\'">'+
         '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"/></svg>'+(isInc?'יעד הכנסה':'עריכת תקרה')+'</button></div>';
     }
