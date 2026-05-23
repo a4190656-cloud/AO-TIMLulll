@@ -398,6 +398,10 @@
       70% { box-shadow:0 0 0 7px rgba(0,230,118,0); }
       100%{ box-shadow:0 0 0 0 rgba(0,230,118,0); }
     }
+    @keyframes cursorBlink {
+      0%,100% { opacity:1; }
+      50%      { opacity:0; }
+    }
 
     /* ── TICKER ── */
     #ticker-wrap {
@@ -3675,7 +3679,7 @@
         </div>
         <input type="file" id="profile-pic-upload" accept="image/*" style="display:none" onchange="handleProfilePicChange(event)">
         <div>
-          <p id="header-name" style="font-weight:700;font-size:15px;line-height:1.2">שלום!</p>
+          <p id="header-name" style="font-weight:700;font-size:15px;line-height:1.2;display:flex;align-items:center;gap:2px"><span id="header-name-text">שלום!</span><span id="header-cursor" style="display:inline-block;width:2px;height:14px;background:var(--cyan);border-radius:1px;margin-right:1px;animation:cursorBlink 1s ease-in-out infinite;vertical-align:middle;box-shadow:0 0 6px rgba(0,229,255,0.8);"></span></p>
           <p style="font-size:12px;color:var(--cyan);font-weight:800;margin-top:2px;letter-spacing:0.5px;">התקציב האישי שלכם!</p>
           <div style="display:flex;align-items:center;gap:5px;margin-top:3px">
             <span class="live-dot"></span>
@@ -3694,31 +3698,279 @@
       </div>
     </div>
 
-    <div class="hero-card rise d1 modern-hover" style="padding:24px 18px;text-align:center">
-      <p style="color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px">יתרה פנויה</p>
-      <div style="display:flex;align-items:center;justify-content:center;gap:14px;">
-        <p id="balance-display" class="mono" style="font-size:42px;font-weight:800;letter-spacing:-1px;line-height:1"></p>
-        <div style="position:relative;width:54px;height:54px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="54" height="54" style="position:absolute;top:0;left:0;transform:rotate(-90deg);overflow:visible;">
-            <circle cx="27" cy="27" r="24" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3.5"></circle>
-            <circle id="budget-progress-ring" cx="27" cy="27" r="24" fill="none" stroke="var(--green)" stroke-width="3.5"
-              stroke-dasharray="150.8"
-              stroke-linecap="round"
-              style="stroke-dashoffset:150.8;transition:stroke-dashoffset 1.1s cubic-bezier(0.34,1.0,0.64,1),stroke 0.4s ease,filter 0.4s ease;filter:drop-shadow(0 0 5px rgba(0,230,118,0.6));"></circle>
+    <!-- ✦ HERO BALANCE CARD 2026 ✦ -->
+    <style>
+      #hero-balance-card {
+        position:relative; overflow:hidden; border-radius:22px;
+        background:linear-gradient(140deg,rgba(13,19,35,0.88) 0%,rgba(6,10,20,0.93) 100%);
+        backdrop-filter:blur(32px); -webkit-backdrop-filter:blur(32px);
+        border:1px solid rgba(0,229,255,0.18);
+        box-shadow:0 8px 40px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.07);
+        padding:22px 18px 18px; text-align:center;
+        cursor:default;
+      }
+      /* top shimmer line */
+      #hero-balance-card::before {
+        content:''; position:absolute; top:0; left:0; right:0; height:1px;
+        background:linear-gradient(90deg,transparent 5%,rgba(0,229,255,0.7) 50%,transparent 95%);
+        animation:heroTopLine 3s ease-in-out infinite;
+      }
+      @keyframes heroTopLine {
+        0%,100%{ opacity:.5; } 50%{ opacity:1; }
+      }
+      /* ambient glow orb */
+      #hero-balance-card .hero-orb {
+        position:absolute; border-radius:50%; pointer-events:none;
+        transition:background 0.8s ease, opacity 0.8s ease;
+      }
+      #hero-orb-main {
+        width:260px; height:260px;
+        top:-80px; left:50%; transform:translateX(-50%);
+        background:radial-gradient(circle,rgba(0,229,255,0.10) 0%,transparent 70%);
+        animation:orbPulse 4s ease-in-out infinite;
+      }
+      @keyframes orbPulse {
+        0%,100%{ transform:translateX(-50%) scale(1);   opacity:.7; }
+        50%    { transform:translateX(-50%) scale(1.12); opacity:1; }
+      }
+      /* scanline */
+      #hero-scanline {
+        position:absolute; left:0; right:0; height:1px; pointer-events:none;
+        background:linear-gradient(90deg,transparent,rgba(0,229,255,0.55),transparent);
+        animation:heroScan 3.5s linear infinite;
+        opacity:.6;
+      }
+      @keyframes heroScan {
+        0%  { top:-2px; opacity:0; }
+        5%  { opacity:.6; }
+        95% { opacity:.6; }
+        100%{ top:100%; opacity:0; }
+      }
+      /* particles canvas */
+      #hero-particles { position:absolute; inset:0; pointer-events:none; }
+
+      /* label */
+      .hero-label-2026 {
+        position:relative; z-index:2;
+        font-size:10px; font-weight:800; letter-spacing:.18em;
+        text-transform:uppercase; color:rgba(255,255,255,0.35);
+        margin-bottom:10px;
+        display:flex; align-items:center; justify-content:center; gap:8px;
+      }
+      .hero-label-2026::before,.hero-label-2026::after {
+        content:''; flex:1; max-width:40px; height:1px;
+        background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15));
+      }
+      .hero-label-2026::after { background:linear-gradient(270deg,transparent,rgba(255,255,255,0.15)); }
+
+      /* balance number */
+      #balance-display {
+        position:relative; z-index:2;
+        font-size:44px; font-weight:800; letter-spacing:-1.5px; line-height:1;
+        transition:color 0.5s ease, text-shadow 0.5s ease;
+      }
+      #balance-display.bal-pos {
+        color:var(--cyan);
+        text-shadow:0 0 40px rgba(0,229,255,0.5),0 0 80px rgba(0,229,255,0.2);
+      }
+      #balance-display.bal-neg {
+        color:var(--red);
+        text-shadow:0 0 40px rgba(255,23,68,0.5),0 0 80px rgba(255,23,68,0.2);
+      }
+      /* counter animation */
+      @keyframes balCountUp {
+        from { opacity:0; transform:translateY(12px) scale(0.95); }
+        to   { opacity:1; transform:translateY(0)    scale(1); }
+      }
+      .bal-count-anim { animation:balCountUp 0.55s cubic-bezier(0.16,1,0.3,1) forwards; }
+
+      /* mini divider */
+      .hero-divider {
+        position:relative; z-index:2;
+        width:80px; height:1px; margin:12px auto 0;
+        background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+        opacity:.35; animation:heroDivGlow 3s ease-in-out infinite;
+      }
+      @keyframes heroDivGlow { 0%,100%{opacity:.25;width:60px} 50%{opacity:.55;width:100px} }
+
+      /* ring wrap */
+      .hero-ring-wrap {
+        position:relative; z-index:2;
+        width:56px; height:56px;
+        display:flex; align-items:center; justify-content:center; flex-shrink:0;
+      }
+      /* ring glow pulse */
+      @keyframes ringGlowPulse {
+        0%,100%{ filter:drop-shadow(0 0 4px rgba(0,230,118,0.5)); }
+        50%    { filter:drop-shadow(0 0 10px rgba(0,230,118,0.9)); }
+      }
+      #budget-progress-ring { animation:ringGlowPulse 2.5s ease-in-out infinite; }
+    </style>
+
+    <div id="hero-balance-card" class="rise d1">
+      <canvas id="hero-particles" width="1" height="1"></canvas>
+      <div id="hero-orb-main" class="hero-orb"></div>
+      <div id="hero-scanline"></div>
+
+      <div class="hero-label-2026">יתרה פנויה</div>
+
+      <div style="display:flex;align-items:center;justify-content:center;gap:14px;position:relative;z-index:2;">
+        <p id="balance-display" class="mono bal-pos"></p>
+        <div class="hero-ring-wrap">
+          <svg width="56" height="56" style="position:absolute;top:0;left:0;transform:rotate(-90deg);overflow:visible;">
+            <circle cx="28" cy="28" r="24" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3.5"></circle>
+            <circle id="budget-progress-ring" cx="28" cy="28" r="24" fill="none" stroke="var(--green)" stroke-width="3.5"
+              stroke-dasharray="150.8" stroke-linecap="round"
+              style="stroke-dashoffset:150.8;transition:stroke-dashoffset 1.1s cubic-bezier(0.34,1.0,0.64,1),stroke 0.4s ease;"></circle>
           </svg>
           <div id="budget-percent"
-            style="position:relative;z-index:1;width:42px;height:42px;border-radius:50%;
-            background:linear-gradient(135deg,rgba(255,255,255,0.05),rgba(0,230,118,0.02));
+            style="position:relative;z-index:1;width:44px;height:44px;border-radius:50%;
+            background:linear-gradient(135deg,rgba(255,255,255,0.05),rgba(0,230,118,0.03));
             backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
             border:1px solid rgba(0,230,118,0.3);
-            box-shadow:0 0 12px rgba(0,230,118,0.2),inset 0 1px 3px rgba(255,255,255,0.1);
+            box-shadow:0 0 14px rgba(0,230,118,0.25),inset 0 1px 3px rgba(255,255,255,0.1);
             display:flex;align-items:center;justify-content:center;
             font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;
-            color:var(--green);text-shadow:0 0 6px rgba(0,230,118,0.6);">0%</div>
+            color:var(--green);text-shadow:0 0 8px rgba(0,230,118,0.7);">0%</div>
         </div>
       </div>
-      <div style="width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);margin:10px auto 0;opacity:.4"></div>
+
+      <div class="hero-divider"></div>
     </div>
+
+    <script>
+    /* ── Hero Particles 2026 ── */
+    (function(){
+      var canvas = document.getElementById('hero-particles');
+      if(!canvas) return;
+      var ctx = canvas.getContext('2d');
+      var particles = [];
+      var raf;
+      var isPos = true;
+
+      function resize(){
+        var card = document.getElementById('hero-balance-card');
+        if(!card) return;
+        var r = card.getBoundingClientRect();
+        canvas.width  = r.width  || 340;
+        canvas.height = r.height || 120;
+      }
+
+      function mkParticle(){
+        return {
+          x: Math.random() * canvas.width,
+          y: canvas.height + 4,
+          vy: -(0.35 + Math.random() * 0.55),
+          vx: (Math.random() - 0.5) * 0.3,
+          r: 0.8 + Math.random() * 1.4,
+          life: 0,
+          maxLife: 90 + Math.random() * 80,
+          hue: isPos ? '0,229,255' : '255,23,68'
+        };
+      }
+
+      function tick(){
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // spawn
+        if(particles.length < 18 && Math.random() < 0.35) particles.push(mkParticle());
+        particles = particles.filter(function(p){
+          p.life++;
+          p.x += p.vx; p.y += p.vy;
+          var progress = p.life / p.maxLife;
+          var alpha = progress < 0.2
+            ? (progress / 0.2) * 0.55
+            : (1 - progress) * 0.55;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+          ctx.fillStyle = 'rgba('+p.hue+','+alpha.toFixed(3)+')';
+          ctx.fill();
+          return p.life < p.maxLife && p.y > -4;
+        });
+        raf = requestAnimationFrame(tick);
+      }
+
+      function start(){
+        resize();
+        if(!raf) tick();
+      }
+
+      // watch visibility
+      var card = document.getElementById('hero-balance-card');
+      if(card){
+        var obs = new IntersectionObserver(function(entries){
+          if(entries[0].isIntersecting){ start(); }
+          else { if(raf){ cancelAnimationFrame(raf); raf=null; } }
+        }, { threshold: 0.1 });
+        obs.observe(card);
+      }
+      window.addEventListener('resize', resize);
+
+      // expose color switch
+      window._heroParticlesSetPos = function(pos){
+        isPos = pos;
+        particles.forEach(function(p){ p.hue = pos ? '0,229,255' : '255,23,68'; });
+      };
+      // init
+      setTimeout(start, 200);
+    })();
+
+    /* ── Animated number counter for balance ── */
+    (function(){
+      var _current = 0;
+      var _raf = null;
+
+      window._animateBalance = function(target, isPositive){
+        var el = document.getElementById('balance-display');
+        if(!el) return;
+
+        // update particles color
+        if(window._heroParticlesSetPos) window._heroParticlesSetPos(isPositive);
+
+        // update orb color
+        var orb = document.getElementById('hero-orb-main');
+        if(orb){
+          orb.style.background = isPositive
+            ? 'radial-gradient(circle,rgba(0,229,255,0.12) 0%,transparent 70%)'
+            : 'radial-gradient(circle,rgba(255,23,68,0.10) 0%,transparent 70%)';
+        }
+
+        if(_raf) cancelAnimationFrame(_raf);
+
+        var start   = _current;
+        var diff    = target - start;
+        var duration= 700; // ms
+        var t0      = null;
+
+        function fmtNum(n){
+          if(typeof fmt === 'function') return fmt(Math.round(n));
+          var abs = Math.abs(Math.round(n));
+          var str = abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+          var prefix = n < 0 ? '-' : '';
+          return prefix+'₪'+str;
+        }
+
+        function step(ts){
+          if(!t0) t0 = ts;
+          var prog = Math.min((ts - t0) / duration, 1);
+          // ease out expo
+          var eased = prog === 1 ? 1 : 1 - Math.pow(2, -10 * prog);
+          var val = start + diff * eased;
+          el.textContent = fmtNum(val);
+          if(prog < 1){
+            _raf = requestAnimationFrame(step);
+          } else {
+            _current = target;
+            el.textContent = fmtNum(target);
+            _raf = null;
+          }
+        }
+        el.classList.remove('bal-count-anim');
+        void el.offsetWidth; // reflow
+        el.classList.add('bal-count-anim');
+        _raf = requestAnimationFrame(step);
+      };
+    })();
+    </script>
 
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:11px" class="rise d2">
       <div class="card modern-hover" style="padding:11px 8px;text-align:center;border-top:1px solid rgba(0,230,118,0.22)">
@@ -3929,61 +4181,257 @@
         <button id="btn-toggle-add-wiz" class="modern-hover" style="background:rgba(0,229,255,0.10);border:1px solid rgba(0,229,255,0.22);border-radius:10px;color:var(--cyan);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;padding:7px 13px;cursor:pointer;transition:all 0.2s;" onclick="toggleCatWizard()">+ קטגוריה חדשה</button>
       </div>
 
-      <div id="cat-wizard-container" class="hidden sblock" style="margin-bottom:16px; position:relative; overflow:hidden;">
-        <div class="sblock-body" style="padding:18px 16px;">
-          
-          <div id="cat-wiz-step1" class="slide-up">
-            <p style="text-align:center; font-size:13px; font-weight:700; color:var(--muted); margin-bottom:14px;">בחר איזה סוג קטגוריה תרצה ליצור:</p>
-            <div style="display:flex; gap:12px;">
-              <button onclick="setCatWizType('expense')" class="btn btn-ghost modern-hover" style="flex:1; padding:18px 10px; border-color:rgba(255,23,68,0.25); color:#FF6080; display:flex; flex-direction:column; align-items:center; gap:8px;">
-                <div style="background:rgba(255,23,68,0.1); border-radius:50%; padding:8px;">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                </div>
-                הוצאה
-              </button>
-              <button onclick="setCatWizType('income')" class="btn btn-ghost modern-hover" style="flex:1; padding:18px 10px; border-color:rgba(0,230,118,0.25); color:#00E676; display:flex; flex-direction:column; align-items:center; gap:8px;">
-                <div style="background:rgba(0,230,118,0.1); border-radius:50%; padding:8px;">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                </div>
-                הכנסה
-              </button>
-            </div>
-          </div>
+      <!-- ✦ CATEGORY WIZARD 2026 ✦ -->
+      <style>
+        #cat-wizard-container {
+          margin-bottom:16px; border-radius:22px; overflow:hidden; position:relative;
+          background:linear-gradient(150deg,rgba(10,16,32,0.95),rgba(5,8,18,0.98));
+          border:1px solid rgba(255,255,255,0.07);
+          box-shadow:0 8px 32px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        #cat-wizard-container::before {
+          content:''; position:absolute; top:0; left:10%; right:10%; height:1px;
+          background:linear-gradient(90deg,transparent,rgba(0,229,255,0.4),transparent);
+        }
+        .cwiz-header {
+          padding:16px 18px 0;
+          display:flex; align-items:center; justify-content:space-between;
+        }
+        .cwiz-label {
+          font-size:9px; font-weight:800; letter-spacing:.2em; text-transform:uppercase;
+          color:rgba(255,255,255,0.22);
+        }
+        .cwiz-badge {
+          font-size:9px; font-weight:800; letter-spacing:.1em;
+          color:var(--cyan); background:rgba(0,229,255,0.08);
+          border:1px solid rgba(0,229,255,0.18); border-radius:6px; padding:2px 8px;
+        }
+        /* Step 1 — type picker */
+        .cwiz-type-grid {
+          display:grid; grid-template-columns:1fr 1fr; gap:10px;
+          padding:14px 16px 18px;
+        }
+        .cwiz-type-btn {
+          position:relative; overflow:hidden;
+          display:flex; flex-direction:column; align-items:center; justify-content:center;
+          gap:10px; padding:20px 10px 16px;
+          border-radius:18px; border:none; cursor:pointer;
+          transition:transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .18s ease;
+          -webkit-tap-highlight-color:transparent;
+        }
+        .cwiz-type-btn:active { transform:scale(0.96) !important; }
+        .cwiz-type-btn::before {
+          content:''; position:absolute; top:0; left:10%; right:10%; height:1px;
+          background:linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent);
+        }
+        .cwiz-type-btn:hover { transform:translateY(-3px); }
+        .cwiz-type-expense {
+          background:linear-gradient(150deg,rgba(30,6,10,0.95),rgba(18,4,8,0.98));
+          border:1px solid rgba(255,23,68,0.30);
+          box-shadow:0 4px 20px rgba(255,23,68,0.14),inset 0 -3px 0 rgba(140,0,30,0.7);
+        }
+        .cwiz-type-expense:hover { box-shadow:0 8px 28px rgba(255,23,68,0.22),inset 0 -3px 0 rgba(140,0,30,0.7); }
+        .cwiz-type-income {
+          background:linear-gradient(150deg,rgba(4,22,12,0.95),rgba(3,14,8,0.98));
+          border:1px solid rgba(0,230,118,0.28);
+          box-shadow:0 4px 20px rgba(0,230,118,0.12),inset 0 -3px 0 rgba(0,100,50,0.8);
+        }
+        .cwiz-type-income:hover { box-shadow:0 8px 28px rgba(0,230,118,0.20),inset 0 -3px 0 rgba(0,100,50,0.8); }
+        .cwiz-type-icon {
+          width:48px; height:48px; border-radius:16px;
+          display:flex; align-items:center; justify-content:center; flex-shrink:0;
+        }
+        .cwiz-type-expense .cwiz-type-icon {
+          background:rgba(255,23,68,0.12); border:1px solid rgba(255,23,68,0.28);
+          box-shadow:0 0 16px rgba(255,23,68,0.2);
+        }
+        .cwiz-type-income .cwiz-type-icon {
+          background:rgba(0,230,118,0.10); border:1px solid rgba(0,230,118,0.26);
+          box-shadow:0 0 16px rgba(0,230,118,0.18);
+        }
+        .cwiz-type-text { font-family:'Syne',sans-serif; font-size:15px; font-weight:900; }
+        .cwiz-type-expense .cwiz-type-text { color:#FF6080; }
+        .cwiz-type-income  .cwiz-type-text { color:#00E676; }
+        .cwiz-type-sub { font-size:10px; font-weight:700; opacity:.45; }
+        .cwiz-type-expense .cwiz-type-sub { color:#FF6080; }
+        .cwiz-type-income  .cwiz-type-sub { color:#00E676; }
 
-          <div id="cat-wiz-step2" class="hidden slide-up">
-            <div style="display:flex; align-items:center; margin-bottom:14px;">
-              <button onclick="backCatWiz()" style="background:none; border:none; color:var(--muted); cursor:pointer; padding:4px; display:flex; align-items:center;" title="חזור">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-              </button>
-              <p id="cat-wiz-title" style="flex:1; text-align:center; font-size:15px; font-weight:800;"></p>
-              <div style="width:28px;"></div>
-            </div>
-            <input id="cat-wiz-name" class="inp" type="text" placeholder="איך נקרא לקטגוריה? (למשל: סופר)" autocomplete="off" style="margin-bottom:10px; font-size:14px; padding:14px;">
-            <div id="cat-wiz-budget-wrap" style="margin-bottom:14px;">
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;">
-                <div style="width:28px;height:28px;border-radius:9px;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.2);display:flex;align-items:center;justify-content:center;">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                </div>
-                <div>
-                  <span style="font-size:12px;font-weight:700;color:var(--text);">תקרת הוצאה חודשית</span>
-                  <span style="font-size:10px;font-weight:600;color:rgba(255,255,255,0.35);margin-right:5px;">(אופציונלי)</span>
-                </div>
-              </div>
-              <div style="position:relative;">
-                <input id="cat-wiz-budget" class="inp mono" type="number" min="0" inputmode="decimal"
-                  placeholder="ללא הגבלה"
-                  style="padding-left:36px;font-size:16px;font-weight:800;letter-spacing:0.02em;text-align:left;direction:ltr;">
-                <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--cyan);font-size:14px;font-weight:700;pointer-events:none;">₪</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:5px;margin-top:6px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(0,229,255,0.45)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                <p style="font-size:10.5px;color:rgba(255,255,255,0.30);line-height:1.4">כשתגיע לסכום הזה תקבל התרעה אוטומטית</p>
-              </div>
-            </div>
-            <button id="btn-wiz-save" class="btn modern-hover" style="font-size:14px; padding:13px; background:rgba(0,229,255,0.12); color:var(--cyan); border:1px solid rgba(0,229,255,0.3);">✓ שמור קטגוריה</button>
-          </div>
+        /* Step 2 — form */
+        #cat-wiz-step2 { padding:6px 16px 18px; }
+        .cwiz-back-row {
+          display:flex; align-items:center; gap:10px; margin-bottom:16px; padding-top:4px;
+        }
+        .cwiz-back-btn {
+          width:34px; height:34px; border-radius:11px; border:none; cursor:pointer;
+          background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09);
+          color:rgba(255,255,255,0.45); display:flex; align-items:center; justify-content:center;
+          flex-shrink:0; transition:all .15s;
+        }
+        .cwiz-back-btn:hover { background:rgba(255,255,255,0.09); color:#fff; }
+        #cat-wiz-title {
+          flex:1; text-align:center; font-size:15px; font-weight:900; letter-spacing:-.2px;
+        }
+        .cwiz-field-label {
+          font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase;
+          color:rgba(255,255,255,0.38); margin-bottom:7px; display:flex; align-items:center; gap:6px;
+        }
+        .cwiz-field-label-dot {
+          width:5px; height:5px; border-radius:50%;
+        }
+        .cwiz-inp {
+          display:block; width:100%;
+          background:rgba(255,255,255,0.04);
+          border:1px solid rgba(255,255,255,0.09);
+          border-radius:14px; padding:14px 16px;
+          color:#fff; font-family:'Syne',sans-serif;
+          font-size:15px; font-weight:700; text-align:right;
+          outline:none; transition:border-color .2s, box-shadow .2s, background .2s;
+          -webkit-tap-highlight-color:transparent;
+        }
+        .cwiz-inp:focus {
+          border-color:rgba(0,229,255,0.45);
+          background:rgba(0,229,255,0.03);
+          box-shadow:0 0 0 3px rgba(0,229,255,0.07);
+        }
+        .cwiz-inp::placeholder { color:rgba(255,255,255,0.18); }
+        .cwiz-budget-card {
+          border-radius:16px; overflow:hidden; margin-bottom:16px;
+          border:1px solid rgba(255,255,255,0.07);
+          background:rgba(255,255,255,0.02);
+        }
+        .cwiz-budget-head {
+          display:flex; align-items:center; gap:10px;
+          padding:11px 14px; border-bottom:1px solid rgba(255,255,255,0.05);
+          background:rgba(255,255,255,0.02);
+        }
+        .cwiz-budget-icon {
+          width:30px; height:30px; border-radius:10px; flex-shrink:0;
+          display:flex; align-items:center; justify-content:center;
+          background:rgba(0,229,255,0.08); border:1px solid rgba(0,229,255,0.18);
+        }
+        .cwiz-budget-title { font-size:12px; font-weight:800; color:rgba(255,255,255,0.80); }
+        .cwiz-budget-sub   { font-size:10px; font-weight:600; color:rgba(255,255,255,0.28); margin-top:1px; }
+        .cwiz-budget-body  { padding:12px 14px; }
+        .cwiz-budget-inp-wrap { position:relative; }
+        .cwiz-budget-inp-wrap input {
+          display:block; width:100%;
+          background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09);
+          border-radius:12px; padding:13px 42px 13px 42px;
+          color:#fff; font-family:'JetBrains Mono',monospace;
+          font-size:18px; font-weight:800; text-align:center; direction:ltr;
+          outline:none; transition:border-color .2s, box-shadow .2s;
+          -webkit-tap-highlight-color:transparent;
+        }
+        .cwiz-budget-inp-wrap input:focus {
+          border-color:rgba(0,229,255,0.4);
+          box-shadow:0 0 0 3px rgba(0,229,255,0.07);
+        }
+        .cwiz-budget-inp-wrap input::placeholder { color:rgba(255,255,255,0.15); font-size:14px; }
+        .cwiz-budget-sym {
+          position:absolute; right:14px; top:50%; transform:translateY(-50%);
+          color:var(--cyan); font-size:15px; font-weight:800; pointer-events:none;
+          font-family:'JetBrains Mono',monospace;
+        }
+        .cwiz-budget-hint {
+          display:flex; align-items:center; gap:5px; margin-top:8px;
+          font-size:10px; font-weight:700; color:rgba(255,255,255,0.22);
+        }
+        .cwiz-save-btn {
+          display:block; width:100%; padding:15px;
+          border-radius:16px; border:none; cursor:pointer;
+          font-family:'Syne',sans-serif; font-size:15px; font-weight:900;
+          letter-spacing:.02em;
+          transition:transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .15s;
+          -webkit-tap-highlight-color:transparent;
+        }
+        .cwiz-save-btn:active { transform:scale(0.97); }
+        .cwiz-save-expense {
+          background:linear-gradient(135deg,rgba(255,23,68,0.18),rgba(200,0,40,0.12));
+          border:1px solid rgba(255,23,68,0.35); color:#FF6080;
+          box-shadow:0 4px 20px rgba(255,23,68,0.15);
+        }
+        .cwiz-save-expense:hover { box-shadow:0 6px 28px rgba(255,23,68,0.25); transform:translateY(-1px); }
+        .cwiz-save-income {
+          background:linear-gradient(135deg,rgba(0,230,118,0.16),rgba(0,160,80,0.10));
+          border:1px solid rgba(0,230,118,0.32); color:#00E676;
+          box-shadow:0 4px 20px rgba(0,230,118,0.13);
+        }
+        .cwiz-save-income:hover { box-shadow:0 6px 28px rgba(0,230,118,0.22); transform:translateY(-1px); }
+      </style>
 
+      <div id="cat-wizard-container" class="hidden">
+
+        <!-- Step 1 — pick type -->
+        <div id="cat-wiz-step1" class="slide-up">
+          <div class="cwiz-header">
+            <span class="cwiz-label">קטגוריה חדשה</span>
+            <span class="cwiz-badge">NEW</span>
+          </div>
+          <div class="cwiz-type-grid">
+            <button onclick="setCatWizType('expense')" class="cwiz-type-btn cwiz-type-expense">
+              <div class="cwiz-type-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF6080" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </div>
+              <span class="cwiz-type-text">הוצאה</span>
+              <span class="cwiz-type-sub">מעקב הוצאות</span>
+            </button>
+            <button onclick="setCatWizType('income')" class="cwiz-type-btn cwiz-type-income">
+              <div class="cwiz-type-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00E676" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </div>
+              <span class="cwiz-type-text">הכנסה</span>
+              <span class="cwiz-type-sub">מעקב הכנסות</span>
+            </button>
+          </div>
         </div>
+
+        <!-- Step 2 — fill details -->
+        <div id="cat-wiz-step2" class="hidden slide-up">
+          <div class="cwiz-back-row">
+            <button onclick="backCatWiz()" class="cwiz-back-btn" title="חזור">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <p id="cat-wiz-title"></p>
+            <div style="width:34px;"></div>
+          </div>
+
+          <!-- Name field -->
+          <div style="margin-bottom:14px;">
+            <div class="cwiz-field-label">
+              <span class="cwiz-field-label-dot" id="cwiz-dot-name" style="background:var(--cyan);"></span>
+              שם הקטגוריה
+            </div>
+            <input id="cat-wiz-name" class="cwiz-inp" type="text"
+              placeholder="למשל: סופר, דלק, משכורת..."
+              autocomplete="off">
+          </div>
+
+          <!-- Budget field -->
+          <div id="cat-wiz-budget-wrap" class="cwiz-budget-card" style="margin-bottom:16px;">
+            <div class="cwiz-budget-head">
+              <div class="cwiz-budget-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+              <div>
+                <div class="cwiz-budget-title">יעד חודשי</div>
+                <div class="cwiz-budget-sub">אופציונלי — תקבל התרעה כשתגיע</div>
+              </div>
+            </div>
+            <div class="cwiz-budget-body">
+              <div class="cwiz-budget-inp-wrap">
+                <input id="cat-wiz-budget" type="number" min="0" inputmode="decimal" placeholder="ללא הגבלה">
+                <span class="cwiz-budget-sym">₪</span>
+              </div>
+              <div class="cwiz-budget-hint">
+                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                השאר ריק כדי לעקוב ללא הגבלה
+              </div>
+            </div>
+          </div>
+
+          <button id="btn-wiz-save" class="cwiz-save-btn cwiz-save-expense">✓ צור קטגוריה</button>
+        </div>
+
       </div>
 
       <div id="cat-list2"></div>
@@ -5314,6 +5762,78 @@
   function $(id){ return document.getElementById(id); }
   function show(id){ $(id).classList.remove('hidden'); }
   function hide(id){ $(id).classList.add('hidden'); }
+
+  /* ── Typewriter: header-name ── */
+  (function(){
+    var _twText = 'שלום!';
+    var _twTimer = null;
+    var _twRunning = false;
+
+    function getTextEl(){ return document.getElementById('header-name-text'); }
+
+    function typewrite(full){
+      if(_twTimer) clearTimeout(_twTimer);
+      _twRunning = true;
+      var el = getTextEl();
+      if(!el){ _twRunning=false; return; }
+
+      var isRTL = true; // Hebrew
+      var i = 0;
+      var deleting = false;
+      var pauseAfterType = 2800;
+      var pauseAfterDel  = 500;
+      var typeSpeed = 75;
+      var delSpeed  = 38;
+
+      function tick(){
+        if(!_twRunning) return;
+        var el2 = getTextEl();
+        if(!el2) return;
+
+        if(!deleting){
+          // typing forward
+          i++;
+          el2.textContent = full.slice(0, i);
+          if(i < full.length){
+            _twTimer = setTimeout(tick, typeSpeed);
+          } else {
+            // finished typing — pause then delete
+            deleting = true;
+            _twTimer = setTimeout(tick, pauseAfterType);
+          }
+        } else {
+          // deleting
+          if(i > 0){
+            i--;
+            el2.textContent = full.slice(0, i);
+            _twTimer = setTimeout(tick, delSpeed);
+          } else {
+            // finished deleting — pause then retype
+            deleting = false;
+            _twTimer = setTimeout(tick, pauseAfterDel);
+          }
+        }
+      }
+
+      // start from current length (smooth if called mid-animation)
+      el.textContent = full.slice(0,0);
+      _twTimer = setTimeout(tick, 120);
+    }
+
+    window.setHeaderName = function(text){
+      _twText = text || 'שלום!';
+      typewrite(_twText);
+    };
+
+    // fallback: start with default on DOM ready
+    if(document.readyState === 'loading'){
+      document.addEventListener('DOMContentLoaded', function(){
+        setTimeout(function(){ typewrite(_twText); }, 800);
+      });
+    } else {
+      setTimeout(function(){ typewrite(_twText); }, 800);
+    }
+  })();
   function fmt(n){
     var num = Number(n||0);
     // Safe number formatting that works in Flutter WebView without toLocaleString
@@ -5583,8 +6103,18 @@
   function renderStats(){
     var bal=calcBal(), inc=calcIncome();
     var el=$('balance-display');
-    el.textContent=fmt(bal);
-    el.className='mono num-pop '+(bal>=0?'bal-pos':'bal-neg');
+    var isPos = bal >= 0;
+    el.className='mono '+(isPos?'bal-pos':'bal-neg');
+    // animated counter
+    if(window._animateBalance){
+      try {
+        window._animateBalance(bal, isPos);
+      } catch(e) {
+        el.textContent = fmt(bal);
+      }
+    } else {
+      el.textContent=fmt(bal);
+    }
 
     var pct=inc>0?Math.round((bal/inc)*100):0;
     var pctEl=$('budget-percent'), ringEl=$('budget-progress-ring');
@@ -6446,7 +6976,7 @@ window.deletePhoneIdx = function(i) {
       if(d.resetDay){ resetDay=d.resetDay; var ri=$('reset-day-input'); if(ri) ri.value=resetDay; if(typeof window._initResetDayPicker==='function') window._initResetDayPicker(resetDay); }
       if(d.displayName){
         displayName=d.displayName;
-        var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
+        var hn=$('header-name'); if(hn) setHeaderName('שלום, '+displayName.split(' ')[0]+'!');
         var si=$('settings-name-input'); if(si) si.value=displayName;
         var sun=$('settings-user-name'); if(sun) sun.textContent=displayName;
       }
@@ -6521,7 +7051,7 @@ window.deletePhoneIdx = function(i) {
       displayName = name;
       showScreen('app');
       switchView('dashboard');
-      var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
+      var hn=$('header-name'); if(hn) setHeaderName('שלום, '+displayName.split(' ')[0]+'!');
       var si=$('settings-name-input'); if(si) si.value=displayName;
       var sun=$('settings-user-name'); if(sun) sun.textContent=displayName;
       var ri=$('reset-day-input'); if(ri) ri.value=resetDay; if(typeof window._initResetDayPicker==='function') window._initResetDayPicker(resetDay);
@@ -6533,7 +7063,7 @@ window.deletePhoneIdx = function(i) {
       displayName = name;
       showScreen('app');
       switchView('dashboard');
-      var hn=$('header-name'); if(hn) hn.textContent='שלום, '+displayName.split(' ')[0]+'!';
+      var hn=$('header-name'); if(hn) setHeaderName('שלום, '+displayName.split(' ')[0]+'!');
       var si=$('settings-name-input'); if(si) si.value=displayName;
       startListeners();
     });
@@ -6910,7 +7440,7 @@ window.deletePhoneIdx = function(i) {
       uid = user.uid;
       showScreen('app');
       switchView('dashboard');
-      var hn=$('header-name'); if(hn) hn.textContent='שלום, '+name.split(' ')[0]+'!';
+      var hn=$('header-name'); if(hn) setHeaderName('שלום, '+name.split(' ')[0]+'!');
       var si=$('settings-name-input'); if(si) si.value=name;
       var ri=$('reset-day-input'); if(ri) ri.value=resetDay; if(typeof window._initResetDayPicker==='function') window._initResetDayPicker(resetDay);
       startListeners();
@@ -7025,7 +7555,7 @@ window.deletePhoneIdx = function(i) {
       return db.collection('users').doc(uid).set({displayName:name},{merge:true});
     }).then(function(){
       displayName=name;
-      $('header-name').textContent='שלום, '+name.split(' ')[0]+'!';
+      setHeaderName('שלום, '+name.split(' ')[0]+'!');
       toast('השם עודכן בהצלחה!', 'success');
       show('name-saved'); setTimeout(function(){ hide('name-saved'); },2500);
     }).catch(function(e){ console.error(e); toast('שגיאה בשמירה', 'error'); });
@@ -7206,12 +7736,26 @@ window.deletePhoneIdx = function(i) {
   window.setCatWizType = function(type) {
     window.wizCatType = type;
     hide('cat-wiz-step1');
-    
+
     var isInc = type === 'income';
-    var titleText = isInc ? 'הכנסה חדשה' : 'הוצאה חדשה';
+    var titleText  = isInc ? '✦ הכנסה חדשה' : '✦ הוצאה חדשה';
     var titleColor = isInc ? '#00E676' : '#FF6080';
-    
+
     $('cat-wiz-title').innerHTML = '<span style="color:' + titleColor + ';">' + titleText + '</span>';
+
+    // כפתור שמירה — צבע לפי סוג
+    var saveBtn = $('btn-wiz-save');
+    if(isInc){
+      saveBtn.className = 'cwiz-save-btn cwiz-save-income';
+      saveBtn.textContent = '✓ צור קטגוריית הכנסה';
+    } else {
+      saveBtn.className = 'cwiz-save-btn cwiz-save-expense';
+      saveBtn.textContent = '✓ צור קטגוריית הוצאה';
+    }
+    // dot color
+    var dot = document.getElementById('cwiz-dot-name');
+    if(dot) dot.style.background = isInc ? '#00E676' : '#FF6080';
+
     show('cat-wiz-step2');
     setTimeout(function() { $('cat-wiz-name').focus(); }, 50);
   };
@@ -7235,11 +7779,12 @@ window.deletePhoneIdx = function(i) {
       $('cat-wiz-name').focus();
       return;
     }
-    
+
     var btn = this;
-    var originalHtml = btn.innerHTML;
+    var originalClass = btn.className;
+    var originalText  = btn.textContent;
     btn.disabled = true;
-    btn.innerHTML = 'שומר... ⏳';
+    btn.textContent = 'שומר...';
 
     var budgetVal = Number($('cat-wiz-budget').value) || 0;
     var catData = { name: name, type: type };
@@ -7248,19 +7793,19 @@ window.deletePhoneIdx = function(i) {
     db.collection('users').doc(uid).collection('categories').add(catData)
       .then(function() {
         toast('קטגוריה "' + name + '" נוצרה!', 'success');
-        btn.innerHTML = '✓ הקטגוריה נוצרה!';
+        btn.textContent = '✓ הקטגוריה נוצרה!';
         btn.style.background = 'rgba(0,230,118,0.15)';
         btn.style.color = '#00E676';
         btn.style.borderColor = 'rgba(0,230,118,0.4)';
-        
+
         setTimeout(function() {
           hide('cat-wizard-container');
-          
           btn.disabled = false;
-          btn.innerHTML = originalHtml;
-          btn.style.background = 'rgba(0,229,255,0.12)';
-          btn.style.color = 'var(--cyan)';
-          btn.style.borderColor = 'rgba(0,229,255,0.3)';
+          btn.className = originalClass;
+          btn.textContent = originalText;
+          btn.style.background = '';
+          btn.style.color = '';
+          btn.style.borderColor = '';
           $('cat-wiz-name').value = '';
           $('cat-wiz-budget').value = '';
           show('cat-wiz-step1');
@@ -7476,6 +8021,11 @@ window.deletePhoneIdx = function(i) {
      🏆 GOAL REACHED — Premium celebration toast
   ══════════════════════════════════════════ */
   function showGoalToast(catName, achieved, goal) {
+    // ── הצג פעם אחת בלבד לכל קטגוריה לכל חודש ──
+    var seenKey = 'goal_seen_' + catName + '_' + (new Date().getFullYear()) + '_' + (new Date().getMonth());
+    if (localStorage.getItem(seenKey)) return;
+    localStorage.setItem(seenKey, '1');
+
     // הסר toast קיים אם יש
     var existing = document.getElementById('goal-toast-banner');
     if (existing) existing.parentNode.removeChild(existing);
@@ -7492,7 +8042,6 @@ window.deletePhoneIdx = function(i) {
         'box-shadow:0 8px 40px rgba(0,230,118,0.20);'+
         'animation:goalSlideIn 0.45s cubic-bezier(0.34,1.56,0.64,1) both;'+
       '">'+
-        // שורה עליונה — אייקון + כותרת + X
         '<div style="display:flex;align-items:center;gap:12px;">'+
           '<div style="font-size:30px;line-height:1;filter:drop-shadow(0 0 12px rgba(0,230,118,0.8));">🏆</div>'+
           '<div style="flex:1;">'+
@@ -7512,12 +8061,10 @@ window.deletePhoneIdx = function(i) {
             'width:32px;height:32px;display:flex;align-items:center;justify-content:center;'+
             'cursor:pointer;color:rgba(0,230,118,0.7);font-size:15px;flex-shrink:0;transition:all .15s;">✕</button>'+
         '</div>'+
-        // פס ירוק זוהר
         '<div style="height:4px;border-radius:99px;background:linear-gradient(90deg,#00E676,#69F0AE,#00BFA5);'+
           'box-shadow:0 0 12px rgba(0,230,118,0.7),0 0 24px rgba(0,230,118,0.35);'+
           'animation:goalBarGlow 1.8s ease-in-out infinite alternate;">'+
         '</div>'+
-        // סאב-טקסט
         '<div style="font-family:\'Syne\',sans-serif;font-size:11px;font-weight:700;'+
           'color:rgba(0,230,118,0.45);text-align:center;letter-spacing:0.05em;">'+
           '✦ המשיכו כך — אתם מנהלים נהדר את התקציב ✦'+
@@ -7526,7 +8073,6 @@ window.deletePhoneIdx = function(i) {
 
     document.body.appendChild(el);
 
-    // סגירה אוטומטית אחרי 8 שניות
     setTimeout(function() {
       var e = document.getElementById('goal-toast-banner');
       if (e) {
@@ -7682,7 +8228,7 @@ window.editNameFromCard = function() {
         return db.collection('users').doc(uid).set({displayName: newName.trim()}, {merge: true});
       }).then(function() {
         displayName = newName;
-        document.getElementById('header-name').textContent = 'שלום, ' + displayName.split(' ')[0] + '!';
+        setHeaderName('שלום, ' + displayName.split(' ')[0] + '!');
         document.getElementById('settings-user-name').textContent = displayName;
         document.getElementById('settings-name-input').value = displayName;
         toast('השם עודכן בהצלחה!', 'success');
