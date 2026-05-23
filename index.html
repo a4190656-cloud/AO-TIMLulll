@@ -95,6 +95,9 @@
 }
 @keyframes spinPremium { to { transform: rotate(360deg); } }
 @keyframes spin360 { to { transform: rotate(360deg); } }
+@keyframes goalSlideIn { from { transform:translateY(-110%); opacity:0; } to { transform:translateY(0); opacity:1; } }
+@keyframes goalSlideOut { from { transform:translateY(0); opacity:1; } to { transform:translateY(-110%); opacity:0; } }
+@keyframes goalBarGlow { from { opacity:0.7; } to { opacity:1; box-shadow:0 0 20px rgba(0,230,118,0.9),0 0 40px rgba(0,230,118,0.4); } }
 .secure-text-wrap { text-align: center; }
 .secure-main-title {
   font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800;
@@ -404,7 +407,8 @@
     #ticker-inner {
       display:flex; white-space:nowrap;
       font-family:'JetBrains Mono',monospace; font-size:11px; color:rgba(255,255,255,0.32);
-      animation:ticker 26s linear infinite;
+      animation:ticker 38s linear infinite;
+      will-change:transform;
     }
     #ticker-inner span { padding:0 16px; }
     #ticker-inner .dot { color:var(--cyan); padding:0 4px; }
@@ -3098,7 +3102,7 @@
 
 <div id="app" class="hidden">
 
-  <div id="ticker-wrap"><div id="ticker-inner"></div></div>
+  <div id="ticker-wrap"><div id="ticker-inner"><span>AO Budget</span><span class="dot">●</span><span>ניהול תקציב אישי</span><span class="dot">●</span><span>יתרה פנויה</span><span class="dot">●</span><span>הכנסות החודש</span><span class="dot">●</span><span>הוצאות קבועות</span><span class="dot">●</span><span>מעקב חכם</span><span class="dot">●</span><span>AO Budget</span><span class="dot">●</span><span>ניהול תקציב אישי</span><span class="dot">●</span><span>יתרה פנויה</span><span class="dot">●</span><span>הכנסות החודש</span><span class="dot">●</span><span>הוצאות קבועות</span><span class="dot">●</span><span>מעקב חכם</span><span class="dot">●</span><span>AO Budget</span><span class="dot">●</span><span>ניהול תקציב אישי</span><span class="dot">●</span><span>יתרה פנויה</span><span class="dot">●</span><span>הכנסות החודש</span><span class="dot">●</span><span>הוצאות קבועות</span><span class="dot">●</span><span>מעקב חכם</span><span class="dot">●</span><span>AO Budget</span><span class="dot">●</span><span>ניהול תקציב אישי</span><span class="dot">●</span><span>יתרה פנויה</span><span class="dot">●</span><span>הכנסות החודש</span><span class="dot">●</span><span>הוצאות קבועות</span><span class="dot">●</span><span>מעקב חכם</span><span class="dot">●</span></div></div>
 
   <!-- ✦ BETA BANNER → BUBBLE 2026 ✦ -->
   <style>
@@ -4379,8 +4383,10 @@
             <input id="fe-name" class="fixed-add-inp fixed-add-inp-expense" type="text" placeholder="שם ההוצאה (שכר דירה, ביטוח...)">
           </div>
           <div class="fixed-add-row">
-            <input id="fe-amount" class="fixed-add-inp fixed-add-inp-expense" type="number" placeholder="סכום ₪" style="flex:0.6;">
-            <button id="btn-add-fe" class="fixed-add-btn fixed-add-btn-expense">
+            <input id="fe-amount" class="fixed-add-inp fixed-add-inp-expense" type="number" placeholder="סכום ₪">
+          </div>
+          <div class="fixed-add-row">
+            <button id="btn-add-fe" class="fixed-add-btn fixed-add-btn-expense" style="flex:1;justify-content:center;">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               הוסף הוצאה
             </button>
@@ -4406,8 +4412,10 @@
             <input id="fi-name" class="fixed-add-inp fixed-add-inp-income" type="text" placeholder="מקור הכנסה (משכורת, שכירות...)">
           </div>
           <div class="fixed-add-row">
-            <input id="fi-amount" class="fixed-add-inp fixed-add-inp-income" type="number" placeholder="סכום ₪" style="flex:0.6;">
-            <button id="btn-add-fi" class="fixed-add-btn fixed-add-btn-income">
+            <input id="fi-amount" class="fixed-add-inp fixed-add-inp-income" type="number" placeholder="סכום ₪">
+          </div>
+          <div class="fixed-add-row">
+            <button id="btn-add-fi" class="fixed-add-btn fixed-add-btn-income" style="flex:1;justify-content:center;">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               הוסף הכנסה
             </button>
@@ -4444,8 +4452,10 @@
             </select>
           </div>
           <div class="fixed-add-row" style="gap:8px;">
-            <input id="bim-amount" class="fixed-add-inp" type="number" placeholder="סכום ₪" style="border-color:rgba(171,71,188,0.28);flex:0.6;">
-            <button id="btn-add-bim" class="fixed-add-btn" style="background:rgba(171,71,188,0.15);border-color:rgba(171,71,188,0.35);color:#CE93D8;">
+            <input id="bim-amount" class="fixed-add-inp" type="number" placeholder="סכום ₪" style="border-color:rgba(171,71,188,0.28);">
+          </div>
+          <div class="fixed-add-row">
+            <button id="btn-add-bim" class="fixed-add-btn" style="flex:1;justify-content:center;background:rgba(171,71,188,0.15);border-color:rgba(171,71,188,0.35);color:#CE93D8;">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               הוסף
             </button>
@@ -5528,20 +5538,20 @@
 
   /* ── Render stats ── */
   function updateTicker(){
-    var seg='<span>AO Budget</span><span class="dot">●</span>'
-      +'<span>יתרה: '+fmt(calcBal())+'</span><span class="dot">●</span>'
-      +'<span>הכנסות: '+fmt(calcIncome())+'</span><span class="dot">●</span>'
-      +'<span>קבועות: '+fmt(calcFixedExp())+'</span><span class="dot">●</span>'
-      +'<span>משתנות: '+fmt(calcVarExp())+'</span><span class="dot">●</span>';
-    // שכפול מספיק פעמים כדי שהטיקר תמיד יהיה מלא — גם במסכים רחבים
-    var repeated = seg.repeat(8);
-    // ה-animation מזיז 50% — לכן צריך שני חצאים שווים
-    $('ticker-inner').innerHTML = repeated + repeated;
-    // כיוונון מהירות ה-animation לפי אורך הטקסט בפועל
-    var inner = $('ticker-inner');
-    var totalW = inner.scrollWidth;
-    var speed = Math.max(18, totalW / 55); // px per second
-    inner.style.animationDuration = speed + 's';
+    var bal = calcBal(), inc = calcIncome(), fixedExp = calcFixedExp(), varExp = calcVarExp();
+    var seg =
+      '<span>AO Budget</span><span class="dot">●</span>'+
+      '<span>יתרה: <span style="color:var(--cyan);font-weight:700;">'+fmt(bal)+'</span></span><span class="dot">●</span>'+
+      '<span>הכנסות: <span style="color:var(--green);">'+fmt(inc)+'</span></span><span class="dot">●</span>'+
+      '<span>קבועות: <span style="color:rgba(255,100,100,0.8);">'+fmt(fixedExp)+'</span></span><span class="dot">●</span>'+
+      '<span>משתנות: <span style="color:rgba(255,150,80,0.8);">'+fmt(varExp)+'</span></span><span class="dot">●</span>';
+    // שכפול 8 פעמים — מבטיח מילוי מלא בכל מסך
+    var full = seg.repeat(8);
+    var inner = document.getElementById('ticker-inner');
+    if (!inner) return;
+    inner.innerHTML = full + full; // כפל של 16 — 50% ל-animation
+    // מהירות יחסית לאורך — לא מהיר מדי ולא איטי
+    inner.style.animationDuration = '60s';
   }
 
   function renderStats(){
@@ -5558,26 +5568,32 @@
     var absPct = Math.max(0, Math.min(100, Math.abs(pct)));
     var targetOffset = +(circ - (absPct / 100) * circ).toFixed(2);
 
-    // אנימציה ב-JS טהור — עובד בכל סביבה כולל Flutter WebView
-    // (CSS transition על SVG stroke-dashoffset לא אמין בכל WebView)
-    if (ringEl._rafId) cancelAnimationFrame(ringEl._rafId);
-    var startOffset = parseFloat(ringEl.style.strokeDashoffset) || circ;
-    var startTime = null;
-    var duration = 900; // ms
-    function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
-    function animateRing(ts) {
-      if (!startTime) startTime = ts;
-      var elapsed = ts - startTime;
-      var progress = Math.min(elapsed / duration, 1);
-      var eased = easeOut(progress);
-      var current = startOffset + (targetOffset - startOffset) * eased;
-      ringEl.style.strokeDashoffset = current.toFixed(2);
-      ringEl.style.transition = 'none';
-      if (progress < 1) {
-        ringEl._rafId = requestAnimationFrame(animateRing);
+    // ביטול animation קודם
+    if (ringEl._intervalId) { clearInterval(ringEl._intervalId); ringEl._intervalId = null; }
+
+    var currentVal = parseFloat(ringEl.getAttribute('stroke-dashoffset') || ringEl.style.strokeDashoffset || circ);
+    if (isNaN(currentVal)) currentVal = circ;
+
+    var startVal = currentVal;
+    var diff = targetOffset - startVal;
+    var steps = 45; // ~750ms at 60fps
+    var step = 0;
+
+    function easeOutCubic(t){ return 1 - Math.pow(1-t, 3); }
+
+    ringEl._intervalId = setInterval(function(){
+      step++;
+      var t = easeOutCubic(step / steps);
+      var val = +(startVal + diff * t).toFixed(2);
+      ringEl.style.strokeDashoffset = val;
+      ringEl.setAttribute('stroke-dashoffset', val);
+      if (step >= steps) {
+        clearInterval(ringEl._intervalId);
+        ringEl._intervalId = null;
+        ringEl.style.strokeDashoffset = targetOffset;
+        ringEl.setAttribute('stroke-dashoffset', targetOffset);
       }
-    }
-    ringEl._rafId = requestAnimationFrame(animateRing);
+    }, 16);
 
     var isNeg=bal<0;
     var col=isNeg?'var(--red)':'var(--green)';
@@ -6274,6 +6290,7 @@ window.deletePhoneIdx = function(i) {
       var count  = regM.length + fixM.length;
       var budget = cat.budget || 0;
       var budgetHtml = '', overBudget = false, nearBudget = false;
+      var goalReached = false;
       if (budget > 0 && !isInc) {
         var pct = Math.min(total / budget, 1);
         var remain = budget - total;
@@ -6288,6 +6305,26 @@ window.deletePhoneIdx = function(i) {
           '<span style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.35);">'+Math.round(pct*100)+'% מ-'+fmt(budget)+'</span>'+
           '<span class="cat-remain-badge '+rClass+'">'+rIcon+' '+rText+'</span></div>'+
           '<div class="cat-budget-bar-bg"><div class="cat-budget-bar-fill" style="width:'+(pct*100).toFixed(1)+'%;background:'+barColor+';"></div></div></div>';
+      } else if (budget > 0 && isInc) {
+        // פס הגעה ליעד הכנסה
+        var incPct = Math.min(total / budget, 1);
+        goalReached = total >= budget;
+        var incBarColor = goalReached
+          ? 'linear-gradient(90deg,#00E676,#00BFA5,#69F0AE)'
+          : 'linear-gradient(90deg,#00E676,#00C853)';
+        var goalIcon = goalReached ? '🏆' : '🎯';
+        var goalText = goalReached ? 'הגעת ליעד!' : 'נותר ' + fmt(budget - total);
+        var goalClass = goalReached ? 'ok' : (incPct >= 0.8 ? 'near-inc' : '');
+        budgetHtml =
+          '<div class="cat-budget-track" style="border-color:rgba(0,230,118,0.15);">'+
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">'+
+              '<span style="font-size:9px;font-weight:700;color:rgba(0,230,118,0.5);">'+Math.round(incPct*100)+'% מיעד '+fmt(budget)+'</span>'+
+              '<span class="cat-remain-badge ok" style="'+(goalReached?'background:rgba(0,230,118,0.18);color:#00E676;border-color:rgba(0,230,118,0.35);':'')+'">'+goalIcon+' '+goalText+'</span>'+
+            '</div>'+
+            '<div class="cat-budget-bar-bg" style="background:rgba(0,230,118,0.08);">'+
+              '<div class="cat-budget-bar-fill" style="width:'+(incPct*100).toFixed(1)+'%;background:'+incBarColor+';'+(goalReached?'box-shadow:0 0 10px rgba(0,230,118,0.6);':'')+'"></div>'+
+            '</div>'+
+          '</div>';
       } else if (!isInc) {
         budgetHtml = '<div class="cat-tile-bar" style="background:'+colBar+';opacity:0.35;"></div>';
       } else {
@@ -6316,6 +6353,7 @@ window.deletePhoneIdx = function(i) {
     el.innerHTML=html;
 
     if (!window._budgetAlerted) window._budgetAlerted = {};
+    // הוצאות — alert חריגה
     expCats.forEach(function(cat) {
       if (!cat.budget||cat.budget<=0) return;
       var regM2  = expenses.filter(function(i){ return i.category===cat.name&&parseDate(i.date)>=s; });
@@ -6329,6 +6367,19 @@ window.deletePhoneIdx = function(i) {
       } else if (tot2>=cat.budget*0.8&&!window._budgetAlerted[key+'_near']&&!window._budgetAlerted[key]) {
         window._budgetAlerted[key+'_near']=true;
         setTimeout(function(){ toast('⚠️ מתקרב לתקרה ב"'+cat.name+'" — נותר '+fmt(cat.budget-tot2),'info',5000); },800);
+      }
+    });
+    // הכנסות — alert הגעה ליעד
+    incCats.forEach(function(cat) {
+      if (!cat.budget||cat.budget<=0) return;
+      var regM3  = incomes.filter(function(i){ return i.category===cat.name&&parseDate(i.date)>=s; });
+      var fixM3  = fixedIncomes.filter(function(i){ return i.name===cat.name||i.category===cat.name; });
+      var tot3   = regM3.reduce(function(a,i){ return a+Number(i.amount||0); },0)
+                 + fixM3.reduce(function(a,i){ return a+Number(i.amount||0); },0);
+      var goalKey = cat.id+'_goal_'+(new Date().getMonth());
+      if (tot3 >= cat.budget && !window._budgetAlerted[goalKey]) {
+        window._budgetAlerted[goalKey] = true;
+        setTimeout(function(){ showGoalToast(cat.name, tot3, cat.budget); }, 700);
       }
     });
   }
@@ -7387,7 +7438,70 @@ window.deletePhoneIdx = function(i) {
   };
 
 
-  /* ── Delete with confirm ── */
+  /* ══════════════════════════════════════════
+     🏆 GOAL REACHED — Premium celebration toast
+  ══════════════════════════════════════════ */
+  function showGoalToast(catName, achieved, goal) {
+    // הסר toast קיים אם יש
+    var existing = document.getElementById('goal-toast-banner');
+    if (existing) existing.parentNode.removeChild(existing);
+
+    var el = document.createElement('div');
+    el.id = 'goal-toast-banner';
+    el.innerHTML =
+      '<div style="'+
+        'position:fixed;top:0;left:0;right:0;z-index:9998;'+
+        'background:linear-gradient(135deg,rgba(0,20,10,0.97),rgba(0,10,8,0.99));'+
+        'border-bottom:2px solid rgba(0,230,118,0.45);'+
+        'padding:18px 20px 16px;'+
+        'display:flex;flex-direction:column;gap:10px;'+
+        'box-shadow:0 8px 40px rgba(0,230,118,0.20);'+
+        'animation:goalSlideIn 0.45s cubic-bezier(0.34,1.56,0.64,1) both;'+
+      '">'+
+        // שורה עליונה — אייקון + כותרת + X
+        '<div style="display:flex;align-items:center;gap:12px;">'+
+          '<div style="font-size:30px;line-height:1;filter:drop-shadow(0 0 12px rgba(0,230,118,0.8));">🏆</div>'+
+          '<div style="flex:1;">'+
+            '<div style="font-family:\'Syne\',sans-serif;font-size:17px;font-weight:900;'+
+              'background:linear-gradient(90deg,#00E676,#69F0AE,#00BFA5);'+
+              '-webkit-background-clip:text;-webkit-text-fill-color:transparent;'+
+              'background-clip:text;letter-spacing:-0.3px;">'+
+              'כל הכבוד! הגעת ליעד 🎯'+
+            '</div>'+
+            '<div style="font-family:\'Syne\',sans-serif;font-size:12px;font-weight:700;'+
+              'color:rgba(255,255,255,0.55);margin-top:2px;">'+
+              catName + ' — ' + fmt(achieved) + ' מתוך יעד ' + fmt(goal)+
+            '</div>'+
+          '</div>'+
+          '<button onclick="(function(){var e=document.getElementById(\'goal-toast-banner\');if(e){e.style.animation=\'goalSlideOut 0.3s ease forwards\';setTimeout(function(){if(e.parentNode)e.parentNode.removeChild(e);},300);}})()" '+
+            'style="background:rgba(0,230,118,0.10);border:1px solid rgba(0,230,118,0.25);border-radius:10px;'+
+            'width:32px;height:32px;display:flex;align-items:center;justify-content:center;'+
+            'cursor:pointer;color:rgba(0,230,118,0.7);font-size:15px;flex-shrink:0;transition:all .15s;">✕</button>'+
+        '</div>'+
+        // פס ירוק זוהר
+        '<div style="height:4px;border-radius:99px;background:linear-gradient(90deg,#00E676,#69F0AE,#00BFA5);'+
+          'box-shadow:0 0 12px rgba(0,230,118,0.7),0 0 24px rgba(0,230,118,0.35);'+
+          'animation:goalBarGlow 1.8s ease-in-out infinite alternate;">'+
+        '</div>'+
+        // סאב-טקסט
+        '<div style="font-family:\'Syne\',sans-serif;font-size:11px;font-weight:700;'+
+          'color:rgba(0,230,118,0.45);text-align:center;letter-spacing:0.05em;">'+
+          '✦ המשיכו כך — אתם מנהלים נהדר את התקציב ✦'+
+        '</div>'+
+      '</div>';
+
+    document.body.appendChild(el);
+
+    // סגירה אוטומטית אחרי 8 שניות
+    setTimeout(function() {
+      var e = document.getElementById('goal-toast-banner');
+      if (e) {
+        e.style.animation = 'goalSlideOut 0.3s ease forwards';
+        setTimeout(function(){ if(e.parentNode) e.parentNode.removeChild(e); }, 300);
+      }
+    }, 8000);
+  }
+  window.showGoalToast = showGoalToast;
   window.delItem=function(col,id){
     if(!confirm('האם אתה בטוח שברצונך למחוק פריט זה?')) return;
     db.collection('users').doc(uid).collection(col).doc(id).delete()
