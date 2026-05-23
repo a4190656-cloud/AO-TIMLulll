@@ -403,20 +403,52 @@
       50%      { opacity:0; }
     }
 
-    /* ── TICKER ── */
+    /* ── TICKER 2026 — Live Status Bar ── */
     #ticker-wrap {
-      overflow:hidden; background:rgba(13,19,35,0.80); backdrop-filter:blur(12px);
-      border-bottom:1px solid rgba(255,255,255,0.06); height:28px; display:flex; align-items:center;
+      overflow:hidden;
+      background:linear-gradient(90deg,rgba(0,8,20,0.97),rgba(2,12,28,0.97),rgba(0,8,20,0.97));
+      border-bottom:1px solid rgba(0,229,255,0.12);
+      border-top:1px solid rgba(0,229,255,0.07);
+      height:32px; display:flex; align-items:center;
       position:relative;
     }
+    /* edge fades */
+    #ticker-wrap::before,#ticker-wrap::after {
+      content:''; position:absolute; top:0; bottom:0; width:36px; z-index:2; pointer-events:none;
+    }
+    #ticker-wrap::before { left:0;  background:linear-gradient(90deg,rgba(0,8,20,1),transparent); }
+    #ticker-wrap::after  { right:0; background:linear-gradient(270deg,rgba(0,8,20,1),transparent); }
+
     #ticker-inner {
       display:flex; white-space:nowrap; flex-shrink:0;
-      font-family:'JetBrains Mono',monospace; font-size:11px; color:rgba(255,255,255,0.32);
-      animation:ticker-scroll 55s linear infinite;
+      font-family:'JetBrains Mono',monospace; font-size:11.5px;
+      animation:ticker-scroll 45s linear infinite;
       will-change:transform;
     }
-    #ticker-inner span { padding:0 14px; }
-    #ticker-inner .dot { color:var(--cyan); padding:0 4px; opacity:0.7; }
+    #ticker-inner span { padding:0 10px; color:rgba(255,255,255,0.38); font-weight:600; }
+    #ticker-inner .dot { color:rgba(0,229,255,0.35); padding:0 3px; font-size:7px; vertical-align:middle; }
+    #ticker-inner .t-brand  { color:rgba(0,229,255,0.90)!important; font-weight:900; letter-spacing:.04em; }
+    #ticker-inner .t-bal    { color:var(--cyan)!important; font-weight:800; }
+    #ticker-inner .t-inc    { color:#00E676!important; font-weight:800; }
+    #ticker-inner .t-exp    { color:#FF6080!important; font-weight:800; }
+    #ticker-inner .t-label  { color:rgba(255,255,255,0.28)!important; font-weight:600; font-size:10px; }
+    /* live pulse dot */
+    #ticker-live-dot {
+      position:absolute; right:10px; top:50%; transform:translateY(-50%);
+      z-index:3; display:flex; align-items:center; gap:4px;
+      font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:800;
+      color:rgba(0,229,255,0.55); letter-spacing:.08em;
+    }
+    #ticker-live-dot::before {
+      content:''; display:block; width:5px; height:5px; border-radius:50%;
+      background:var(--cyan);
+      box-shadow:0 0 6px rgba(0,229,255,0.8);
+      animation:tickerDotPulse 1.8s ease-in-out infinite;
+    }
+    @keyframes tickerDotPulse {
+      0%,100%{ opacity:1; transform:scale(1); }
+      50%    { opacity:.4; transform:scale(0.7); }
+    }
     @keyframes ticker-scroll {
       0%   { transform: translateX(0); }
       100% { transform: translateX(-50%); }
@@ -3110,20 +3142,23 @@
 
 <div id="app" class="hidden">
 
-  <div id="ticker-wrap"><div id="ticker-inner"></div></div>
+  <div id="ticker-wrap">
+    <div id="ticker-inner"></div>
+    <div id="ticker-live-dot">LIVE</div>
+  </div>
   <script>
   // מילוי מיידי של הטיקר — לפני טעינת נתונים
   (function(){
-    var staticSeg = '<span style="color:rgba(0,229,255,0.55);font-weight:700;">AO Budget</span>' +
-      '<span class="dot">●</span><span>ניהול תקציב אישי חכם</span>' +
-      '<span class="dot">●</span><span>הכנסות החודש</span>' +
-      '<span class="dot">●</span><span>הוצאות קבועות</span>' +
-      '<span class="dot">●</span><span>יתרה פנויה</span>' +
-      '<span class="dot">●</span><span>מעקב בזמן אמת</span>' +
-      '<span class="dot">●</span><span>בוט וואטסאפ</span>' +
-      '<span class="dot">●</span>';
-    // כפל 12 פעמים לכל חצי — סה"כ 24 לאנימציה seamless
-    var half = staticSeg.repeat(12);
+    var staticSeg =
+      '<span class="t-brand">AO BUDGET</span><span class="dot">◆</span>'+
+      '<span class="t-label">יתרה</span><span class="t-bal">טוען...</span><span class="dot">◆</span>'+
+      '<span class="t-label">הכנסות</span><span class="t-inc">טוען...</span><span class="dot">◆</span>'+
+      '<span class="t-label">הוצאות</span><span class="t-exp">טוען...</span><span class="dot">◆</span>'+
+      '<span>ניהול תקציב חכם</span><span class="dot">◆</span>'+
+      '<span>בוט וואטסאפ</span><span class="dot">◆</span>'+
+      '<span>סנכרון בזמן אמת</span><span class="dot">◆</span>'+
+      '<span>2026 ✦</span><span class="dot">◆</span>';
+    var half = staticSeg.repeat(10);
     document.getElementById('ticker-inner').innerHTML = half + half;
   })();
   </script>
@@ -6079,23 +6114,26 @@
   /* ── Render stats ── */
   function updateTicker(){
     var bal = calcBal(), inc = calcIncome(), fixedExp = calcFixedExp(), varExp = calcVarExp();
+    var balColor = bal >= 0 ? 't-bal' : 't-exp';
+    var date = new Date();
+    var months = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
     var seg =
-      '<span style="color:rgba(0,229,255,0.7);font-weight:800;">AO Budget</span><span class="dot">●</span>'+
-      '<span>יתרה: <span style="color:var(--cyan);font-weight:700;">'+fmt(bal)+'</span></span><span class="dot">●</span>'+
-      '<span>הכנסות: <span style="color:var(--green);font-weight:700;">'+fmt(inc)+'</span></span><span class="dot">●</span>'+
-      '<span>קבועות: <span style="color:rgba(255,100,100,0.85);">'+fmt(fixedExp)+'</span></span><span class="dot">●</span>'+
-      '<span>משתנות: <span style="color:rgba(255,170,80,0.85);">'+fmt(varExp)+'</span></span><span class="dot">●</span>'+
-      '<span>מעקב בזמן אמת</span><span class="dot">●</span>'+
-      '<span>בוט וואטסאפ</span><span class="dot">●</span>';
+      '<span class="t-brand">AO BUDGET</span><span class="dot">◆</span>'+
+      '<span class="t-label">יתרה פנויה</span><span class="'+balColor+'">'+fmt(bal)+'</span><span class="dot">◆</span>'+
+      '<span class="t-label">הכנסות</span><span class="t-inc">'+fmt(inc)+'</span><span class="dot">◆</span>'+
+      '<span class="t-label">קבועות</span><span class="t-exp">'+fmt(fixedExp)+'</span><span class="dot">◆</span>'+
+      '<span class="t-label">משתנות</span><span class="t-exp">'+fmt(varExp)+'</span><span class="dot">◆</span>'+
+      '<span>'+months[date.getMonth()]+' '+date.getFullYear()+'</span><span class="dot">◆</span>'+
+      '<span>בוט וואטסאפ</span><span class="dot">◆</span>'+
+      '<span>סנכרון בזמן אמת</span><span class="dot">◆</span>'+
+      '<span class="t-brand">✦ 2026</span><span class="dot">◆</span>';
     var inner = document.getElementById('ticker-inner');
     if (!inner) return;
-    // שמור את מצב ה-animation לפני השינוי
     var style = window.getComputedStyle(inner);
-    var playTime = style.animationDelay; // ערך שלילי = זמן שעבר
-    var half = seg.repeat(12);
+    var playTime = style.animationDelay;
+    var half = seg.repeat(10);
     inner.style.animationPlayState = 'paused';
     inner.innerHTML = half + half;
-    // שחזר את נקודת ה-animation
     inner.style.animationDelay = playTime;
     inner.style.animationPlayState = 'running';
   }
