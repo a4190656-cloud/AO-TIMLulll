@@ -178,7 +178,7 @@
       background-size: 44px 44px;
     }
 
-    #app { position: relative; z-index: 1; padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px)); padding-top: env(safe-area-inset-top, 0px); }
+    #app { position: relative; z-index: 1; padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px)); padding-top: 0; }
     .hidden { display: none !important; }
 
     .card {
@@ -8111,9 +8111,9 @@ window.deletePhoneIdx = function(i) {
             '</div>'+
           '</div>'+
           '<button onclick="(function(){var e=document.getElementById(\'goal-toast-banner\');if(e){e.style.animation=\'goalSlideOut 0.3s ease forwards\';setTimeout(function(){if(e.parentNode)e.parentNode.removeChild(e);},300);}})()" '+
-            'style="background:rgba(0,230,118,0.10);border:1px solid rgba(0,230,118,0.25);border-radius:10px;'+
+            'style="background:rgba(0,0,0,0.35);border:1px solid rgba(0,0,0,0.3);border-radius:10px;'+
             'width:32px;height:32px;display:flex;align-items:center;justify-content:center;'+
-            'cursor:pointer;color:rgba(0,230,118,0.7);font-size:15px;flex-shrink:0;transition:all .15s;">✕</button>'+
+            'cursor:pointer;color:#000;font-size:15px;flex-shrink:0;font-weight:900;transition:all .15s;">✕</button>'+
         '</div>'+
         '<div style="height:4px;border-radius:99px;background:linear-gradient(90deg,#00E676,#69F0AE,#00BFA5);'+
           'box-shadow:0 0 12px rgba(0,230,118,0.7),0 0 24px rgba(0,230,118,0.35);'+
