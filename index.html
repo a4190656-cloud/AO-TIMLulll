@@ -7729,47 +7729,47 @@ window.deletePhoneIdx = function(i) {
   };
   $('btn-signout').onclick=function(){
     unsubs.forEach(function(u){ u(); });
-
-    // שלב 1 — נקה persistence של Firebase כדי שלא יתחבר אוטומטי
-    var clearTasks = [];
-
-    // מחק IndexedDB של Firebase auth
-    ['firebaseLocalStorageDb','firebase-installations-database',
-     'firebase-messaging-database','firebase:authUser'].forEach(function(name){
-      try { clearTasks.push(new Promise(function(res){ var r=indexedDB.deleteDatabase(name); r.onsuccess=res; r.onerror=res; })); } catch(e){}
-    });
-
-    // מחק localStorage של Firebase
+    sessionStorage.clear();
     try {
       Object.keys(localStorage).forEach(function(k){
-        if(k.indexOf('firebase')+k.indexOf('google')+k.indexOf('__sak')> -3) localStorage.removeItem(k);
+        if(k.indexOf('firebase')>-1 || k.indexOf('google')>-1) localStorage.removeItem(k);
       });
     } catch(e){}
 
-    sessionStorage.clear();
+    // מנע reconnect אוטומטי — ביטול persistence לפני signOut
+    var doSignOut = function(){
+      auth.signOut().finally(function(){
+        window.location.href = window.location.href.split('?')[0] + '?so=' + Date.now();
+      });
+    };
 
-    // שלב 2 — signOut ואז reload
-    Promise.all(clearTasks).then(function(){
-      return auth.signOut();
-    }).catch(function(){}).finally(function(){
-      // hard reload עם cache-bust — Firebase לא ימצא token שמור
-      window.location.href = window.location.href.split('?')[0] + '?signout=' + Date.now();
-    });
+    if(firebase.auth.Auth.Persistence){
+      auth.setPersistence(firebase.auth.Auth.Persistence.NONE).then(doSignOut).catch(doSignOut);
+    } else {
+      doSignOut();
+    }
   };
 
   /* ── Disconnect button in settings ── */
   $('btn-disconnect').onclick=function(){
     if(!confirm('להתנתק מהחשבון?')) return;
     unsubs.forEach(function(u){ u(); });
+    sessionStorage.clear();
     try {
       Object.keys(localStorage).forEach(function(k){
-        if(k.indexOf('firebase')+k.indexOf('google')> -2) localStorage.removeItem(k);
+        if(k.indexOf('firebase')>-1 || k.indexOf('google')>-1) localStorage.removeItem(k);
       });
     } catch(e){}
-    sessionStorage.clear();
-    auth.signOut().finally(function(){
-      window.location.href = window.location.href.split('?')[0] + '?signout=' + Date.now();
-    });
+    var doSignOut = function(){
+      auth.signOut().finally(function(){
+        window.location.href = window.location.href.split('?')[0] + '?so=' + Date.now();
+      });
+    };
+    if(firebase.auth.Auth.Persistence){
+      auth.setPersistence(firebase.auth.Auth.Persistence.NONE).then(doSignOut).catch(doSignOut);
+    } else {
+      doSignOut();
+    }
   };
 
   /* ── DELETE ACCOUNT ── */
