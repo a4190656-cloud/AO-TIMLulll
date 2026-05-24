@@ -8729,9 +8729,9 @@ window.exportUserData = function() {
 
   /* ── פותח את בורר הקבצים ── */
   scanBtn.onclick = function() {
+    fileInput.click(); // חייב להיות ראשון — user gesture ישיר
     resultEl.className  = 'scan-doc-result hidden';
     resultEl.innerHTML  = '';
-    fileInput.click();
   };
 
   fileInput.onchange = async function() {
@@ -8921,13 +8921,13 @@ window.exportUserData = function() {
           '<div>'+
             '<div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:7px;">סוג התנועה</div>'+
             '<div style="display:flex;gap:8px;">'+
-              '<button id="scan-type-expense" onclick="window._scanResult.type='expense';window.renderScanResult();" style="'+
+              '<button id="scan-type-expense" onclick="window._scanResult.type=\'expense\';window.renderScanResult();" style="'+
                 'flex:1;padding:10px;border-radius:12px;border:none;cursor:pointer;'+
                 'font-family:\'Syne\',sans-serif;font-size:13px;font-weight:800;'+
                 (isI ? 'background:rgba(255,23,68,0.06);border:1px solid rgba(255,23,68,0.18);color:rgba(255,96,128,0.5);'
                       : 'background:rgba(255,23,68,0.14);border:1px solid rgba(255,23,68,0.40);color:#FF6080;box-shadow:0 0 12px rgba(255,23,68,0.15);')+
               '">− הוצאה</button>'+
-              '<button id="scan-type-income" onclick="window._scanResult.type='income';window.renderScanResult();" style="'+
+              '<button id="scan-type-income" onclick="window._scanResult.type=\'income\';window.renderScanResult();" style="'+
                 'flex:1;padding:10px;border-radius:12px;border:none;cursor:pointer;'+
                 'font-family:\'Syne\',sans-serif;font-size:13px;font-weight:800;'+
                 (!isI ? 'background:rgba(0,230,118,0.06);border:1px solid rgba(0,230,118,0.18);color:rgba(0,230,118,0.5);'
