@@ -7376,44 +7376,45 @@ window.deletePhoneIdx = function(i) {
       return;
     }
 
-    var provider = new firebase.auth.GoogleAuthProvider();
-    provider.addScope('profile');
-    provider.addScope('email');
-    provider.setCustomParameters({ prompt: 'select_account' });
-
-    auth.signInWithPopup(provider)
-      .then(function() {
-        // הצלחה — onAuthStateChanged → bootApp יטפלו בהמשך
-        // loader יוצג ע"י bootApp עצמו
-      })
-      .catch(function(e) {
-        // שחזר כפתור בכל מקרה של שגיאה
-        btn.disabled = false;
-        btn.style.opacity = '1';
-        btn.innerHTML = origText;
-
-        if (e.code === 'auth/popup-blocked') {
-          // Popup נחסם → עבור ל-redirect fallback
-          sessionStorage.setItem('_googleRedirectPending', '1');
-          show('security-loader-overlay');
-          var _gm2 = $('security-msg'); if(_gm2) _gm2.textContent = 'מעביר לגוגל...';
-          var _gs2 = $('security-sub-msg'); if(_gs2) _gs2.textContent = 'אנא המתן';
-          ['screen-loading','screen-login','screen-setname','app'].forEach(function(id){
-            var el = document.getElementById(id); if (el) el.classList.add('hidden');
-          });
-          auth.signInWithRedirect(provider); // provider כבר מכיל prompt: 'select_account'
-          return;
-        }
-        if (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') {
-          // המשתמש סגר את ה-popup — לא שגיאה, פשוט לא עשה כלום
-          return;
-        }
-        if (e.code === 'auth/account-exists-with-different-credential') {
-          showLoginErr('חשבון עם מייל זה כבר קיים. השתמש בכניסה עם מייל וסיסמה.');
-        } else {
-          showLoginErr('שגיאה בכניסה עם גוגל: ' + (e.message || e.code));
-        }
+    function doGoogleLogin(){
+      var provider = new firebase.auth.GoogleAuthProvider();
+      provider.addScope('profile');
+      provider.addScope('email');
+      // אכוף תמיד בחירת חשבון — גם אם Firebase זוכר משהו
+      provider.setCustomParameters({
+        prompt: 'select_account',
+        login_hint: ''
       });
+
+      auth.signInWithPopup(provider)
+        .then(function() { /* onAuthStateChanged יטפל */ })
+        .catch(function(e) {
+          btn.disabled = false;
+          btn.style.opacity = '1';
+          btn.innerHTML = origText;
+
+          if (e.code === 'auth/popup-blocked') {
+            sessionStorage.setItem('_googleRedirectPending', '1');
+            show('security-loader-overlay');
+            var _gm2 = $('security-msg'); if(_gm2) _gm2.textContent = 'מעביר לגוגל...';
+            var _gs2 = $('security-sub-msg'); if(_gs2) _gs2.textContent = 'אנא המתן';
+            ['screen-loading','screen-login','screen-setname','app'].forEach(function(id){
+              var el = document.getElementById(id); if (el) el.classList.add('hidden');
+            });
+            auth.signInWithRedirect(provider);
+            return;
+          }
+          if (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') return;
+          if (e.code === 'auth/account-exists-with-different-credential') {
+            showLoginErr('חשבון עם מייל זה כבר קיים. השתמש בכניסה עם מייל וסיסמה.');
+          } else {
+            showLoginErr('שגיאה בכניסה עם גוגל: ' + (e.message || e.code));
+          }
+        });
+    }
+
+    // תמיד עשה signOut לפני — מבטיח שגוגל יציג בחירת חשבון
+    auth.signOut().then(doGoogleLogin).catch(doGoogleLogin);
   };
   /* ── fallback: אם popup נחסם ונעשה redirect — טפל בחזרה ── */
   var _hasRedirectPending = sessionStorage.getItem('_googleRedirectPending') === '1';
