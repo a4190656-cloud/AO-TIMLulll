@@ -7677,33 +7677,54 @@ window.deletePhoneIdx = function(i) {
 
     document.getElementById('update-confirm-yes').onclick = function(){
       var btn = document.getElementById('update-confirm-yes');
-      btn.textContent = 'מתנתק ומנקה...';
+      btn.textContent = 'מנקה ומתנתק...';
       btn.disabled = true;
 
-      // 1. נתק מ-Firebase
-      unsubs.forEach(function(u){ u(); });
-      sessionStorage.clear();
+      // מנקה הכל ביחד ואז מרענן
+      function doUpdate(){
+        var tasks = [];
 
-      // 2. מחק Service Worker cache
-      if('serviceWorker' in navigator){
-        navigator.serviceWorker.getRegistrations().then(function(regs){
-          regs.forEach(function(r){ r.unregister(); });
+        // 1. Service Worker
+        if('serviceWorker' in navigator){
+          tasks.push(
+            navigator.serviceWorker.getRegistrations().then(function(regs){
+              return Promise.all(regs.map(function(r){ return r.unregister(); }));
+            }).catch(function(){})
+          );
+        }
+
+        // 2. Cache API
+        if('caches' in window){
+          tasks.push(
+            caches.keys().then(function(keys){
+              return Promise.all(keys.map(function(k){ return caches.delete(k); }));
+            }).catch(function(){})
+          );
+        }
+
+        // 3. localStorage + sessionStorage
+        try { localStorage.clear(); } catch(e){}
+        try { sessionStorage.clear(); } catch(e){}
+
+        // 4. IndexedDB (Firebase cache)
+        try {
+          var dbs = ['firebaseLocalStorageDb','firebase-installations-database','firebase-messaging-database'];
+          dbs.forEach(function(name){
+            try { indexedDB.deleteDatabase(name); } catch(e){}
+          });
+        } catch(e){}
+
+        // 5. מחכה לכל המשימות ואז יוצא ומרענן
+        Promise.all(tasks).then(function(){
+          return auth.signOut();
+        }).catch(function(){}).finally(function(){
+          // hard reload — עוקף cache של הדפדפן
+          window.location.href = window.location.href.split('?')[0] + '?v=' + Date.now();
         });
       }
-      if('caches' in window){
-        caches.keys().then(function(keys){
-          keys.forEach(function(k){ caches.delete(k); });
-        });
-      }
 
-      // 3. נתק ורענן
-      auth.signOut().then(function(){
-        setTimeout(function(){
-          window.location.reload(true);
-        }, 600);
-      }).catch(function(){
-        window.location.reload(true);
-      });
+      // מחכה רגע שהכפתור יתעדכן, אז מתחיל
+      setTimeout(doUpdate, 150);
     };
   };
   $('btn-signout').onclick=function(){
