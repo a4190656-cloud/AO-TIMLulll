@@ -3093,7 +3093,7 @@
 
   <div class="setname-card rise d1">
     <div class="login-section-label">השם שלכם</div>
-    <input id="setname-input" class="inp-2026" type="text" placeholder="איך לקרוא לך?" autocomplete="name" style="margin-bottom:12px">
+    <input id="setname-input" class="inp-2026" type="text" placeholder="למשל: אהרן / משפחת כהן" autocomplete="name" style="margin-bottom:12px">
     <div id="setname-err" class="err hidden" style="margin-bottom:10px;font-size:12px;font-weight:700;"></div>
     <button id="btn-setname" class="btn-login-primary">המשך לחשבון →</button>
   </div>
@@ -5296,7 +5296,7 @@
           שינוי שם
         </div>
         <div class="sblock-body">
-          <input id="settings-name-input" class="inp" type="text" placeholder="השם שלך" autocomplete="name" style="margin-bottom:9px">
+          <input id="settings-name-input" class="inp" type="text" placeholder="למשל: משפחת כהן / אהרן לוי" autocomplete="name" style="margin-bottom:9px">
           <button id="btn-save-name" class="btn btn-ghost" style="font-size:13px;padding:10px">שמור שם</button>
           <div id="name-saved" class="saved hidden">✓ נשמר בהצלחה!</div>
           <button onclick="resetProfilePic()" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-top:10px;border-color:rgba(255,23,68,0.3);color:#FF6080;">
@@ -7133,7 +7133,7 @@ window.deletePhoneIdx = function(i) {
       if(d.resetDay){ resetDay=d.resetDay; var ri=$('reset-day-input'); if(ri) ri.value=resetDay; if(typeof window._initResetDayPicker==='function') window._initResetDayPicker(resetDay); }
       if(d.displayName){
         displayName=d.displayName;
-        var hn=$('header-name'); if(hn) setHeaderName('שלום, '+displayName.split(' ')[0]+'!');
+        var hn=$('header-name'); if(hn) setHeaderName('שלום, '+displayName.split(' ').slice(0,2).join(' ')+'!');
         var si=$('settings-name-input'); if(si) si.value=displayName;
         var sun=$('settings-user-name'); if(sun) sun.textContent=displayName;
       }
@@ -7208,7 +7208,7 @@ window.deletePhoneIdx = function(i) {
       displayName = name;
       showScreen('app');
       switchView('dashboard');
-      var hn=$('header-name'); if(hn) setHeaderName('שלום, '+displayName.split(' ')[0]+'!');
+      var hn=$('header-name'); if(hn) setHeaderName('שלום, '+displayName.split(' ').slice(0,2).join(' ')+'!');
       var si=$('settings-name-input'); if(si) si.value=displayName;
       var sun=$('settings-user-name'); if(sun) sun.textContent=displayName;
       var ri=$('reset-day-input'); if(ri) ri.value=resetDay; if(typeof window._initResetDayPicker==='function') window._initResetDayPicker(resetDay);
@@ -7220,7 +7220,7 @@ window.deletePhoneIdx = function(i) {
       displayName = name;
       showScreen('app');
       switchView('dashboard');
-      var hn=$('header-name'); if(hn) setHeaderName('שלום, '+displayName.split(' ')[0]+'!');
+      var hn=$('header-name'); if(hn) setHeaderName('שלום, '+displayName.split(' ').slice(0,2).join(' ')+'!');
       var si=$('settings-name-input'); if(si) si.value=displayName;
       startListeners();
     });
@@ -7597,7 +7597,7 @@ window.deletePhoneIdx = function(i) {
       uid = user.uid;
       showScreen('app');
       switchView('dashboard');
-      var hn=$('header-name'); if(hn) setHeaderName('שלום, '+name.split(' ')[0]+'!');
+      var hn=$('header-name'); if(hn) setHeaderName('שלום, '+name.split(' ').slice(0,2).join(' ')+'!');
       var si=$('settings-name-input'); if(si) si.value=name;
       var ri=$('reset-day-input'); if(ri) ri.value=resetDay; if(typeof window._initResetDayPicker==='function') window._initResetDayPicker(resetDay);
       startListeners();
@@ -7844,7 +7844,7 @@ window.deletePhoneIdx = function(i) {
       return db.collection('users').doc(uid).set({displayName:name},{merge:true});
     }).then(function(){
       displayName=name;
-      setHeaderName('שלום, '+name.split(' ')[0]+'!');
+      setHeaderName('שלום, '+name.split(' ').slice(0,2).join(' ')+'!');
       toast('השם עודכן בהצלחה!', 'success');
       show('name-saved'); setTimeout(function(){ hide('name-saved'); },2500);
     }).catch(function(e){ console.error(e); toast('שגיאה בשמירה', 'error'); });
@@ -8515,7 +8515,7 @@ window.editNameFromCard = function() {
         return db.collection('users').doc(uid).set({displayName: newName.trim()}, {merge: true});
       }).then(function() {
         displayName = newName;
-        setHeaderName('שלום, ' + displayName.split(' ')[0] + '!');
+        setHeaderName('שלום, ' + displayName.split(' ').slice(0,2).join(' ') + '!');
         document.getElementById('settings-user-name').textContent = displayName;
         document.getElementById('settings-name-input').value = displayName;
         toast('השם עודכן בהצלחה!', 'success');
@@ -8807,7 +8807,9 @@ window.exportUserData = function() {
 
     var type = (result.type === 'income') ? 'income' : 'expense';
     var desc = result.description || (type === 'income' ? 'הכנסה כללית' : 'הוצאה כללית');
-    var cat = result.category || '';
+    // קטגוריה — קודם מה-select (אם פתוח), אחר כך מה-result
+    var scanSel = document.getElementById('scan-cat-select');
+    var cat = (scanSel && scanSel.value) ? scanSel.value : (result.category || '');
 
     var dataObj = {
       amount: amount,
@@ -8816,13 +8818,7 @@ window.exportUserData = function() {
     };
 
     if (cat) {
-      var catSelect = document.getElementById('modal-category');
-      if (catSelect) {
-        var match = Array.from(catSelect.options).find(function(o) {
-          return o.text === cat || o.value === cat;
-        });
-        if (match && match.value) dataObj.category = match.value;
-      }
+      dataObj.category = cat;
     }
 
     var col = (type === 'income') ? 'incomes' : 'expenses';
@@ -8879,39 +8875,113 @@ window.exportUserData = function() {
     /* Save enriched result */
     window._scanResult = Object.assign({}, result, { category: matchedCat, type: type, amount: amount, description: desc });
 
-    resultEl.className = 'scan-doc-result result-ok';
-    resultEl.innerHTML =
-      '<div style="position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,'+typeColor+'55,transparent);"></div>'+
-      '<div style="display:flex;align-items:flex-start;gap:12px;">'+
-        '<div style="width:36px;height:36px;flex-shrink:0;border-radius:12px;background:'+typeBg+';border:1px solid '+typeBdr+';display:flex;align-items:center;justify-content:center;margin-top:2px;">'+
-          (isInc
-            ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="'+typeColor+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'
-            : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="'+typeColor+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>')+
-        '</div>'+
-        '<div style="flex:1;min-width:0;">'+
-          '<div style="font-size:10px;font-weight:800;letter-spacing:0.10em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:5px;">🤖 זוהה על ידי AI</div>'+
-          (amount
-            ? '<div style="font-family:\'JetBrains Mono\',monospace;font-size:26px;font-weight:900;color:'+typeColor+';text-shadow:0 0 20px '+typeColor+'66;line-height:1;margin-bottom:5px;">'+sym+' ₪'+amount.toLocaleString('he-IL')+'</div>'
-            : '<div style="font-size:13px;color:rgba(255,200,0,0.8);font-weight:700;margin-bottom:5px;">⚠️ לא זוהה סכום</div>')+
-          '<div style="font-size:12.5px;font-weight:700;color:rgba(255,255,255,0.70);margin-bottom:6px;">'+escHtml(desc||'—')+'</div>'+
-          (matchedCat
-            ? '<div style="display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:800;color:'+typeColor+';background:'+typeBg+';border:1px solid '+typeBdr+';border-radius:8px;padding:3px 9px;margin-bottom:10px;">'+
-                '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>'+
-                escHtml(matchedCat)+'</div>'
-            : '')+
-          '<div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.40);margin-bottom:10px;">סוג: '+typeLabel+'</div>'+
-          '<div style="font-size:12px;font-weight:800;color:rgba(255,255,255,0.60);margin-bottom:9px;text-align:center;">האם הפרטים נכונים?</div>'+
-          '<div style="display:flex;gap:8px;">'+
-            '<button onclick="window._scanResult&&saveScannedTransaction(window._scanResult)" style="flex:1;background:linear-gradient(135deg,'+typeBg+','+typeBg.replace('0.10','0.05')+');border:1px solid '+typeBdr+';border-radius:12px;color:'+typeColor+';font-family:\'Syne\',sans-serif;font-size:13px;font-weight:900;padding:11px;cursor:pointer;box-shadow:0 4px 16px '+typeColor+'22;">✓ כן, שמור</button>'+
-            '<button onclick="document.getElementById(\'scan-doc-result\').classList.add(\'hidden\');window._scanResult=null;" style="flex:0.6;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.10);border-radius:12px;color:rgba(255,255,255,0.40);font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;padding:11px;cursor:pointer;">✕ בטל</button>'+
-          '</div>'+
-        '</div>'+
-      '</div>';
+    /* Build category options */
+    var expCats = userCategories.filter(function(c){ return c.type==='expense'; });
+    var incCats = userCategories.filter(function(c){ return c.type==='income'; });
 
-    resultEl.style.position = 'relative';
-    resultEl.style.overflow = 'hidden';
-    resultEl.classList.remove('hidden');
-  }
+    function buildCatOptions(cats, selectedName){
+      return cats.map(function(c){
+        var sel = c.name === selectedName ? 'selected' : '';
+        return '<option value="'+escHtml(c.name)+'" '+sel+'>'+escHtml(c.name)+'</option>';
+      }).join('');
+    }
+
+    function renderScanResult(){
+      var r = window._scanResult;
+      var isI = r.type === 'income';
+      var tColor = isI ? '#00E676' : '#FF6080';
+      var tBg    = isI ? 'rgba(0,230,118,0.10)' : 'rgba(255,23,68,0.10)';
+      var tBdr   = isI ? 'rgba(0,230,118,0.28)' : 'rgba(255,23,68,0.28)';
+      var tLabel = isI ? 'הכנסה' : 'הוצאה';
+      var tSym   = isI ? '+' : '−';
+      var cats   = isI ? incCats : expCats;
+
+      resultEl.className = 'scan-doc-result result-ok';
+      resultEl.innerHTML =
+        '<div style="position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,'+tColor+'55,transparent);"></div>'+
+        '<div style="display:flex;flex-direction:column;gap:12px;">'+
+
+          /* ── שורה עליונה: סכום + סוג ── */
+          '<div style="display:flex;align-items:center;gap:12px;">'+
+            '<div style="width:40px;height:40px;flex-shrink:0;border-radius:13px;background:'+tBg+';border:1px solid '+tBdr+';display:flex;align-items:center;justify-content:center;">'+
+              (isI
+                ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="'+tColor+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'
+                : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="'+tColor+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>')+
+            '</div>'+
+            '<div style="flex:1;">'+
+              '<div style="font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:3px;">🤖 זוהה על ידי AI</div>'+
+              (r.amount
+                ? '<div style="font-family:\'JetBrains Mono\',monospace;font-size:24px;font-weight:900;color:'+tColor+';text-shadow:0 0 16px '+tColor+'55;line-height:1;">'+tSym+' ₪'+Number(r.amount).toLocaleString('he-IL')+'</div>'
+                : '<div style="font-size:13px;color:rgba(255,200,0,0.85);font-weight:700;">⚠️ לא זוהה סכום</div>')+
+              '<div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.60);margin-top:3px;">'+escHtml(r.description||'—')+'</div>'+
+            '</div>'+
+          '</div>'+
+
+          /* ── toggle הוצאה / הכנסה ── */
+          '<div>'+
+            '<div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:7px;">סוג התנועה</div>'+
+            '<div style="display:flex;gap:8px;">'+
+              '<button id="scan-type-expense" onclick="window._scanResult.type=\'expense\';renderScanResult();" style="'+
+                'flex:1;padding:10px;border-radius:12px;border:none;cursor:pointer;'+
+                'font-family:\'Syne\',sans-serif;font-size:13px;font-weight:800;'+
+                (isI ? 'background:rgba(255,23,68,0.06);border:1px solid rgba(255,23,68,0.18);color:rgba(255,96,128,0.5);'
+                      : 'background:rgba(255,23,68,0.14);border:1px solid rgba(255,23,68,0.40);color:#FF6080;box-shadow:0 0 12px rgba(255,23,68,0.15);')+
+              '">− הוצאה</button>'+
+              '<button id="scan-type-income" onclick="window._scanResult.type=\'income\';renderScanResult();" style="'+
+                'flex:1;padding:10px;border-radius:12px;border:none;cursor:pointer;'+
+                'font-family:\'Syne\',sans-serif;font-size:13px;font-weight:800;'+
+                (!isI ? 'background:rgba(0,230,118,0.06);border:1px solid rgba(0,230,118,0.18);color:rgba(0,230,118,0.5);'
+                       : 'background:rgba(0,230,118,0.14);border:1px solid rgba(0,230,118,0.40);color:#00E676;box-shadow:0 0 12px rgba(0,230,118,0.15);')+
+              '">+ הכנסה</button>'+
+            '</div>'+
+          '</div>'+
+
+          /* ── בחירת קטגוריה ── */
+          '<div>'+
+            '<div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:7px;">קטגוריה</div>'+
+            '<div style="position:relative;">'+
+              '<select id="scan-cat-select" onchange="window._scanResult.category=this.value" style="'+
+                'width:100%;padding:12px 14px;border-radius:13px;border:1px solid '+tBdr+';'+
+                'background:rgba(255,255,255,0.04);color:#fff;'+
+                'font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;'+
+                'appearance:none;-webkit-appearance:none;outline:none;cursor:pointer;'+
+                'box-shadow:0 0 0 0 '+tColor+'00;transition:box-shadow .2s;'+
+              '">'+
+                '<option value="">— ללא קטגוריה —</option>'+
+                buildCatOptions(cats, r.category)+
+              '</select>'+
+              '<div style="position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:'+tColor+';">'+
+                '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+
+          /* ── כפתורים ── */
+          '<div style="display:flex;gap:8px;margin-top:2px;">'+
+            '<button onclick="window._scanResult&&saveScannedTransaction(window._scanResult)" style="'+
+              'flex:1;padding:13px;border-radius:13px;border:none;cursor:pointer;'+
+              'background:linear-gradient(135deg,'+tBg+',rgba(0,0,0,0.1));border:1px solid '+tBdr+';'+
+              'color:'+tColor+';font-family:\'Syne\',sans-serif;font-size:13px;font-weight:900;'+
+              'box-shadow:0 4px 16px '+tColor+'22;">✓ שמור</button>'+
+            '<button onclick="document.getElementById(\'scan-doc-result\').classList.add(\'hidden\');window._scanResult=null;" style="'+
+              'flex:0.5;padding:13px;border-radius:13px;cursor:pointer;'+
+              'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);'+
+              'color:rgba(255,255,255,0.38);font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;">✕</button>'+
+          '</div>'+
+
+        '</div>';
+
+      resultEl.style.position = 'relative';
+      resultEl.style.overflow = 'hidden';
+      resultEl.classList.remove('hidden');
+
+      // עדכן category ב-_scanResult לפי select
+      var sel = document.getElementById('scan-cat-select');
+      if(sel) sel.onchange = function(){ window._scanResult.category = this.value; };
+    }
+
+    window.renderScanResult = renderScanResult;
+    renderScanResult();
 
   function escHtml(str){ return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
