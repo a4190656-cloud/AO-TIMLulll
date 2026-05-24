@@ -3831,7 +3831,7 @@
         </div>
         <input type="file" id="profile-pic-upload" accept="image/*" style="display:none" onchange="handleProfilePicChange(event)">
         <div>
-          <p id="header-name" style="font-weight:700;font-size:15px;line-height:1.2;display:flex;align-items:center;gap:2px"><span id="header-name-text">שלום!</span><span id="header-cursor" style="display:inline-block;width:2px;height:14px;background:var(--cyan);border-radius:1px;margin-right:1px;animation:cursorBlink 1s ease-in-out infinite;vertical-align:middle;box-shadow:0 0 6px rgba(0,229,255,0.8);"></span></p>
+          <p id="header-name" style="font-weight:700;font-size:clamp(11px,3.8vw,15px);line-height:1.2;display:flex;align-items:center;gap:2px;white-space:nowrap;overflow:hidden;max-width:200px;"><span id="header-name-text">שלום!</span><span id="header-cursor" style="display:inline-block;width:2px;height:14px;background:var(--cyan);border-radius:1px;margin-right:1px;animation:cursorBlink 1s ease-in-out infinite;vertical-align:middle;box-shadow:0 0 6px rgba(0,229,255,0.8);flex-shrink:0;"></span></p>
           <p style="font-size:12px;color:var(--cyan);font-weight:800;margin-top:2px;letter-spacing:0.5px;">התקציב האישי שלכם!</p>
           <div style="display:flex;align-items:center;gap:5px;margin-top:3px">
             <span class="live-dot"></span>
@@ -8921,13 +8921,13 @@ window.exportUserData = function() {
           '<div>'+
             '<div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:7px;">סוג התנועה</div>'+
             '<div style="display:flex;gap:8px;">'+
-              '<button id="scan-type-expense" onclick="window._scanResult.type=\'expense\';renderScanResult();" style="'+
+              '<button id="scan-type-expense" onclick="window._scanResult.type='expense';window.renderScanResult();" style="'+
                 'flex:1;padding:10px;border-radius:12px;border:none;cursor:pointer;'+
                 'font-family:\'Syne\',sans-serif;font-size:13px;font-weight:800;'+
                 (isI ? 'background:rgba(255,23,68,0.06);border:1px solid rgba(255,23,68,0.18);color:rgba(255,96,128,0.5);'
                       : 'background:rgba(255,23,68,0.14);border:1px solid rgba(255,23,68,0.40);color:#FF6080;box-shadow:0 0 12px rgba(255,23,68,0.15);')+
               '">− הוצאה</button>'+
-              '<button id="scan-type-income" onclick="window._scanResult.type=\'income\';renderScanResult();" style="'+
+              '<button id="scan-type-income" onclick="window._scanResult.type='income';window.renderScanResult();" style="'+
                 'flex:1;padding:10px;border-radius:12px;border:none;cursor:pointer;'+
                 'font-family:\'Syne\',sans-serif;font-size:13px;font-weight:800;'+
                 (!isI ? 'background:rgba(0,230,118,0.06);border:1px solid rgba(0,230,118,0.18);color:rgba(0,230,118,0.5);'
@@ -8982,6 +8982,7 @@ window.exportUserData = function() {
 
     window.renderScanResult = renderScanResult;
     renderScanResult();
+  } // end showResult
 
   function escHtml(str){ return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
