@@ -7729,17 +7729,31 @@ window.deletePhoneIdx = function(i) {
   };
   $('btn-signout').onclick=function(){
     unsubs.forEach(function(u){ u(); });
-    // ניקוי Google session cache — מאלץ בחירת חשבון בכניסה הבאה
-    sessionStorage.removeItem('_googleRedirectPending');
-    var provider = new firebase.auth.GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
-    auth.signOut().then(function(){
-      // נקה cookies/cache של Google בתוך iframe נסתר
-      var iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.src = 'https://accounts.google.com/logout';
-      document.body.appendChild(iframe);
-      setTimeout(function(){ if(iframe.parentNode) iframe.parentNode.removeChild(iframe); }, 2000);
+
+    // שלב 1 — נקה persistence של Firebase כדי שלא יתחבר אוטומטי
+    var clearTasks = [];
+
+    // מחק IndexedDB של Firebase auth
+    ['firebaseLocalStorageDb','firebase-installations-database',
+     'firebase-messaging-database','firebase:authUser'].forEach(function(name){
+      try { clearTasks.push(new Promise(function(res){ var r=indexedDB.deleteDatabase(name); r.onsuccess=res; r.onerror=res; })); } catch(e){}
+    });
+
+    // מחק localStorage של Firebase
+    try {
+      Object.keys(localStorage).forEach(function(k){
+        if(k.indexOf('firebase')+k.indexOf('google')+k.indexOf('__sak')> -3) localStorage.removeItem(k);
+      });
+    } catch(e){}
+
+    sessionStorage.clear();
+
+    // שלב 2 — signOut ואז reload
+    Promise.all(clearTasks).then(function(){
+      return auth.signOut();
+    }).catch(function(){}).finally(function(){
+      // hard reload עם cache-bust — Firebase לא ימצא token שמור
+      window.location.href = window.location.href.split('?')[0] + '?signout=' + Date.now();
     });
   };
 
@@ -7747,8 +7761,15 @@ window.deletePhoneIdx = function(i) {
   $('btn-disconnect').onclick=function(){
     if(!confirm('להתנתק מהחשבון?')) return;
     unsubs.forEach(function(u){ u(); });
-    sessionStorage.removeItem('_googleRedirectPending');
-    auth.signOut();
+    try {
+      Object.keys(localStorage).forEach(function(k){
+        if(k.indexOf('firebase')+k.indexOf('google')> -2) localStorage.removeItem(k);
+      });
+    } catch(e){}
+    sessionStorage.clear();
+    auth.signOut().finally(function(){
+      window.location.href = window.location.href.split('?')[0] + '?signout=' + Date.now();
+    });
   };
 
   /* ── DELETE ACCOUNT ── */
@@ -8876,8 +8897,9 @@ window.exportUserData = function() {
     window._scanResult = Object.assign({}, result, { category: matchedCat, type: type, amount: amount, description: desc });
 
     /* Build category options */
-    var expCats = userCategories.filter(function(c){ return c.type==='expense'; });
-    var incCats = userCategories.filter(function(c){ return c.type==='income'; });
+    var _allCats = window._appUserCategories || [];
+    var expCats = _allCats.filter(function(c){ return c.type==='expense'; });
+    var incCats = _allCats.filter(function(c){ return c.type==='income'; });
 
     function buildCatOptions(cats, selectedName){
       return cats.map(function(c){
