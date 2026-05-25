@@ -5903,8 +5903,13 @@
   // הגדרות Firestore — LongPolling לנייד, גודל cache מוגדל
   db.settings({ experimentalForceLongPolling: true, cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED });
 
-  /* ── שמור משתמש לצמיתות — לא יצטרך להיכנס שוב מאותו דפדפן ── */
-  auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(e){
+  /* ── persistence: LOCAL רגיל, אבל אם המשתמש יצא — SESSION בלבד ── */
+  var _didSignOut = sessionStorage.getItem('_ao_signed_out') === '1';
+  var _persistMode = _didSignOut
+    ? firebase.auth.Auth.Persistence.SESSION
+    : firebase.auth.Auth.Persistence.LOCAL;
+
+  auth.setPersistence(_persistMode).catch(function(e){
     console.log('Persistence error:', e.code);
   });
 
@@ -7191,6 +7196,7 @@ window.deletePhoneIdx = function(i) {
      Handles name setup, then launches the app.
   ══════════════════════════════════════════════ */
   function bootApp(user){
+    sessionStorage.removeItem('_ao_signed_out'); // כניסה מוצלחת — אפס flag
     /* Keep security loader visible until we're fully ready — prevents login-screen flash */
     ['screen-loading','screen-login','screen-setname','app'].forEach(hide);
     show('security-loader-overlay');
@@ -7731,13 +7737,13 @@ window.deletePhoneIdx = function(i) {
   $('btn-signout').onclick=function(){
     unsubs.forEach(function(u){ u(); });
     sessionStorage.clear();
+    sessionStorage.setItem('_ao_signed_out','1');
     try {
       Object.keys(localStorage).forEach(function(k){
         if(k.indexOf('firebase')>-1 || k.indexOf('google')>-1) localStorage.removeItem(k);
       });
     } catch(e){}
 
-    // מנע reconnect אוטומטי — ביטול persistence לפני signOut
     var doSignOut = function(){
       auth.signOut().finally(function(){
         window.location.href = window.location.href.split('?')[0] + '?so=' + Date.now();
@@ -7756,6 +7762,7 @@ window.deletePhoneIdx = function(i) {
     if(!confirm('להתנתק מהחשבון?')) return;
     unsubs.forEach(function(u){ u(); });
     sessionStorage.clear();
+    sessionStorage.setItem('_ao_signed_out','1');
     try {
       Object.keys(localStorage).forEach(function(k){
         if(k.indexOf('firebase')>-1 || k.indexOf('google')>-1) localStorage.removeItem(k);
