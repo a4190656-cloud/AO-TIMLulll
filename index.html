@@ -7402,22 +7402,41 @@ window.deletePhoneIdx = function(i) {
       provider.addScope('email');
       provider.setCustomParameters({ prompt: 'select_account' });
 
-      // שמור flag לפני ה-redirect — אחרי ה-signOut
-      sessionStorage.setItem('_googleRedirectPending', '1');
-      ['screen-loading','screen-login','screen-setname','app'].forEach(function(id){
-        var el = document.getElementById(id); if (el) el.classList.add('hidden');
-      });
-      show('security-loader-overlay');
-      var _gm = $('security-msg'); if(_gm) _gm.textContent = 'מעביר לגוגל...';
-      var _gs = $('security-sub-msg'); if(_gs) _gs.textContent = 'אנא המתן';
-      auth.signInWithRedirect(provider);
+      // בדפדפן — Popup (redirect שבור ב-Chrome חדש עם third-party cookies)
+      auth.signInWithPopup(provider)
+        .then(function(result){
+          // הצלחה — onAuthStateChanged יטפל
+        })
+        .catch(function(e){
+          btn.disabled = false;
+          btn.style.opacity = '1';
+          btn.innerHTML = origText;
+          if(e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') return;
+          if(e.code === 'auth/popup-blocked'){
+            // popup נחסם — fallback ל-redirect
+            sessionStorage.setItem('_googleRedirectPending','1');
+            sessionStorage.removeItem('_ao_signed_out');
+            ['screen-loading','screen-login','screen-setname','app'].forEach(function(id){
+              var el=document.getElementById(id); if(el) el.classList.add('hidden');
+            });
+            show('security-loader-overlay');
+            var _gm=$('security-msg'); if(_gm) _gm.textContent='מעביר לגוגל...';
+            var _gs=$('security-sub-msg'); if(_gs) _gs.textContent='אנא המתן';
+            auth.signInWithRedirect(provider);
+            return;
+          }
+          if(e.code === 'auth/account-exists-with-different-credential'){
+            showLoginErr('חשבון עם מייל זה כבר קיים. השתמש בכניסה עם מייל וסיסמה.');
+          } else {
+            showLoginErr('שגיאה בכניסה עם גוגל: '+(e.message||e.code));
+          }
+        });
     }
 
-    // signOut תחילה — אבל sessionStorage.clear לא! רק Firebase localStorage
-    unsubs.forEach(function(u){ try{u();}catch(e){} });
+    // signOut תחילה — אבל לא sessionStorage
     try {
       Object.keys(localStorage).forEach(function(k){
-        if(k.indexOf('firebase')>-1 || k.indexOf('google')>-1) localStorage.removeItem(k);
+        if(k.indexOf('firebase')>-1||k.indexOf('google')>-1) localStorage.removeItem(k);
       });
     } catch(e){}
     auth.signOut().then(doGoogleLogin).catch(doGoogleLogin);
