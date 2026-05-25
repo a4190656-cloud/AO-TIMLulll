@@ -7378,7 +7378,12 @@ window.deletePhoneIdx = function(i) {
     btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin360 0.9s linear infinite;display:inline-block;vertical-align:middle;margin-left:6px;"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg> מתחבר...';
 
     if (window.flutter_inappwebview !== undefined) {
-      window.flutter_inappwebview.callHandler('NativeGoogleLogin');
+      // שלח ל-Flutter לפתוח בחירת חשבון גוגל מחדש
+      try {
+        window.flutter_inappwebview.callHandler('NativeGoogleLogin', { forceAccountSelect: true });
+      } catch(e) {
+        window.flutter_inappwebview.callHandler('NativeGoogleLogin');
+      }
       return;
     }
 
@@ -7386,40 +7391,21 @@ window.deletePhoneIdx = function(i) {
       var provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope('profile');
       provider.addScope('email');
-      // אכוף תמיד בחירת חשבון — גם אם Firebase זוכר משהו
-      provider.setCustomParameters({
-        prompt: 'select_account',
-        login_hint: ''
+      // prompt=select_account אוכף בחירת חשבון תמיד
+      provider.setCustomParameters({ prompt: 'select_account' });
+
+      // ב-Android WebView popup תמיד נחסם — ישר Redirect
+      sessionStorage.setItem('_googleRedirectPending', '1');
+      ['screen-loading','screen-login','screen-setname','app'].forEach(function(id){
+        var el = document.getElementById(id); if (el) el.classList.add('hidden');
       });
-
-      auth.signInWithPopup(provider)
-        .then(function() { /* onAuthStateChanged יטפל */ })
-        .catch(function(e) {
-          btn.disabled = false;
-          btn.style.opacity = '1';
-          btn.innerHTML = origText;
-
-          if (e.code === 'auth/popup-blocked') {
-            sessionStorage.setItem('_googleRedirectPending', '1');
-            show('security-loader-overlay');
-            var _gm2 = $('security-msg'); if(_gm2) _gm2.textContent = 'מעביר לגוגל...';
-            var _gs2 = $('security-sub-msg'); if(_gs2) _gs2.textContent = 'אנא המתן';
-            ['screen-loading','screen-login','screen-setname','app'].forEach(function(id){
-              var el = document.getElementById(id); if (el) el.classList.add('hidden');
-            });
-            auth.signInWithRedirect(provider);
-            return;
-          }
-          if (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') return;
-          if (e.code === 'auth/account-exists-with-different-credential') {
-            showLoginErr('חשבון עם מייל זה כבר קיים. השתמש בכניסה עם מייל וסיסמה.');
-          } else {
-            showLoginErr('שגיאה בכניסה עם גוגל: ' + (e.message || e.code));
-          }
-        });
+      show('security-loader-overlay');
+      var _gm = $('security-msg'); if(_gm) _gm.textContent = 'מעביר לגוגל...';
+      var _gs = $('security-sub-msg'); if(_gs) _gs.textContent = 'אנא המתן';
+      auth.signInWithRedirect(provider);
     }
 
-    // תמיד עשה signOut לפני — מבטיח שגוגל יציג בחירת חשבון
+    // signOut תחילה — מוחק token קיים מה-IndexedDB
     auth.signOut().then(doGoogleLogin).catch(doGoogleLogin);
   };
   /* ── fallback: אם popup נחסם ונעשה redirect — טפל בחזרה ── */
@@ -7743,6 +7729,11 @@ window.deletePhoneIdx = function(i) {
         if(k.indexOf('firebase')>-1 || k.indexOf('google')>-1) localStorage.removeItem(k);
       });
     } catch(e){}
+
+    // שלח ל-Flutter שהמשתמש יצא — כדי שלא יחזיר אוטומטי
+    if(window.flutter_inappwebview !== undefined){
+      try { window.flutter_inappwebview.callHandler('UserSignedOut'); } catch(e){}
+    }
 
     var doSignOut = function(){
       auth.signOut().finally(function(){
