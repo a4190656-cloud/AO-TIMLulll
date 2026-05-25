@@ -5905,9 +5905,11 @@
 
   /* ── persistence: LOCAL רגיל, אבל אם המשתמש יצא — SESSION בלבד ── */
   var _didSignOut = sessionStorage.getItem('_ao_signed_out') === '1';
-  var _persistMode = _didSignOut
-    ? firebase.auth.Auth.Persistence.SESSION
-    : firebase.auth.Auth.Persistence.LOCAL;
+  var _hasRedirectInProgress = sessionStorage.getItem('_googleRedirectPending') === '1';
+  // אם חוזרים מ-redirect של גוגל — תמיד LOCAL כדי שהמשתמש יישמר
+  var _persistMode = (!_didSignOut || _hasRedirectInProgress)
+    ? firebase.auth.Auth.Persistence.LOCAL
+    : firebase.auth.Auth.Persistence.SESSION;
 
   auth.setPersistence(_persistMode).catch(function(e){
     console.log('Persistence error:', e.code);
@@ -7240,7 +7242,7 @@ window.deletePhoneIdx = function(i) {
   var appBooted    = false; /* prevent double-boot */
   var _googleOAuthPending = false; /* set to true when returning from Google OAuth redirect */
   var authTimeout  = setTimeout(function(){
-    if(!authResolved && !_googleOAuthPending){
+    if(!authResolved && !_googleOAuthPending && sessionStorage.getItem('_googleRedirectPending') !== '1'){
       authResolved = true;
       showScreen('screen-login');
     }
@@ -7429,20 +7431,36 @@ window.deletePhoneIdx = function(i) {
     var _ssub = $('security-sub-msg'); if (_ssub) _ssub.textContent = 'מאמת זהות ומצפין נתונים';
   }
 
+  // נקה flag יציאה לפני שבודקים תוצאת redirect
+  if(sessionStorage.getItem('_googleRedirectPending') === '1'){
+    sessionStorage.removeItem('_ao_signed_out');
+  }
+
   auth.getRedirectResult().then(function(result){
     _googleOAuthPending = false;
-    // הצלחה דרך redirect — onAuthStateChanged יטפל בהמשך
+    if(result && result.user){
+      // הצלחה דרך redirect — onAuthStateChanged יטפל, אבל נוודא שהסקרין מוצג
+      sessionStorage.removeItem('_googleRedirectPending');
+    } else {
+      // אין תוצאה redirect — אם היה pending, הראה login
+      if(_hasRedirectPending){
+        sessionStorage.removeItem('_googleRedirectPending');
+        hide('security-loader-overlay');
+        showScreen('screen-login');
+      }
+    }
   }).catch(function(e){
     _googleOAuthPending = false;
+    sessionStorage.removeItem('_googleRedirectPending');
+    hide('security-loader-overlay');
     if (_hasRedirectPending) {
-      hide('security-loader-overlay');
       if(e.code === 'auth/account-exists-with-different-credential'){
         showLoginErr('חשבון עם מייל זה כבר קיים. השתמש בכניסה עם מייל וסיסמה.');
       } else if (e.code) {
         showLoginErr('שגיאה בכניסה עם גוגל: ' + (e.message || e.code));
       }
-      showScreen('screen-login');
     }
+    showScreen('screen-login');
   });
 
   /* ══════════════════════════════════════════════
