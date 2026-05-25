@@ -7633,11 +7633,15 @@ window.deletePhoneIdx = function(i) {
           '<div style="background:rgba(255,193,7,0.06);border:1px solid rgba(255,193,7,0.18);border-radius:14px;padding:14px;margin-bottom:18px;">'+
             '<div style="display:flex;gap:10px;align-items:flex-start;">'+
               '<span style="font-size:18px;flex-shrink:0;">⚠️</span>'+
-              '<p style="font-size:13px;font-weight:700;color:rgba(255,220,100,0.9);line-height:1.65;">'+
-                'שים לב — עומד לצאת מהחשבון<br>'+
+              '<p style="font-size:12.5px;font-weight:700;color:rgba(255,220,100,0.9);line-height:1.75;">'+
+                '<strong>שים לב — עומד לצאת מהחשבון</strong><br>'+
                 '<span style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);">'+
                   'הנתונים שלך שמורים בענן ויופיעו מחדש בכניסה הבאה. '+
                   'פעולה זו תמחק רק את המטמון המקומי ותטעין מחדש את הגרסה העדכנית.'+
+                '</span><br><br>'+
+                '<span style="font-size:11.5px;font-weight:800;color:rgba(255,200,60,0.95);">'+
+                  '🔄 כדי להיכנס עם חשבון גוגל אחר לאחר העדכון:<br>'+
+                  'הגדרות הטלפון ← אפליקציות ← AO Budget ← אילוץ עצירה ← מחיקת נתונים.'+
                 '</span>'+
               '</p>'+
             '</div>'+
@@ -7721,54 +7725,106 @@ window.deletePhoneIdx = function(i) {
     };
   };
   $('btn-signout').onclick=function(){
-    unsubs.forEach(function(u){ u(); });
-    sessionStorage.clear();
-    sessionStorage.setItem('_ao_signed_out','1');
-    try {
-      Object.keys(localStorage).forEach(function(k){
-        if(k.indexOf('firebase')>-1 || k.indexOf('google')>-1) localStorage.removeItem(k);
-      });
-    } catch(e){}
 
-    // שלח ל-Flutter שהמשתמש יצא — כדי שלא יחזיר אוטומטי
-    if(window.flutter_inappwebview !== undefined){
-      try { window.flutter_inappwebview.callHandler('UserSignedOut'); } catch(e){}
-    }
+    // הודעת אזהרה לפני היציאה
+    var overlay = document.createElement('div');
+    overlay.innerHTML =
+      '<div style="position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:24px;">'+
+        '<div style="background:linear-gradient(150deg,rgba(10,16,32,0.99),rgba(4,7,14,0.99));border:1px solid rgba(255,193,7,0.25);border-radius:24px;padding:28px 22px;width:100%;max-width:340px;box-shadow:0 20px 60px rgba(0,0,0,0.7);">'+
+          '<div style="width:52px;height:52px;border-radius:16px;margin:0 auto 16px;background:rgba(255,193,7,0.10);border:1px solid rgba(255,193,7,0.25);display:flex;align-items:center;justify-content:center;font-size:24px;">⚠️</div>'+
+          '<p style="font-family:\'Syne\',sans-serif;font-size:17px;font-weight:900;text-align:center;color:#fff;margin-bottom:14px;">יציאה מהחשבון</p>'+
+          '<div style="background:rgba(255,193,7,0.07);border:1px solid rgba(255,193,7,0.20);border-radius:14px;padding:14px;margin-bottom:20px;">'+
+            '<p style="font-size:12.5px;font-weight:700;color:rgba(255,220,80,0.95);line-height:1.75;text-align:right;">'+
+              '⚠️ <strong>שים לב!</strong><br>'+
+              'לאחר היציאה, לחיצה על "כניסה עם גוגל" תחזיר אוטומטית לאותו חשבון.<br><br>'+
+              '🔄 <strong>כדי להיכנס עם חשבון גוגל אחר:</strong><br>'+
+              'יש ללכת להגדרות הטלפון ← אפליקציות ← AO Budget ← אילוץ עצירה ← מחיקת נתונים.'+
+            '</p>'+
+          '</div>'+
+          '<div style="display:flex;flex-direction:column;gap:9px;">'+
+            '<button id="_so_confirm" style="padding:14px;border-radius:14px;border:1px solid rgba(255,100,100,0.4);background:rgba(255,23,68,0.12);color:#FF6080;font-family:\'Syne\',sans-serif;font-size:14px;font-weight:900;cursor:pointer;">יציאה מהחשבון</button>'+
+            '<button id="_so_cancel" style="padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.4);font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">ביטול</button>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+    document.body.appendChild(overlay);
 
-    var doSignOut = function(){
-      auth.signOut().finally(function(){
-        window.location.href = window.location.href.split('?')[0] + '?so=' + Date.now();
-      });
+    overlay.querySelector('#_so_cancel').onclick = function(){
+      document.body.removeChild(overlay);
     };
 
-    if(firebase.auth.Auth.Persistence){
-      auth.setPersistence(firebase.auth.Auth.Persistence.NONE).then(doSignOut).catch(doSignOut);
-    } else {
-      doSignOut();
-    }
+    overlay.querySelector('#_so_confirm').onclick = function(){
+      document.body.removeChild(overlay);
+      unsubs.forEach(function(u){ u(); });
+      sessionStorage.clear();
+      sessionStorage.setItem('_ao_signed_out','1');
+      try {
+        Object.keys(localStorage).forEach(function(k){
+          if(k.indexOf('firebase')>-1 || k.indexOf('google')>-1) localStorage.removeItem(k);
+        });
+      } catch(e){}
+      if(window.flutter_inappwebview !== undefined){
+        try { window.flutter_inappwebview.callHandler('UserSignedOut'); } catch(e){}
+      }
+      var doSignOut = function(){
+        auth.signOut().finally(function(){
+          window.location.href = window.location.href.split('?')[0] + '?so=' + Date.now();
+        });
+      };
+      if(firebase.auth.Auth.Persistence){
+        auth.setPersistence(firebase.auth.Auth.Persistence.NONE).then(doSignOut).catch(doSignOut);
+      } else {
+        doSignOut();
+      }
+    };
   };
 
   /* ── Disconnect button in settings ── */
   $('btn-disconnect').onclick=function(){
-    if(!confirm('להתנתק מהחשבון?')) return;
-    unsubs.forEach(function(u){ u(); });
-    sessionStorage.clear();
-    sessionStorage.setItem('_ao_signed_out','1');
-    try {
-      Object.keys(localStorage).forEach(function(k){
-        if(k.indexOf('firebase')>-1 || k.indexOf('google')>-1) localStorage.removeItem(k);
-      });
-    } catch(e){}
-    var doSignOut = function(){
-      auth.signOut().finally(function(){
-        window.location.href = window.location.href.split('?')[0] + '?so=' + Date.now();
-      });
+    var overlay = document.createElement('div');
+    overlay.innerHTML =
+      '<div style="position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:24px;">'+
+        '<div style="background:linear-gradient(150deg,rgba(10,16,32,0.99),rgba(4,7,14,0.99));border:1px solid rgba(255,193,7,0.25);border-radius:24px;padding:28px 22px;width:100%;max-width:340px;box-shadow:0 20px 60px rgba(0,0,0,0.7);">'+
+          '<div style="width:52px;height:52px;border-radius:16px;margin:0 auto 16px;background:rgba(255,193,7,0.10);border:1px solid rgba(255,193,7,0.25);display:flex;align-items:center;justify-content:center;font-size:24px;">⚠️</div>'+
+          '<p style="font-family:\'Syne\',sans-serif;font-size:17px;font-weight:900;text-align:center;color:#fff;margin-bottom:14px;">ניתוק חשבון</p>'+
+          '<div style="background:rgba(255,193,7,0.07);border:1px solid rgba(255,193,7,0.20);border-radius:14px;padding:14px;margin-bottom:20px;">'+
+            '<p style="font-size:12.5px;font-weight:700;color:rgba(255,220,80,0.95);line-height:1.75;text-align:right;">'+
+              '⚠️ <strong>שים לב!</strong><br>'+
+              'לאחר הניתוק, לחיצה על "כניסה עם גוגל" תחזיר אוטומטית לאותו חשבון.<br><br>'+
+              '🔄 <strong>כדי להיכנס עם חשבון גוגל אחר:</strong><br>'+
+              'יש ללכת להגדרות הטלפון ← אפליקציות ← AO Budget ← אילוץ עצירה ← מחיקת נתונים.'+
+            '</p>'+
+          '</div>'+
+          '<div style="display:flex;flex-direction:column;gap:9px;">'+
+            '<button id="_dc_confirm" style="padding:14px;border-radius:14px;border:1px solid rgba(255,100,100,0.4);background:rgba(255,23,68,0.12);color:#FF6080;font-family:\'Syne\',sans-serif;font-size:14px;font-weight:900;cursor:pointer;">ניתוק מהחשבון</button>'+
+            '<button id="_dc_cancel" style="padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.4);font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">ביטול</button>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+    document.body.appendChild(overlay);
+    overlay.querySelector('#_dc_cancel').onclick = function(){ document.body.removeChild(overlay); };
+    overlay.querySelector('#_dc_confirm').onclick = function(){
+      document.body.removeChild(overlay);
+      unsubs.forEach(function(u){ u(); });
+      sessionStorage.clear();
+      sessionStorage.setItem('_ao_signed_out','1');
+      try {
+        Object.keys(localStorage).forEach(function(k){
+          if(k.indexOf('firebase')>-1 || k.indexOf('google')>-1) localStorage.removeItem(k);
+        });
+      } catch(e){}
+      if(window.flutter_inappwebview !== undefined){
+        try { window.flutter_inappwebview.callHandler('UserSignedOut'); } catch(e){}
+      }
+      var doSignOut = function(){
+        auth.signOut().finally(function(){
+          window.location.href = window.location.href.split('?')[0] + '?so=' + Date.now();
+        });
+      };
+      if(firebase.auth.Auth.Persistence){
+        auth.setPersistence(firebase.auth.Auth.Persistence.NONE).then(doSignOut).catch(doSignOut);
+      } else { doSignOut(); }
     };
-    if(firebase.auth.Auth.Persistence){
-      auth.setPersistence(firebase.auth.Auth.Persistence.NONE).then(doSignOut).catch(doSignOut);
-    } else {
-      doSignOut();
-    }
   };
 
   /* ── DELETE ACCOUNT ── */
