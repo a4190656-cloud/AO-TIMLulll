@@ -4177,9 +4177,8 @@
             </div>
             <div class="scan-doc-text">
               <span class="scan-doc-title">סריקת קבלה / חשבונית</span>
-              <span class="scan-doc-sub">AI מזהה ומוסיף אוטומטית</span>
+              <span class="scan-doc-sub">AI מזהה ומוסיף אוטומטית · <span id="scan-limit-badge" style="color:rgba(0,229,255,0.8);font-weight:800;">7 סריקות/יום</span></span>
             </div>
-          </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
               <div style="background:linear-gradient(135deg,rgba(255,160,0,0.18),rgba(255,100,0,0.10));border:1px solid rgba(255,160,0,0.35);border-radius:6px;padding:2px 7px;font-size:8.5px;font-weight:900;color:rgba(255,200,60,0.95);letter-spacing:0.10em;">בפיתוח</div>
               <div class="scan-doc-arrow">
@@ -4189,12 +4188,6 @@
           </div>
         </button>
         <input id="scan-doc-file" type="file" accept="image/*,.pdf,application/pdf" style="display:none" multiple>
-
-        <!-- באדג' סריקות -->
-        <div id="scan-limit-wrap" style="display:inline-flex;align-items:center;gap:5px;margin:6px 0 8px 0;background:rgba(0,0,0,0.25);border:1px solid rgba(0,229,255,0.15);border-radius:99px;padding:3px 10px 3px 8px;backdrop-filter:blur(8px);">
-          <span id="scan-limit-icon" style="font-size:10px;line-height:1;">⚡</span>
-          <span id="scan-limit-badge" style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;letter-spacing:.04em;color:rgba(0,229,255,0.8);">7/7 נותרו היום</span>
-        </div>
 
         <!-- מצב עיבוד -->
         <div id="scan-doc-processing" class="scan-doc-processing hidden">
@@ -8857,21 +8850,21 @@ window.exportUserData = function() {
 
   if (!scanBtn || !fileInput) return;
 
-  /* ── מגבלת 7 סריקות ביום — localStorage ── */
+  /* ── מגבלת 7 סריקות ביום ── */
   var DAILY_LIMIT = 7;
 
   function getScanCount(){
     var today = new Date().toISOString().slice(0,10);
-    var data  = JSON.parse(localStorage.getItem('_scan_daily')||'{}');
+    var data  = JSON.parse(localStorage.getItem('_scan_daily') || '{}');
     if(data.date !== today) return 0;
     return data.count || 0;
   }
 
   function addScanCount(n){
     var today = new Date().toISOString().slice(0,10);
-    var data  = JSON.parse(localStorage.getItem('_scan_daily')||'{}');
+    var data  = JSON.parse(localStorage.getItem('_scan_daily') || '{}');
     if(data.date !== today) data = { date: today, count: 0 };
-    data.count = (data.count||0) + (n||1);
+    data.count = (data.count || 0) + (n || 1);
     localStorage.setItem('_scan_daily', JSON.stringify(data));
     updateLimitBadge();
   }
@@ -8880,26 +8873,16 @@ window.exportUserData = function() {
     var used  = getScanCount();
     var left  = Math.max(0, DAILY_LIMIT - used);
     var badge = document.getElementById('scan-limit-badge');
-    var icon  = document.getElementById('scan-limit-icon');
-    var wrap  = document.getElementById('scan-limit-wrap');
     if(!badge) return;
     if(left === 0){
-      badge.textContent = 'מגבלה יומית מוצתה';
-      badge.style.color = 'rgba(255,80,80,0.9)';
-      if(icon) icon.textContent = '🚫';
-      if(wrap){ wrap.style.borderColor='rgba(255,80,80,0.3)'; wrap.style.background='rgba(255,23,68,0.08)'; }
-    } else if(left <= 2){
-      badge.textContent = left + '/' + DAILY_LIMIT + ' נותרו היום';
-      badge.style.color = 'rgba(255,170,0,0.95)';
-      if(icon) icon.textContent = '⚠️';
-      if(wrap){ wrap.style.borderColor='rgba(255,170,0,0.3)'; wrap.style.background='rgba(255,140,0,0.07)'; }
+      badge.textContent  = 'הגעת למגבלה היומית';
+      badge.style.color  = 'rgba(255,80,80,0.9)';
     } else {
-      badge.textContent = left + '/' + DAILY_LIMIT + ' נותרו היום';
-      badge.style.color = 'rgba(0,229,255,0.85)';
-      if(icon) icon.textContent = '⚡';
-      if(wrap){ wrap.style.borderColor='rgba(0,229,255,0.15)'; wrap.style.background='rgba(0,0,0,0.25)'; }
+      badge.textContent  = left + '/' + DAILY_LIMIT + ' סריקות נותרו היום';
+      badge.style.color  = left <= 2 ? 'rgba(255,160,0,0.9)' : 'rgba(0,229,255,0.8)';
     }
   }
+  updateLimitBadge();
 
   /* ── פותח את בורר הקבצים ── */
   scanBtn.onclick = function() {
@@ -8993,57 +8976,20 @@ window.exportUserData = function() {
       try {
         var r = await sendToWorker(f);
         addScanCount(1);
-        results.push({ result: r, file: f, idx: idx, type: r.type==='income'?'income':'expense', category: r.category||'' });
+        results.push({ result: r, file: f, idx: idx });
 
-        var rObj = results[results.length-1];
-
-        function renderMscanItem(rObj){
-          var isI  = rObj.type === 'income';
-          var col  = isI ? '#00E676' : '#FF6080';
-          var tBg  = isI ? 'rgba(0,230,118,0.10)' : 'rgba(255,23,68,0.10)';
-          var tBdr = isI ? 'rgba(0,230,118,0.28)' : 'rgba(255,23,68,0.28)';
-          var sym  = isI ? '+' : '−';
-          var amt  = rObj.result.amount ? '₪'+Number(rObj.result.amount).toLocaleString('he-IL') : '—';
-          var _cats2 = (window._appUserCategories||[]).filter(function(c){ return c.type===rObj.type; });
-          var catOpts = '<option value="">— ללא קטגוריה —</option>'+_cats2.map(function(c){
-            return '<option value="'+escHtml(c.name)+'"'+(c.name===rObj.category?' selected':'')+'>'+escHtml(c.name)+'</option>';
-          }).join('');
-
-          var el = document.getElementById('mscan-'+rObj.idx);
-          if(!el) return;
-          el.style.borderColor = tBdr;
-          el.style.background  = 'rgba(255,255,255,0.02)';
-          el.style.flexDirection = 'column';
-          el.style.alignItems  = 'stretch';
-          el.style.gap         = '10px';
-          el.innerHTML =
-            /* שורה עליונה — סכום + הסרה */
-            '<div style="display:flex;align-items:center;gap:10px;">'+
-              '<div style="width:34px;height:34px;border-radius:10px;background:'+tBg+';border:1px solid '+tBdr+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:\'JetBrains Mono\',monospace;font-size:15px;font-weight:900;color:'+col+';">'+sym+'</div>'+
-              '<div style="flex:1;min-width:0;">'+
-                '<div style="font-family:\'JetBrains Mono\',monospace;font-size:17px;font-weight:900;color:'+col+';">'+sym+' '+amt+'</div>'+
-                '<div style="font-size:11px;color:rgba(255,255,255,0.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(rObj.result.description?escHtml(rObj.result.description):'—')+'</div>'+
-              '</div>'+
-              '<button onclick="window._removeMscan('+rObj.idx+')" style="width:28px;height:28px;border-radius:8px;border:1px solid rgba(255,255,255,0.10);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.35);cursor:pointer;font-size:12px;flex-shrink:0;">✕</button>'+
-            '</div>'+
-            /* toggle הוצאה/הכנסה */
-            '<div style="display:flex;gap:6px;">'+
-              '<button onclick="window._mscanSetType('+rObj.idx+',\'expense\')" style="flex:1;padding:7px;border-radius:10px;border:none;cursor:pointer;font-family:\'Syne\',sans-serif;font-size:12px;font-weight:800;'+(!isI?'background:rgba(255,23,68,0.16);border:1px solid rgba(255,23,68,0.40);color:#FF6080;':'background:rgba(255,23,68,0.05);border:1px solid rgba(255,23,68,0.15);color:rgba(255,96,128,0.45);')+'">− הוצאה</button>'+
-              '<button onclick="window._mscanSetType('+rObj.idx+',\'income\')" style="flex:1;padding:7px;border-radius:10px;border:none;cursor:pointer;font-family:\'Syne\',sans-serif;font-size:12px;font-weight:800;'+(isI?'background:rgba(0,230,118,0.16);border:1px solid rgba(0,230,118,0.40);color:#00E676;':'background:rgba(0,230,118,0.05);border:1px solid rgba(0,230,118,0.15);color:rgba(0,230,118,0.45);')+'">+ הכנסה</button>'+
-            '</div>'+
-            /* קטגוריה */
-            '<div style="position:relative;">'+
-              '<select id="mscan-cat-'+rObj.idx+'" onchange="window._mscanSetCat('+rObj.idx+',this.value)" style="width:100%;padding:9px 14px;border-radius:10px;border:1px solid '+tBdr+';background:rgba(255,255,255,0.04);color:#fff;font-family:\'Syne\',sans-serif;font-size:12px;font-weight:700;appearance:none;-webkit-appearance:none;outline:none;cursor:pointer;">'+catOpts+'</select>'+
-              '<div style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:'+col+';">'+
-                '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'+
-              '</div>'+
-            '</div>';
-        }
-
-        renderMscanItem(rObj);
-        window._mscanRenderFns = window._mscanRenderFns || {};
-        window._mscanRenderFns[rObj.idx] = function(){ renderMscanItem(rObj); };
-
+        var isI  = r.type === 'income';
+        var col  = isI ? '#00E676' : '#FF6080';
+        var sym  = isI ? '+' : '−';
+        var amt  = r.amount ? '₪' + Number(r.amount).toLocaleString('he-IL') : '—';
+        item.style.borderColor = isI ? 'rgba(0,230,118,0.25)' : 'rgba(255,23,68,0.25)';
+        item.innerHTML =
+          '<div style="width:32px;height:32px;border-radius:10px;background:'+(isI?'rgba(0,230,118,0.10)':'rgba(255,23,68,0.10)')+';border:1px solid '+(isI?'rgba(0,230,118,0.28)':'rgba(255,23,68,0.28)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;">'+sym+'</div>'+
+          '<div style="flex:1;min-width:0;">'+
+            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:15px;font-weight:900;color:'+col+';">'+sym+' '+amt+'</div>'+
+            '<div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(r.description?escHtml(r.description):'—')+'</div>'+
+          '</div>'+
+          '<button onclick="window._removeMscan('+idx+')" style="width:28px;height:28px;border-radius:8px;border:1px solid rgba(255,255,255,0.10);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.35);cursor:pointer;font-size:13px;flex-shrink:0;">✕</button>';
       } catch(err){
         item.style.borderColor = 'rgba(255,80,80,0.25)';
         item.innerHTML =
@@ -9070,31 +9016,14 @@ window.exportUserData = function() {
       if(results.length === 0) document.getElementById('multi-scan-save-all').classList.add('hidden');
     };
 
-    /* שינוי סוג */
-    window._mscanSetType = function(idx, type){
-      var r = results.find(function(x){ return x.idx===idx; });
-      if(!r) return;
-      r.type = type;
-      r.category = ''; // איפוס קטגוריה כשמשנים סוג
-      if(window._mscanRenderFns && window._mscanRenderFns[idx]) window._mscanRenderFns[idx]();
-    };
-
-    /* שינוי קטגוריה */
-    window._mscanSetCat = function(idx, cat){
-      var r = results.find(function(x){ return x.idx===idx; });
-      if(r) r.category = cat;
-    };
-
     /* שמור הכל */
     window._saveAllScanned = function(){
       if(!results.length) return;
       var saved = 0;
       results.forEach(function(item){
         saveScannedTransaction(Object.assign({}, item.result, {
-          category: item.category || '',
-          type: item.type || 'expense',
-          amount: item.result.amount,
-          description: item.result.description
+          category: item.result.category || '',
+          type: item.result.type === 'income' ? 'income' : 'expense'
         }));
         saved++;
       });
