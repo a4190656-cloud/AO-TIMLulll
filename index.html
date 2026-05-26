@@ -8895,12 +8895,12 @@ window.exportUserData = function() {
 
   /* ── פותח את בורר הקבצים ── */
   scanBtn.onclick = function() {
+    fileInput.click(); // חייב להיות ראשון — Android חוסם אם לא user gesture ישיר
     var used = getScanCount();
     if(used >= DAILY_LIMIT){
       toast('הגעת למגבלת 7 הסריקות היומית. נסה שוב מחר!', 'error');
       return;
     }
-    fileInput.click();
     resultEl.className = 'scan-doc-result hidden';
     resultEl.innerHTML = '';
   };
