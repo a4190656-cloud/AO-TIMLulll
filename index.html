@@ -6272,7 +6272,6 @@
   }
 
   function renderStats(){
-    if(window.ensureScanCountLoaded) window.ensureScanCountLoaded();
     var bal=calcBal(), inc=calcIncome();
     var el=$('balance-display');
     var isPos = bal >= 0;
@@ -8858,46 +8857,24 @@ window.exportUserData = function() {
 
   if (!scanBtn || !fileInput) return;
 
-  /* ── מגבלת 7 סריקות ביום — מסונכרן בענן ── */
+  /* ── מגבלת 7 סריקות ביום — localStorage ── */
   var DAILY_LIMIT = 7;
-  var _scanCountCache = 0;
-  var _scanCountDate  = new Date().toISOString().slice(0,10);
 
-  function getScanCount(){ return _scanCountCache; }
-
-  function loadScanCount(){
+  function getScanCount(){
     var today = new Date().toISOString().slice(0,10);
-    if(!uid) return;
-    db.collection('users').doc(uid).collection('meta').doc('scan_daily').get().then(function(snap){
-      if(snap.exists){
-        var d = snap.data();
-        _scanCountCache = (d.date === today) ? (d.count||0) : 0;
-      } else {
-        _scanCountCache = 0;
-      }
-      updateLimitBadge();
-    }).catch(function(){ _scanCountCache = 0; updateLimitBadge(); });
+    var data  = JSON.parse(localStorage.getItem('_scan_daily')||'{}');
+    if(data.date !== today) return 0;
+    return data.count || 0;
   }
 
   function addScanCount(n){
     var today = new Date().toISOString().slice(0,10);
-    _scanCountCache = (_scanCountDate === today) ? _scanCountCache + (n||1) : (n||1);
-    _scanCountDate  = today;
+    var data  = JSON.parse(localStorage.getItem('_scan_daily')||'{}');
+    if(data.date !== today) data = { date: today, count: 0 };
+    data.count = (data.count||0) + (n||1);
+    localStorage.setItem('_scan_daily', JSON.stringify(data));
     updateLimitBadge();
-    if(!uid) return;
-    db.collection('users').doc(uid).collection('meta').doc('scan_daily').set({
-      date: today, count: _scanCountCache
-    }).catch(function(){});
   }
-
-  // טען ספירה אחרי שה-uid ידוע
-  var _scanCountLoaded = false;
-  var _origBootApp = window.bootApp;
-  // נטען ב-renderStats שנקרא אחרי boot
-  function ensureScanCountLoaded(){
-    if(!_scanCountLoaded && uid){ _scanCountLoaded = true; loadScanCount(); }
-  }
-  window.ensureScanCountLoaded = ensureScanCountLoaded;
 
   function updateLimitBadge(){
     var used  = getScanCount();
