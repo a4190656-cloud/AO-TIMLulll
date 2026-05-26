@@ -8839,6 +8839,7 @@ window.exportUserData = function() {
    ================================================================ */
 
 (function() {
+  function initScan(){
 
   /* ── כתובת ה-Worker שלך — שנה כאן אחרי ההגדרה ── */
   var WORKER_URL = 'https://ao.a4190656.workers.dev/';
@@ -8848,7 +8849,11 @@ window.exportUserData = function() {
   var processingEl   = document.getElementById('scan-doc-processing');
   var resultEl       = document.getElementById('scan-doc-result');
 
-  if (!scanBtn || !fileInput) return;
+  if (!scanBtn || !fileInput) {
+    // נסה שוב אחרי 500ms אם האלמנטים עדיין לא קיימים
+    setTimeout(initScan, 500);
+    return;
+  }
 
   /* ── מגבלת 7 סריקות ביום ── */
   var DAILY_LIMIT = 7;
@@ -9305,6 +9310,14 @@ window.exportUserData = function() {
 
   /* חשוף saveScannedTransaction גלובלית */
   window.saveScannedTransaction = saveScannedTransaction;
+
+  } // end initScan
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(initScan, 300); });
+  } else {
+    setTimeout(initScan, 300);
+  }
 
 })();
 
