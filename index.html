@@ -83,7 +83,13 @@
   position: fixed; inset: 0; z-index: 9999;
   background: #000;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  animation: secLoaderFadeIn 0.25s ease forwards;
+}
+@keyframes secLoaderFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 .secure-spinner {
   width: 90px; height: 90px;
@@ -2462,12 +2468,58 @@
 
 /* ── כפתור גוגל ── */
 #btn-google-login {
-  transition: transform 0.2s var(--spring), box-shadow 0.2s ease, opacity 0.2s !important;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.22s var(--spring), box-shadow 0.22s ease, opacity 0.18s ease, background 0.18s ease !important;
+  will-change: transform;
 }
 #btn-google-login:hover {
   transform: translateY(-2px) !important;
-  box-shadow: 0 8px 28px rgba(0,0,0,0.45) !important;
+  box-shadow: 0 10px 32px rgba(0,0,0,0.50) !important;
 }
+#btn-google-login:active {
+  transform: scale(0.97) !important;
+}
+/* Ripple effect on click */
+#btn-google-login .g-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(66,133,244,0.18);
+  transform: scale(0);
+  animation: gRipple 0.55s cubic-bezier(0.16,1,0.3,1) forwards;
+  pointer-events: none;
+}
+@keyframes gRipple {
+  to { transform: scale(4); opacity: 0; }
+}
+/* Loading shimmer on the button */
+#btn-google-login.g-loading {
+  pointer-events: none;
+  background: rgba(240,240,240,0.90) !important;
+}
+#btn-google-login.g-loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.55) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: gShimmer 1s ease infinite;
+}
+@keyframes gShimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+/* Google spinner */
+.g-spin {
+  display: inline-block;
+  width: 18px; height: 18px;
+  border: 2.5px solid rgba(60,60,60,0.18);
+  border-top-color: #4285F4;
+  border-radius: 50%;
+  animation: gSpin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes gSpin { to { transform: rotate(360deg); } }
 
 /* ── כפתור שכחת סיסמה ── */
 #btn-forgot-pass {
@@ -7271,7 +7323,7 @@ window.deletePhoneIdx = function(i) {
       /* Always hide security loader and reset Google button */
       hide('security-loader-overlay');
       var gBtn = $('btn-google-login');
-      if(gBtn){ gBtn.disabled=false; gBtn.style.opacity='1'; }
+      if(gBtn){ gBtn.disabled=false; gBtn.classList.remove('g-loading'); gBtn.innerHTML='<svg width="19" height="19" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>כניסה עם גוגל'; }
       showScreen('screen-login');
       return;
     }
@@ -7376,20 +7428,38 @@ window.deletePhoneIdx = function(i) {
       hide('security-loader-overlay');
       showLoginErr('שגיאה בחיבור לחשבון: ' + error.message);
       var gBtn = $('btn-google-login');
-      if(gBtn){ gBtn.disabled=false; gBtn.style.opacity='1'; }
+      if(gBtn){ gBtn.disabled=false; gBtn.classList.remove('g-loading'); gBtn.innerHTML='<svg width="19" height="19" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>כניסה עם גוגל'; }
     });
   };
 
-  // 2. הפעולה של לחיצה על הכפתור
-  $('btn-google-login').onclick = function(){
+  // 2. הפעולה של לחיצה על הכפתור — מהיר, חלק, מיידי
+  $('btn-google-login').onclick = function(ev){
     var btn = this;
-    btn.disabled = true;
-    btn.style.opacity = '0.6';
-    var origText = btn.innerHTML;
-    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin360 0.9s linear infinite;display:inline-block;vertical-align:middle;margin-left:6px;"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg> מתחבר...';
+    if(btn.disabled) return;
 
+    /* ── Ripple effect ── */
+    var rect = btn.getBoundingClientRect();
+    var ripple = document.createElement('span');
+    ripple.className = 'g-ripple';
+    var size = Math.max(rect.width, rect.height);
+    ripple.style.cssText = 'width:'+size+'px;height:'+size+'px;top:'+(ev.clientY-rect.top-size/2)+'px;left:'+(ev.clientX-rect.left-size/2)+'px;';
+    btn.appendChild(ripple);
+    setTimeout(function(){ if(ripple.parentNode) ripple.parentNode.removeChild(ripple); }, 600);
+
+    /* ── Instant loading state ── */
+    var origHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.classList.add('g-loading');
+    btn.innerHTML = '<span class="g-spin"></span><span style="color:#3c4043;font-weight:700;font-size:14px;">מתחבר לגוגל...</span>';
+
+    function resetBtn(){
+      btn.disabled = false;
+      btn.classList.remove('g-loading');
+      btn.innerHTML = origHTML;
+    }
+
+    /* ── Flutter WebView Native ── */
     if (window.flutter_inappwebview !== undefined) {
-      // שלח ל-Flutter לפתוח בחירת חשבון גוגל מחדש
       try {
         window.flutter_inappwebview.callHandler('NativeGoogleLogin', { forceAccountSelect: true });
       } catch(e) {
@@ -7398,50 +7468,41 @@ window.deletePhoneIdx = function(i) {
       return;
     }
 
-    function doGoogleLogin(){
-      var provider = new firebase.auth.GoogleAuthProvider();
-      provider.addScope('profile');
-      provider.addScope('email');
-      provider.setCustomParameters({ prompt: 'select_account' });
+    /* ── Web: Popup מיידי ללא signOut מקדים ── */
+    var provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('profile');
+    provider.addScope('email');
+    provider.setCustomParameters({ prompt: 'select_account' });
 
-      // בדפדפן — Popup (redirect שבור ב-Chrome חדש עם third-party cookies)
-      auth.signInWithPopup(provider)
-        .then(function(result){
-          // הצלחה — onAuthStateChanged יטפל
-        })
-        .catch(function(e){
-          btn.disabled = false;
-          btn.style.opacity = '1';
-          btn.innerHTML = origText;
-          if(e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') return;
-          if(e.code === 'auth/popup-blocked'){
-            // popup נחסם — fallback ל-redirect
-            sessionStorage.setItem('_googleRedirectPending','1');
-            sessionStorage.removeItem('_ao_signed_out');
-            ['screen-loading','screen-login','screen-setname','app'].forEach(function(id){
-              var el=document.getElementById(id); if(el) el.classList.add('hidden');
-            });
-            show('security-loader-overlay');
-            var _gm=$('security-msg'); if(_gm) _gm.textContent='מעביר לגוגל...';
-            var _gs=$('security-sub-msg'); if(_gs) _gs.textContent='אנא המתן';
-            auth.signInWithRedirect(provider);
-            return;
-          }
-          if(e.code === 'auth/account-exists-with-different-credential'){
-            showLoginErr('חשבון עם מייל זה כבר קיים. השתמש בכניסה עם מייל וסיסמה.');
-          } else {
-            showLoginErr('שגיאה בכניסה עם גוגל: '+(e.message||e.code));
-          }
-        });
-    }
-
-    // signOut תחילה — אבל לא sessionStorage
-    try {
-      Object.keys(localStorage).forEach(function(k){
-        if(k.indexOf('firebase')>-1||k.indexOf('google')>-1) localStorage.removeItem(k);
+    auth.signInWithPopup(provider)
+      .then(function(){
+        /* הצלחה — onAuthStateChanged יטפל, הכפתור נשאר disabled */
+      })
+      .catch(function(e){
+        if(e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request'){
+          resetBtn(); return;
+        }
+        if(e.code === 'auth/popup-blocked'){
+          /* Popup נחסם — Redirect fallback */
+          sessionStorage.setItem('_googleRedirectPending','1');
+          sessionStorage.removeItem('_ao_signed_out');
+          ['screen-loading','screen-login','screen-setname','app'].forEach(function(id){
+            var el=document.getElementById(id); if(el) el.classList.add('hidden');
+          });
+          show('security-loader-overlay');
+          var _gm=$('security-msg'); if(_gm) _gm.textContent='מעביר לגוגל...';
+          var _gs=$('security-sub-msg'); if(_gs) _gs.textContent='אנא המתן';
+          auth.signInWithRedirect(provider);
+          return;
+        }
+        /* שגיאה אחרת */
+        resetBtn();
+        if(e.code === 'auth/account-exists-with-different-credential'){
+          showLoginErr('חשבון עם מייל זה כבר קיים. השתמש בכניסה עם מייל וסיסמה.');
+        } else {
+          showLoginErr('שגיאה בכניסה עם גוגל: '+(e.message||e.code));
+        }
       });
-    } catch(e){}
-    auth.signOut().then(doGoogleLogin).catch(doGoogleLogin);
   };
   /* ── fallback: אם popup נחסם ונעשה redirect — טפל בחזרה ── */
   var _hasRedirectPending = sessionStorage.getItem('_googleRedirectPending') === '1';
@@ -7485,6 +7546,8 @@ window.deletePhoneIdx = function(i) {
         showLoginErr('שגיאה בכניסה עם גוגל: ' + (e.message || e.code));
       }
     }
+    var gBtn2 = $('btn-google-login');
+    if(gBtn2){ gBtn2.disabled=false; gBtn2.classList.remove('g-loading'); }
     showScreen('screen-login');
   });
 
