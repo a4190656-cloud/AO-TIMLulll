@@ -9044,20 +9044,45 @@ window.exportUserData = function() {
     var catsArr = _cats.map(function(c){ return c.name + ' (' + (c.type==='income'?'הכנסה':'הוצאה') + ')'; });
     var cats = catsArr.join(', ');
 
-    var resp = await fetch(WORKER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imageBase64: b64, mimeType: mime, categories: cats })
-    });
+    var lastErr;
+    for(var attempt = 0; attempt < 3; attempt++){
+      if(attempt > 0){
+        // המתן לפני retry: 2s, 4s
+        await new Promise(function(res){ setTimeout(res, attempt * 2000); });
+      }
+      try {
+        var resp = await fetch(WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageBase64: b64, mimeType: mime, categories: cats })
+        });
 
-    if (!resp.ok) {
-      var errText = await resp.text().catch(function(){ return ''; });
-      throw new Error('Worker ' + resp.status + (errText ? ': ' + errText.substring(0,80) : ''));
+        if(!resp.ok){
+          var errText = await resp.text().catch(function(){ return ''; });
+          var status = resp.status;
+          if(status === 429){
+            lastErr = new Error('השרת עמוס כרגע — ממתין ומנסה שוב...');
+            continue; // retry
+          }
+          if(status === 502 || status === 503){
+            lastErr = new Error('שרת הסריקה לא זמין — ממתין ומנסה שוב...');
+            continue; // retry
+          }
+          throw new Error('שגיאת שרת ' + status + (errText ? ': ' + errText.substring(0,60) : ''));
+        }
+
+        var data = await resp.json();
+        return data;
+
+      } catch(fetchErr){
+        if(fetchErr.message.indexOf('ממתין') > -1){
+          lastErr = fetchErr;
+          continue;
+        }
+        throw fetchErr;
+      }
     }
-
-    var data = await resp.json();
-    return data;
-  }
+    throw lastErr || new Error('שגיאה בסריקה — נסה שוב מאוחר יותר');
 
   /* ── המרת קובץ ל-base64 ── */
   function fileToBase64(file) {
