@@ -8841,17 +8841,23 @@ window.exportUserData = function() {
    ================================================================ */
 
 (function() {
-  function initScan(){
 
   /* ── כתובת ה-Worker שלך — שנה כאן אחרי ההגדרה ── */
   var WORKER_URL = 'https://ao.a4190656.workers.dev/';
 
-  var scanBtn        = document.getElementById('btn-scan-doc');
-  var fileInput      = document.getElementById('scan-doc-file');
-  var processingEl   = document.getElementById('scan-doc-processing');
-  var resultEl       = document.getElementById('scan-doc-result');
+  var scanBtn, fileInput, processingEl, resultEl;
 
-  if (!scanBtn || !fileInput) return;
+  function bindScanElements(){
+    scanBtn     = document.getElementById('btn-scan-doc');
+    fileInput   = document.getElementById('scan-doc-file');
+    processingEl= document.getElementById('scan-doc-processing');
+    resultEl    = document.getElementById('scan-doc-result');
+    if(!scanBtn || !fileInput) return false;
+    return true;
+  }
+
+  function attachHandlers(){
+    if(!bindScanElements()) return;
 
   /* ── מגבלת 7 סריקות ביום ── */
   var DAILY_LIMIT = 7;
@@ -9309,9 +9315,14 @@ window.exportUserData = function() {
   /* חשוף saveScannedTransaction גלובלית */
   window.saveScannedTransaction = saveScannedTransaction;
 
-  } // end initScan
+  } // end attachHandlers
 
-  window._initScan = initScan; // חשוף גלובלית — bootApp יקרא לזה
+  // נסה מיד — אם הדף כבר נטען
+  if(document.readyState !== 'loading'){
+    attachHandlers();
+  }
+  // גם כשה-app מוצג — bootApp יקרא לזה
+  window._initScan = attachHandlers;
 
 })();
 
