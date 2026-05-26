@@ -1898,20 +1898,28 @@
     .scan-doc-result {
       margin-top: 8px;
       border-radius: 16px;
-      padding: 12px 15px;
+      padding: 14px 14px;
       font-size: 12px; font-weight: 700;
       animation: springModalIn 0.45s var(--spring) both;
-      display: flex; align-items: flex-start; gap: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      overflow: visible;
+      width: 100%;
+      box-sizing: border-box;
     }
     .scan-doc-result.result-ok {
-      background: rgba(0,255,136,0.06);
-      border: 1px solid rgba(0,255,136,0.22);
-      color: rgba(0,255,136,0.88);
+      background: rgba(0,10,20,0.55);
+      border: 1px solid rgba(0,229,255,0.14);
+      color: rgba(255,255,255,0.88);
     }
     .scan-doc-result.result-err {
       background: rgba(255,59,92,0.06);
       border: 1px solid rgba(255,59,92,0.22);
       color: rgba(255,120,140,0.88);
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 10px;
     }
     .scan-doc-result .result-icon { flex-shrink: 0; margin-top: 1px; }
     .scan-doc-result .result-body { flex: 1; line-height: 1.6; }
@@ -1919,6 +1927,27 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 18px; font-weight: 800; letter-spacing: -0.5px;
       display: block; margin-bottom: 2px;
+    }
+    /* כרטיסי אישור בודדים */
+    #mscan-confirm-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+    #mscan-confirm-list > div {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    #mscan-confirm-list input,
+    #mscan-confirm-list select {
+      width: 100% !important;
+      box-sizing: border-box !important;
+      min-width: 0 !important;
+    }
+    #mscan-actions {
+      width: 100%;
+      box-sizing: border-box;
     }
     /* עיצוב כפתור סגירה לבועה */
 .wa-close-btn {
@@ -8842,478 +8871,213 @@ window.exportUserData = function() {
 
 (function() {
 
-  /* ── כתובת ה-Worker שלך — שנה כאן אחרי ההגדרה ── */
-  var WORKER_URL = 'https://ao.a4190656.workers.dev/';
-
-  var DAILY_LIMIT   = 7;
-  var MAX_PER_SCAN  = 5;   /* מקסימום קבצים בבחירה אחת */
+  var WORKER_URL   = 'https://ao.a4190656.workers.dev/';
+  var DAILY_LIMIT  = 7;
+  var MAX_PER_SCAN = 5;
 
   var scanBtn, fileInput, processingEl, resultEl;
 
   function bindScanElements(){
-    scanBtn     = document.getElementById('btn-scan-doc');
-    fileInput   = document.getElementById('scan-doc-file');
-    processingEl= document.getElementById('scan-doc-processing');
-    resultEl    = document.getElementById('scan-doc-result');
+    scanBtn      = document.getElementById('btn-scan-doc');
+    fileInput    = document.getElementById('scan-doc-file');
+    processingEl = document.getElementById('scan-doc-processing');
+    resultEl     = document.getElementById('scan-doc-result');
     if(!scanBtn || !fileInput) return false;
     return true;
   }
 
-  /* ════════════════════════════════════════════════
-     SCAN COUNTER — Firestore מסונכרן בין מכשירים
-     (עם fallback ל-localStorage אם offline)
-  ════════════════════════════════════════════════ */
-  var _scanCountCache = null; /* {date, count} — cache מקומי לאחר טעינה */
-
+  /* Firestore-synced scan counter */
+  var _scanCountCache = null;
   function _todayStr(){ return new Date().toISOString().slice(0,10); }
 
-  /* טעינת מונה מ-Firestore */
   function loadScanCount(){
     return new Promise(function(resolve){
       var user = (typeof firebase !== 'undefined') && firebase.auth().currentUser;
       if(!user){ resolve(_localScanCount()); return; }
       firebase.firestore().collection('users').doc(user.uid)
-        .collection('_meta').doc('scan_daily')
-        .get()
+        .collection('_meta').doc('scan_daily').get()
         .then(function(snap){
           var today = _todayStr();
-          if(snap.exists){
-            var d = snap.data();
-            if(d.date === today){
-              _scanCountCache = { date: today, count: d.count || 0 };
-              /* גם עדכן localStorage למקרה offline */
-              try{ localStorage.setItem('_scan_daily', JSON.stringify(_scanCountCache)); }catch(e){}
-              resolve(_scanCountCache.count);
-              return;
-            }
-          }
-          /* יום חדש או אין doc — אפס */
-          _scanCountCache = { date: today, count: 0 };
-          resolve(0);
-        })
-        .catch(function(){
-          /* Firestore נחסם / offline — fallback */
-          resolve(_localScanCount());
-        });
+          if(snap.exists){ var d=snap.data(); if(d.date===today){ _scanCountCache={date:today,count:d.count||0}; try{localStorage.setItem('_scan_daily',JSON.stringify(_scanCountCache));}catch(e){} resolve(_scanCountCache.count); return; } }
+          _scanCountCache={date:today,count:0}; resolve(0);
+        }).catch(function(){ resolve(_localScanCount()); });
     });
   }
 
-  /* קריאת מונה מ-localStorage */
   function _localScanCount(){
-    var today = _todayStr();
-    try{
-      var d = JSON.parse(localStorage.getItem('_scan_daily') || '{}');
-      if(d.date === today) return d.count || 0;
-    }catch(e){}
+    var today=_todayStr();
+    try{ var d=JSON.parse(localStorage.getItem('_scan_daily')||'{}'); if(d.date===today) return d.count||0; }catch(e){}
     return 0;
   }
 
-  /* הוספת n לאחר סריקה מוצלחת — שמור גם Firestore + localStorage */
   function addScanCount(n){
-    var today = _todayStr();
-    var cur   = (_scanCountCache && _scanCountCache.date === today) ? _scanCountCache.count : _localScanCount();
-    var next  = cur + (n || 1);
-    _scanCountCache = { date: today, count: next };
-    /* localStorage כ-fallback תמיד */
-    try{ localStorage.setItem('_scan_daily', JSON.stringify(_scanCountCache)); }catch(e){}
-    /* Firestore — fire-and-forget */
-    var user = (typeof firebase !== 'undefined') && firebase.auth().currentUser;
-    if(user){
-      firebase.firestore().collection('users').doc(user.uid)
-        .collection('_meta').doc('scan_daily')
-        .set({ date: today, count: next }, { merge: false })
-        .catch(function(){});
-    }
+    var today=_todayStr(), cur=(_scanCountCache&&_scanCountCache.date===today)?_scanCountCache.count:_localScanCount(), next=cur+(n||1);
+    _scanCountCache={date:today,count:next};
+    try{localStorage.setItem('_scan_daily',JSON.stringify(_scanCountCache));}catch(e){}
+    var user=(typeof firebase!=='undefined')&&firebase.auth().currentUser;
+    if(user) firebase.firestore().collection('users').doc(user.uid).collection('_meta').doc('scan_daily').set({date:today,count:next},{merge:false}).catch(function(){});
     updateLimitBadge(next);
   }
 
   function updateLimitBadge(used){
-    if(used === undefined) used = (_scanCountCache && _scanCountCache.date === _todayStr()) ? _scanCountCache.count : _localScanCount();
-    var left  = Math.max(0, DAILY_LIMIT - used);
-    var badge = document.getElementById('scan-limit-badge');
+    if(used===undefined) used=(_scanCountCache&&_scanCountCache.date===_todayStr())?_scanCountCache.count:_localScanCount();
+    var left=Math.max(0,DAILY_LIMIT-used), badge=document.getElementById('scan-limit-badge');
     if(!badge) return;
-    if(left === 0){
-      badge.textContent = 'הגעת למגבלה היומית';
-      badge.style.color = 'rgba(255,80,80,0.9)';
-    } else {
-      badge.textContent = left + '/' + DAILY_LIMIT + ' סריקות נותרו';
-      badge.style.color = left <= 2 ? 'rgba(255,160,0,0.9)' : 'rgba(0,229,255,0.8)';
-    }
+    if(left===0){ badge.textContent='הגעת למגבלה היומית'; badge.style.color='rgba(255,80,80,0.9)'; }
+    else{ badge.textContent=left+'/'+DAILY_LIMIT+' סריקות נותרו'; badge.style.color=left<=2?'rgba(255,160,0,0.9)':'rgba(0,229,255,0.8)'; }
   }
 
   function attachHandlers(){
     if(!bindScanElements()) return;
+    loadScanCount().then(function(used){ _scanCountCache={date:_todayStr(),count:used}; updateLimitBadge(used); });
 
-    /* טען מונה מ-Firestore ועדכן badge */
-    loadScanCount().then(function(used){
-      _scanCountCache = { date: _todayStr(), count: used };
-      updateLimitBadge(used);
-    });
+    scanBtn.onclick = function(){
+      fileInput.click();
+      resultEl.className='scan-doc-result hidden';
+      resultEl.innerHTML='';
+    };
 
-  /* ── פותח את בורר הקבצים ── */
-  scanBtn.onclick = function() {
-    fileInput.click(); /* חייב ראשון — Android חוסם אם לא user gesture ישיר */
-    resultEl.className = 'scan-doc-result hidden';
-    resultEl.innerHTML = '';
-  };
+    fileInput.onchange = async function(){
+      var files=Array.from(fileInput.files||[]); if(!files.length) return; fileInput.value='';
+      var used=await loadScanCount(); _scanCountCache={date:_todayStr(),count:used};
+      var remaining=DAILY_LIMIT-used;
+      if(remaining<=0){ toast('הגעת למגבלת '+DAILY_LIMIT+' הסריקות היומית! נסה שוב מחר','error'); updateLimitBadge(used); return; }
+      if(files.length>MAX_PER_SCAN){ toast('ניתן לסרוק עד '+MAX_PER_SCAN+' מסמכים בבת אחת','info'); files=files.slice(0,MAX_PER_SCAN); }
+      if(files.length>remaining){ toast('נותרו רק '+remaining+' סריקות היום','info'); files=files.slice(0,remaining); }
+      await processAndConfirmFiles(files);
+    };
 
-  fileInput.onchange = async function() {
-    var files = Array.from(fileInput.files || []);
-    if(!files.length) return;
-    fileInput.value = '';
-
-    /* טען מונה עדכני מ-Firestore */
-    var used = await loadScanCount();
-    _scanCountCache = { date: _todayStr(), count: used };
-    var remaining = DAILY_LIMIT - used;
-
-    if(remaining <= 0){
-      toast('הגעת למגבלת ' + DAILY_LIMIT + ' הסריקות היומית! נסה שוב מחר 🔄', 'error');
-      updateLimitBadge(used);
-      return;
-    }
-
-    /* הגבלה: מקסימום 5 קבצים בבחירה אחת */
-    if(files.length > MAX_PER_SCAN){
-      toast('ניתן לסרוק עד ' + MAX_PER_SCAN + ' מסמכים בבת אחת', 'info');
-      files = files.slice(0, MAX_PER_SCAN);
-    }
-
-    /* קצץ לפי מה שנותר מהמכסה היומית */
-    if(files.length > remaining){
-      toast('נותרו רק ' + remaining + ' סריקות היום — ' + remaining + ' קבצים יעובדו', 'info');
-      files = files.slice(0, remaining);
-    }
-
-    /* תמיד מצב multi — גם קובץ בודד עובר בתהליך האישור */
-    await processAndConfirmFiles(files);
-  };
-
-  /* ════════════════════════════════════════════════════
-     CORE: סריקה + מסך אישור — כל עסקה בנפרד
-  ════════════════════════════════════════════════════ */
-  async function processAndConfirmFiles(files){
-    /* הכן container */
-    resultEl.className = 'scan-doc-result result-ok';
-    resultEl.style.position = 'relative';
-    resultEl.style.overflow = 'hidden';
-    resultEl.innerHTML =
-      /* header */
-      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">'+
-        '<div style="width:28px;height:28px;border-radius:9px;background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+
-          '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'+
-        '</div>'+
-        '<div style="flex:1;">'+
-          '<div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.30);">🤖 AI סורק '+files.length+' מסמך' + (files.length>1?'ים':'') + '...</div>'+
-        '</div>'+
-        '<div id="scan-progress-label" style="font-family:\'JetBrains Mono\',monospace;font-size:11px;font-weight:700;color:rgba(0,229,255,0.6);">0/'+files.length+'</div>'+
-      '</div>'+
-      /* progress bar */
-      '<div style="height:3px;border-radius:99px;background:rgba(255,255,255,0.06);margin-bottom:16px;overflow:hidden;">'+
-        '<div id="scan-progress-bar" style="height:100%;border-radius:99px;background:linear-gradient(90deg,var(--cyan),rgba(0,200,255,0.6));width:0%;transition:width .4s cubic-bezier(.16,1,.3,1);"></div>'+
-      '</div>'+
-      /* רשימת פריטים */
-      '<div id="mscan-confirm-list" style="display:flex;flex-direction:column;gap:10px;"></div>'+
-      /* כפתורי תחתית */
-      '<div id="mscan-actions" class="hidden" style="margin-top:16px;display:flex;flex-direction:column;gap:9px;">'+
-        '<button id="mscan-save-approved" style="width:100%;padding:13px;border-radius:14px;border:1px solid rgba(0,229,255,0.35);background:linear-gradient(135deg,rgba(0,229,255,0.12),rgba(0,180,255,0.06));color:var(--cyan);font-family:\'Syne\',sans-serif;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 4px 20px rgba(0,229,255,0.12);">✓ שמור את המאושרים</button>'+
-        '<button id="mscan-discard-all" style="width:100%;padding:11px;border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.32);font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">✕ בטל הכל</button>'+
-      '</div>';
-    resultEl.classList.remove('hidden');
-
-    scanBtn.style.opacity       = '0.4';
-    scanBtn.style.pointerEvents = 'none';
-
-    var list     = document.getElementById('mscan-confirm-list');
-    var progBar  = document.getElementById('scan-progress-bar');
-    var progLbl  = document.getElementById('scan-progress-label');
-    var results  = []; /* { idx, result, approved, editedAmount, editedDesc, editedCat } */
-    var _allCats = window._appUserCategories || [];
-
-    for(var i = 0; i < files.length; i++){
-      var f   = files[i];
-      var idx = i;
-
-      /* ── Placeholder בזמן סריקה ── */
-      var item = document.createElement('div');
-      item.id  = 'mscan-item-' + idx;
-      item.style.cssText =
-        'border-radius:16px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);'+
-        'overflow:hidden;transition:all .3s cubic-bezier(.16,1,.3,1);';
-      item.innerHTML =
-        '<div style="display:flex;align-items:center;gap:10px;padding:13px 14px;">'+
-          '<div class="g-spin" style="flex-shrink:0;border-top-color:var(--cyan);"></div>'+
-          '<div style="flex:1;min-width:0;">'+
-            '<div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.45);">'+escHtml(f.name.length>30?f.name.slice(0,27)+'...':f.name)+'</div>'+
-            '<div style="font-size:10px;color:rgba(255,255,255,0.22);margin-top:2px;">AI סורק...</div>'+
+    async function processAndConfirmFiles(files){
+      resultEl.className='scan-doc-result result-ok';
+      resultEl.innerHTML=
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">'+
+          '<div style="width:26px;height:26px;border-radius:8px;background:rgba(0,229,255,0.10);border:1px solid rgba(0,229,255,0.22);display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+
+            '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 1 10 10"/><circle cx="12" cy="12" r="10" stroke-opacity=".2"/></svg>'+
           '</div>'+
+          '<div style="flex:1;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,0.30);" id="scan-hdr-txt">סורק '+files.length+' מסמך'+(files.length>1?'ים':'')+'...</div>'+
+          '<div id="scan-progress-label" style="font-family:\'JetBrains Mono\',monospace;font-size:11px;font-weight:700;color:rgba(0,229,255,0.55);">0/'+files.length+'</div>'+
+        '</div>'+
+        '<div style="height:2px;border-radius:99px;background:rgba(255,255,255,0.05);margin-bottom:14px;overflow:hidden;">'+
+          '<div id="scan-progress-bar" style="height:100%;border-radius:99px;background:linear-gradient(90deg,var(--cyan),rgba(0,180,255,0.5));width:0%;transition:width .4s cubic-bezier(.16,1,.3,1);"></div>'+
+        '</div>'+
+        '<div id="mscan-confirm-list" style="display:flex;flex-direction:column;gap:9px;width:100%;"></div>'+
+        '<div id="mscan-actions" class="hidden" style="margin-top:13px;display:flex;flex-direction:column;gap:7px;width:100%;">'+
+          '<button id="mscan-save-approved" style="width:100%;padding:13px;border-radius:14px;border:1px solid rgba(0,229,255,0.30);background:rgba(0,229,255,0.10);color:var(--cyan);font-family:\'Syne\',sans-serif;font-size:14px;font-weight:900;cursor:pointer;box-sizing:border-box;">✓ שמור את המאושרים</button>'+
+          '<button id="mscan-discard-all" style="width:100%;padding:10px;border-radius:14px;border:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.025);color:rgba(255,255,255,0.30);font-family:\'Syne\',sans-serif;font-size:12px;font-weight:700;cursor:pointer;box-sizing:border-box;">✕ בטל הכל</button>'+
         '</div>';
-      list.appendChild(item);
+      resultEl.classList.remove('hidden');
+      scanBtn.style.opacity='0.4'; scanBtn.style.pointerEvents='none';
 
-      try {
-        var r = await sendToWorker(f);
-        addScanCount(1);
+      var list=document.getElementById('mscan-confirm-list');
+      var progBar=document.getElementById('scan-progress-bar');
+      var progLbl=document.getElementById('scan-progress-label');
+      var results=[], _allCats=window._appUserCategories||[];
 
-        var approved = true;
-        results.push({ idx: idx, result: r, approved: true,
-          editedAmount: r.amount, editedDesc: r.description || '', editedCat: r.category || '' });
+      for(var i=0;i<files.length;i++){
+        var f=files[i], idx=i;
+        var item=document.createElement('div');
+        item.id='mscan-item-'+idx;
+        item.style.cssText='border-radius:14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);overflow:hidden;width:100%;box-sizing:border-box;';
+        item.innerHTML='<div style="display:flex;align-items:center;gap:10px;padding:12px 13px;"><div class="g-spin" style="flex-shrink:0;border-top-color:var(--cyan);width:16px;height:16px;border-width:2px;"></div><div style="flex:1;min-width:0;font-size:12px;font-weight:600;color:rgba(255,255,255,0.38);">'+escHtml(f.name.length>30?f.name.slice(0,27)+'...':f.name)+'</div></div>';
+        list.appendChild(item);
 
-        /* ── כרטיס תוצאה עם אפשרויות אישור ── */
-        var isI   = r.type === 'income';
-        var col   = isI ? '#00E676' : '#FF6080';
-        var tBg   = isI ? 'rgba(0,230,118,0.09)' : 'rgba(255,23,68,0.09)';
-        var tBdr  = isI ? 'rgba(0,230,118,0.22)' : 'rgba(255,23,68,0.22)';
-        var sym   = isI ? '+' : '−';
-        var amt   = r.amount ? '₪' + Number(r.amount).toLocaleString('he-IL') : '—';
-
-        /* קטגוריות תואמות לסוג */
-        var catsOfType = _allCats.filter(function(c){ return c.type === (isI?'income':'expense'); });
-        var matchedCat = r.category || '';
-        if(matchedCat && catsOfType.length){
-          var lc = matchedCat.toLowerCase();
-          var found = catsOfType.find(function(c){ return c.name.toLowerCase()===lc||c.name.toLowerCase().includes(lc)||lc.includes(c.name.toLowerCase()); });
-          if(found) matchedCat = found.name;
+        try{
+          var r=await sendToWorker(f);
+          addScanCount(1);
+          results.push({idx:idx,result:r,approved:true,editedAmount:r.amount,editedDesc:r.description||'',editedCat:r.category||''});
+          var isI=r.type==='income', col=isI?'#00E676':'#FF6080', tBg=isI?'rgba(0,230,118,0.08)':'rgba(255,23,68,0.08)', tBdr=isI?'rgba(0,230,118,0.20)':'rgba(255,23,68,0.20)', sym=isI?'+':'−', amt=r.amount?'₪'+Number(r.amount).toLocaleString('he-IL'):'—';
+          var catsOfType=_allCats.filter(function(c){return c.type===(isI?'income':'expense');});
+          var matchedCat=r.category||'';
+          if(matchedCat&&catsOfType.length){var lc=matchedCat.toLowerCase(),found=catsOfType.find(function(c){return c.name.toLowerCase()===lc||c.name.toLowerCase().includes(lc)||lc.includes(c.name.toLowerCase());});if(found)matchedCat=found.name;}
+          results[results.length-1].editedCat=matchedCat;
+          var catOpts='<option value="">— ללא —</option>'+catsOfType.map(function(c){return '<option value="'+escHtml(c.name)+'"'+(c.name===matchedCat?' selected':'')+'>'+escHtml(c.name)+'</option>';}).join('');
+          item.style.background=tBg; item.style.borderColor=tBdr;
+          item.innerHTML=
+            '<div style="display:flex;align-items:center;gap:9px;padding:11px 12px 8px;box-sizing:border-box;">'+
+              '<div style="width:32px;height:32px;flex-shrink:0;border-radius:10px;background:'+(isI?'rgba(0,230,118,0.14)':'rgba(255,23,68,0.14)')+';border:1px solid '+tBdr+';display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:'+col+';">'+sym+'</div>'+
+              '<div style="flex:1;min-width:0;overflow:hidden;">'+
+                '<div style="font-family:\'JetBrains Mono\',monospace;font-size:15px;font-weight:900;color:'+col+';line-height:1.1;">'+sym+' '+amt+'</div>'+
+                '<div style="font-size:10.5px;color:rgba(255,255,255,0.40);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(r.description?escHtml(r.description):'—')+'</div>'+
+              '</div>'+
+              '<button id="mscan-toggle-'+idx+'" onclick="window._mscanToggle('+idx+')" style="width:30px;height:30px;flex-shrink:0;border-radius:9px;border:1px solid rgba(0,230,118,0.35);background:rgba(0,230,118,0.12);color:#00E676;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;padding:0;">✓</button>'+
+            '</div>'+
+            '<div style="padding:0 12px 11px;display:flex;flex-direction:column;gap:7px;box-sizing:border-box;">'+
+              '<input id="mscan-desc-'+idx+'" type="text" value="'+escHtml(r.description||'')+'" placeholder="תיאור העסקה" oninput="window._mscanUpdateField('+idx+',\'desc\',this.value)" style="width:100%;padding:8px 11px;border-radius:9px;border:1px solid rgba(255,255,255,0.09);background:rgba(255,255,255,0.04);color:#fff;font-family:\'Syne\',sans-serif;font-size:12px;font-weight:600;outline:none;box-sizing:border-box;">'+
+              '<div style="position:relative;width:100%;"><select id="mscan-cat-'+idx+'" onchange="window._mscanUpdateField('+idx+',\'cat\',this.value)" style="width:100%;padding:8px 11px;border-radius:9px;border:1px solid rgba(255,255,255,0.09);background:rgba(4,7,14,0.95);color:#fff;font-family:\'Syne\',sans-serif;font-size:12px;font-weight:600;outline:none;appearance:none;-webkit-appearance:none;cursor:pointer;box-sizing:border-box;">'+catOpts+'</select><div style="position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:rgba(255,255,255,0.28);font-size:9px;">▾</div></div>'+
+              '<input id="mscan-amt-'+idx+'" type="number" inputmode="decimal" value="'+(r.amount||'')+'" placeholder="סכום ₪" oninput="window._mscanUpdateField('+idx+',\'amount\',this.value)" style="width:100%;padding:8px 11px;border-radius:9px;border:1px solid '+tBdr+';background:rgba(255,255,255,0.04);color:'+col+';font-family:\'JetBrains Mono\',monospace;font-size:13px;font-weight:800;outline:none;box-sizing:border-box;">'+
+            '</div>';
+        }catch(err){
+          item.style.borderColor='rgba(255,80,80,0.20)'; item.style.background='rgba(255,23,68,0.05)';
+          item.innerHTML='<div style="display:flex;align-items:center;gap:9px;padding:12px 13px;"><div style="width:30px;height:30px;flex-shrink:0;border-radius:9px;background:rgba(255,23,68,0.12);border:1px solid rgba(255,23,68,0.25);display:flex;align-items:center;justify-content:center;color:#FF6080;font-size:15px;">!</div><div style="flex:1;min-width:0;"><div style="font-size:12px;color:#FF6080;font-weight:700;">שגיאה בסריקה</div><div style="font-size:10px;color:rgba(255,255,255,0.25);">'+escHtml(f.name.slice(0,30))+'</div></div></div>';
         }
-        results[results.length-1].editedCat = matchedCat;
-
-        var catOpts = '<option value="">— ללא —</option>' +
-          catsOfType.map(function(c){
-            return '<option value="'+escHtml(c.name)+'"'+(c.name===matchedCat?' selected':'')+'>'+escHtml(c.name)+'</option>';
-          }).join('');
-
-        item.style.borderColor = tBdr;
-        item.style.background  = tBg;
-        item.innerHTML =
-          /* שורת כותרת */
-          '<div style="display:flex;align-items:center;gap:10px;padding:13px 14px 10px;">'+
-            '<div style="width:34px;height:34px;border-radius:11px;background:'+(isI?'rgba(0,230,118,0.15)':'rgba(255,23,68,0.15)')+';border:1px solid '+tBdr+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;font-weight:900;color:'+col+';">'+sym+'</div>'+
-            '<div style="flex:1;min-width:0;">'+
-              '<div style="font-family:\'JetBrains Mono\',monospace;font-size:16px;font-weight:900;color:'+col+';">'+sym+' '+amt+'</div>'+
-              '<div style="font-size:11px;color:rgba(255,255,255,0.42);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;">'+(r.description?escHtml(r.description):'—')+'</div>'+
-            '</div>'+
-            /* toggle approve */
-            '<button id="mscan-toggle-'+idx+'" onclick="window._mscanToggle('+idx+')" '+
-              'title="אשר / דחה" '+
-              'style="width:32px;height:32px;border-radius:10px;border:1px solid rgba(0,230,118,0.35);background:rgba(0,230,118,0.12);color:#00E676;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;">✓</button>'+
-          '</div>'+
-          /* expand: עריכה מהירה */
-          '<div id="mscan-edit-'+idx+'" style="padding:0 14px 13px;display:flex;flex-direction:column;gap:8px;">'+
-            /* תיאור */
-            '<input id="mscan-desc-'+idx+'" type="text" value="'+escHtml(r.description||'')+'" '+
-              'placeholder="תיאור העסקה" '+
-              'oninput="window._mscanUpdateField('+idx+',\'desc\',this.value)" '+
-              'style="width:100%;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:#fff;font-family:\'Syne\',sans-serif;font-size:12px;font-weight:600;outline:none;box-sizing:border-box;">'+
-            /* קטגוריה */
-            '<div style="position:relative;">'+
-              '<select id="mscan-cat-'+idx+'" onchange="window._mscanUpdateField('+idx+',\'cat\',this.value)" '+
-                'style="width:100%;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(4,7,14,0.9);color:#fff;font-family:\'Syne\',sans-serif;font-size:12px;font-weight:600;outline:none;appearance:none;-webkit-appearance:none;cursor:pointer;box-sizing:border-box;">'+
-                catOpts+
-              '</select>'+
-              '<div style="position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:rgba(255,255,255,0.3);font-size:10px;">▾</div>'+
-            '</div>'+
-            /* סכום */
-            '<input id="mscan-amt-'+idx+'" type="number" inputmode="decimal" value="'+(r.amount||'')+'" '+
-              'placeholder="סכום ₪" '+
-              'oninput="window._mscanUpdateField('+idx+',\'amount\',this.value)" '+
-              'style="width:100%;padding:9px 12px;border-radius:10px;border:1px solid '+tBdr+';background:rgba(255,255,255,0.04);color:'+col+';font-family:\'JetBrains Mono\',monospace;font-size:13px;font-weight:800;outline:none;box-sizing:border-box;">'+
-          '</div>';
-
-      } catch(err){
-        item.style.borderColor = 'rgba(255,80,80,0.20)';
-        item.innerHTML =
-          '<div style="display:flex;align-items:center;gap:10px;padding:13px 14px;">'+
-            '<div style="width:34px;height:34px;border-radius:11px;background:rgba(255,23,68,0.12);border:1px solid rgba(255,23,68,0.28);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#FF6080;font-size:16px;">!</div>'+
-            '<div style="flex:1;"><div style="font-size:12px;color:#FF6080;font-weight:700;">שגיאה בסריקה</div>'+
-              '<div style="font-size:10px;color:rgba(255,255,255,0.28);">'+(escHtml(f.name.slice(0,28)))+'</div></div>'+
-          '</div>';
+        var done=i+1;
+        if(progBar) progBar.style.width=(done/files.length*100)+'%';
+        if(progLbl) progLbl.textContent=done+'/'+files.length;
       }
 
-      /* עדכן progress */
-      var done = i + 1;
-      if(progBar) progBar.style.width = (done/files.length*100) + '%';
-      if(progLbl) progLbl.textContent  = done + '/' + files.length;
+      var hdr=document.getElementById('scan-hdr-txt');
+      if(hdr) hdr.textContent='✓ '+results.length+' מסמך'+(results.length!==1?'ים':'')+' — אשר ושמור';
+      document.getElementById('mscan-actions').classList.remove('hidden');
+      scanBtn.style.opacity=''; scanBtn.style.pointerEvents='';
+
+      window._mscanToggle=function(idx){
+        var obj=results.find(function(r){return r.idx===idx;}); if(!obj) return;
+        obj.approved=!obj.approved;
+        var btn=document.getElementById('mscan-toggle-'+idx), card=document.getElementById('mscan-item-'+idx);
+        if(obj.approved){ if(btn){btn.textContent='✓';btn.style.borderColor='rgba(0,230,118,0.35)';btn.style.background='rgba(0,230,118,0.12)';btn.style.color='#00E676';} if(card){card.style.opacity='1';card.style.filter='none';} }
+        else{ if(btn){btn.textContent='✕';btn.style.borderColor='rgba(255,23,68,0.28)';btn.style.background='rgba(255,23,68,0.08)';btn.style.color='#FF6080';} if(card){card.style.opacity='0.40';card.style.filter='saturate(0)';} }
+      };
+      window._mscanUpdateField=function(idx,field,val){
+        var obj=results.find(function(r){return r.idx===idx;}); if(!obj) return;
+        if(field==='desc') obj.editedDesc=val;
+        if(field==='cat')  obj.editedCat=val;
+        if(field==='amount') obj.editedAmount=val;
+      };
+      document.getElementById('mscan-save-approved').onclick=function(){
+        var approved=results.filter(function(r){return r.approved;}); if(!approved.length){toast('לא נבחרו עסקאות לשמירה','error');return;}
+        approved.forEach(function(item){ saveScannedTransaction(Object.assign({},item.result,{amount:item.editedAmount||item.result.amount,description:item.editedDesc||item.result.description,category:item.editedCat||item.result.category||'',type:item.result.type==='income'?'income':'expense'})); });
+        toast('✓ '+approved.length+' עסקאות נשמרו!','success'); resultEl.classList.add('hidden'); resultEl.innerHTML=''; results=[];
+      };
+      document.getElementById('mscan-discard-all').onclick=function(){ resultEl.classList.add('hidden'); resultEl.innerHTML=''; results=[]; };
     }
 
-    /* הצג כפתורי תחתית + עדכן כותרת */
-    var okCount = results.length;
-    resultEl.querySelector('div').querySelector('div[style*="uppercase"]').textContent =
-      '🤖 ' + okCount + ' מסמך' + (okCount!==1?'ים':'') + ' סרוקים — אשר ושמור';
-    document.getElementById('mscan-actions').classList.remove('hidden');
-    scanBtn.style.opacity       = '';
-    scanBtn.style.pointerEvents = '';
-
-    /* ── callbacks גלובליים ── */
-
-    /* toggle approve/reject */
-    window._mscanToggle = function(idx){
-      var obj = results.find(function(r){ return r.idx === idx; });
-      if(!obj) return;
-      obj.approved = !obj.approved;
-      var btn  = document.getElementById('mscan-toggle-'+idx);
-      var card = document.getElementById('mscan-item-'+idx);
-      if(obj.approved){
-        if(btn){ btn.textContent='✓'; btn.style.borderColor='rgba(0,230,118,0.35)'; btn.style.background='rgba(0,230,118,0.12)'; btn.style.color='#00E676'; }
-        if(card){ card.style.opacity='1'; card.style.filter='none'; }
-      } else {
-        if(btn){ btn.textContent='✕'; btn.style.borderColor='rgba(255,23,68,0.30)'; btn.style.background='rgba(255,23,68,0.08)'; btn.style.color='#FF6080'; }
-        if(card){ card.style.opacity='0.45'; card.style.filter='saturate(0)'; }
+    async function sendToWorker(file){
+      var b64=await fileToBase64(file), mime=file.type||'image/jpeg';
+      var cats=(window._appUserCategories||[]).map(function(c){return c.name+' ('+(c.type==='income'?'הכנסה':'הוצאה')+')';}).join(', ');
+      var lastErr;
+      for(var attempt=0;attempt<3;attempt++){
+        if(attempt>0) await new Promise(function(res){setTimeout(res,attempt*2000);});
+        try{
+          var resp=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({imageBase64:b64,mimeType:mime,categories:cats})});
+          if(!resp.ok){ var st=resp.status,et=await resp.text().catch(function(){return '';}); if(st===429||st===502||st===503){lastErr=new Error('שרת עמוס');continue;} throw new Error('שגיאת שרת '+st); }
+          return await resp.json();
+        }catch(fetchErr){ if(fetchErr.message.indexOf('עמוס')>-1){lastErr=fetchErr;continue;} throw fetchErr; }
       }
-    };
-
-    /* עדכון שדה בזמן אמת */
-    window._mscanUpdateField = function(idx, field, val){
-      var obj = results.find(function(r){ return r.idx === idx; });
-      if(!obj) return;
-      if(field === 'desc')   obj.editedDesc   = val;
-      if(field === 'cat')    obj.editedCat    = val;
-      if(field === 'amount') obj.editedAmount = val;
-    };
-
-    /* שמור מאושרים */
-    document.getElementById('mscan-save-approved').onclick = function(){
-      var approved = results.filter(function(r){ return r.approved; });
-      if(!approved.length){ toast('לא נבחרו עסקאות לשמירה', 'error'); return; }
-      var saved = 0;
-      approved.forEach(function(item){
-        var r = item.result;
-        saveScannedTransaction(Object.assign({}, r, {
-          amount: item.editedAmount || r.amount,
-          description: item.editedDesc || r.description,
-          category: item.editedCat || r.category || '',
-          type: r.type === 'income' ? 'income' : 'expense'
-        }));
-        saved++;
-      });
-      toast('✓ ' + saved + ' עסקאות נשמרו!', 'success');
-      resultEl.classList.add('hidden');
-      resultEl.innerHTML = '';
-      results = [];
-    };
-
-    /* בטל הכל */
-    document.getElementById('mscan-discard-all').onclick = function(){
-      resultEl.classList.add('hidden');
-      resultEl.innerHTML = '';
-      results = [];
-    };
-  }
-
-  /* ── שליחה ל-Cloudflare Worker ── */
-  async function sendToWorker(file) {
-    var b64 = await fileToBase64(file);
-    var mime = file.type || 'image/jpeg';
-
-    /* בניית רשימת כל הקטגוריות מהנתונים האמיתיים */
-    var _cats = (window._appUserCategories || []);
-    var catsArr = _cats.map(function(c){ return c.name + ' (' + (c.type==='income'?'הכנסה':'הוצאה') + ')'; });
-    var cats = catsArr.join(', ');
-
-    var lastErr;
-    for(var attempt = 0; attempt < 3; attempt++){
-      if(attempt > 0){
-        // המתן לפני retry: 2s, 4s
-        await new Promise(function(res){ setTimeout(res, attempt * 2000); });
-      }
-      try {
-        var resp = await fetch(WORKER_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ imageBase64: b64, mimeType: mime, categories: cats })
-        });
-
-        if(!resp.ok){
-          var errText = await resp.text().catch(function(){ return ''; });
-          var status = resp.status;
-          if(status === 429){
-            lastErr = new Error('השרת עמוס כרגע — ממתין ומנסה שוב...');
-            continue; // retry
-          }
-          if(status === 502 || status === 503){
-            lastErr = new Error('שרת הסריקה לא זמין — ממתין ומנסה שוב...');
-            continue; // retry
-          }
-          throw new Error('שגיאת שרת ' + status + (errText ? ': ' + errText.substring(0,60) : ''));
-        }
-
-        var data = await resp.json();
-        return data;
-
-      } catch(fetchErr){
-        if(fetchErr.message.indexOf('ממתין') > -1){
-          lastErr = fetchErr;
-          continue;
-        }
-        throw fetchErr;
-      }
+      throw lastErr||new Error('שגיאה בסריקה — נסה שוב');
     }
-    throw lastErr || new Error('שגיאה בסריקה — נסה שוב מאוחר יותר');
-  } // end sendToWorker
 
-  /* ── המרת קובץ ל-base64 ── */
-  function fileToBase64(file) {
-    return new Promise(function(resolve, reject) {
-      var reader = new FileReader();
-      reader.onload  = function() { resolve(reader.result.split(',')[1]); };
-      reader.onerror = function() { reject(new Error('קריאת קובץ נכשלה')); };
-      reader.readAsDataURL(file);
-    });
-  }
+    function fileToBase64(file){ return new Promise(function(resolve,reject){ var r=new FileReader(); r.onload=function(){resolve(r.result.split(',')[1]);}; r.onerror=function(){reject(new Error('קריאת קובץ נכשלה'));}; r.readAsDataURL(file); }); }
 
-/* ── שמירה ל-Firebase לאחר סריקה ── */
-  function saveScannedTransaction(result) {
-    var user = firebase.auth().currentUser;
-    if (!user) { toast('שגיאה: לא מחובר למערכת.', 'error'); return; }
+    function saveScannedTransaction(result){
+      var user=firebase.auth().currentUser; if(!user){toast('שגיאה: לא מחובר','error');return;}
+      var amount=parseFloat(result.amount); if(!amount||isNaN(amount)){toast('לא זוהה סכום תקין','error');return;}
+      var type=result.type==='income'?'income':'expense', desc=result.description||(type==='income'?'הכנסה כללית':'הוצאה כללית'), cat=result.category||'';
+      var dataObj={amount:amount,description:desc,date:new Date().toISOString()}; if(cat) dataObj.category=cat;
+      firebase.firestore().collection('users').doc(user.uid).collection(type==='income'?'incomes':'expenses').add(dataObj)
+        .then(function(){if(typeof showSuccess==='function') showSuccess(type,amount);})
+        .catch(function(e){console.error(e);toast('שגיאה בשמירה','error');});
+    }
 
-    var amount = parseFloat(result.amount);
-    if (!amount || isNaN(amount)) { toast('לא זוהה סכום תקין בעסקה', 'error'); return; }
-
-    var type = (result.type === 'income') ? 'income' : 'expense';
-    var desc = result.description || (type === 'income' ? 'הכנסה כללית' : 'הוצאה כללית');
-    var cat  = result.category || '';
-
-    var dataObj = { amount: amount, description: desc, date: new Date().toISOString() };
-    if (cat) dataObj.category = cat;
-
-    var col = (type === 'income') ? 'incomes' : 'expenses';
-    firebase.firestore().collection('users').doc(user.uid).collection(col).add(dataObj)
-      .then(function() {
-        if (typeof showSuccess === 'function') showSuccess(type, amount);
-      })
-      .catch(function(e) {
-        console.error('שמירת סריקה:', e);
-        toast('שגיאה בשמירה. נסה שוב.', 'error');
-      });
-  }
-
-  function escHtml(str){ return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-  /* ── הצגת שגיאה ── */
-  function showError(msg) {
-    resultEl.className = 'scan-doc-result result-err';
-    resultEl.innerHTML =
-      '<div class="result-icon">' +
-        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6080" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
-          '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>' +
-        '</svg>' +
-      '</div>' +
-      '<div class="result-body">' + msg + '</div>';
-    resultEl.classList.remove('hidden');
-  }
-
-  /* חשוף saveScannedTransaction גלובלית */
-  window.saveScannedTransaction = saveScannedTransaction;
+    function escHtml(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+    function showError(msg){ resultEl.className='scan-doc-result result-err'; resultEl.innerHTML='<div class="result-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6080" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="result-body">'+msg+'</div>'; resultEl.classList.remove('hidden'); }
+    window.saveScannedTransaction=saveScannedTransaction;
 
   } // end attachHandlers
 
-  // נסה מיד — אם הדף כבר נטען
-  if(document.readyState !== 'loading'){
-    attachHandlers();
-  }
-  // גם כשה-app מוצג — bootApp יקרא לזה
-  window._initScan = attachHandlers;
+  if(document.readyState!=='loading') attachHandlers();
+  window._initScan=attachHandlers;
 
 })();
-
 </script>
   <div id="security-loader-overlay" class="hidden">
   <div class="secure-spinner"></div>
