@@ -11,7 +11,7 @@
   <meta name="theme-color" content="#04070E">
   <meta name="color-scheme" content="dark">
   <meta name="description" content="ניהול תקציב אישי חכם עם סנכרון בין מכשירים, קטגוריות, ובוט וואטסאפ.">
-<script>if(localStorage.getItem('_ao_theme')==='light')document.documentElement.style.background='#E8EEF8';</script>
+<script>if(localStorage.getItem('_ao_theme')==='light'){document.documentElement.style.background='#EBF0FA';document.body&&document.body.classList.add('theme-light');}</script>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="AO Budget">
@@ -155,122 +155,234 @@
       --elastic:    cubic-bezier(0.68, -0.55, 0.265, 1.55);
     }
 
-    /* ══════════════════════════════════════════════════════
-       LIGHT THEME 2026 — Premium Frosted Glass
-    ══════════════════════════════════════════════════════ */
+    /* ════════════════════════════════════════════════════════
+       LIGHT THEME 2026 — Banking Grade Premium
+       כל override כאן מנצח inline styles בזכות specificity
+    ════════════════════════════════════════════════════════ */
     body.theme-light {
-      --bg:            #E8EEF8;
-      --card:          rgba(255,255,255,0.75);
-      --card-solid:    #FFFFFF;
-      --border:        rgba(0,20,80,0.08);
-      --border-glow:   rgba(0,90,255,0.18);
-      --cyan:          #0057FF;
-      --cyan2:         #0040CC;
-      --green:         #00964A;
-      --red:           #D4001E;
-      --text:          #060D24;
-      --muted:         rgba(6,13,36,0.42);
-      --glass:         rgba(255,255,255,0.55);
-      --glass-border:  rgba(0,20,80,0.10);
-      --oled:          #F2F6FF;
-      --oled-card:     rgba(255,255,255,0.97);
-      --glass-deep:    rgba(232,238,248,0.92);
-      --neon-cyan:     #0057FF;
-      --neon-green:    #00964A;
-      --neon-red:      #D4001E;
-      background: #E8EEF8;
+      --bg:          #EBF0FA;
+      --card:        rgba(255,255,255,0.80);
+      --card-solid:  #FFFFFF;
+      --border:      rgba(0,30,90,0.08);
+      --border-glow: rgba(0,80,255,0.18);
+      --cyan:        #0052E0;
+      --cyan2:       #0040B8;
+      --green:       #00894A;
+      --red:         #CC001A;
+      --text:        #050C22;
+      --muted:       rgba(5,12,34,0.44);
+      --glass:       rgba(255,255,255,0.60);
+      --glass-border:rgba(0,30,90,0.10);
+      --oled:        #F0F5FF;
+      --oled-card:   rgba(255,255,255,0.97);
+      --glass-deep:  rgba(235,240,250,0.94);
+      --neon-cyan:   #0052E0;
+      --neon-green:  #00894A;
+      --neon-red:    #CC001A;
+      background: #EBF0FA !important;
     }
-    /* global transition for theme switch */
-    body, body *:not([style*="animation"]):not([class*="spin"]):not([class*="pulse"]):not([class*="beam"]):not([class*="scan"]):not([class*="ticker"]) {
-      transition-property: background-color, border-color, color, box-shadow;
-      transition-duration: 0.38s;
-      transition-timing-function: cubic-bezier(0.4,0,0.2,1);
+
+    /* ── Transitions לכל האלמנטים ── */
+    body *, body::before, body::after {
+      transition-property: background, background-color, border-color, color, box-shadow, opacity, filter;
+      transition-duration: 0.32s;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     }
+    /* ביטול transition על אנימציות ─ */
+    body [style*="animation"],
+    body canvas,
+    body .scanline,
+    #hero-particles,
+    #hero-orb-main,
+    #hero-scanline,
+    .live-dot,
+    #budget-progress-ring,
+    #ticker-inner { transition: none !important; }
+
+    /* ── Body background & grid ── */
     body.theme-light::before {
       background:
-        radial-gradient(ellipse at 15% 0%,   rgba(0,90,255,0.09)  0%, transparent 50%),
-        radial-gradient(ellipse at 90% 85%,  rgba(0,200,255,0.07) 0%, transparent 50%),
-        radial-gradient(ellipse at 55% 45%,  rgba(0,150,74,0.05)  0%, transparent 40%),
-        radial-gradient(ellipse at 80% 10%,  rgba(120,0,255,0.04) 0%, transparent 45%) !important;
+        radial-gradient(ellipse at 10% 0%,   rgba(0,82,224,0.09)  0%, transparent 48%),
+        radial-gradient(ellipse at 92% 80%,  rgba(0,160,255,0.07) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%,  rgba(0,137,74,0.04)  0%, transparent 45%),
+        radial-gradient(ellipse at 75% 12%,  rgba(100,0,255,0.03) 0%, transparent 40%) !important;
     }
     body.theme-light::after {
       background-image:
-        linear-gradient(rgba(0,80,255,0.028) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,80,255,0.028) 1px, transparent 1px) !important;
+        linear-gradient(rgba(0,70,220,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,70,220,0.022) 1px, transparent 1px) !important;
       background-size: 44px 44px;
     }
-    body.theme-light .hero-card::after,
-    body.theme-light .scanline { display: none !important; }
 
-    body.theme-light .hero-card {
-      background: linear-gradient(145deg, rgba(255,255,255,0.88) 0%, rgba(240,246,255,0.82) 100%) !important;
-      border: 1px solid rgba(0,80,255,0.12) !important;
-      box-shadow: 0 2px 0 rgba(255,255,255,0.9) inset, 0 12px 40px rgba(0,50,200,0.10), 0 2px 8px rgba(0,0,0,0.06) !important;
+    /* ── TOP STATUS BAR ── */
+    body.theme-light #top-status-bar {
+      background: linear-gradient(180deg,rgba(0,82,224,0.04) 0%,transparent 100%) !important;
+      border-bottom-color: rgba(0,70,200,0.08) !important;
     }
-    body.theme-light .hero-card::before { background: radial-gradient(ellipse at 65% -10%, rgba(0,90,255,0.07) 0%, transparent 65%) !important; }
-    body.theme-light #hero-balance,
-    body.theme-light .balance-num { color: var(--text) !important; text-shadow: none !important; }
-
-    body.theme-light .sblock,
-    body.theme-light .card {
-      background: rgba(255,255,255,0.78) !important;
-      border: 1px solid rgba(0,20,80,0.07) !important;
-      box-shadow: 0 2px 12px rgba(0,30,100,0.07), 0 1px 0 rgba(255,255,255,0.95) inset !important;
-      backdrop-filter: blur(28px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+    body.theme-light .tsb-badge {
+      background: rgba(0,82,224,0.07) !important;
+      border-color: rgba(0,82,224,0.18) !important;
     }
-    body.theme-light .sblock-head,
-    body.theme-light .sblock-body { color: var(--text) !important; }
+    body.theme-light .tsb-badge-text { color: rgba(0,82,224,0.85) !important; }
+    body.theme-light .tsb-badge-dot  { background: #0052E0 !important; box-shadow: 0 0 6px rgba(0,82,224,0.8) !important; }
+    body.theme-light .tsb-center     { color: rgba(5,12,34,0.20) !important; }
+    body.theme-light .tsb-chip       { background: rgba(0,137,74,0.08) !important; border-color: rgba(0,137,74,0.18) !important; color: rgba(0,100,55,0.80) !important; }
+    body.theme-light .tsb-date       { color: rgba(5,12,34,0.28) !important; }
 
+    /* ── QUICK ACTION BUTTONS (₪ / refresh / signout) ── */
+    body.theme-light #btn-currency,
+    body.theme-light #btn-signout,
+    body.theme-light #app button.card.press {
+      background: rgba(255,255,255,0.82) !important;
+      border: 1px solid rgba(0,30,90,0.10) !important;
+      color: rgba(5,12,34,0.60) !important;
+      box-shadow: 0 2px 8px rgba(0,30,100,0.08), 0 1px 0 rgba(255,255,255,0.9) inset !important;
+    }
+
+    /* ── HERO BALANCE CARD ── */
+    body.theme-light #hero-balance-card {
+      background: linear-gradient(145deg,
+        rgba(255,255,255,0.90) 0%,
+        rgba(235,242,255,0.85) 100%) !important;
+      border: 1px solid rgba(0,70,200,0.12) !important;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,1) inset,
+        0 -1px 0 rgba(0,50,200,0.08) inset,
+        0 16px 48px rgba(0,50,180,0.09),
+        0 4px 12px rgba(0,0,0,0.05) !important;
+    }
+    body.theme-light #hero-balance-card::before {
+      background: linear-gradient(90deg, transparent 5%, rgba(0,82,224,0.35) 50%, transparent 95%) !important;
+    }
+    body.theme-light #hero-orb-main {
+      background: radial-gradient(circle, rgba(0,82,224,0.07) 0%, transparent 70%) !important;
+    }
+    body.theme-light #hero-scanline { display: none !important; }
+    body.theme-light #hero-particles { opacity: 0.35 !important; }
+
+    /* balance number */
+    body.theme-light #balance-display.bal-pos {
+      color: #0052E0 !important;
+      text-shadow: 0 2px 20px rgba(0,82,224,0.18) !important;
+    }
+    body.theme-light #balance-display.bal-neg {
+      color: #CC001A !important;
+      text-shadow: 0 2px 20px rgba(204,0,26,0.18) !important;
+    }
+
+    /* label & divider */
+    body.theme-light .hero-label-2026 { color: rgba(5,12,34,0.35) !important; }
+    body.theme-light .hero-label-2026::before { background: linear-gradient(90deg,transparent,rgba(0,82,224,0.15)) !important; }
+    body.theme-light .hero-label-2026::after  { background: linear-gradient(270deg,transparent,rgba(0,82,224,0.15)) !important; }
+    body.theme-light .hero-divider { background: linear-gradient(90deg,transparent,#0052E0,transparent) !important; }
+
+    /* budget ring percent bubble */
+    body.theme-light #budget-percent {
+      background: linear-gradient(135deg,rgba(255,255,255,0.9),rgba(0,137,74,0.06)) !important;
+      border-color: rgba(0,137,74,0.28) !important;
+      box-shadow: 0 0 10px rgba(0,137,74,0.15),0 2px 8px rgba(0,0,0,0.06) !important;
+      color: var(--green) !important;
+      text-shadow: none !important;
+    }
+
+    /* cursor blink */
+    body.theme-light #header-cursor { background: #0052E0 !important; box-shadow: 0 0 6px rgba(0,82,224,0.6) !important; }
+    body.theme-light #app p[style*="color:var(--cyan)"] { color: #0052E0 !important; }
+
+    /* ── TICKER ── */
+    body.theme-light #ticker-wrap {
+      background: linear-gradient(90deg,
+        rgba(235,240,250,0.99) 0%,
+        rgba(243,247,255,0.99) 50%,
+        rgba(235,240,250,0.99) 100%) !important;
+      border-top-color:    rgba(0,70,200,0.07) !important;
+      border-bottom-color: rgba(0,70,200,0.09) !important;
+    }
+    body.theme-light #ticker-wrap::before { background: linear-gradient(90deg,rgba(235,240,250,1),transparent) !important; }
+    body.theme-light #ticker-wrap::after  { background: linear-gradient(270deg,rgba(235,240,250,1),transparent) !important; }
+    body.theme-light #ticker-inner span   { color: rgba(5,12,34,0.32) !important; }
+    body.theme-light #ticker-inner .t-brand { color: rgba(0,82,224,0.80) !important; }
+    body.theme-light #ticker-inner .t-bal   { color: #0052E0 !important; }
+    body.theme-light #ticker-inner .t-inc   { color: #007840 !important; }
+    body.theme-light #ticker-inner .t-exp   { color: #B8001A !important; }
+    body.theme-light #ticker-live-dot { color: rgba(0,82,224,0.45) !important; }
+    body.theme-light #ticker-live-dot::before { background: #0052E0 !important; box-shadow: 0 0 5px rgba(0,82,224,0.6) !important; }
+
+    /* ── ACTION BUTTONS ── */
     body.theme-light .action-btn-expense {
-      background: linear-gradient(160deg, #FFF0F2 0%, #FFE4E8 100%) !important;
-      border: 1px solid rgba(212,0,30,0.18) !important;
-      box-shadow: 0 1px 0 rgba(255,255,255,0.95) inset, 0 -2px 0 rgba(180,0,20,0.20), 0 8px 24px rgba(212,0,30,0.10), 0 2px 6px rgba(0,0,0,0.05) !important;
+      background: linear-gradient(160deg, #FFF2F3 0%, #FFE5E8 100%) !important;
+      border: 1px solid rgba(204,0,26,0.16) !important;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,1) inset,
+        0 -2px 0 rgba(160,0,18,0.18),
+        0 8px 28px rgba(204,0,26,0.08),
+        0 2px 8px rgba(0,0,0,0.04) !important;
     }
-    body.theme-light .action-btn-expense::before { background: radial-gradient(ellipse at 50% -20%, rgba(212,0,30,0.08) 0%, transparent 70%) !important; }
-    body.theme-light .action-btn-expense::after  { background: linear-gradient(90deg,transparent,rgba(212,0,30,0.25),transparent) !important; }
-    body.theme-light .action-btn-expense .action-btn-label   { color: #C4001A !important; }
-    body.theme-light .action-btn-expense .action-btn-sublabel { color: rgba(196,0,26,0.50) !important; }
-    body.theme-light .action-btn-expense .action-btn-icon-wrap { background:linear-gradient(145deg,rgba(212,0,30,0.12),rgba(212,0,30,0.05)) !important; border-color:rgba(212,0,30,0.22) !important; box-shadow:0 0 12px rgba(212,0,30,0.10) !important; }
+    body.theme-light .action-btn-expense::before {
+      background: radial-gradient(ellipse at 50% -10%, rgba(204,0,26,0.07) 0%, transparent 65%) !important;
+    }
+    body.theme-light .action-btn-expense::after {
+      background: linear-gradient(90deg,transparent,rgba(204,0,26,0.22),transparent) !important;
+    }
+    body.theme-light .action-btn-expense .action-btn-label    { color: #B8001A !important; }
+    body.theme-light .action-btn-expense .action-btn-sublabel  { color: rgba(184,0,26,0.45) !important; }
+    body.theme-light .action-btn-expense .action-btn-icon-wrap {
+      background: linear-gradient(145deg,rgba(204,0,26,0.10),rgba(204,0,26,0.04)) !important;
+      border-color: rgba(204,0,26,0.20) !important;
+      box-shadow: 0 2px 8px rgba(204,0,26,0.08) !important;
+    }
 
     body.theme-light .action-btn-income {
-      background: linear-gradient(160deg, #EEF9F3 0%, #E0F5EA 100%) !important;
-      border: 1px solid rgba(0,150,74,0.18) !important;
-      box-shadow: 0 1px 0 rgba(255,255,255,0.95) inset, 0 -2px 0 rgba(0,120,50,0.20), 0 8px 24px rgba(0,150,74,0.10), 0 2px 6px rgba(0,0,0,0.05) !important;
+      background: linear-gradient(160deg, #F0FBF5 0%, #E2F7EC 100%) !important;
+      border: 1px solid rgba(0,137,74,0.16) !important;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,1) inset,
+        0 -2px 0 rgba(0,110,50,0.18),
+        0 8px 28px rgba(0,137,74,0.08),
+        0 2px 8px rgba(0,0,0,0.04) !important;
     }
-    body.theme-light .action-btn-income::before { background: radial-gradient(ellipse at 50% -20%, rgba(0,150,74,0.08) 0%, transparent 70%) !important; }
-    body.theme-light .action-btn-income::after  { background: linear-gradient(90deg,transparent,rgba(0,150,74,0.25),transparent) !important; }
-    body.theme-light .action-btn-income .action-btn-label   { color: #007A3C !important; }
-    body.theme-light .action-btn-income .action-btn-sublabel { color: rgba(0,122,60,0.50) !important; }
-    body.theme-light .action-btn-income .action-btn-icon-wrap { background:linear-gradient(145deg,rgba(0,150,74,0.12),rgba(0,150,74,0.05)) !important; border-color:rgba(0,150,74,0.22) !important; box-shadow:0 0 12px rgba(0,150,74,0.10) !important; }
-
-    body.theme-light #ticker-wrap {
-      background: linear-gradient(90deg,rgba(232,238,248,0.98),rgba(242,246,255,0.98),rgba(232,238,248,0.98)) !important;
-      border-bottom-color: rgba(0,80,255,0.10) !important;
-      border-top-color: rgba(0,80,255,0.06) !important;
+    body.theme-light .action-btn-income::before {
+      background: radial-gradient(ellipse at 50% -10%, rgba(0,137,74,0.07) 0%, transparent 65%) !important;
     }
-    body.theme-light #ticker-wrap::before { background: linear-gradient(90deg,rgba(232,238,248,1),transparent) !important; }
-    body.theme-light #ticker-wrap::after  { background: linear-gradient(270deg,rgba(232,238,248,1),transparent) !important; }
-    body.theme-light #ticker-inner span   { color: rgba(6,13,36,0.35) !important; }
-    body.theme-light #ticker-inner .t-brand { color: rgba(0,87,255,0.85) !important; }
-    body.theme-light #ticker-inner .t-bal   { color: #0057FF !important; }
-    body.theme-light #ticker-inner .t-inc   { color: #007A3C !important; }
-    body.theme-light #ticker-inner .t-exp   { color: #C4001A !important; }
-    body.theme-light #ticker-inner .t-label { color: rgba(6,13,36,0.28) !important; }
-    body.theme-light #ticker-live-dot { color: rgba(0,87,255,0.50) !important; }
-    body.theme-light #ticker-live-dot::before { background:#0057FF !important; box-shadow:0 0 6px rgba(0,87,255,0.5) !important; }
+    body.theme-light .action-btn-income::after {
+      background: linear-gradient(90deg,transparent,rgba(0,137,74,0.22),transparent) !important;
+    }
+    body.theme-light .action-btn-income .action-btn-label    { color: #007840 !important; }
+    body.theme-light .action-btn-income .action-btn-sublabel  { color: rgba(0,120,64,0.45) !important; }
+    body.theme-light .action-btn-income .action-btn-icon-wrap {
+      background: linear-gradient(145deg,rgba(0,137,74,0.10),rgba(0,137,74,0.04)) !important;
+      border-color: rgba(0,137,74,0.20) !important;
+      box-shadow: 0 2px 8px rgba(0,137,74,0.08) !important;
+    }
 
+    /* ── STAT MINI CARDS (משתנות / קבועות / הכנסות) ── */
+    body.theme-light .sblock,
+    body.theme-light .card {
+      background: rgba(255,255,255,0.82) !important;
+      border: 1px solid rgba(0,30,90,0.07) !important;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,1) inset,
+        0 4px 16px rgba(0,30,100,0.06),
+        0 1px 3px rgba(0,0,0,0.04) !important;
+      backdrop-filter: blur(24px) saturate(160%) !important;
+      -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
+    }
+    body.theme-light .sblock-head { color: var(--text) !important; }
+    body.theme-light .sblock-body { color: var(--text) !important; }
+
+    /* ── BOTTOM NAV ── */
     body.theme-light .bottom-nav {
-      background: rgba(248,251,255,0.92) !important;
-      border-top: 1px solid rgba(0,20,80,0.07) !important;
+      background: rgba(250,252,255,0.94) !important;
+      border-top: 1px solid rgba(0,30,90,0.07) !important;
       backdrop-filter: blur(40px) saturate(200%) !important;
       -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
-      box-shadow: 0 -1px 0 rgba(255,255,255,0.8), 0 -4px 20px rgba(0,30,100,0.06) !important;
+      box-shadow: 0 -2px 0 rgba(255,255,255,0.9), 0 -6px 24px rgba(0,30,100,0.05) !important;
     }
-    body.theme-light .nav-item       { color: rgba(6,13,36,0.32) !important; }
-    body.theme-light .nav-item.active { color: #0057FF !important; }
-    body.theme-light .nav-item.active::after { background: #0057FF !important; }
+    body.theme-light .nav-item        { color: rgba(5,12,34,0.30) !important; }
+    body.theme-light .nav-item.active { color: #0052E0 !important; }
+    body.theme-light .nav-item.active::after { background: #0052E0 !important; }
 
+    /* ── INPUTS ── */
     body.theme-light .inp,
     body.theme-light input[type="text"],
     body.theme-light input[type="email"],
@@ -278,38 +390,100 @@
     body.theme-light input[type="number"],
     body.theme-light select,
     body.theme-light textarea {
-      background: rgba(255,255,255,0.80) !important;
-      border: 1px solid rgba(0,20,80,0.12) !important;
+      background: rgba(255,255,255,0.85) !important;
+      border: 1px solid rgba(0,30,90,0.11) !important;
       color: var(--text) !important;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05) inset !important;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04) inset !important;
     }
     body.theme-light .inp::placeholder,
-    body.theme-light input::placeholder { color: rgba(6,13,36,0.28) !important; }
+    body.theme-light input::placeholder { color: rgba(5,12,34,0.26) !important; }
     body.theme-light .inp:focus,
-    body.theme-light input:focus { border-color: rgba(0,87,255,0.40) !important; box-shadow: 0 0 0 3px rgba(0,87,255,0.08) !important; background: #fff !important; }
+    body.theme-light input:focus {
+      border-color: rgba(0,82,224,0.38) !important;
+      box-shadow: 0 0 0 3px rgba(0,82,224,0.08) !important;
+      background: #fff !important;
+    }
 
-    body.theme-light .btn-ghost { background: rgba(0,0,0,0.04) !important; border-color: rgba(0,20,80,0.12) !important; color: var(--text) !important; }
-    body.theme-light .btn-cyan  { background: linear-gradient(135deg, #0057FF, #0040CC) !important; color: #fff !important; box-shadow: 0 4px 20px rgba(0,87,255,0.28) !important; }
+    /* ── BUTTONS ── */
+    body.theme-light .btn-ghost {
+      background: rgba(0,0,0,0.04) !important;
+      border-color: rgba(0,30,90,0.11) !important;
+      color: var(--text) !important;
+    }
+    body.theme-light .btn-cyan {
+      background: linear-gradient(135deg,#0052E0,#0040B8) !important;
+      color: #fff !important;
+      box-shadow: 0 4px 20px rgba(0,82,224,0.26) !important;
+    }
 
+    /* ── MODALS / SHEETS ── */
     body.theme-light .bottom-sheet,
     body.theme-light [id$="-sheet"],
-    body.theme-light [id$="-modal"] { background: rgba(242,246,255,0.97) !important; border-top-color: rgba(0,20,80,0.08) !important; }
+    body.theme-light [id$="-modal"] {
+      background: rgba(244,248,255,0.97) !important;
+      border-top-color: rgba(0,30,90,0.07) !important;
+    }
 
+    /* ── TRANSACTIONS / HISTORY ── */
     body.theme-light .tx-row,
-    body.theme-light .hist-item { background: rgba(255,255,255,0.80) !important; border-color: rgba(0,20,80,0.07) !important; box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important; }
+    body.theme-light .hist-item {
+      background: rgba(255,255,255,0.82) !important;
+      border-color: rgba(0,30,90,0.07) !important;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
+    }
 
-    body.theme-light .settings-section-title { color: rgba(6,13,36,0.38) !important; }
-    body.theme-light .settings-section-title::after { background: linear-gradient(90deg,rgba(0,80,255,0.15),transparent) !important; }
+    /* ── SETTINGS ── */
+    body.theme-light .settings-section-title {
+      color: rgba(5,12,34,0.36) !important;
+    }
+    body.theme-light .settings-section-title::after {
+      background: linear-gradient(90deg,rgba(0,70,200,0.14),transparent) !important;
+    }
 
-    body.theme-light .cat-tile { background: rgba(255,255,255,0.78) !important; border-color: rgba(0,20,80,0.07) !important; box-shadow: 0 2px 8px rgba(0,30,100,0.07) !important; }
+    /* ── CATEGORY TILES ── */
+    body.theme-light .cat-tile {
+      background: rgba(255,255,255,0.82) !important;
+      border-color: rgba(0,30,90,0.07) !important;
+      box-shadow: 0 2px 8px rgba(0,30,100,0.06) !important;
+    }
     body.theme-light .cat-tile-name { color: var(--text) !important; }
 
-    body.theme-light .sblock-fixed-expense { background: linear-gradient(145deg,rgba(255,240,243,0.92),rgba(255,228,233,0.88)) !important; border-color: rgba(212,0,30,0.16) !important; box-shadow: 0 4px 20px rgba(212,0,30,0.07),0 1px 0 rgba(255,255,255,0.9) inset !important; }
-    body.theme-light .sblock-fixed-income  { background: linear-gradient(145deg,rgba(238,249,243,0.92),rgba(224,245,234,0.88)) !important; border-color: rgba(0,150,74,0.16) !important; box-shadow: 0 4px 20px rgba(0,150,74,0.07),0 1px 0 rgba(255,255,255,0.9) inset !important; }
+    /* ── FIXED PAYMENT BLOCKS ── */
+    body.theme-light .sblock-fixed-expense {
+      background: linear-gradient(145deg,rgba(255,242,243,0.94),rgba(255,228,232,0.90)) !important;
+      border-color: rgba(204,0,26,0.14) !important;
+      box-shadow: 0 4px 20px rgba(204,0,26,0.06), 0 1px 0 rgba(255,255,255,1) inset !important;
+    }
+    body.theme-light .sblock-fixed-income {
+      background: linear-gradient(145deg,rgba(240,251,245,0.94),rgba(224,246,234,0.90)) !important;
+      border-color: rgba(0,137,74,0.14) !important;
+      box-shadow: 0 4px 20px rgba(0,137,74,0.06), 0 1px 0 rgba(255,255,255,1) inset !important;
+    }
+    body.theme-light .sblock-fixed-expense::before {
+      background: linear-gradient(90deg,transparent 5%,rgba(204,0,26,0.60) 40%,rgba(204,0,26,0.75) 60%,transparent 95%) !important;
+    }
+    body.theme-light .sblock-fixed-income::before {
+      background: linear-gradient(90deg,transparent 5%,rgba(0,137,74,0.60) 40%,rgba(0,137,74,0.75) 60%,transparent 95%) !important;
+    }
 
-    body.theme-light .scan-doc-btn { background: linear-gradient(145deg,rgba(255,255,255,0.85),rgba(240,246,255,0.80)) !important; border-color: rgba(0,87,255,0.18) !important; box-shadow: 0 4px 20px rgba(0,50,200,0.08),0 1px 0 rgba(255,255,255,0.9) inset !important; }
+    /* ── SCAN DOC BUTTON ── */
+    body.theme-light .scan-doc-btn {
+      background: linear-gradient(145deg,rgba(255,255,255,0.88),rgba(236,244,255,0.82)) !important;
+      border-color: rgba(0,82,224,0.16) !important;
+      box-shadow: 0 4px 20px rgba(0,50,200,0.07),0 1px 0 rgba(255,255,255,1) inset !important;
+    }
 
-    body.theme-light .logo-frame { background: linear-gradient(135deg,rgba(255,255,255,0.9),rgba(240,246,255,0.7)) !important; border-color: rgba(0,80,255,0.12) !important; box-shadow: 0 4px 16px rgba(0,50,200,0.12) !important; }
+    /* ── LOGO FRAME ── */
+    body.theme-light .logo-frame {
+      background: linear-gradient(135deg,rgba(255,255,255,0.92),rgba(236,244,255,0.75)) !important;
+      border-color: rgba(0,82,224,0.14) !important;
+      box-shadow: 0 4px 16px rgba(0,50,200,0.10) !important;
+    }
+
+    /* ── LIVE DOT ── */
+    body.theme-light .live-dot {
+      background: var(--green) !important;
+    }
 
     html, body { height: 100%; }
     body {
@@ -5447,7 +5621,7 @@
 
       <div class="settings-section-title" style="margin-top:6px;">הגדרות כלליות</div>
 
-      <!-- ── THEME TOGGLE ── -->
+      <!-- THEME TOGGLE -->
       <div class="sblock modern-hover">
         <div class="sblock-head">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
@@ -5456,30 +5630,36 @@
         <div class="sblock-body" style="padding:12px 14px 16px;">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
 
-            <button id="theme-btn-dark" onclick="window._setTheme('dark')" style="position:relative;border-radius:18px;border:2px solid rgba(0,229,255,0.40);background:linear-gradient(145deg,rgba(4,7,14,0.96),rgba(13,19,35,0.92));padding:14px 10px 13px;cursor:pointer;overflow:hidden;transition:all .28s cubic-bezier(.34,1.56,.64,1);">
-              <div style="width:100%;height:46px;border-radius:11px;background:#04070E;border:1px solid rgba(0,229,255,0.14);margin-bottom:11px;position:relative;overflow:hidden;padding:6px 7px;display:flex;flex-direction:column;justify-content:flex-end;gap:3px;">
-                <div style="height:5px;border-radius:3px;background:linear-gradient(90deg,rgba(0,229,255,0.7),rgba(0,183,255,0.35));width:68%;"></div>
-                <div style="height:2.5px;border-radius:3px;background:rgba(255,255,255,0.10);width:92%;"></div>
-                <div style="height:2.5px;border-radius:3px;background:rgba(255,255,255,0.06);width:55%;"></div>
-                <div style="position:absolute;top:5px;right:6px;width:13px;height:13px;border-radius:4px;background:rgba(0,229,255,0.14);border:1px solid rgba(0,229,255,0.28);"></div>
+            <button id="theme-btn-dark" onclick="window._setTheme('dark')"
+              style="position:relative;border-radius:18px;border:2px solid rgba(0,229,255,0.42);background:linear-gradient(145deg,rgba(4,7,14,0.97),rgba(13,19,35,0.93));padding:14px 10px 13px;cursor:pointer;overflow:hidden;transition:all .28s cubic-bezier(.34,1.56,.64,1);">
+              <!-- mini preview dark -->
+              <div style="width:100%;height:48px;border-radius:11px;background:#04070E;border:1px solid rgba(0,229,255,0.14);margin-bottom:11px;position:relative;overflow:hidden;padding:7px 8px;display:flex;flex-direction:column;justify-content:flex-end;gap:3px;">
+                <div style="height:5px;border-radius:3px;background:linear-gradient(90deg,rgba(0,229,255,0.75),rgba(0,183,255,0.3));width:65%;"></div>
+                <div style="height:2.5px;border-radius:3px;background:rgba(255,255,255,0.09);width:90%;"></div>
+                <div style="height:2.5px;border-radius:3px;background:rgba(255,255,255,0.05);width:52%;"></div>
+                <div style="position:absolute;top:6px;right:7px;width:13px;height:13px;border-radius:4px;background:rgba(0,229,255,0.12);border:1px solid rgba(0,229,255,0.28);"></div>
+                <div style="position:absolute;top:6px;left:7px;width:22px;height:5px;border-radius:3px;background:rgba(0,230,118,0.15);border:1px solid rgba(0,230,118,0.22);"></div>
               </div>
-              <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:900;color:#fff;text-align:center;letter-spacing:.01em;">🌑 כהה</div>
-              <div style="font-size:10px;color:rgba(0,229,255,0.60);text-align:center;margin-top:3px;font-weight:600;">ברירת מחדל</div>
-              <div id="theme-dark-check" style="position:absolute;top:8px;left:8px;width:19px;height:19px;border-radius:50%;background:var(--cyan);display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(0,229,255,0.55);">
+              <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:900;color:#fff;text-align:center;">🌑 כהה</div>
+              <div style="font-size:10px;color:rgba(0,229,255,0.58);text-align:center;margin-top:3px;font-weight:600;">ברירת מחדל</div>
+              <div id="theme-dark-check" style="position:absolute;top:8px;left:8px;width:19px;height:19px;border-radius:50%;background:var(--cyan);display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(0,229,255,0.6);">
                 <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
               </div>
             </button>
 
-            <button id="theme-btn-light" onclick="window._setTheme('light')" style="position:relative;border-radius:18px;border:2px solid rgba(255,255,255,0.08);background:linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));padding:14px 10px 13px;cursor:pointer;overflow:hidden;transition:all .28s cubic-bezier(.34,1.56,.64,1);">
-              <div style="width:100%;height:46px;border-radius:11px;background:#EEF2FF;border:1px solid rgba(0,102,255,0.12);margin-bottom:11px;position:relative;overflow:hidden;padding:6px 7px;display:flex;flex-direction:column;justify-content:flex-end;gap:3px;">
-                <div style="height:5px;border-radius:3px;background:linear-gradient(90deg,rgba(0,87,255,0.75),rgba(0,180,255,0.40));width:68%;"></div>
-                <div style="height:2.5px;border-radius:3px;background:rgba(0,0,0,0.10);width:92%;"></div>
-                <div style="height:2.5px;border-radius:3px;background:rgba(0,0,0,0.06);width:55%;"></div>
-                <div style="position:absolute;top:5px;right:6px;width:13px;height:13px;border-radius:4px;background:rgba(0,87,255,0.10);border:1px solid rgba(0,87,255,0.22);"></div>
+            <button id="theme-btn-light" onclick="window._setTheme('light')"
+              style="position:relative;border-radius:18px;border:2px solid rgba(255,255,255,0.08);background:linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));padding:14px 10px 13px;cursor:pointer;overflow:hidden;transition:all .28s cubic-bezier(.34,1.56,.64,1);">
+              <!-- mini preview light -->
+              <div style="width:100%;height:48px;border-radius:11px;background:#EBF0FA;border:1px solid rgba(0,82,224,0.12);margin-bottom:11px;position:relative;overflow:hidden;padding:7px 8px;display:flex;flex-direction:column;justify-content:flex-end;gap:3px;">
+                <div style="height:5px;border-radius:3px;background:linear-gradient(90deg,rgba(0,82,224,0.75),rgba(0,160,255,0.35));width:65%;"></div>
+                <div style="height:2.5px;border-radius:3px;background:rgba(0,0,0,0.10);width:90%;"></div>
+                <div style="height:2.5px;border-radius:3px;background:rgba(0,0,0,0.06);width:52%;"></div>
+                <div style="position:absolute;top:6px;right:7px;width:13px;height:13px;border-radius:4px;background:rgba(0,82,224,0.10);border:1px solid rgba(0,82,224,0.22);"></div>
+                <div style="position:absolute;top:6px;left:7px;width:22px;height:5px;border-radius:3px;background:rgba(0,137,74,0.14);border:1px solid rgba(0,137,74,0.22);"></div>
               </div>
-              <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:900;color:var(--text);text-align:center;letter-spacing:.01em;">☀️ בהיר</div>
-              <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:3px;font-weight:600;">מינימל נקי</div>
-              <div id="theme-light-check" style="position:absolute;top:8px;left:8px;width:19px;height:19px;border-radius:50%;background:#0057FF;display:none;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(0,87,255,0.55);">
+              <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:900;color:var(--text);text-align:center;">☀️ בהיר</div>
+              <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:3px;font-weight:600;">בנקינג פרימיום</div>
+              <div id="theme-light-check" style="position:absolute;top:8px;left:8px;width:19px;height:19px;border-radius:50%;background:#0052E0;display:none;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(0,82,224,0.6);">
                 <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
               </div>
             </button>
@@ -5487,6 +5667,8 @@
           </div>
         </div>
       </div>
+
+      <div class="sblock modern-hover">
         <div class="sblock-head">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           שינוי שם
@@ -7399,49 +7581,53 @@ window.deletePhoneIdx = function(i) {
       var dc = document.getElementById('theme-dark-check');
       var lc = document.getElementById('theme-light-check');
       if(!dk) return;
-      if(t==='light'){
-        dk.style.borderColor='rgba(255,255,255,0.08)';
-        lt.style.borderColor='rgba(0,87,255,0.50)';
-        lt.style.background='linear-gradient(145deg,rgba(0,87,255,0.09),rgba(0,180,255,0.04))';
-        dk.style.background='linear-gradient(145deg,rgba(4,7,14,0.96),rgba(13,19,35,0.92))';
-        if(dc) dc.style.display='none';
-        if(lc) lc.style.display='flex';
+      if(t === 'light'){
+        dk.style.borderColor = 'rgba(255,255,255,0.08)';
+        lt.style.borderColor = 'rgba(0,82,224,0.50)';
+        lt.style.background  = 'linear-gradient(145deg,rgba(0,82,224,0.08),rgba(0,160,255,0.04))';
+        dk.style.background  = 'linear-gradient(145deg,rgba(4,7,14,0.97),rgba(13,19,35,0.93))';
+        if(dc) dc.style.display = 'none';
+        if(lc) lc.style.display = 'flex';
       } else {
-        dk.style.borderColor='rgba(0,229,255,0.40)';
-        lt.style.borderColor='rgba(255,255,255,0.08)';
-        lt.style.background='linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))';
-        if(dc) dc.style.display='flex';
-        if(lc) lc.style.display='none';
+        dk.style.borderColor = 'rgba(0,229,255,0.42)';
+        lt.style.borderColor = 'rgba(255,255,255,0.08)';
+        lt.style.background  = 'linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))';
+        if(dc) dc.style.display = 'flex';
+        if(lc) lc.style.display = 'none';
       }
-      /* meta theme-color */
       document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){
-        m.content = t==='light' ? '#E8EEF8' : '#04070E';
+        m.content = t === 'light' ? '#EBF0FA' : '#04070E';
       });
     }
 
     window._setTheme = function(t){
       localStorage.setItem('_ao_theme', t);
-      /* Flash overlay */
+      /* flash overlay */
       var ov = document.getElementById('_theme_ov');
       if(!ov){
         ov = document.createElement('div');
         ov.id = '_theme_ov';
-        ov.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;opacity:0;transition:opacity .15s ease;';
+        ov.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;opacity:0;transition:opacity .14s ease;';
         document.body.appendChild(ov);
       }
-      ov.style.background = t==='light' ? '#E8EEF8' : '#04070E';
-      ov.style.opacity = '0.6';
+      ov.style.background = t === 'light' ? '#EBF0FA' : '#04070E';
+      ov.style.opacity = '0.7';
       setTimeout(function(){
-        document.body.classList.toggle('theme-light', t==='light');
+        document.body.classList.toggle('theme-light', t === 'light');
         _updateUI(t);
-        setTimeout(function(){ ov.style.opacity='0'; }, 50);
-      }, 100);
+        setTimeout(function(){ ov.style.opacity = '0'; }, 40);
+      }, 90);
     };
 
-    /* טעין מיד */
+    /* apply on load */
     var saved = localStorage.getItem('_ao_theme') || 'dark';
-    document.body.classList.toggle('theme-light', saved==='light');
-    setTimeout(function(){ _updateUI(saved); }, 0);
+    document.body.classList.toggle('theme-light', saved === 'light');
+    /* update UI after DOM ready */
+    if(document.readyState === 'loading'){
+      document.addEventListener('DOMContentLoaded', function(){ _updateUI(saved); });
+    } else {
+      setTimeout(function(){ _updateUI(saved); }, 0);
+    }
   })();
 
   /* ══════════════════════════════════════════════
@@ -9099,16 +9285,16 @@ window.exportUserData = function() {
   var scanBtn, fileInput, processingEl, resultEl;
 
   function bindScanElements(){
-    scanBtn     = document.getElementById('btn-scan-doc');
-    fileInput   = document.getElementById('scan-doc-file');
-    processingEl= document.getElementById('scan-doc-processing');
-    resultEl    = document.getElementById('scan-doc-result');
-    if(!scanBtn || !fileInput) return false;
+    scanBtn      = document.getElementById('btn-scan-doc');
+    fileInput    = document.getElementById('scan-doc-file');
+    processingEl = document.getElementById('scan-doc-processing');
+    resultEl     = document.getElementById('scan-doc-result');
+    if(!scanBtn || !fileInput){ return false; }
     return true;
   }
 
   function attachHandlers(){
-    if(!bindScanElements()) return;
+    if(!bindScanElements()) return false;
 
   /* ── מגבלת 7 סריקות ביום ── */
   var DAILY_LIMIT = 7;
@@ -9568,12 +9754,12 @@ window.exportUserData = function() {
 
   } // end attachHandlers
 
-  // נסה מיד — אם הדף כבר נטען
-  if(document.readyState !== 'loading'){
-    attachHandlers();
-  }
-  // גם כשה-app מוצג — bootApp יקרא לזה
-  window._initScan = attachHandlers;
+  // attachHandlers נקרא רק מ-bootApp אחרי שה-DOM מוכן
+  window._initScan = function(){
+    if(window._scanInited) return;
+    var ok = attachHandlers();
+    if(ok !== false) window._scanInited = true;
+  };
 
 })();
 
