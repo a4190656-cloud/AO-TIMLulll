@@ -183,19 +183,30 @@
       background: #F4F6FB !important;
     }
 
-    /* ── Smooth theme transition ── */
-    body.theme-light *,
-    body.theme-light *::before,
-    body.theme-light *::after {
-      transition-property: background, background-color, border-color, color, box-shadow, opacity;
-      transition-duration: 0.30s;
-      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    /* ── Smooth theme transition — targeted only ── */
+    body.theme-light .sblock,
+    body.theme-light .card,
+    body.theme-light .hero-card,
+    body.theme-light .action-btn-income,
+    body.theme-light .action-btn-expense,
+    body.theme-light .bottom-nav,
+    body.theme-light .nav-item,
+    body.theme-light .scan-doc-btn,
+    body.theme-light .cat-tile,
+    body.theme-light .tx-row,
+    body.theme-light .hist-item,
+    body.theme-light .inp,
+    body.theme-light input,
+    body.theme-light select,
+    body.theme-light .btn-ghost,
+    body.theme-light .btn-cyan,
+    body.theme-light #ticker-wrap,
+    body.theme-light #top-status-bar {
+      transition: background-color 0.30s cubic-bezier(0.4,0,0.2,1),
+                  border-color 0.30s cubic-bezier(0.4,0,0.2,1),
+                  color 0.25s cubic-bezier(0.4,0,0.2,1),
+                  box-shadow 0.30s cubic-bezier(0.4,0,0.2,1) !important;
     }
-    body.theme-light canvas,
-    body.theme-light [style*="animation"],
-    body.theme-light .scanline,
-    body.theme-light #ticker-inner,
-    body.theme-light #hero-particles { transition: none !important; }
 
     /* ── Body + background layers ── */
     body.theme-light {
