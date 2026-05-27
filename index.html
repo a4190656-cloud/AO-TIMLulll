@@ -9435,6 +9435,8 @@ window.exportUserData = function() {
 
 </script>
 
+<script>
+/* ══════════════════════════════════════════════════════════════
    ✦  SCAN DOCUMENT — קבלות וחשבוניות דרך Cloudflare Worker  ✦
    ══════════════════════════════════════════════════════════════
    הגדרה נדרשת:
@@ -9497,14 +9499,13 @@ window.exportUserData = function() {
 
   /* ── פותח את בורר הקבצים ── */
   scanBtn.onclick = function() {
-    fileInput.click(); // חייב להיות ראשון — Android חוסם אם לא user gesture ישיר
+    fileInput.click(); /* חייב ראשון — Android חוסם אחרת */
     var used = getScanCount();
     if(used >= DAILY_LIMIT){
       toast('הגעת למגבלת 7 הסריקות היומית. נסה שוב מחר!', 'error');
       return;
     }
-    resultEl.className = 'scan-doc-result hidden';
-    resultEl.innerHTML = '';
+    if(resultEl){ resultEl.className = 'scan-doc-result hidden'; resultEl.innerHTML = ''; }
   };
 
   fileInput.onchange = async function() {
