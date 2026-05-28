@@ -4785,7 +4785,92 @@
         </div>
       </div>
       <div style="display:flex;gap:7px">
-        <button id="btn-currency" class="card press modern-hover" style="padding:9px;border:none;cursor:pointer;color:rgba(255,255,255,0.8);font-weight:bold;font-size:14px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;">₪</button>
+        <button id="btn-currency" class="card press modern-hover" onclick="openCurrencyPicker()" style="padding:9px;border:none;cursor:pointer;color:rgba(255,255,255,0.8);font-weight:bold;font-size:13px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;letter-spacing:-0.5px;">₪</button>
+
+<!-- ✦ CURRENCY PICKER MODAL ✦ -->
+<style>
+  #currency-picker-overlay {
+    position:fixed; inset:0; z-index:9995;
+    background:rgba(0,0,0,0.70);
+    backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+    display:flex; align-items:flex-end; justify-content:center;
+    opacity:0; pointer-events:none;
+    transition:opacity .25s ease;
+    padding-bottom:env(safe-area-inset-bottom,0);
+  }
+  #currency-picker-overlay.open { opacity:1; pointer-events:all; }
+  #currency-picker-sheet {
+    width:100%; max-width:440px;
+    background:linear-gradient(160deg,rgba(8,14,34,0.99),rgba(3,7,18,0.99));
+    border:1px solid rgba(0,229,255,0.14);
+    border-radius:26px 26px 0 0;
+    padding:0 16px 28px;
+    transform:translateY(100%);
+    transition:transform .38s cubic-bezier(0.34,1.15,0.64,1);
+    box-shadow:0 -20px 60px rgba(0,0,0,0.70);
+    position:relative; overflow:hidden;
+    max-height:85vh; overflow-y:auto;
+  }
+  #currency-picker-overlay.open #currency-picker-sheet { transform:translateY(0); }
+  #currency-picker-sheet::before {
+    content:''; position:absolute; top:0; left:8%; right:8%; height:1px;
+    background:linear-gradient(90deg,transparent,rgba(0,229,255,0.55),transparent);
+  }
+  .cp-handle { width:36px; height:4px; border-radius:2px; background:rgba(255,255,255,0.13); margin:13px auto 18px; }
+  .cp-title { font-size:16px; font-weight:900; color:#fff; text-align:center; margin-bottom:5px; letter-spacing:-0.3px; }
+  .cp-subtitle { font-size:11px; font-weight:700; color:rgba(255,255,255,0.35); text-align:center; letter-spacing:1px; text-transform:uppercase; margin-bottom:18px; }
+  .cp-section-label { font-size:10px; font-weight:800; color:rgba(0,229,255,0.55); letter-spacing:1.5px; text-transform:uppercase; padding:0 4px; margin:14px 0 8px; }
+  .cp-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+  .cp-item {
+    display:flex; align-items:center; gap:12px;
+    padding:13px 14px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.07);
+    border-radius:16px; cursor:pointer;
+    position:relative; overflow:hidden;
+    transition:all .18s cubic-bezier(0.34,1.56,0.64,1);
+    -webkit-tap-highlight-color:transparent;
+  }
+  .cp-item:hover  { transform:translateY(-2px); border-color:rgba(0,229,255,0.22); background:rgba(0,229,255,0.04); }
+  .cp-item:active { transform:scale(0.97); }
+  .cp-item.active { background:linear-gradient(135deg,rgba(0,229,255,0.12),rgba(0,180,255,0.07)); border-color:rgba(0,229,255,0.40); box-shadow:0 0 20px rgba(0,229,255,0.10); }
+  .cp-flag { font-size:22px; flex-shrink:0; line-height:1; }
+  .cp-info { flex:1; min-width:0; }
+  .cp-code { font-size:13px; font-weight:900; color:rgba(255,255,255,0.88); font-family:'JetBrains Mono',monospace; }
+  .cp-item.active .cp-code { color:var(--cyan); }
+  .cp-name { font-size:10px; font-weight:600; color:rgba(255,255,255,0.35); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .cp-symbol { font-size:15px; font-weight:900; color:rgba(255,255,255,0.20); font-family:'JetBrains Mono',monospace; flex-shrink:0; }
+  .cp-item.active .cp-symbol { color:rgba(0,229,255,0.60); }
+  .cp-check { position:absolute; top:8px; left:8px; width:16px; height:16px; border-radius:50%; background:var(--cyan); display:none; align-items:center; justify-content:center; }
+  .cp-item.active .cp-check { display:flex; }
+  .cp-check svg { width:9px; height:9px; }
+  body.theme-light #currency-picker-sheet { background:linear-gradient(160deg,rgba(248,250,255,0.99),rgba(240,244,255,0.99)) !important; border-color:rgba(43,92,230,0.15) !important; }
+  body.theme-light .cp-title { color:#0F172A !important; }
+  body.theme-light .cp-subtitle { color:rgba(15,23,42,0.38) !important; }
+  body.theme-light .cp-section-label { color:rgba(43,92,230,0.65) !important; }
+  body.theme-light .cp-handle { background:rgba(15,23,42,0.14) !important; }
+  body.theme-light .cp-item { background:rgba(255,255,255,0.70) !important; border-color:rgba(43,92,230,0.10) !important; }
+  body.theme-light .cp-item:hover { border-color:rgba(43,92,230,0.30) !important; background:rgba(43,92,230,0.05) !important; }
+  body.theme-light .cp-item.active { background:linear-gradient(135deg,rgba(43,92,230,0.10),rgba(43,92,230,0.06)) !important; border-color:rgba(43,92,230,0.40) !important; }
+  body.theme-light .cp-code { color:rgba(15,23,42,0.85) !important; }
+  body.theme-light .cp-item.active .cp-code { color:#2B5CE6 !important; }
+  body.theme-light .cp-name { color:rgba(15,23,42,0.40) !important; }
+  body.theme-light .cp-symbol { color:rgba(15,23,42,0.18) !important; }
+  body.theme-light .cp-item.active .cp-symbol { color:rgba(43,92,230,0.55) !important; }
+  body.theme-light .cp-check { background:#2B5CE6 !important; }
+</style>
+
+<div id="currency-picker-overlay" onclick="if(event.target===this)closeCurrencyPicker()">
+  <div id="currency-picker-sheet">
+    <div class="cp-handle"></div>
+    <div class="cp-title">בחר מטבע תצוגה</div>
+    <div class="cp-subtitle">כל הסכומים יוצגו במטבע הנבחר</div>
+    <div class="cp-section-label">🌟 נפוצים</div>
+    <div class="cp-grid" id="cp-grid-popular"></div>
+    <div class="cp-section-label">🌍 עוד מטבעות</div>
+    <div class="cp-grid" id="cp-grid-other"></div>
+  </div>
+</div>
         <button onclick="window.location.reload()" class="card press modern-hover" style="padding:9px;border:none;cursor:pointer;color:rgba(255,255,255,0.45)">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
         </button>
@@ -7069,12 +7154,13 @@
   })();
   function fmt(n){
     var num = Number(n||0);
-    // Safe number formatting that works in Flutter WebView without toLocaleString
-    var abs = Math.abs(Math.round(num));
+    var rate = (isUSD && exchangeRate) ? exchangeRate : 1;
+    var converted = isUSD ? Math.round(num / rate) : Math.round(num);
+    var abs = Math.abs(converted);
     var str = abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    var prefix = num < 0 ? '-' : '';
-    if (isUSD) return prefix + '$' + str;
-    return prefix + '₪' + str;
+    var prefix = converted < 0 ? '-' : '';
+    var sym = window._activeCurrencySymbol || '₪';
+    return prefix + sym + str;
   }
   function showScreen(name){
     ['screen-loading','screen-login','screen-setname','app'].forEach(hide);
@@ -9130,9 +9216,69 @@ window.deletePhoneIdx = function(i) {
     }).catch(function(e){ console.error(e); toast('שגיאה בשמירה', 'error'); });
   };
 
-  /* ── Currency toggle ── */
-  $('btn-currency').onclick=function(){
-    isUSD=!isUSD; this.textContent=isUSD?'$':'₪'; renderAll();
+  /* ── Currency Picker ── */
+  var CURRENCIES = [
+    { code:'ILS', symbol:'₪',  flag:'🇮🇱', name:'שקל ישראלי',       rate:1,      popular:true  },
+    { code:'USD', symbol:'$',  flag:'🇺🇸', name:'דולר אמריקאי',     rate:3.70,   popular:true  },
+    { code:'EUR', symbol:'€',  flag:'🇪🇺', name:'אירו',              rate:4.02,   popular:true  },
+    { code:'GBP', symbol:'£',  flag:'🇬🇧', name:'פאונד בריטי',      rate:4.68,   popular:true  },
+    { code:'JPY', symbol:'¥',  flag:'🇯🇵', name:'ין יפני',           rate:0.025,  popular:true  },
+    { code:'CHF', symbol:'₣',  flag:'🇨🇭', name:'פרנק שוויצרי',     rate:4.18,   popular:true  },
+    { code:'CAD', symbol:'C$', flag:'🇨🇦', name:'דולר קנדי',        rate:2.71,   popular:false },
+    { code:'AUD', symbol:'A$', flag:'🇦🇺', name:'דולר אוסטרלי',     rate:2.37,   popular:false },
+    { code:'AED', symbol:'د.إ',flag:'🇦🇪', name:'דירהם אמירויות',   rate:1.008,  popular:false },
+    { code:'SAR', symbol:'﷼',  flag:'🇸🇦', name:'ריאל סעודי',       rate:0.986,  popular:false },
+    { code:'JOD', symbol:'JD', flag:'🇯🇴', name:'דינר ירדני',       rate:5.22,   popular:false },
+    { code:'EGP', symbol:'E£', flag:'🇪🇬', name:'פאונד מצרי',       rate:0.076,  popular:false },
+    { code:'CNY', symbol:'¥',  flag:'🇨🇳', name:'יואן סיני',        rate:0.509,  popular:false },
+    { code:'INR', symbol:'₹',  flag:'🇮🇳', name:'רופי הודי',        rate:0.044,  popular:false },
+    { code:'TRY', symbol:'₺',  flag:'🇹🇷', name:'לירה טורקית',      rate:0.108,  popular:false },
+    { code:'BRL', symbol:'R$', flag:'🇧🇷', name:'ריאל ברזילאי',     rate:0.694,  popular:false },
+    { code:'SGD', symbol:'S$', flag:'🇸🇬', name:'דולר סינגפורי',    rate:2.77,   popular:false },
+    { code:'HKD', symbol:'HK$',flag:'🇭🇰', name:'דולר הונג קונג',   rate:0.475,  popular:false },
+  ];
+
+  var _selectedCurrency = CURRENCIES[0];
+
+  function _buildCurrencyGrid(containerId, popular) {
+    var el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = '';
+    CURRENCIES.filter(function(c){ return c.popular === popular; }).forEach(function(c) {
+      var div = document.createElement('div');
+      div.className = 'cp-item' + (_selectedCurrency.code === c.code ? ' active' : '');
+      div.innerHTML =
+        '<div class="cp-check"><svg viewBox="0 0 24 24" fill="none" stroke="#04070E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>' +
+        '<div class="cp-flag">' + c.flag + '</div>' +
+        '<div class="cp-info"><div class="cp-code">' + c.code + '</div><div class="cp-name">' + c.name + '</div></div>' +
+        '<div class="cp-symbol">' + c.symbol + '</div>';
+      div.onclick = function() { selectCurrency(c.code); };
+      el.appendChild(div);
+    });
+  }
+
+  window.openCurrencyPicker = function() {
+    _buildCurrencyGrid('cp-grid-popular', true);
+    _buildCurrencyGrid('cp-grid-other', false);
+    document.getElementById('currency-picker-overlay').classList.add('open');
+  };
+
+  window.closeCurrencyPicker = function() {
+    document.getElementById('currency-picker-overlay').classList.remove('open');
+  };
+
+  window.selectCurrency = function(code) {
+    var cur = CURRENCIES.find(function(c){ return c.code === code; });
+    if (!cur) return;
+    _selectedCurrency = cur;
+    var btn = document.getElementById('btn-currency');
+    if (btn) btn.textContent = cur.symbol.length > 2 ? cur.code : cur.symbol;
+    isUSD = (cur.code !== 'ILS');
+    exchangeRate = cur.rate;
+    window._activeCurrencySymbol = cur.symbol;
+    closeCurrencyPicker();
+    renderAll();
+    toast('מטבע שונה ל-' + cur.code + ' ' + cur.flag, 'success');
   };
 
   /* ── Modal ── */
