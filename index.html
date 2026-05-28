@@ -4798,8 +4798,12 @@
         var t0      = null;
 
         function fmtNum(n){
-          /* תמיד משתמש ב-fmt() הגלובלי כדי שהמרת מטבע תעבוד */
-          return fmt(Math.round(n));
+          /* קורא ל-_fmt הגלובלי — fmt() מוגדר ב-IIFE נפרד ולא נגיש ישירות */
+          if(typeof window._fmt === 'function') return window._fmt(Math.round(n));
+          /* fallback בטוח אם טרם נטען */
+          var abs = Math.abs(Math.round(n));
+          var s = abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
+          return (n < 0 ? '-' : '') + '₪' + s;
         }
 
         function step(ts){
@@ -6818,6 +6822,9 @@
     else disp = converted.toFixed(2);
     return (neg ? '-' : '') + _currency.symbol + disp;
   }
+  /* ── חשיפה גלובלית של fmt ו-_currency לכל IIFE חיצוני ── */
+  window._fmt = fmt;
+  window._getCurrency = function(){ return _currency; };
 
   // ── חשיפה גלובלית של המשתנים הנדרשים ל-IIFE חיצוניים (כמו scan-doc) ──
   Object.defineProperty(window, '_appUserCategories', {
@@ -6909,15 +6916,6 @@
       setTimeout(function(){ typewrite(_twText); }, 800);
     }
   })();
-  function fmt(n){
-    var num = Number(n||0);
-    // Safe number formatting that works in Flutter WebView without toLocaleString
-    var abs = Math.abs(Math.round(num));
-    var str = abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    var prefix = num < 0 ? '-' : '';
-    if (isUSD) return prefix + '$' + str;
-    return prefix + '₪' + str;
-  }
   function showScreen(name){
     ['screen-loading','screen-login','screen-setname','app'].forEach(hide);
     show(name);
