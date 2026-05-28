@@ -5288,81 +5288,139 @@
     </div>
     <div id="view-charts" class="hidden">
       <style>
-        /* ── Charts View 2026 ── */
+        /* ══════════════════════════════════════════
+           CHARTS VIEW 2026 — AURORA PREMIUM EDITION
+        ══════════════════════════════════════════ */
+        @keyframes legendFadeUp {
+          from { opacity:0; transform:translateY(6px); }
+          to   { opacity:1; transform:translateY(0); }
+        }
         .chart-hero {
-          background: linear-gradient(145deg, rgba(13,19,35,0.92), rgba(6,10,20,0.96));
-          border: 1px solid rgba(0,229,255,0.15);
-          border-radius: 24px;
-          padding: 22px 18px;
-          margin-bottom: 14px;
+          background: linear-gradient(150deg, rgba(11,16,32,0.96), rgba(5,8,18,0.98));
+          border: 1px solid rgba(255,255,255,0.07);
+          border-radius: 24px; padding: 20px 18px; margin-bottom: 14px;
           position: relative; overflow: hidden;
-          box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
+          box-shadow: 0 12px 40px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.07);
         }
         .chart-hero::before {
-          content: ''; position: absolute; top:0; left:10%; right:10%; height:1px;
-          background: linear-gradient(90deg,transparent,rgba(0,229,255,0.45),transparent);
+          content:''; position:absolute; top:0; left:8%; right:8%; height:1px;
+          background: linear-gradient(90deg,transparent,rgba(0,229,255,0.38),transparent);
+        }
+        .chart-hero::after {
+          content:''; position:absolute; top:0; right:0; width:130px; height:130px;
+          background: radial-gradient(ellipse at 100% 0%, rgba(0,229,255,0.04) 0%, transparent 70%);
+          pointer-events:none;
         }
         .chart-section-title {
-          font-size: 11px; font-weight: 800; letter-spacing: .10em; text-transform: uppercase;
-          color: rgba(255,255,255,0.30); margin-bottom: 12px;
-          display: flex; align-items: center; gap: 8px;
+          font-size:10px; font-weight:900; letter-spacing:.13em; text-transform:uppercase;
+          color:rgba(255,255,255,0.28); margin-bottom:16px;
+          display:flex; align-items:center; gap:8px;
         }
-        .chart-section-title::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.07); }
-
-        /* Donut chart container */
+        .chart-section-title::after {
+          content:''; flex:1; height:1px;
+          background:linear-gradient(90deg,rgba(255,255,255,0.08),transparent);
+        }
+        /* ── Donut ── */
         #donut-wrap {
-          position: relative; width: 190px; height: 190px;
-          margin: 0 auto 6px; flex-shrink: 0;
+          position:relative; width:220px; height:220px;
+          margin:0 auto 6px; flex-shrink:0;
         }
-        #donut-svg { width: 190px; height: 190px; transform: rotate(-90deg); }
+        #donut-wrap::before {
+          content:''; position:absolute; inset:-10px; border-radius:50%;
+          background:radial-gradient(ellipse at 50% 50%, rgba(0,229,255,0.055) 0%, transparent 65%);
+          pointer-events:none;
+        }
+        #donut-svg { width:220px; height:220px; transform:rotate(-90deg); }
         #donut-center {
-          position: absolute; inset: 0;
-          display: flex; flex-direction: column; align-items: center; justify-content: center;
-          pointer-events: none;
+          position:absolute; inset:0; display:flex; flex-direction:column;
+          align-items:center; justify-content:center; pointer-events:none;
         }
         #donut-center-label {
-          font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.35);
-          letter-spacing: .08em; text-transform: uppercase; margin-bottom: 2px;
+          font-size:9px; font-weight:800; color:rgba(255,255,255,0.28);
+          letter-spacing:.12em; text-transform:uppercase; margin-bottom:4px;
         }
         #donut-center-amount {
-          font-family: 'JetBrains Mono', monospace;
-          font-size: 20px; font-weight: 900; color: #fff;
-          text-shadow: 0 0 16px rgba(0,229,255,0.35);
+          font-family:'JetBrains Mono',monospace; font-size:23px; font-weight:900;
+          color:#fff; text-shadow:0 0 20px rgba(0,229,255,0.38); line-height:1;
         }
+        #donut-center-sub { font-size:10px; color:rgba(255,100,100,0.70); font-weight:700; margin-top:4px; }
 
-        /* Legend */
-        .chart-legend { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+        /* ── Legend premium cards ── */
+        .chart-legend { display:flex; flex-direction:column; gap:7px; margin-top:18px; }
         .chart-legend-item {
-          display: flex; align-items: center; gap: 10px;
-          padding: 10px 13px;
-          background: rgba(255,255,255,0.03);
-          border: 1px solid rgba(255,255,255,0.06);
-          border-radius: 13px;
-          transition: background .15s;
+          display:flex; flex-direction:column; gap:7px;
+          padding:12px 13px 10px;
+          background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.055);
+          border-radius:15px;
+          animation:legendFadeUp .32s ease both;
+          transition:background .2s, transform .2s cubic-bezier(.34,1.56,.64,1), border-color .2s;
+          cursor:default;
         }
-        .chart-legend-item:hover { background: rgba(255,255,255,0.055); }
+        .chart-legend-item:active { transform:scale(0.98); }
+        .chart-legend-top { display:flex; align-items:center; gap:10px; }
         .chart-legend-dot {
-          width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
-          box-shadow: 0 0 8px currentColor;
+          width:10px; height:10px; border-radius:50%; flex-shrink:0;
+          box-shadow:0 0 7px currentColor;
         }
-        .chart-legend-name { flex: 1; font-size: 13px; font-weight: 700; }
-        .chart-legend-amt { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; }
-        .chart-legend-pct { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.35); min-width: 34px; text-align: left; }
+        .chart-legend-name {
+          flex:1; font-size:13px; font-weight:700;
+          white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+        }
+        .chart-legend-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+        .chart-legend-amt { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:800; }
+        .chart-legend-pct-badge {
+          font-size:10px; font-weight:900; letter-spacing:.03em;
+          padding:2px 8px; border-radius:20px; min-width:38px; text-align:center;
+        }
+        .chart-legend-bar-track {
+          height:4px; border-radius:99px; background:rgba(255,255,255,0.06); overflow:hidden;
+        }
+        .chart-legend-bar-fill {
+          height:100%; border-radius:99px;
+          transition:width .75s cubic-bezier(.16,1,.3,1);
+        }
 
-        /* Bar chart */
-        .bar-chart-wrap { display: flex; flex-direction: column; gap: 9px; }
-        .bar-item { display: flex; flex-direction: column; gap: 4px; }
-        .bar-item-row { display: flex; align-items: center; justify-content: space-between; }
-        .bar-item-name { font-size: 12px; font-weight: 700; }
-        .bar-item-amt { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; }
-        .bar-track { height: 6px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden; }
-        .bar-fill { height: 100%; border-radius: 99px; transition: width .6s cubic-bezier(.4,0,.2,1); }
-
+        /* ── Bar chart ── */
+        .bar-chart-wrap { display:flex; flex-direction:column; gap:11px; }
+        .bar-item { display:flex; flex-direction:column; gap:5px; }
+        .bar-item-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+        .bar-item-name { font-size:12px; font-weight:700; flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .bar-item-right { display:flex; align-items:center; gap:7px; flex-shrink:0; }
+        .bar-item-amt { font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:800; }
+        .bar-item-pct { font-size:10px; font-weight:800; color:rgba(255,255,255,0.32); min-width:32px; text-align:left; }
+        .bar-track {
+          height:7px; background:rgba(255,255,255,0.05); border-radius:99px;
+          overflow:hidden; position:relative;
+        }
+        .bar-fill {
+          height:100%; border-radius:99px;
+          transition:width .65s cubic-bezier(.16,1,.3,1); position:relative;
+        }
+        .bar-fill::after {
+          content:''; position:absolute; inset:0; border-radius:99px;
+          background:linear-gradient(90deg,transparent 20%,rgba(255,255,255,0.22) 50%,transparent 80%);
+          background-size:200% 100%; animation:shimmerSlide 2.8s linear infinite;
+        }
         .chart-empty {
-          text-align: center; padding: 40px 20px;
-          color: rgba(255,255,255,0.28); font-size: 13px; font-weight: 600;
+          text-align:center; padding:36px 20px;
+          color:rgba(255,255,255,0.22); font-size:13px; font-weight:600;
         }
-        .chart-empty-icon { font-size: 36px; display: block; margin-bottom: 12px; }
+        .chart-empty-icon { font-size:32px; display:block; margin-bottom:10px; }
+        /* summary stat cards */
+        .chart-stat-card {
+          flex:1; min-width:0; text-align:center; border-radius:16px;
+          padding:14px 6px; position:relative; overflow:hidden;
+          transition:transform .2s cubic-bezier(.34,1.56,.64,1);
+        }
+        .chart-stat-card:active { transform:scale(0.95); }
+        .chart-stat-label {
+          font-size:9px; font-weight:900; color:rgba(255,255,255,0.30);
+          letter-spacing:.10em; text-transform:uppercase; margin-bottom:6px;
+        }
+        .chart-stat-value {
+          font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:900;
+          white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+        }
       </style>
 
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
@@ -5372,18 +5430,18 @@
 
       <!-- Balance Summary -->
       <div class="chart-hero" style="margin-bottom:14px;overflow:hidden;">
-        <div style="display:flex;gap:10px;margin-bottom:0;width:100%;min-width:0;">
-          <div style="flex:1;min-width:0;text-align:center;padding:12px 6px;background:rgba(0,230,118,0.07);border:1px solid rgba(0,230,118,0.18);border-radius:14px;overflow:hidden;">
-            <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:.06em;margin-bottom:4px;">הכנסות</div>
-            <div id="chart-income-total" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:900;color:var(--green);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">₪0</div>
+        <div style="display:flex;gap:10px;width:100%;min-width:0;">
+          <div class="chart-stat-card" style="background:rgba(0,230,118,0.07);border:1px solid rgba(0,230,118,0.18);">
+            <div class="chart-stat-label">הכנסות</div>
+            <div id="chart-income-total" class="chart-stat-value" style="color:var(--green);">₪0</div>
           </div>
-          <div style="flex:1;min-width:0;text-align:center;padding:12px 6px;background:rgba(255,23,68,0.07);border:1px solid rgba(255,23,68,0.18);border-radius:14px;overflow:hidden;">
-            <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:.06em;margin-bottom:4px;">הוצאות</div>
-            <div id="chart-expense-total" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:900;color:var(--red);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">₪0</div>
+          <div class="chart-stat-card" style="background:rgba(255,23,68,0.07);border:1px solid rgba(255,23,68,0.18);">
+            <div class="chart-stat-label">הוצאות</div>
+            <div id="chart-expense-total" class="chart-stat-value" style="color:var(--red);">₪0</div>
           </div>
-          <div style="flex:1;min-width:0;text-align:center;padding:12px 6px;background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.16);border-radius:14px;overflow:hidden;">
-            <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:.06em;margin-bottom:4px;">יתרה</div>
-            <div id="chart-balance-total" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:900;color:var(--cyan);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">₪0</div>
+          <div class="chart-stat-card" style="background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.16);">
+            <div class="chart-stat-label">יתרה</div>
+            <div id="chart-balance-total" class="chart-stat-value" style="color:var(--cyan);">₪0</div>
           </div>
         </div>
       </div>
@@ -5392,13 +5450,14 @@
       <div class="chart-hero" style="margin-bottom:14px;">
         <div class="chart-section-title">הוצאות לפי קטגוריה</div>
         <div id="donut-wrap">
-          <svg id="donut-svg" viewBox="0 0 190 190">
-            <circle cx="95" cy="95" r="72" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="22"/>
+          <svg id="donut-svg" viewBox="0 0 220 220">
+            <circle cx="110" cy="110" r="84" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="24"/>
             <g id="donut-arcs"></g>
           </svg>
           <div id="donut-center">
             <div id="donut-center-label">סה"כ</div>
             <div id="donut-center-amount">₪0</div>
+            <div id="donut-center-sub"></div>
           </div>
         </div>
         <div id="chart-exp-legend" class="chart-legend"></div>
@@ -7446,32 +7505,54 @@ window.deletePhoneIdx = function(i) {
                           .sort(function(a,b){ return b.amt-a.amt; });
     var donutTotal = expEntries.reduce(function(a,i){ return a+i.amt; },0);
     var arcsEl=$('donut-arcs'), legEl=$('chart-exp-legend'), centerAmt=$('donut-center-amount');
+    var centerSub=$('donut-center-sub');
     if(centerAmt) centerAmt.textContent = fmt(donutTotal);
+    if(centerSub && expEntries.length){
+      centerSub.textContent = expEntries.length + ' קטגוריות';
+    }
     if(arcsEl){
       if(!expEntries.length){
-        arcsEl.innerHTML='<circle cx="95" cy="95" r="72" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="22"/>';
+        arcsEl.innerHTML='<circle cx="110" cy="110" r="84" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="24"/>';
         if(legEl) legEl.innerHTML='<div class="chart-empty"><span class="chart-empty-icon">📊</span>אין הוצאות במחזור הנוכחי</div>';
       } else {
-        var r=72,circ=2*Math.PI*r,offset=0,svgArcs='';
+        var r=84, circ=2*Math.PI*r, offset=0, svgArcs='';
         expEntries.forEach(function(item,idx){
-          var pct=donutTotal>0?item.amt/donutTotal:0;
-          var dash=pct*circ, gap=circ-dash;
-          var color=CHART_COLORS[idx%CHART_COLORS.length];
-          svgArcs+='<circle cx="95" cy="95" r="72" fill="none" stroke="'+color+'" stroke-width="21"'+
-            ' stroke-dasharray="'+(dash-1.5).toFixed(2)+' '+(gap+1.5).toFixed(2)+'"'+
+          var pct = donutTotal>0 ? item.amt/donutTotal : 0;
+          var dash = pct*circ, gap = circ-dash;
+          var color = CHART_COLORS[idx%CHART_COLORS.length];
+          /* gap of 2px between segments */
+          svgArcs += '<circle cx="110" cy="110" r="84" fill="none" stroke="'+color+'" stroke-width="23"'+
+            ' stroke-dasharray="'+(dash-2.5).toFixed(2)+' '+(gap+2.5).toFixed(2)+'"'+
             ' stroke-dashoffset="'+(-offset).toFixed(2)+'"'+
-            ' style="filter:drop-shadow(0 0 6px '+color+'88);transition:stroke-dashoffset .6s;"/>';
-          offset+=dash;
+            ' style="filter:drop-shadow(0 0 7px '+color+'99);transition:stroke-dashoffset .7s cubic-bezier(.16,1,.3,1);"/>';
+          offset += dash;
         });
-        arcsEl.innerHTML=svgArcs;
-        if(legEl) legEl.innerHTML=expEntries.map(function(item,idx){
-          var pct=donutTotal>0?Math.round(item.amt/donutTotal*100):0;
-          var color=CHART_COLORS[idx%CHART_COLORS.length];
-          return '<div class="chart-legend-item">'+
-            '<div class="chart-legend-dot" style="background:'+color+';color:'+color+';"></div>'+
-            '<span class="chart-legend-name">'+item.name+'</span>'+
-            '<span class="chart-legend-amt" style="color:'+color+';">'+fmt(item.amt)+'</span>'+
-            '<span class="chart-legend-pct">'+pct+'%</span></div>';
+        arcsEl.innerHTML = svgArcs;
+
+        /* legend with progress bar + % badge */
+        if(legEl) legEl.innerHTML = expEntries.map(function(item,idx){
+          var pct   = donutTotal>0 ? item.amt/donutTotal*100 : 0;
+          var pctRound = Math.round(pct);
+          var color = CHART_COLORS[idx%CHART_COLORS.length];
+          var hexAlpha = Math.round(pct*1.8).toString(16).padStart(2,'0');
+          var delay = idx * 0.045;
+          return [
+            '<div class="chart-legend-item" style="border-color:'+color+'22;animation-delay:'+delay+'s;" ',
+              'onmouseenter="this.style.background=\''+color+'12\';this.style.borderColor=\''+color+'44\';" ',
+              'onmouseleave="this.style.background=\'\';this.style.borderColor=\''+color+'22\';">',
+              '<div class="chart-legend-top">',
+                '<div class="chart-legend-dot" style="background:'+color+';box-shadow:0 0 8px '+color+';color:'+color+';"></div>',
+                '<span class="chart-legend-name" style="color:rgba(255,255,255,0.88);">'+item.name+'</span>',
+                '<div class="chart-legend-right">',
+                  '<span class="chart-legend-amt" style="color:'+color+';">'+fmt(item.amt)+'</span>',
+                  '<span class="chart-legend-pct-badge" style="background:'+color+'18;color:'+color+';">'+pctRound+'%</span>',
+                '</div>',
+              '</div>',
+              '<div class="chart-legend-bar-track">',
+                '<div class="chart-legend-bar-fill" style="width:'+pct.toFixed(1)+'%;background:linear-gradient(90deg,'+color+','+color+'bb);box-shadow:0 0 6px '+color+'66;"></div>',
+              '</div>',
+            '</div>'
+          ].join('');
         }).join('');
       }
     }
@@ -7486,16 +7567,28 @@ window.deletePhoneIdx = function(i) {
     var incEntries=Object.keys(incByCat).map(function(k){ return {name:k,amt:incByCat[k]}; })
                         .sort(function(a,b){ return b.amt-a.amt; });
     var maxInc=incEntries.length?incEntries[0].amt:1;
+    var totalInc2=incEntries.reduce(function(a,i){ return a+i.amt; },0);
     var barIncEl=$('bar-chart-income');
     if(barIncEl) barIncEl.innerHTML=!incEntries.length
       ?'<div class="chart-empty"><span class="chart-empty-icon">💰</span>אין הכנסות בקטגוריות</div>'
       :incEntries.map(function(item,idx){
-          var pct=maxInc>0?(item.amt/maxInc*100):0;
-          var color=CHART_COLORS[(idx+5)%CHART_COLORS.length];
-          return '<div class="bar-item">'+
-            '<div class="bar-item-row"><span class="bar-item-name">'+item.name+'</span>'+
-            '<span class="bar-item-amt" style="color:'+color+';">'+fmt(item.amt)+'</span></div>'+
-            '<div class="bar-track"><div class="bar-fill" style="width:'+pct.toFixed(1)+'%;background:'+color+';box-shadow:0 0 8px '+color+'55;"></div></div></div>';
+          var barPct = maxInc>0 ? (item.amt/maxInc*100) : 0;
+          var sharePct = totalInc2>0 ? Math.round(item.amt/totalInc2*100) : 0;
+          var color = CHART_COLORS[(idx+5)%CHART_COLORS.length];
+          return [
+            '<div class="bar-item">',
+              '<div class="bar-item-row">',
+                '<span class="bar-item-name" style="color:rgba(255,255,255,0.80);">'+item.name+'</span>',
+                '<div class="bar-item-right">',
+                  '<span class="bar-item-amt" style="color:'+color+';">'+fmt(item.amt)+'</span>',
+                  '<span class="bar-item-pct" style="color:'+color+'99;">'+sharePct+'%</span>',
+                '</div>',
+              '</div>',
+              '<div class="bar-track">',
+                '<div class="bar-fill" style="width:'+barPct.toFixed(1)+'%;background:linear-gradient(90deg,'+color+','+color+'bb);box-shadow:0 0 8px '+color+'55;"></div>',
+              '</div>',
+            '</div>'
+          ].join('');
         }).join('');
 
     /* ── Bars — budget vs actual ── */
@@ -7507,11 +7600,22 @@ window.deletePhoneIdx = function(i) {
           var spent=expenses.filter(function(i){ return parseDate(i.date)>=s&&i.category===cat.name; })
                            .reduce(function(a,i){ return a+Number(i.amount||0); },0);
           var pct=cat.budget>0?Math.min(spent/cat.budget*100,100):0;
+          var sharePct=cat.budget>0?Math.round(spent/cat.budget*100):0;
           var color=spent>=cat.budget?'#FF1744':pct>80?'#FF9800':'#00E676';
-          return '<div class="bar-item">'+
-            '<div class="bar-item-row"><span class="bar-item-name">'+cat.name+'</span>'+
-            '<span class="bar-item-amt" style="color:'+color+';">'+fmt(spent)+' / '+fmt(cat.budget)+'</span></div>'+
-            '<div class="bar-track"><div class="bar-fill" style="width:'+pct.toFixed(1)+'%;background:'+color+';box-shadow:0 0 8px '+color+'55;"></div></div></div>';
+          return [
+            '<div class="bar-item">',
+              '<div class="bar-item-row">',
+                '<span class="bar-item-name" style="color:rgba(255,255,255,0.80);">'+cat.name+'</span>',
+                '<div class="bar-item-right">',
+                  '<span class="bar-item-amt" style="color:'+color+';">'+fmt(spent)+' / '+fmt(cat.budget)+'</span>',
+                  '<span class="bar-item-pct" style="color:'+color+'cc;">'+sharePct+'%</span>',
+                '</div>',
+              '</div>',
+              '<div class="bar-track">',
+                '<div class="bar-fill" style="width:'+pct.toFixed(1)+'%;background:linear-gradient(90deg,'+color+','+color+'bb);box-shadow:0 0 8px '+color+'55;"></div>',
+              '</div>',
+            '</div>'
+          ].join('');
         }).join('');
 
     /* ── Trend chart ── */
@@ -10050,99 +10154,376 @@ window.exportUserData = function() {
     };
   }
 
-  /* ── עיבוד מרובה ── */
+  /* ══════════════════════════════════════════════════════
+     processMultipleFiles — סורק + מציג bottom sheet מלא
+     עם עריכה לכל פריט, גלילה פנימית, שמירת הכל
+  ══════════════════════════════════════════════════════ */
   async function processMultipleFiles(files){
-    /* container תוצאות */
-    resultEl.className = 'scan-doc-result result-ok';
-    resultEl.style.position = 'relative';
-    resultEl.style.overflow = 'hidden';
-    resultEl.innerHTML =
-      '<div style="font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:12px;">🤖 AI סורק '+files.length+' מסמכים...</div>'+
-      '<div id="multi-scan-list" style="display:flex;flex-direction:column;gap:10px;"></div>'+
-      '<div id="multi-scan-save-all" class="hidden" style="margin-top:14px;">'+
-        '<button onclick="window._saveAllScanned&&window._saveAllScanned();" style="width:100%;padding:13px;border-radius:13px;border:1px solid rgba(0,229,255,0.35);background:rgba(0,229,255,0.10);color:var(--cyan);font-family:\'Syne\',sans-serif;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 4px 16px rgba(0,229,255,0.15);">✓ שמור את כולם</button>'+
-      '</div>';
-    resultEl.classList.remove('hidden');
+    var _allCats  = window._appUserCategories || [];
+    var expCats   = _allCats.filter(function(c){ return c.type==='expense'; });
+    var incCats   = _allCats.filter(function(c){ return c.type==='income';  });
 
+    /* state — מערך תוצאות, אחד לכל קובץ */
+    var items = files.map(function(f,i){
+      return { idx:i, file:f, status:'scanning', result:null, error:null,
+               editType:null, editCat:'', editDesc:'', editAmount:'' };
+    });
+
+    /* ── בנה את ה-sheet ── */
+    var existing = document.getElementById('_msr-sheet');
+    if(existing) existing.remove();
+
+    var sheet = document.createElement('div');
+    sheet.id  = '_msr-sheet';
+    sheet.style.cssText = [
+      'position:fixed;inset:0;z-index:9997',
+      'display:flex;flex-direction:column',
+      'background:linear-gradient(180deg,rgba(6,10,24,0.98),rgba(4,7,18,0.99))',
+      'transform:translateY(100%)',
+      'transition:transform .40s cubic-bezier(0.32,1.10,0.60,1)'
+    ].join(';');
+
+    sheet.innerHTML = [
+      /* ── Header (fixed) ── */
+      '<div id="_msr-header" style="',
+        'flex-shrink:0;',
+        'padding:env(safe-area-inset-top,0) 16px 0;',
+        'background:linear-gradient(180deg,rgba(6,10,24,1),rgba(6,10,24,0.0));',
+        'position:relative;z-index:2;',
+      '">',
+        '<div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,0.50),transparent);"></div>',
+        '<div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.12);margin:12px auto 14px;"></div>',
+        '<div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.06);">',
+          '<div>',
+            '<div style="font-family:\'Syne\',sans-serif;font-size:17px;font-weight:900;color:#fff;" id="_msr-title">סורק ' + files.length + ' קבצים...</div>',
+            '<div style="font-size:11px;color:rgba(255,255,255,0.32);margin-top:2px;" id="_msr-sub">AI מזהה סכום וקטגוריה</div>',
+          '</div>',
+          '<button id="_msr-close" style="',
+            'width:32px;height:32px;border-radius:10px;',
+            'border:1px solid rgba(255,255,255,0.10);',
+            'background:rgba(255,255,255,0.04);',
+            'color:rgba(255,255,255,0.40);cursor:pointer;font-size:15px;',
+            'flex-shrink:0;line-height:1;',
+          '">✕</button>',
+        '</div>',
+      '</div>',
+
+      /* ── Scrollable list ── */
+      '<div id="_msr-list" style="',
+        'flex:1;overflow-y:auto;overflow-x:hidden;',
+        '-webkit-overflow-scrolling:touch;',
+        'padding:14px 16px 8px;',
+        'display:flex;flex-direction:column;gap:12px;',
+      '"></div>',
+
+      /* ── Footer (fixed) ── */
+      '<div id="_msr-footer" style="',
+        'flex-shrink:0;',
+        'padding:12px 16px calc(env(safe-area-inset-bottom,0px) + 12px);',
+        'background:linear-gradient(0deg,rgba(4,7,18,1) 70%,rgba(4,7,18,0));',
+        'position:relative;z-index:2;',
+      '">',
+        '<button id="_msr-save-all" style="',
+          'width:100%;padding:16px;border-radius:16px;',
+          'background:linear-gradient(135deg,rgba(0,229,255,0.16),rgba(0,180,255,0.08));',
+          'border:1px solid rgba(0,229,255,0.32);',
+          'color:var(--cyan);',
+          'font-family:\'Syne\',sans-serif;font-size:15px;font-weight:900;',
+          'cursor:pointer;opacity:0.35;pointer-events:none;',
+          'box-shadow:0 6px 24px rgba(0,229,255,0.12),0 1px 0 rgba(255,255,255,0.06) inset;',
+          'transition:all .25s cubic-bezier(0.34,1.56,0.64,1);',
+        '">שומר...</button>',
+      '</div>'
+    ].join('');
+
+    document.body.appendChild(sheet);
+    var listEl    = document.getElementById('_msr-list');
+    var saveAllEl = document.getElementById('_msr-save-all');
+    var titleEl   = document.getElementById('_msr-title');
+    var subEl     = document.getElementById('_msr-sub');
+
+    /* animate in */
+    requestAnimationFrame(function(){
+      sheet.style.transform = 'translateY(0)';
+    });
+
+    function closeSheet(){
+      sheet.style.transform = 'translateY(100%)';
+      setTimeout(function(){ if(sheet.parentNode) sheet.remove(); }, 420);
+    }
+    document.getElementById('_msr-close').onclick = closeSheet;
+
+    /* ── helpers ── */
+    function buildCatSelect(itemObj){
+      var cats = itemObj.editType === 'income' ? incCats : expCats;
+      var opts = '<option value="">— ללא קטגוריה —</option>' +
+        cats.map(function(c){
+          var sel = c.name === itemObj.editCat ? 'selected' : '';
+          return '<option value="' + escHtml(c.name) + '" ' + sel + '>' + escHtml(c.name) + '</option>';
+        }).join('');
+      return opts;
+    }
+
+    function colorOf(type){ return type === 'income' ? '#00E676' : '#FF6080'; }
+    function bgOf(type)   { return type === 'income' ? 'rgba(0,230,118,0.10)' : 'rgba(255,23,68,0.10)'; }
+    function bdrOf(type)  { return type === 'income' ? 'rgba(0,230,118,0.28)' : 'rgba(255,23,68,0.28)'; }
+    function symOf(type)  { return type === 'income' ? '+' : '−'; }
+
+    /* ── מציג placeholder סורק ── */
+    function renderPlaceholder(it){
+      var div = document.getElementById('_msr-item-' + it.idx);
+      div.style.borderColor = 'rgba(255,255,255,0.08)';
+      div.innerHTML = [
+        '<div style="display:flex;align-items:center;gap:12px;padding:14px;">',
+          '<div style="width:36px;height:36px;flex-shrink:0;border-radius:11px;background:rgba(0,229,255,0.07);border:1px solid rgba(0,229,255,0.16);display:flex;align-items:center;justify-content:center;">',
+            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(0,229,255,0.70)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin360 1s linear infinite;"><path d="M12 2a10 10 0 0 1 10 10"/></svg>',
+          '</div>',
+          '<div style="flex:1;min-width:0;">',
+            '<div style="font-family:\'Syne\',sans-serif;font-size:12px;font-weight:700;color:rgba(255,255,255,0.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(it.file.name.length>32?it.file.name.slice(0,29)+'...':it.file.name) + '</div>',
+            '<div style="font-size:10px;color:rgba(255,255,255,0.22);margin-top:3px;">AI סורק...</div>',
+          '</div>',
+        '</div>'
+      ].join('');
+    }
+
+    /* ── מציג כרטיס עריכה מלא ── */
+    function renderCard(it){
+      var div = document.getElementById('_msr-item-' + it.idx);
+      var col = colorOf(it.editType);
+      var bg  = bgOf(it.editType);
+      var bdr = bdrOf(it.editType);
+      var sym = symOf(it.editType);
+      var i   = it.idx;
+      div.style.cssText = [
+        'border-radius:18px;overflow:hidden;',
+        'border:1px solid ' + bdr + ';',
+        'background:rgba(255,255,255,0.03);',
+        'transition:border-color .3s ease;'
+      ].join('');
+      div.innerHTML = [
+        /* top color line */
+        '<div style="height:2px;background:linear-gradient(90deg,transparent,' + col + '80,transparent);"></div>',
+
+        /* header row */
+        '<div style="display:flex;align-items:center;gap:12px;padding:14px 14px 10px;">',
+          '<div style="width:38px;height:38px;flex-shrink:0;border-radius:12px;background:' + bg + ';border:1px solid ' + bdr + ';display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:' + col + ';">' + sym + '</div>',
+          '<div style="flex:1;min-width:0;">',
+            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:20px;font-weight:900;color:' + col + ';line-height:1;" id="_msr-amt-display-' + i + '">' + sym + ' ₪' + (it.editAmount ? Number(it.editAmount).toLocaleString('he-IL') : '—') + '</div>',
+            '<div style="font-size:10px;color:rgba(255,255,255,0.28);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(it.file.name.length>30?it.file.name.slice(0,27)+'...':it.file.name) + '</div>',
+          '</div>',
+          '<button onclick="window._msrRemove(' + i + ')" style="width:28px;height:28px;border-radius:8px;border:1px solid rgba(255,255,255,0.09);background:rgba(255,80,80,0.07);color:rgba(255,120,120,0.60);cursor:pointer;font-size:12px;flex-shrink:0;line-height:1;">✕</button>',
+        '</div>',
+
+        /* edit fields */
+        '<div style="padding:0 14px 14px;display:flex;flex-direction:column;gap:10px;">',
+
+          /* type toggle */
+          '<div style="display:flex;gap:8px;">',
+            '<button id="_msr-t-exp-' + i + '" onclick="window._msrSetType(' + i + ',\'expense\')" style="',
+              'flex:1;padding:9px;border-radius:11px;cursor:pointer;',
+              'font-family:\'Syne\',sans-serif;font-size:12px;font-weight:800;',
+              'transition:all .2s;-webkit-tap-highlight-color:transparent;',
+              (it.editType==='expense'
+                ? 'background:rgba(255,23,68,0.14);border:1px solid rgba(255,23,68,0.40);color:#FF6080;'
+                : 'background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.28);'),
+            '">− הוצאה</button>',
+            '<button id="_msr-t-inc-' + i + '" onclick="window._msrSetType(' + i + ',\'income\')" style="',
+              'flex:1;padding:9px;border-radius:11px;cursor:pointer;',
+              'font-family:\'Syne\',sans-serif;font-size:12px;font-weight:800;',
+              'transition:all .2s;-webkit-tap-highlight-color:transparent;',
+              (it.editType==='income'
+                ? 'background:rgba(0,230,118,0.14);border:1px solid rgba(0,230,118,0.40);color:#00E676;'
+                : 'background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.28);'),
+            '">+ הכנסה</button>',
+          '</div>',
+
+          /* amount */
+          '<div style="position:relative;">',
+            '<div style="position:absolute;right:13px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:800;color:rgba(255,255,255,0.35);pointer-events:none;">₪</div>',
+            '<input id="_msr-inp-amt-' + i + '" type="number" inputmode="decimal" value="' + escHtml(String(it.editAmount)) + '" placeholder="סכום" ',
+              'oninput="window._msrSetAmt(' + i + ',this.value)" ',
+              'style="width:100%;box-sizing:border-box;padding:11px 36px 11px 14px;border-radius:12px;',
+              'background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.11);',
+              'color:#fff;font-family:\'JetBrains Mono\',monospace;font-size:15px;font-weight:800;',
+              'outline:none;-webkit-appearance:none;text-align:right;" />',
+          '</div>',
+
+          /* description */
+          '<input id="_msr-inp-desc-' + i + '" type="text" value="' + escHtml(it.editDesc) + '" placeholder="תיאור" ',
+            'oninput="window._msrSetDesc(' + i + ',this.value)" ',
+            'style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:12px;',
+            'background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.11);',
+            'color:#fff;font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;',
+            'outline:none;" />',
+
+          /* category select */
+          '<div style="position:relative;">',
+            '<select id="_msr-sel-cat-' + i + '" onchange="window._msrSetCat(' + i + ',this.value)" style="',
+              'width:100%;box-sizing:border-box;padding:11px 14px;border-radius:12px;',
+              'background:rgba(255,255,255,0.05);border:1px solid ' + bdr + ';',
+              'color:#fff;font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;',
+              'appearance:none;-webkit-appearance:none;outline:none;cursor:pointer;">',
+              buildCatSelect(it),
+            '</select>',
+            '<div style="position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;color:' + col + ';">',
+              '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>',
+            '</div>',
+          '</div>',
+
+        '</div>' /* end fields */
+      ].join('');
+    }
+
+    /* ── מציג שגיאה ── */
+    function renderError(it){
+      var div = document.getElementById('_msr-item-' + it.idx);
+      div.style.cssText = 'border-radius:14px;overflow:hidden;border:1px solid rgba(255,80,80,0.22);background:rgba(255,23,68,0.04);';
+      div.innerHTML = [
+        '<div style="display:flex;align-items:center;gap:12px;padding:14px;">',
+          '<div style="width:36px;height:36px;flex-shrink:0;border-radius:11px;background:rgba(255,23,68,0.10);border:1px solid rgba(255,23,68,0.25);display:flex;align-items:center;justify-content:center;color:#FF6080;font-size:16px;">!</div>',
+          '<div style="flex:1;min-width:0;">',
+            '<div style="font-family:\'Syne\',sans-serif;font-size:12px;font-weight:800;color:#FF6080;">שגיאת סריקה</div>',
+            '<div style="font-size:10px;color:rgba(255,255,255,0.28);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(it.file.name.length>32?it.file.name.slice(0,29)+'...':it.file.name) + '</div>',
+          '</div>',
+        '</div>'
+      ].join('');
+    }
+
+    /* ── עדכון כפתור שמור הכל ── */
+    function refreshSaveBtn(){
+      var done    = items.filter(function(it){ return it.status === 'done'; });
+      var removed = items.filter(function(it){ return it.status === 'removed'; });
+      var scanning= items.filter(function(it){ return it.status === 'scanning'; });
+      var active  = done.filter(function(it){ return it.status === 'done'; }); /* not removed */
+      if(scanning.length > 0){
+        titleEl.textContent = 'סורק ' + scanning.length + ' מתוך ' + files.length + '...';
+        subEl.textContent   = done.length + ' הושלמו';
+        saveAllEl.style.opacity = '0.35';
+        saveAllEl.style.pointerEvents = 'none';
+        saveAllEl.textContent = 'ממתין לסריקה...';
+      } else {
+        var cnt = items.filter(function(it){ return it.status==='done'; }).length;
+        titleEl.textContent = cnt + ' סריקות הושלמו';
+        subEl.textContent   = 'ערוך ושמור כל אחד בנפרד או שמור הכל';
+        if(cnt > 0){
+          saveAllEl.style.opacity = '1';
+          saveAllEl.style.pointerEvents = '';
+          saveAllEl.textContent = '✓ שמור את כולם (' + cnt + ')';
+        } else {
+          saveAllEl.style.opacity = '0.35';
+          saveAllEl.style.pointerEvents = 'none';
+          saveAllEl.textContent = 'אין פריטים לשמירה';
+        }
+      }
+    }
+
+    /* ── בנה placeholder divs לכולם ── */
+    items.forEach(function(it){
+      var div = document.createElement('div');
+      div.id  = '_msr-item-' + it.idx;
+      div.style.cssText = 'border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);transition:all .30s cubic-bezier(0.34,1.10,0.64,1);';
+      listEl.appendChild(div);
+      renderPlaceholder(it);
+    });
+
+    /* ── Scan loop ── */
     scanBtn.style.opacity      = '0.5';
     scanBtn.style.pointerEvents = 'none';
 
-    var list    = document.getElementById('multi-scan-list');
-    var results = [];
-
-    for(var i=0; i<files.length; i++){
-      var f   = files[i];
-      var idx = i;
-
-      /* placeholder */
-      var item = document.createElement('div');
-      item.id  = 'mscan-' + idx;
-      item.style.cssText = 'border-radius:14px;padding:12px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:10px;';
-      item.innerHTML =
-        '<div style="width:32px;height:32px;border-radius:10px;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+
-          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin360 1s linear infinite;"><path d="M12 2a10 10 0 0 1 10 10"/></svg>'+
-        '</div>'+
-        '<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.5);">'+escHtml(f.name.length>28?f.name.slice(0,25)+'...':f.name)+'</div><div style="font-size:10px;color:rgba(255,255,255,0.25);margin-top:2px;">סורק...</div></div>';
-      list.appendChild(item);
-
+    for(var si = 0; si < items.length; si++){
+      var it = items[si];
       try {
-        var r = await sendToWorker(f);
+        var r = await sendToWorker(it.file);
         addScanCount(1);
-        results.push({ result: r, file: f, idx: idx });
-
-        var isI  = r.type === 'income';
-        var col  = isI ? '#00E676' : '#FF6080';
-        var sym  = isI ? '+' : '−';
-        var amt  = r.amount ? '₪' + Number(r.amount).toLocaleString('he-IL') : '—';
-        item.style.borderColor = isI ? 'rgba(0,230,118,0.25)' : 'rgba(255,23,68,0.25)';
-        item.innerHTML =
-          '<div style="width:32px;height:32px;border-radius:10px;background:'+(isI?'rgba(0,230,118,0.10)':'rgba(255,23,68,0.10)')+';border:1px solid '+(isI?'rgba(0,230,118,0.28)':'rgba(255,23,68,0.28)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;">'+sym+'</div>'+
-          '<div style="flex:1;min-width:0;">'+
-            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:15px;font-weight:900;color:'+col+';">'+sym+' '+amt+'</div>'+
-            '<div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(r.description?escHtml(r.description):'—')+'</div>'+
-          '</div>'+
-          '<button onclick="window._removeMscan('+idx+')" style="width:28px;height:28px;border-radius:8px;border:1px solid rgba(255,255,255,0.10);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.35);cursor:pointer;font-size:13px;flex-shrink:0;">✕</button>';
+        it.result    = r;
+        it.status    = 'done';
+        it.editType   = r.type === 'income' ? 'income' : 'expense';
+        it.editAmount = r.amount ? String(r.amount) : '';
+        it.editDesc   = r.description || '';
+        /* match category */
+        var catRaw = r.category || '';
+        var lower  = catRaw.toLowerCase();
+        var cats2  = it.editType === 'income' ? incCats : expCats;
+        var found  = cats2.find(function(c){
+          return c.name.toLowerCase() === lower ||
+                 c.name.toLowerCase().includes(lower) ||
+                 lower.includes(c.name.toLowerCase());
+        });
+        it.editCat = found ? found.name : catRaw;
+        renderCard(it);
       } catch(err){
-        item.style.borderColor = 'rgba(255,80,80,0.25)';
-        item.innerHTML =
-          '<div style="width:32px;height:32px;border-radius:10px;background:rgba(255,23,68,0.10);border:1px solid rgba(255,23,68,0.28);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#FF6080;font-size:16px;">!</div>'+
-          '<div style="flex:1;"><div style="font-size:12px;color:#FF6080;font-weight:700;">שגיאה בסריקה</div><div style="font-size:10px;color:rgba(255,255,255,0.3);">'+(escHtml(f.name.slice(0,25)))+'</div></div>';
+        it.status = 'error';
+        renderError(it);
       }
+      refreshSaveBtn();
     }
 
     scanBtn.style.opacity      = '';
     scanBtn.style.pointerEvents = '';
+    refreshSaveBtn();
 
-    /* כפתור שמור הכל */
-    if(results.length > 0){
-      document.getElementById('multi-scan-list').insertAdjacentHTML('beforebegin',
-        '<div style="font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:12px;">✓ '+results.length+' מסמכים זוהו</div>');
-      document.getElementById('multi-scan-save-all').classList.remove('hidden');
-    }
-
-    /* מנגנון הסרה */
-    window._removeMscan = function(idx){
-      results = results.filter(function(r){ return r.idx !== idx; });
-      var el = document.getElementById('mscan-'+idx);
-      if(el){ el.style.opacity='0'; el.style.transform='scale(0.95)'; el.style.transition='all .2s'; setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); },200); }
-      if(results.length === 0) document.getElementById('multi-scan-save-all').classList.add('hidden');
+    /* ── callbacks גלובליים ── */
+    window._msrSetType = function(idx, type){
+      var it = items[idx];
+      if(!it || it.status !== 'done') return;
+      it.editType = type;
+      /* rebuild cat list for new type */
+      var cats3 = type === 'income' ? incCats : expCats;
+      var stillValid = cats3.find(function(c){ return c.name === it.editCat; });
+      if(!stillValid) it.editCat = '';
+      renderCard(it);
+    };
+    window._msrSetAmt  = function(idx, val){
+      var it = items[idx];
+      if(!it) return;
+      it.editAmount = val;
+      var col = colorOf(it.editType);
+      var sym = symOf(it.editType);
+      var disp = document.getElementById('_msr-amt-display-' + idx);
+      if(disp) disp.textContent = sym + ' ₪' + (val ? Number(val).toLocaleString('he-IL') : '—');
+    };
+    window._msrSetDesc = function(idx, val){
+      var it = items[idx]; if(!it) return; it.editDesc = val;
+    };
+    window._msrSetCat  = function(idx, val){
+      var it = items[idx]; if(!it) return; it.editCat = val;
+    };
+    window._msrRemove  = function(idx){
+      var it  = items[idx]; if(!it) return;
+      it.status = 'removed';
+      var div = document.getElementById('_msr-item-' + idx);
+      if(div){
+        div.style.opacity   = '0';
+        div.style.transform = 'scale(0.92) translateX(30px)';
+        div.style.maxHeight = div.offsetHeight + 'px';
+        setTimeout(function(){
+          div.style.maxHeight  = '0';
+          div.style.padding    = '0';
+          div.style.margin     = '0';
+          div.style.overflow   = 'hidden';
+        }, 180);
+        setTimeout(function(){ if(div.parentNode) div.parentNode.removeChild(div); }, 420);
+      }
+      refreshSaveBtn();
     };
 
-    /* שמור הכל */
-    window._saveAllScanned = function(){
-      if(!results.length) return;
+    /* ── שמור הכל ── */
+    saveAllEl.onclick = function(){
+      var toSave = items.filter(function(it){ return it.status === 'done'; });
+      if(!toSave.length) return;
       var saved = 0;
-      results.forEach(function(item){
-        saveScannedTransaction(Object.assign({}, item.result, {
-          category: item.result.category || '',
-          type: item.result.type === 'income' ? 'income' : 'expense'
-        }));
+      toSave.forEach(function(it){
+        saveScannedTransaction({
+          amount:      it.editAmount,
+          description: it.editDesc,
+          category:    it.editCat,
+          type:        it.editType
+        });
         saved++;
+        it.status = 'saved';
       });
       toast('✓ ' + saved + ' עסקאות נשמרו!', 'success');
-      resultEl.classList.add('hidden');
-      resultEl.innerHTML = '';
-      results = [];
+      setTimeout(closeSheet, 600);
     };
   }
 
