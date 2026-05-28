@@ -6737,54 +6737,50 @@
     code: 'ILS', symbol: '₪', rate: 1, name: 'שקל ישראלי'
   };
 
-  /* Static fallback rates (ILS base) — updated on sheet open via exchangerate API */
+  /* Static fallback rates — foreign units per 1 ILS (e.g. USD: ₪1 ≈ $0.27) */
   var _currencyList = [
-    { code:'ILS',  symbol:'₪',  name:'שקל ישראלי',      flag:'🇮🇱', rate:1      },
-    { code:'USD',  symbol:'$',  name:'דולר אמריקאי',     flag:'🇺🇸', rate:3.70   },
-    { code:'EUR',  symbol:'€',  name:'אירו',              flag:'🇪🇺', rate:4.05   },
-    { code:'GBP',  symbol:'£',  name:'פאונד בריטי',      flag:'🇬🇧', rate:4.70   },
-    { code:'JPY',  symbol:'¥',  name:'ין יפני',           flag:'🇯🇵', rate:0.025  },
-    { code:'CHF',  symbol:'Fr', name:'פרנק שוויצרי',     flag:'🇨🇭', rate:4.20   },
-    { code:'CAD',  symbol:'C$', name:'דולר קנדי',         flag:'🇨🇦', rate:2.75   },
-    { code:'AUD',  symbol:'A$', name:'דולר אוסטרלי',      flag:'🇦🇺', rate:2.45   },
-    { code:'AED',  symbol:'د.إ',name:'דירהם אמירויות',   flag:'🇦🇪', rate:1.008  },
-    { code:'JOD',  symbol:'JD', name:'דינר ירדני',        flag:'🇯🇴', rate:5.22   },
-    { code:'EGP',  symbol:'E£', name:'לירה מצרית',        flag:'🇪🇬', rate:0.077  },
-    { code:'PLN',  symbol:'zł', name:'זלוטי פולני',       flag:'🇵🇱', rate:0.96   },
-    { code:'SEK',  symbol:'kr', name:'כתר שוודי',         flag:'🇸🇪', rate:0.35   },
-    { code:'TRY',  symbol:'₺',  name:'לירה טורקית',       flag:'🇹🇷', rate:0.112  },
-    { code:'BRL',  symbol:'R$', name:'ריאל ברזילאי',      flag:'🇧🇷', rate:0.72   },
-    { code:'CNY',  symbol:'¥',  name:'יואן סיני',         flag:'🇨🇳', rate:0.51   },
-    { code:'INR',  symbol:'₹',  name:'רופי הודי',         flag:'🇮🇳', rate:0.044  },
-    { code:'MXN',  symbol:'$',  name:'פסו מקסיקאי',      flag:'🇲🇽', rate:0.21   },
-    { code:'SGD',  symbol:'S$', name:'דולר סינגפורי',     flag:'🇸🇬', rate:2.80   },
-    { code:'KRW',  symbol:'₩',  name:'וון דרום קוריאני', flag:'🇰🇷', rate:0.0028 },
+    { code:'ILS',  symbol:'₪',  name:'שקל ישראלי',       flag:'🇮🇱', rate:1       },
+    { code:'USD',  symbol:'$',  name:'דולר אמריקאי',      flag:'🇺🇸', rate:0.270   },
+    { code:'EUR',  symbol:'€',  name:'אירו',               flag:'🇪🇺', rate:0.247   },
+    { code:'GBP',  symbol:'£',  name:'פאונד בריטי',       flag:'🇬🇧', rate:0.213   },
+    { code:'JPY',  symbol:'¥',  name:'ין יפני',            flag:'🇯🇵', rate:40.50   },
+    { code:'CHF',  symbol:'Fr', name:'פרנק שוויצרי',      flag:'🇨🇭', rate:0.238   },
+    { code:'CAD',  symbol:'C$', name:'דולר קנדי',          flag:'🇨🇦', rate:0.364   },
+    { code:'AUD',  symbol:'A$', name:'דולר אוסטרלי',       flag:'🇦🇺', rate:0.408   },
+    { code:'AED',  symbol:'د.إ',name:'דירהם אמירויות',    flag:'🇦🇪', rate:0.992   },
+    { code:'JOD',  symbol:'JD', name:'דינר ירדני',         flag:'🇯🇴', rate:0.192   },
+    { code:'EGP',  symbol:'E£', name:'לירה מצרית',         flag:'🇪🇬', rate:13.00   },
+    { code:'PLN',  symbol:'zł', name:'זלוטי פולני',        flag:'🇵🇱', rate:1.042   },
+    { code:'SEK',  symbol:'kr', name:'כתר שוודי',          flag:'🇸🇪', rate:2.86    },
+    { code:'TRY',  symbol:'₺',  name:'לירה טורקית',        flag:'🇹🇷', rate:8.93    },
+    { code:'BRL',  symbol:'R$', name:'ריאל ברזילאי',       flag:'🇧🇷', rate:1.39    },
+    { code:'CNY',  symbol:'¥',  name:'יואן סיני',          flag:'🇨🇳', rate:1.96    },
+    { code:'INR',  symbol:'₹',  name:'רופי הודי',          flag:'🇮🇳', rate:22.70   },
+    { code:'MXN',  symbol:'$',  name:'פסו מקסיקאי',       flag:'🇲🇽', rate:4.76    },
+    { code:'SGD',  symbol:'S$', name:'דולר סינגפורי',      flag:'🇸🇬', rate:0.357   },
+    { code:'KRW',  symbol:'₩',  name:'וון דרום קוריאני',  flag:'🇰🇷', rate:357.0   },
   ];
 
-  /* Try to fetch live rates from exchangerate-api (free, no key needed) */
+  /* Try to fetch live rates — stores as: rate = foreign units per 1 ILS */
   function _fetchLiveRates(){
     fetch('https://open.er-api.com/v6/latest/ILS')
       .then(function(r){ return r.json(); })
       .then(function(data){
         if(!data || !data.rates) return;
+        /* API returns: 1 ILS = data.rates[CODE] foreign units */
         _currencyList.forEach(function(c){
           if(c.code === 'ILS') return;
           var r = data.rates[c.code];
-          if(r && r > 0) c.rate = 1 / r; /* convert: 1 ILS = x FOREIGN → rate = ILS per 1 FOREIGN */
+          if(r && r > 0) c.rate = r; /* foreign per 1 ILS */
         });
-        /* Actually the API gives: 1 ILS = X foreign. For fmt we need: 1 ILS → foreign
-           So: foreignAmount = ilsAmount * (1 / rate_from_api)
-           We store rate as: 1 ILS in foreign units = data.rates[code]
-        */
-        _currencyList.forEach(function(c){
-          if(c.code === 'ILS') return;
-          var r = data.rates[c.code];
-          if(r && r > 0) c.rate = r; /* c.rate = how many foreign per 1 ILS */
-        });
-        /* refresh display */
+        /* עדכן rate של המטבע הנוכחי אם לא שקל */
         if(_currency.code !== 'ILS'){
-          var cur = _currencyList.find(function(x){ return x.code===_currency.code; });
-          if(cur){ _currency.rate = cur.rate; renderAll(); }
+          var cur = _currencyList.find(function(x){ return x.code === _currency.code; });
+          if(cur){
+            _currency.rate = cur.rate;
+            try { localStorage.setItem('ao_currency', JSON.stringify(_currency)); } catch(e){}
+            renderAll();
+          }
         }
       })
       .catch(function(){/* silent — use static rates */});
@@ -6792,18 +6788,35 @@
 
   var isUSD = false, exchangeRate = 3.7; /* legacy compat — kept so existing code doesn't break */
 
+  /* ── טעינת מטבע שמור ── */
+  (function(){
+    try {
+      var saved = localStorage.getItem('ao_currency');
+      if(saved){
+        var obj = JSON.parse(saved);
+        if(obj && obj.code) _currency = obj;
+      }
+    } catch(e){}
+  })();
+
   function fmt(n){
     var num = Number(n||0);
-    var abs = Math.abs(Math.round(num));
-    var str = abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    var prefix = num < 0 ? '-' : '';
+    var neg = num < 0;
+    var absILS = Math.abs(num);
     if(_currency.code === 'ILS'){
-      return prefix + '₪' + str;
+      var str = Math.round(absILS).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return (neg ? '-' : '') + '₪' + str;
     }
-    /* convert: ILS amount → foreign */
-    var converted = Math.round(Math.abs(num) * _currency.rate);
-    var cStr = converted.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    return prefix + _currency.symbol + cStr;
+    /* rate = כמה יחידות זרות לכל שקל (למשל דולר: ~0.27)
+       אם נשמר rate>1 (כלומר שמרנו כמה שקלים לדולר) — נהפוך */
+    var r = _currency.rate > 1 ? (1 / _currency.rate) : _currency.rate;
+    var converted = Math.round(absILS * r * 100) / 100;
+    /* עיגול חכם לפי גודל */
+    var disp;
+    if(converted >= 100) disp = Math.round(converted).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    else if(converted >= 10) disp = converted.toFixed(1);
+    else disp = converted.toFixed(2);
+    return (neg ? '-' : '') + _currency.symbol + disp;
   }
 
   // ── חשיפה גלובלית של המשתנים הנדרשים ל-IIFE חיצוניים (כמו scan-doc) ──
@@ -8961,6 +8974,11 @@ window.deletePhoneIdx = function(i) {
 
   /* ── Currency toggle ── */
   $('btn-currency').onclick = function(){ _openCurrencySheet(); };
+  /* עדכן סמל כפתור לפי מטבע שמור */
+  (function(){
+    var btn = $('btn-currency');
+    if(btn) btn.textContent = _currency.symbol;
+  })();
 
   /* ══════════════════════════════════════════════════
      CURRENCY PICKER SHEET
@@ -8984,10 +9002,8 @@ window.deletePhoneIdx = function(i) {
     var rows = _currencyList.map(function(c){
       var isActive = c.code === _currency.code;
       var rateDisp = c.code === 'ILS'
-        ? 'בסיס'
-        : (c.rate >= 1
-            ? '₪1 = ' + c.symbol + c.rate.toFixed(2)
-            : '₪1 = ' + c.symbol + c.rate.toFixed(4));
+        ? 'מטבע הבסיס'
+        : ('₪1 = ' + c.symbol + (c.rate >= 1 ? c.rate.toFixed(2) : c.rate.toFixed(3)));
       return [
         '<button onclick="window._setCurrency(\''+c.code+'\')" style="',
           'width:100%;display:flex;align-items:center;gap:12px;',
@@ -9069,15 +9085,14 @@ window.deletePhoneIdx = function(i) {
       var cur = _currencyList.find(function(x){ return x.code===code; });
       if(!cur) return;
       _currency = { code:cur.code, symbol:cur.symbol, rate:cur.rate, name:cur.name };
-      isUSD = (code !== 'ILS'); /* legacy compat */
-      /* reset balance counter so animation re-runs cleanly */
+      isUSD = (code !== 'ILS');
+      /* שמור ב-localStorage */
+      try { localStorage.setItem('ao_currency', JSON.stringify(_currency)); } catch(e){}
+      /* reset balance counter */
       if(typeof window._resetBalanceCounter === 'function') window._resetBalanceCounter();
       /* update button label */
       var btn = document.getElementById('btn-currency');
       if(btn) btn.textContent = cur.symbol;
-      /* update rate note */
-      var note = document.getElementById('_cur-rate-note');
-      if(note) note.textContent = code==='ILS' ? 'מטבע הבסיס' : '1 ₪ = '+cur.symbol+(cur.rate>=1?cur.rate.toFixed(2):cur.rate.toFixed(4));
       renderAll();
       setTimeout(closeSheet, 180);
     };
