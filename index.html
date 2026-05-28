@@ -4885,7 +4885,7 @@
             </div>
           </div>
         </button>
-        <input id="scan-doc-file" type="file" accept="image/*,.pdf,application/pdf" style="display:none" multiple>
+        <input id="scan-doc-file" type="file" accept="image/*,.pdf,application/pdf" style="display:none">
 
         <!-- מצב עיבוד -->
         <div id="scan-doc-processing" class="scan-doc-processing hidden">
@@ -9696,16 +9696,142 @@ window.exportUserData = function() {
   }
   updateLimitBadge();
 
-  /* ── פותח את בורר הקבצים ── */
+  /* ── פותח sheet בחירה: מצלמה או קבצים ── */
   scanBtn.onclick = function() {
-    fileInput.click(); /* חייב ראשון — Android חוסם אחרת */
     var used = getScanCount();
     if(used >= DAILY_LIMIT){
       toast('הגעת למגבלת 7 הסריקות היומית. נסה שוב מחר!', 'error');
       return;
     }
     if(resultEl){ resultEl.className = 'scan-doc-result hidden'; resultEl.innerHTML = ''; }
+
+    /* על מובייל — הצג sheet בחירה. על דסקטופ — פתח קבצים ישירות */
+    var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if(isMobile){
+      _showScanSourceSheet();
+    } else {
+      fileInput.removeAttribute('capture');
+      fileInput.click();
+    }
   };
+
+  /* ── Sheet בחירת מקור ── */
+  function _showScanSourceSheet(){
+    var existing = document.getElementById('_scan-source-sheet');
+    if(existing) existing.remove();
+
+    var sheet = document.createElement('div');
+    sheet.id = '_scan-source-sheet';
+    sheet.style.cssText = [
+      'position:fixed;inset:0;z-index:9998',
+      'background:rgba(0,0,0,0.55)',
+      'backdrop-filter:blur(12px)',
+      '-webkit-backdrop-filter:blur(12px)',
+      'display:flex;align-items:flex-end;justify-content:center',
+      'padding-bottom:env(safe-area-inset-bottom,0)',
+      'opacity:0;transition:opacity .25s ease'
+    ].join(';');
+
+    sheet.innerHTML = [
+      '<div style="',
+        'width:100%;max-width:430px;',
+        'background:linear-gradient(160deg,rgba(12,18,40,0.99),rgba(4,7,18,0.99));',
+        'border:1px solid rgba(0,229,255,0.14);',
+        'border-radius:24px 24px 0 0;',
+        'padding:0 16px 28px;',
+        'transform:translateY(100%);',
+        'transition:transform .38s cubic-bezier(0.34,1.15,0.64,1);',
+        'box-shadow:0 -20px 60px rgba(0,0,0,0.65);',
+        'position:relative;',
+      '">',
+        '<div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.14);margin:12px auto 20px;"></div>',
+        '<div style="font-family:\'Syne\',sans-serif;font-size:13px;font-weight:900;color:rgba(255,255,255,0.38);letter-spacing:.12em;text-transform:uppercase;text-align:center;margin-bottom:16px;">בחר מקור</div>',
+
+        /* מצלמה */
+        '<button id="_scan-btn-camera" style="',
+          'width:100%;padding:16px 18px;margin-bottom:10px;',
+          'background:rgba(0,229,255,0.08);',
+          'border:1px solid rgba(0,229,255,0.22);',
+          'border-radius:16px;cursor:pointer;',
+          'display:flex;align-items:center;gap:14px;',
+          '-webkit-tap-highlight-color:transparent;',
+        '">',
+          '<div style="width:42px;height:42px;border-radius:13px;background:rgba(0,229,255,0.12);border:1px solid rgba(0,229,255,0.28);display:flex;align-items:center;justify-content:center;flex-shrink:0;">',
+            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>',
+          '</div>',
+          '<div style="text-align:right;flex:1;">',
+            '<div style="font-family:\'Syne\',sans-serif;font-size:14px;font-weight:900;color:#00E5FF;">צלם קבלה</div>',
+            '<div style="font-family:\'Syne\',sans-serif;font-size:11px;color:rgba(255,255,255,0.38);margin-top:2px;">פתח מצלמה ישירות</div>',
+          '</div>',
+        '</button>',
+
+        /* גלריה / קבצים */
+        '<button id="_scan-btn-files" style="',
+          'width:100%;padding:16px 18px;margin-bottom:10px;',
+          'background:rgba(255,255,255,0.04);',
+          'border:1px solid rgba(255,255,255,0.10);',
+          'border-radius:16px;cursor:pointer;',
+          'display:flex;align-items:center;gap:14px;',
+          '-webkit-tap-highlight-color:transparent;',
+        '">',
+          '<div style="width:42px;height:42px;border-radius:13px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);display:flex;align-items:center;justify-content:center;flex-shrink:0;">',
+            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>',
+          '</div>',
+          '<div style="text-align:right;flex:1;">',
+            '<div style="font-family:\'Syne\',sans-serif;font-size:14px;font-weight:900;color:rgba(255,255,255,0.85);">בחר מהגלריה / קבצים</div>',
+            '<div style="font-family:\'Syne\',sans-serif;font-size:11px;color:rgba(255,255,255,0.38);margin-top:2px;">PDF, תמונה קיימת</div>',
+          '</div>',
+        '</button>',
+
+        /* ביטול */
+        '<button id="_scan-btn-cancel" style="',
+          'width:100%;padding:14px;',
+          'background:transparent;border:none;cursor:pointer;',
+          'font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;',
+          'color:rgba(255,255,255,0.30);',
+          '-webkit-tap-highlight-color:transparent;',
+        '">ביטול</button>',
+      '</div>'
+    ].join('');
+
+    document.body.appendChild(sheet);
+    var inner = sheet.firstElementChild;
+
+    /* Animate in */
+    requestAnimationFrame(function(){
+      sheet.style.opacity = '1';
+      inner.style.transform = 'translateY(0)';
+    });
+
+    function closeSheet(){
+      sheet.style.opacity = '0';
+      inner.style.transform = 'translateY(100%)';
+      setTimeout(function(){ if(sheet.parentNode) sheet.remove(); }, 350);
+    }
+
+    sheet.addEventListener('click', function(e){ if(e.target === sheet) closeSheet(); });
+    document.getElementById('_scan-btn-cancel').onclick = closeSheet;
+
+    document.getElementById('_scan-btn-camera').onclick = function(){
+      closeSheet();
+      setTimeout(function(){
+        fileInput.setAttribute('capture', 'environment');
+        fileInput.accept = 'image/*';
+        fileInput.click();
+        /* reset accept after pick */
+        setTimeout(function(){ fileInput.accept = 'image/*,.pdf,application/pdf'; }, 2000);
+      }, 180);
+    };
+
+    document.getElementById('_scan-btn-files').onclick = function(){
+      closeSheet();
+      setTimeout(function(){
+        fileInput.removeAttribute('capture');
+        fileInput.accept = 'image/*,.pdf,application/pdf';
+        fileInput.click();
+      }, 180);
+    };
+  }
 
   fileInput.onchange = async function() {
     var files = Array.from(fileInput.files || []);
@@ -9894,6 +10020,7 @@ window.exportUserData = function() {
       }
     }
     throw lastErr || new Error('שגיאה בסריקה — נסה שוב מאוחר יותר');
+  } // end sendToWorker
 
   /* ── המרת קובץ ל-base64 ── */
   function fileToBase64(file) {
