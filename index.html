@@ -676,14 +676,261 @@
     }
 
     /* ════════════════════════════════
-       SETTINGS
+       SETTINGS — LIGHT MODE FULL COVERAGE
     ════════════════════════════════ */
     body.theme-light .settings-section-title {
-      color: rgba(15,23,42,0.34) !important;
+      color: rgba(15,23,42,0.38) !important;
       letter-spacing: 0.10em !important;
     }
     body.theme-light .settings-section-title::after {
       background: linear-gradient(90deg, rgba(43,92,230,0.20), transparent) !important;
+    }
+
+    /* ── כרטיס משתמש עליון ── */
+    body.theme-light #settings-user-card {
+      background: linear-gradient(145deg,
+        rgba(255,255,255,0.92) 0%,
+        rgba(240,246,255,0.96) 100%) !important;
+      border: 1px solid rgba(43,92,230,0.16) !important;
+      box-shadow:
+        0 2px 0 rgba(255,255,255,1) inset,
+        0 0 0 1px rgba(43,92,230,0.06),
+        0 12px 40px rgba(43,92,230,0.10),
+        0 4px 12px rgba(0,0,0,0.04) !important;
+    }
+    body.theme-light #settings-user-card::before {
+      background: linear-gradient(90deg, transparent 5%, rgba(43,92,230,0.55) 40%, rgba(0,160,255,0.60) 60%, transparent 95%) !important;
+    }
+    body.theme-light #settings-user-card::after {
+      background: radial-gradient(ellipse at 20% 0%, rgba(43,92,230,0.06) 0%, transparent 55%) !important;
+    }
+    body.theme-light #settings-user-name { color: #0F172A !important; }
+    body.theme-light .user-card-avatar {
+      border-color: rgba(43,92,230,0.35) !important;
+      box-shadow: 0 0 18px rgba(43,92,230,0.18), 0 4px 12px rgba(0,0,0,0.10) !important;
+    }
+    body.theme-light .user-card-badge {
+      background: rgba(43,92,230,0.08) !important;
+      border-color: rgba(43,92,230,0.22) !important;
+      color: #2B5CE6 !important;
+    }
+    /* כפתורי פעולה בכרטיס המשתמש */
+    body.theme-light #settings-user-card button[onclick*="profile-pic"],
+    body.theme-light #settings-user-card button[onclick*="editName"] {
+      background: rgba(43,92,230,0.07) !important;
+      border-color: rgba(43,92,230,0.22) !important;
+      color: #2B5CE6 !important;
+    }
+    body.theme-light #settings-user-card button[onclick*="resetProfile"],
+    body.theme-light #settings-user-card button[onclick*="disconnect"] {
+      background: rgba(212,0,31,0.05) !important;
+      border-color: rgba(212,0,31,0.18) !important;
+      color: #B0001A !important;
+    }
+
+    /* ── sblock head & body ── */
+    body.theme-light .sblock-head {
+      background: rgba(43,92,230,0.03) !important;
+      border-bottom-color: rgba(43,92,230,0.08) !important;
+      color: #0F172A !important;
+    }
+    body.theme-light .sblock-body { color: #0F172A !important; }
+    body.theme-light .sblock-body p { color: rgba(15,23,42,0.58) !important; }
+
+    /* ── כפתורים כלליים בהגדרות ── */
+    body.theme-light .btn-ghost {
+      background: rgba(255,255,255,0.80) !important;
+      border: 1px solid rgba(43,92,230,0.16) !important;
+      color: #1E3A8A !important;
+      box-shadow: 0 1px 0 rgba(255,255,255,1) inset, 0 2px 8px rgba(43,92,230,0.07) !important;
+    }
+    body.theme-light .btn-ghost:hover {
+      background: rgba(43,92,230,0.06) !important;
+      border-color: rgba(43,92,230,0.30) !important;
+    }
+    body.theme-light .btn-danger-ghost {
+      background: rgba(212,0,31,0.05) !important;
+      border-color: rgba(212,0,31,0.22) !important;
+      color: #AA001A !important;
+    }
+    body.theme-light .btn-danger-ghost:hover {
+      background: rgba(212,0,31,0.10) !important;
+    }
+    body.theme-light .saved { color: #006B47 !important; }
+
+    /* ── כרטיסי תשלומים קבועים ── */
+    body.theme-light .fixed-block-2026 {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04) !important;
+    }
+    body.theme-light .fixed-block-expense {
+      background: linear-gradient(160deg, rgba(255,248,250,0.98), rgba(255,242,246,0.99)) !important;
+      border-color: rgba(212,0,31,0.20) !important;
+    }
+    body.theme-light .fixed-block-income {
+      background: linear-gradient(160deg, rgba(246,254,250,0.98), rgba(240,253,247,0.99)) !important;
+      border-color: rgba(0,136,90,0.20) !important;
+    }
+    body.theme-light .fixed-block-expense::before {
+      background: linear-gradient(90deg, transparent, rgba(212,0,31,0.45), transparent) !important;
+    }
+    body.theme-light .fixed-block-income::before {
+      background: linear-gradient(90deg, transparent, rgba(0,136,90,0.45), transparent) !important;
+    }
+    body.theme-light .fixed-block-expense .fixed-block-header {
+      border-bottom-color: rgba(212,0,31,0.12) !important;
+      background: rgba(212,0,31,0.02) !important;
+    }
+    body.theme-light .fixed-block-income .fixed-block-header {
+      border-bottom-color: rgba(0,136,90,0.12) !important;
+      background: rgba(0,136,90,0.02) !important;
+    }
+    body.theme-light .fixed-block-expense .fixed-block-icon {
+      background: rgba(212,0,31,0.10) !important;
+      border-color: rgba(212,0,31,0.24) !important;
+      box-shadow: 0 0 12px rgba(212,0,31,0.10) !important;
+    }
+    body.theme-light .fixed-block-income .fixed-block-icon {
+      background: rgba(0,136,90,0.10) !important;
+      border-color: rgba(0,136,90,0.24) !important;
+      box-shadow: 0 0 12px rgba(0,136,90,0.10) !important;
+    }
+    body.theme-light .fixed-block-expense .fixed-block-title { color: #AA001A !important; }
+    body.theme-light .fixed-block-income  .fixed-block-title { color: #006242 !important; }
+    body.theme-light .fixed-block-sub { color: rgba(15,23,42,0.42) !important; }
+    body.theme-light .fixed-block-expense .fixed-block-total {
+      color: #AA001A !important;
+      border-color: rgba(212,0,31,0.20) !important;
+      background: rgba(212,0,31,0.05) !important;
+    }
+    body.theme-light .fixed-block-income .fixed-block-total {
+      color: #006242 !important;
+      border-color: rgba(0,136,90,0.20) !important;
+      background: rgba(0,136,90,0.05) !important;
+    }
+
+    /* ── פריטים בתוך הרשימות ── */
+    body.theme-light .fixed-item-expense {
+      background: rgba(255,242,246,0.85) !important;
+      border-color: rgba(212,0,31,0.16) !important;
+    }
+    body.theme-light .fixed-item-income {
+      background: rgba(240,253,247,0.85) !important;
+      border-color: rgba(0,136,90,0.16) !important;
+    }
+    body.theme-light .fixed-item-name { color: #0F172A !important; }
+    body.theme-light .fixed-item-expense .fixed-item-amount { color: #AA001A !important; }
+    body.theme-light .fixed-item-income  .fixed-item-amount { color: #006242 !important; }
+    body.theme-light .fixed-empty-row {
+      border-color: rgba(43,92,230,0.14) !important;
+      color: rgba(15,23,42,0.38) !important;
+    }
+
+    /* ── כפתורי עריכה/מחיקה בפריטים ── */
+    body.theme-light .fixed-item-btn.edit {
+      background: rgba(43,92,230,0.08) !important;
+      color: #2B5CE6 !important;
+    }
+    body.theme-light .fixed-item-btn.edit:hover { background: rgba(43,92,230,0.15) !important; }
+    body.theme-light .fixed-item-btn.del {
+      background: rgba(212,0,31,0.07) !important;
+      color: #AA001A !important;
+    }
+    body.theme-light .fixed-item-btn.del:hover { background: rgba(212,0,31,0.14) !important; }
+
+    /* ── שדות הזנה בתשלומים קבועים ── */
+    body.theme-light .fixed-add-inp {
+      background: rgba(255,255,255,0.90) !important;
+      color: #0F172A !important;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05) inset !important;
+    }
+    body.theme-light .fixed-add-inp::placeholder { color: rgba(15,23,42,0.32) !important; }
+    body.theme-light .fixed-add-inp-expense {
+      border-color: rgba(212,0,31,0.22) !important;
+    }
+    body.theme-light .fixed-add-inp-expense:focus {
+      border-color: rgba(212,0,31,0.50) !important;
+      box-shadow: 0 0 0 3px rgba(212,0,31,0.08) !important;
+    }
+    body.theme-light .fixed-add-inp-income {
+      border-color: rgba(0,136,90,0.22) !important;
+    }
+    body.theme-light .fixed-add-inp-income:focus {
+      border-color: rgba(0,136,90,0.50) !important;
+      box-shadow: 0 0 0 3px rgba(0,136,90,0.08) !important;
+    }
+
+    /* ── כפתורי הוספה ── */
+    body.theme-light .fixed-add-btn-expense {
+      background: linear-gradient(135deg, rgba(212,0,31,0.12), rgba(180,0,30,0.07)) !important;
+      border-color: rgba(212,0,31,0.30) !important;
+      color: #AA001A !important;
+      box-shadow: 0 3px 10px rgba(212,0,31,0.10) !important;
+    }
+    body.theme-light .fixed-add-btn-income {
+      background: linear-gradient(135deg, rgba(0,136,90,0.12), rgba(0,110,70,0.07)) !important;
+      border-color: rgba(0,136,90,0.28) !important;
+      color: #006242 !important;
+      box-shadow: 0 3px 10px rgba(0,136,90,0.10) !important;
+    }
+
+    /* ── מודאל עריכה (fixed-edit-sheet) ── */
+    body.theme-light #fixed-edit-sheet {
+      background: linear-gradient(160deg, rgba(248,250,255,0.99), rgba(240,244,255,0.99)) !important;
+      border-color: rgba(43,92,230,0.14) !important;
+    }
+    body.theme-light #fixed-edit-sheet::before {
+      background: linear-gradient(90deg, transparent, rgba(43,92,230,0.45), transparent) !important;
+    }
+    body.theme-light .edit-sheet-inp {
+      background: rgba(255,255,255,0.90) !important;
+      color: #0F172A !important;
+      border-color: rgba(43,92,230,0.20) !important;
+    }
+    body.theme-light .edit-sheet-inp::placeholder { color: rgba(15,23,42,0.30) !important; }
+    body.theme-light .edit-sheet-inp:focus {
+      border-color: rgba(43,92,230,0.45) !important;
+      box-shadow: 0 0 0 3px rgba(43,92,230,0.09) !important;
+    }
+    body.theme-light .edit-sheet-label { color: rgba(15,23,42,0.55) !important; }
+    body.theme-light .edit-sheet-title { color: #0F172A !important; }
+
+    /* ── יום איפוס תקציב ── */
+    body.theme-light #reset-day-current-wrap {
+      background: linear-gradient(135deg, rgba(43,92,230,0.07), rgba(0,160,255,0.04)) !important;
+      border-color: rgba(43,92,230,0.20) !important;
+    }
+    body.theme-light #reset-day-display { color: #1535A0 !important; }
+    body.theme-light [style*="color:rgba(0,229,255,0.55)"],
+    body.theme-light [style*="color: rgba(0,229,255"] { color: rgba(43,92,230,0.60) !important; }
+
+    /* ── fixed-row (שורות ישנות אם קיימות) ── */
+    body.theme-light .fixed-row {
+      background: rgba(255,255,255,0.80) !important;
+      border-color: rgba(43,92,230,0.10) !important;
+    }
+    body.theme-light .del-btn { color: rgba(15,23,42,0.30) !important; }
+    body.theme-light .del-btn:hover { color: #AA001A !important; }
+
+    /* ── כרטיס מחיקת חשבון ── */
+    body.theme-light .sblock[style*="border-color:rgba(255,23,68"] {
+      border-color: rgba(212,0,31,0.18) !important;
+    }
+    body.theme-light .sblock-head[style*="border-bottom-color:rgba(255,23,68"] {
+      border-bottom-color: rgba(212,0,31,0.10) !important;
+      background: rgba(212,0,31,0.025) !important;
+    }
+    body.theme-light [style*="color:rgba(255,255,255,0.38)"] { color: rgba(15,23,42,0.52) !important; }
+    body.theme-light [style*="color:#FF6080"] { color: #AA001A !important; }
+    body.theme-light [style*="color:#FF4060"] { color: #AA001A !important; }
+
+    /* ── toggle switch (ao-switch) ── */
+    body.theme-light .ao-switch-track {
+      background: rgba(15,23,42,0.12) !important;
+      border-color: rgba(15,23,42,0.16) !important;
+    }
+    body.theme-light input:checked ~ .ao-switch-track {
+      background: #2B5CE6 !important;
+      border-color: #2B5CE6 !important;
     }
 
     /* ════════════════════════════════
