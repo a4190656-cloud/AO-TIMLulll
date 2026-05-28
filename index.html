@@ -676,261 +676,14 @@
     }
 
     /* ════════════════════════════════
-       SETTINGS — LIGHT MODE FULL COVERAGE
+       SETTINGS
     ════════════════════════════════ */
     body.theme-light .settings-section-title {
-      color: rgba(15,23,42,0.38) !important;
+      color: rgba(15,23,42,0.34) !important;
       letter-spacing: 0.10em !important;
     }
     body.theme-light .settings-section-title::after {
       background: linear-gradient(90deg, rgba(43,92,230,0.20), transparent) !important;
-    }
-
-    /* ── כרטיס משתמש עליון ── */
-    body.theme-light #settings-user-card {
-      background: linear-gradient(145deg,
-        rgba(255,255,255,0.92) 0%,
-        rgba(240,246,255,0.96) 100%) !important;
-      border: 1px solid rgba(43,92,230,0.16) !important;
-      box-shadow:
-        0 2px 0 rgba(255,255,255,1) inset,
-        0 0 0 1px rgba(43,92,230,0.06),
-        0 12px 40px rgba(43,92,230,0.10),
-        0 4px 12px rgba(0,0,0,0.04) !important;
-    }
-    body.theme-light #settings-user-card::before {
-      background: linear-gradient(90deg, transparent 5%, rgba(43,92,230,0.55) 40%, rgba(0,160,255,0.60) 60%, transparent 95%) !important;
-    }
-    body.theme-light #settings-user-card::after {
-      background: radial-gradient(ellipse at 20% 0%, rgba(43,92,230,0.06) 0%, transparent 55%) !important;
-    }
-    body.theme-light #settings-user-name { color: #0F172A !important; }
-    body.theme-light .user-card-avatar {
-      border-color: rgba(43,92,230,0.35) !important;
-      box-shadow: 0 0 18px rgba(43,92,230,0.18), 0 4px 12px rgba(0,0,0,0.10) !important;
-    }
-    body.theme-light .user-card-badge {
-      background: rgba(43,92,230,0.08) !important;
-      border-color: rgba(43,92,230,0.22) !important;
-      color: #2B5CE6 !important;
-    }
-    /* כפתורי פעולה בכרטיס המשתמש */
-    body.theme-light #settings-user-card button[onclick*="profile-pic"],
-    body.theme-light #settings-user-card button[onclick*="editName"] {
-      background: rgba(43,92,230,0.07) !important;
-      border-color: rgba(43,92,230,0.22) !important;
-      color: #2B5CE6 !important;
-    }
-    body.theme-light #settings-user-card button[onclick*="resetProfile"],
-    body.theme-light #settings-user-card button[onclick*="disconnect"] {
-      background: rgba(212,0,31,0.05) !important;
-      border-color: rgba(212,0,31,0.18) !important;
-      color: #B0001A !important;
-    }
-
-    /* ── sblock head & body ── */
-    body.theme-light .sblock-head {
-      background: rgba(43,92,230,0.03) !important;
-      border-bottom-color: rgba(43,92,230,0.08) !important;
-      color: #0F172A !important;
-    }
-    body.theme-light .sblock-body { color: #0F172A !important; }
-    body.theme-light .sblock-body p { color: rgba(15,23,42,0.58) !important; }
-
-    /* ── כפתורים כלליים בהגדרות ── */
-    body.theme-light .btn-ghost {
-      background: rgba(255,255,255,0.80) !important;
-      border: 1px solid rgba(43,92,230,0.16) !important;
-      color: #1E3A8A !important;
-      box-shadow: 0 1px 0 rgba(255,255,255,1) inset, 0 2px 8px rgba(43,92,230,0.07) !important;
-    }
-    body.theme-light .btn-ghost:hover {
-      background: rgba(43,92,230,0.06) !important;
-      border-color: rgba(43,92,230,0.30) !important;
-    }
-    body.theme-light .btn-danger-ghost {
-      background: rgba(212,0,31,0.05) !important;
-      border-color: rgba(212,0,31,0.22) !important;
-      color: #AA001A !important;
-    }
-    body.theme-light .btn-danger-ghost:hover {
-      background: rgba(212,0,31,0.10) !important;
-    }
-    body.theme-light .saved { color: #006B47 !important; }
-
-    /* ── כרטיסי תשלומים קבועים ── */
-    body.theme-light .fixed-block-2026 {
-      box-shadow: 0 4px 20px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04) !important;
-    }
-    body.theme-light .fixed-block-expense {
-      background: linear-gradient(160deg, rgba(255,248,250,0.98), rgba(255,242,246,0.99)) !important;
-      border-color: rgba(212,0,31,0.20) !important;
-    }
-    body.theme-light .fixed-block-income {
-      background: linear-gradient(160deg, rgba(246,254,250,0.98), rgba(240,253,247,0.99)) !important;
-      border-color: rgba(0,136,90,0.20) !important;
-    }
-    body.theme-light .fixed-block-expense::before {
-      background: linear-gradient(90deg, transparent, rgba(212,0,31,0.45), transparent) !important;
-    }
-    body.theme-light .fixed-block-income::before {
-      background: linear-gradient(90deg, transparent, rgba(0,136,90,0.45), transparent) !important;
-    }
-    body.theme-light .fixed-block-expense .fixed-block-header {
-      border-bottom-color: rgba(212,0,31,0.12) !important;
-      background: rgba(212,0,31,0.02) !important;
-    }
-    body.theme-light .fixed-block-income .fixed-block-header {
-      border-bottom-color: rgba(0,136,90,0.12) !important;
-      background: rgba(0,136,90,0.02) !important;
-    }
-    body.theme-light .fixed-block-expense .fixed-block-icon {
-      background: rgba(212,0,31,0.10) !important;
-      border-color: rgba(212,0,31,0.24) !important;
-      box-shadow: 0 0 12px rgba(212,0,31,0.10) !important;
-    }
-    body.theme-light .fixed-block-income .fixed-block-icon {
-      background: rgba(0,136,90,0.10) !important;
-      border-color: rgba(0,136,90,0.24) !important;
-      box-shadow: 0 0 12px rgba(0,136,90,0.10) !important;
-    }
-    body.theme-light .fixed-block-expense .fixed-block-title { color: #AA001A !important; }
-    body.theme-light .fixed-block-income  .fixed-block-title { color: #006242 !important; }
-    body.theme-light .fixed-block-sub { color: rgba(15,23,42,0.42) !important; }
-    body.theme-light .fixed-block-expense .fixed-block-total {
-      color: #AA001A !important;
-      border-color: rgba(212,0,31,0.20) !important;
-      background: rgba(212,0,31,0.05) !important;
-    }
-    body.theme-light .fixed-block-income .fixed-block-total {
-      color: #006242 !important;
-      border-color: rgba(0,136,90,0.20) !important;
-      background: rgba(0,136,90,0.05) !important;
-    }
-
-    /* ── פריטים בתוך הרשימות ── */
-    body.theme-light .fixed-item-expense {
-      background: rgba(255,242,246,0.85) !important;
-      border-color: rgba(212,0,31,0.16) !important;
-    }
-    body.theme-light .fixed-item-income {
-      background: rgba(240,253,247,0.85) !important;
-      border-color: rgba(0,136,90,0.16) !important;
-    }
-    body.theme-light .fixed-item-name { color: #0F172A !important; }
-    body.theme-light .fixed-item-expense .fixed-item-amount { color: #AA001A !important; }
-    body.theme-light .fixed-item-income  .fixed-item-amount { color: #006242 !important; }
-    body.theme-light .fixed-empty-row {
-      border-color: rgba(43,92,230,0.14) !important;
-      color: rgba(15,23,42,0.38) !important;
-    }
-
-    /* ── כפתורי עריכה/מחיקה בפריטים ── */
-    body.theme-light .fixed-item-btn.edit {
-      background: rgba(43,92,230,0.08) !important;
-      color: #2B5CE6 !important;
-    }
-    body.theme-light .fixed-item-btn.edit:hover { background: rgba(43,92,230,0.15) !important; }
-    body.theme-light .fixed-item-btn.del {
-      background: rgba(212,0,31,0.07) !important;
-      color: #AA001A !important;
-    }
-    body.theme-light .fixed-item-btn.del:hover { background: rgba(212,0,31,0.14) !important; }
-
-    /* ── שדות הזנה בתשלומים קבועים ── */
-    body.theme-light .fixed-add-inp {
-      background: rgba(255,255,255,0.90) !important;
-      color: #0F172A !important;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05) inset !important;
-    }
-    body.theme-light .fixed-add-inp::placeholder { color: rgba(15,23,42,0.32) !important; }
-    body.theme-light .fixed-add-inp-expense {
-      border-color: rgba(212,0,31,0.22) !important;
-    }
-    body.theme-light .fixed-add-inp-expense:focus {
-      border-color: rgba(212,0,31,0.50) !important;
-      box-shadow: 0 0 0 3px rgba(212,0,31,0.08) !important;
-    }
-    body.theme-light .fixed-add-inp-income {
-      border-color: rgba(0,136,90,0.22) !important;
-    }
-    body.theme-light .fixed-add-inp-income:focus {
-      border-color: rgba(0,136,90,0.50) !important;
-      box-shadow: 0 0 0 3px rgba(0,136,90,0.08) !important;
-    }
-
-    /* ── כפתורי הוספה ── */
-    body.theme-light .fixed-add-btn-expense {
-      background: linear-gradient(135deg, rgba(212,0,31,0.12), rgba(180,0,30,0.07)) !important;
-      border-color: rgba(212,0,31,0.30) !important;
-      color: #AA001A !important;
-      box-shadow: 0 3px 10px rgba(212,0,31,0.10) !important;
-    }
-    body.theme-light .fixed-add-btn-income {
-      background: linear-gradient(135deg, rgba(0,136,90,0.12), rgba(0,110,70,0.07)) !important;
-      border-color: rgba(0,136,90,0.28) !important;
-      color: #006242 !important;
-      box-shadow: 0 3px 10px rgba(0,136,90,0.10) !important;
-    }
-
-    /* ── מודאל עריכה (fixed-edit-sheet) ── */
-    body.theme-light #fixed-edit-sheet {
-      background: linear-gradient(160deg, rgba(248,250,255,0.99), rgba(240,244,255,0.99)) !important;
-      border-color: rgba(43,92,230,0.14) !important;
-    }
-    body.theme-light #fixed-edit-sheet::before {
-      background: linear-gradient(90deg, transparent, rgba(43,92,230,0.45), transparent) !important;
-    }
-    body.theme-light .edit-sheet-inp {
-      background: rgba(255,255,255,0.90) !important;
-      color: #0F172A !important;
-      border-color: rgba(43,92,230,0.20) !important;
-    }
-    body.theme-light .edit-sheet-inp::placeholder { color: rgba(15,23,42,0.30) !important; }
-    body.theme-light .edit-sheet-inp:focus {
-      border-color: rgba(43,92,230,0.45) !important;
-      box-shadow: 0 0 0 3px rgba(43,92,230,0.09) !important;
-    }
-    body.theme-light .edit-sheet-label { color: rgba(15,23,42,0.55) !important; }
-    body.theme-light .edit-sheet-title { color: #0F172A !important; }
-
-    /* ── יום איפוס תקציב ── */
-    body.theme-light #reset-day-current-wrap {
-      background: linear-gradient(135deg, rgba(43,92,230,0.07), rgba(0,160,255,0.04)) !important;
-      border-color: rgba(43,92,230,0.20) !important;
-    }
-    body.theme-light #reset-day-display { color: #1535A0 !important; }
-    body.theme-light [style*="color:rgba(0,229,255,0.55)"],
-    body.theme-light [style*="color: rgba(0,229,255"] { color: rgba(43,92,230,0.60) !important; }
-
-    /* ── fixed-row (שורות ישנות אם קיימות) ── */
-    body.theme-light .fixed-row {
-      background: rgba(255,255,255,0.80) !important;
-      border-color: rgba(43,92,230,0.10) !important;
-    }
-    body.theme-light .del-btn { color: rgba(15,23,42,0.30) !important; }
-    body.theme-light .del-btn:hover { color: #AA001A !important; }
-
-    /* ── כרטיס מחיקת חשבון ── */
-    body.theme-light .sblock[style*="border-color:rgba(255,23,68"] {
-      border-color: rgba(212,0,31,0.18) !important;
-    }
-    body.theme-light .sblock-head[style*="border-bottom-color:rgba(255,23,68"] {
-      border-bottom-color: rgba(212,0,31,0.10) !important;
-      background: rgba(212,0,31,0.025) !important;
-    }
-    body.theme-light [style*="color:rgba(255,255,255,0.38)"] { color: rgba(15,23,42,0.52) !important; }
-    body.theme-light [style*="color:#FF6080"] { color: #AA001A !important; }
-    body.theme-light [style*="color:#FF4060"] { color: #AA001A !important; }
-
-    /* ── toggle switch (ao-switch) ── */
-    body.theme-light .ao-switch-track {
-      background: rgba(15,23,42,0.12) !important;
-      border-color: rgba(15,23,42,0.16) !important;
-    }
-    body.theme-light input:checked ~ .ao-switch-track {
-      background: #2B5CE6 !important;
-      border-color: #2B5CE6 !important;
     }
 
     /* ════════════════════════════════
@@ -4785,92 +4538,7 @@
         </div>
       </div>
       <div style="display:flex;gap:7px">
-        <button id="btn-currency" class="card press modern-hover" onclick="openCurrencyPicker()" style="padding:9px;border:none;cursor:pointer;color:rgba(255,255,255,0.8);font-weight:bold;font-size:13px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;letter-spacing:-0.5px;">₪</button>
-
-<!-- ✦ CURRENCY PICKER MODAL ✦ -->
-<style>
-  #currency-picker-overlay {
-    position:fixed; inset:0; z-index:9995;
-    background:rgba(0,0,0,0.70);
-    backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
-    display:flex; align-items:flex-end; justify-content:center;
-    opacity:0; pointer-events:none;
-    transition:opacity .25s ease;
-    padding-bottom:env(safe-area-inset-bottom,0);
-  }
-  #currency-picker-overlay.open { opacity:1; pointer-events:all; }
-  #currency-picker-sheet {
-    width:100%; max-width:440px;
-    background:linear-gradient(160deg,rgba(8,14,34,0.99),rgba(3,7,18,0.99));
-    border:1px solid rgba(0,229,255,0.14);
-    border-radius:26px 26px 0 0;
-    padding:0 16px 28px;
-    transform:translateY(100%);
-    transition:transform .38s cubic-bezier(0.34,1.15,0.64,1);
-    box-shadow:0 -20px 60px rgba(0,0,0,0.70);
-    position:relative; overflow:hidden;
-    max-height:85vh; overflow-y:auto;
-  }
-  #currency-picker-overlay.open #currency-picker-sheet { transform:translateY(0); }
-  #currency-picker-sheet::before {
-    content:''; position:absolute; top:0; left:8%; right:8%; height:1px;
-    background:linear-gradient(90deg,transparent,rgba(0,229,255,0.55),transparent);
-  }
-  .cp-handle { width:36px; height:4px; border-radius:2px; background:rgba(255,255,255,0.13); margin:13px auto 18px; }
-  .cp-title { font-size:16px; font-weight:900; color:#fff; text-align:center; margin-bottom:5px; letter-spacing:-0.3px; }
-  .cp-subtitle { font-size:11px; font-weight:700; color:rgba(255,255,255,0.35); text-align:center; letter-spacing:1px; text-transform:uppercase; margin-bottom:18px; }
-  .cp-section-label { font-size:10px; font-weight:800; color:rgba(0,229,255,0.55); letter-spacing:1.5px; text-transform:uppercase; padding:0 4px; margin:14px 0 8px; }
-  .cp-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
-  .cp-item {
-    display:flex; align-items:center; gap:12px;
-    padding:13px 14px;
-    background:rgba(255,255,255,0.08);
-    border:1px solid rgba(255,255,255,0.14);
-    border-radius:16px; cursor:pointer;
-    position:relative; overflow:hidden;
-    transition:all .18s cubic-bezier(0.34,1.56,0.64,1);
-    -webkit-tap-highlight-color:transparent;
-  }
-  .cp-item:hover  { transform:translateY(-2px); border-color:rgba(0,229,255,0.22); background:rgba(0,229,255,0.04); }
-  .cp-item:active { transform:scale(0.97); }
-  .cp-item.active { background:linear-gradient(135deg,rgba(0,229,255,0.12),rgba(0,180,255,0.07)); border-color:rgba(0,229,255,0.40); box-shadow:0 0 20px rgba(0,229,255,0.10); }
-  .cp-flag { font-size:22px; flex-shrink:0; line-height:1; }
-  .cp-info { flex:1; min-width:0; }
-  .cp-code { font-size:13px; font-weight:900; color:rgba(255,255,255,0.95); font-family:'JetBrains Mono',monospace; }
-  .cp-item.active .cp-code { color:var(--cyan); }
-  .cp-name { font-size:10px; font-weight:600; color:rgba(255,255,255,0.55); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .cp-symbol { font-size:15px; font-weight:900; color:rgba(255,255,255,0.45); font-family:'JetBrains Mono',monospace; flex-shrink:0; }
-  .cp-item.active .cp-symbol { color:rgba(0,229,255,0.60); }
-  .cp-check { position:absolute; top:8px; left:8px; width:16px; height:16px; border-radius:50%; background:var(--cyan); display:none; align-items:center; justify-content:center; }
-  .cp-item.active .cp-check { display:flex; }
-  .cp-check svg { width:9px; height:9px; }
-  body.theme-light #currency-picker-sheet { background:linear-gradient(160deg,rgba(248,250,255,0.99),rgba(240,244,255,0.99)) !important; border-color:rgba(43,92,230,0.15) !important; }
-  body.theme-light .cp-title { color:#0F172A !important; }
-  body.theme-light .cp-subtitle { color:rgba(15,23,42,0.38) !important; }
-  body.theme-light .cp-section-label { color:rgba(43,92,230,0.65) !important; }
-  body.theme-light .cp-handle { background:rgba(15,23,42,0.14) !important; }
-  body.theme-light .cp-item { background:rgba(255,255,255,0.70) !important; border-color:rgba(43,92,230,0.10) !important; }
-  body.theme-light .cp-item:hover { border-color:rgba(43,92,230,0.30) !important; background:rgba(43,92,230,0.05) !important; }
-  body.theme-light .cp-item.active { background:linear-gradient(135deg,rgba(43,92,230,0.10),rgba(43,92,230,0.06)) !important; border-color:rgba(43,92,230,0.40) !important; }
-  body.theme-light .cp-code { color:rgba(15,23,42,0.85) !important; }
-  body.theme-light .cp-item.active .cp-code { color:#2B5CE6 !important; }
-  body.theme-light .cp-name { color:rgba(15,23,42,0.40) !important; }
-  body.theme-light .cp-symbol { color:rgba(15,23,42,0.18) !important; }
-  body.theme-light .cp-item.active .cp-symbol { color:rgba(43,92,230,0.55) !important; }
-  body.theme-light .cp-check { background:#2B5CE6 !important; }
-</style>
-
-<div id="currency-picker-overlay" onclick="if(event.target===this)closeCurrencyPicker()">
-  <div id="currency-picker-sheet">
-    <div class="cp-handle"></div>
-    <div class="cp-title">בחר מטבע תצוגה</div>
-    <div class="cp-subtitle">כל הסכומים יוצגו במטבע הנבחר</div>
-    <div class="cp-section-label">🌟 נפוצים</div>
-    <div class="cp-grid" id="cp-grid-popular"></div>
-    <div class="cp-section-label">🌍 עוד מטבעות</div>
-    <div class="cp-grid" id="cp-grid-other"></div>
-  </div>
-</div>
+        <button id="btn-currency" class="card press modern-hover" style="padding:9px;border:none;cursor:pointer;color:rgba(255,255,255,0.8);font-weight:bold;font-size:14px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;">₪</button>
         <button onclick="window.location.reload()" class="card press modern-hover" style="padding:9px;border:none;cursor:pointer;color:rgba(255,255,255,0.45)">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
         </button>
@@ -7059,8 +6727,81 @@
   var userPhones = []; // מערך מספרי טלפון לחשבון
   var modalType = 'income', isRegMode = false, unsubs = [];
   var newCatPanelOpen = false;
-  var isUSD = false, exchangeRate = 3.7;
-  var appBooted = false; // האם האפליקציה כבר אותחלה
+  /* ══════════════════════════════════════════════════════
+     CURRENCY SYSTEM — Multi-currency with live rates
+  ══════════════════════════════════════════════════════ */
+  var _currency = {
+    code: 'ILS', symbol: '₪', rate: 1, name: 'שקל ישראלי'
+  };
+
+  /* Static fallback rates (ILS base) — updated on sheet open via exchangerate API */
+  var _currencyList = [
+    { code:'ILS',  symbol:'₪',  name:'שקל ישראלי',      flag:'🇮🇱', rate:1      },
+    { code:'USD',  symbol:'$',  name:'דולר אמריקאי',     flag:'🇺🇸', rate:3.70   },
+    { code:'EUR',  symbol:'€',  name:'אירו',              flag:'🇪🇺', rate:4.05   },
+    { code:'GBP',  symbol:'£',  name:'פאונד בריטי',      flag:'🇬🇧', rate:4.70   },
+    { code:'JPY',  symbol:'¥',  name:'ין יפני',           flag:'🇯🇵', rate:0.025  },
+    { code:'CHF',  symbol:'Fr', name:'פרנק שוויצרי',     flag:'🇨🇭', rate:4.20   },
+    { code:'CAD',  symbol:'C$', name:'דולר קנדי',         flag:'🇨🇦', rate:2.75   },
+    { code:'AUD',  symbol:'A$', name:'דולר אוסטרלי',      flag:'🇦🇺', rate:2.45   },
+    { code:'AED',  symbol:'د.إ',name:'דירהם אמירויות',   flag:'🇦🇪', rate:1.008  },
+    { code:'JOD',  symbol:'JD', name:'דינר ירדני',        flag:'🇯🇴', rate:5.22   },
+    { code:'EGP',  symbol:'E£', name:'לירה מצרית',        flag:'🇪🇬', rate:0.077  },
+    { code:'PLN',  symbol:'zł', name:'זלוטי פולני',       flag:'🇵🇱', rate:0.96   },
+    { code:'SEK',  symbol:'kr', name:'כתר שוודי',         flag:'🇸🇪', rate:0.35   },
+    { code:'TRY',  symbol:'₺',  name:'לירה טורקית',       flag:'🇹🇷', rate:0.112  },
+    { code:'BRL',  symbol:'R$', name:'ריאל ברזילאי',      flag:'🇧🇷', rate:0.72   },
+    { code:'CNY',  symbol:'¥',  name:'יואן סיני',         flag:'🇨🇳', rate:0.51   },
+    { code:'INR',  symbol:'₹',  name:'רופי הודי',         flag:'🇮🇳', rate:0.044  },
+    { code:'MXN',  symbol:'$',  name:'פסו מקסיקאי',      flag:'🇲🇽', rate:0.21   },
+    { code:'SGD',  symbol:'S$', name:'דולר סינגפורי',     flag:'🇸🇬', rate:2.80   },
+    { code:'KRW',  symbol:'₩',  name:'וון דרום קוריאני', flag:'🇰🇷', rate:0.0028 },
+  ];
+
+  /* Try to fetch live rates from exchangerate-api (free, no key needed) */
+  function _fetchLiveRates(){
+    fetch('https://open.er-api.com/v6/latest/ILS')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if(!data || !data.rates) return;
+        _currencyList.forEach(function(c){
+          if(c.code === 'ILS') return;
+          var r = data.rates[c.code];
+          if(r && r > 0) c.rate = 1 / r; /* convert: 1 ILS = x FOREIGN → rate = ILS per 1 FOREIGN */
+        });
+        /* Actually the API gives: 1 ILS = X foreign. For fmt we need: 1 ILS → foreign
+           So: foreignAmount = ilsAmount * (1 / rate_from_api)
+           We store rate as: 1 ILS in foreign units = data.rates[code]
+        */
+        _currencyList.forEach(function(c){
+          if(c.code === 'ILS') return;
+          var r = data.rates[c.code];
+          if(r && r > 0) c.rate = r; /* c.rate = how many foreign per 1 ILS */
+        });
+        /* refresh display */
+        if(_currency.code !== 'ILS'){
+          var cur = _currencyList.find(function(x){ return x.code===_currency.code; });
+          if(cur){ _currency.rate = cur.rate; renderAll(); }
+        }
+      })
+      .catch(function(){/* silent — use static rates */});
+  }
+
+  var isUSD = false, exchangeRate = 3.7; /* legacy compat — kept so existing code doesn't break */
+
+  function fmt(n){
+    var num = Number(n||0);
+    var abs = Math.abs(Math.round(num));
+    var str = abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    var prefix = num < 0 ? '-' : '';
+    if(_currency.code === 'ILS'){
+      return prefix + '₪' + str;
+    }
+    /* convert: ILS amount → foreign */
+    var converted = Math.round(Math.abs(num) * _currency.rate);
+    var cStr = converted.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return prefix + _currency.symbol + cStr;
+  }
 
   // ── חשיפה גלובלית של המשתנים הנדרשים ל-IIFE חיצוניים (כמו scan-doc) ──
   Object.defineProperty(window, '_appUserCategories', {
@@ -7154,15 +6895,12 @@
   })();
   function fmt(n){
     var num = Number(n||0);
-    var sym = window._activeCurrencySymbol || '₪';
-    var rate = (window._activeCurrencyRate && window._activeCurrencyRate !== 1)
-      ? window._activeCurrencyRate : 1;
-    var converted = (rate !== 1) ? num / rate : num;
-    converted = Math.round(converted);
-    var abs = Math.abs(converted);
+    // Safe number formatting that works in Flutter WebView without toLocaleString
+    var abs = Math.abs(Math.round(num));
     var str = abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    var prefix = converted < 0 ? '-' : '';
-    return prefix + sym + str;
+    var prefix = num < 0 ? '-' : '';
+    if (isUSD) return prefix + '$' + str;
+    return prefix + '₪' + str;
   }
   function showScreen(name){
     ['screen-loading','screen-login','screen-setname','app'].forEach(hide);
@@ -7552,7 +7290,7 @@
         '<span class="fixed-item-icon">' + emoji + '</span>' +
         '<div class="fixed-item-info">' +
           '<div class="fixed-item-name">' + (item.name || '—') + '</div>' +
-          '<div class="fixed-item-amount">' + fmt(item.amount) + ' / חודש</div>' +
+          '<div class="fixed-item-amount">₪' + fmt(item.amount) + ' / חודש</div>' +
         '</div>' +
         '<div class="fixed-item-actions">' +
           '<button class="fixed-item-btn edit" onclick="openFixedEdit(\'' + col + '\',\'' + item.id + '\',\'' + (item.name||'').replace(/'/g,"\\'") + '\',' + item.amount + ')" title="ערוך">' +
@@ -7800,7 +7538,7 @@ window.deletePhoneIdx = function(i) {
     el.classList.remove('hidden');
   }
 
-  function renderAll(){ renderStats(); renderTx(); renderCategoriesList2(); renderDashBudgetAlerts(); renderFixedLists(); if(typeof renderCharts==='function') renderCharts(); }
+  function renderAll(){ renderStats(); renderTx(); renderCategoriesList2(); renderDashBudgetAlerts(); }
 
   /* ══════════════════════════════════════════════
      CHARTS
@@ -9218,71 +8956,127 @@ window.deletePhoneIdx = function(i) {
     }).catch(function(e){ console.error(e); toast('שגיאה בשמירה', 'error'); });
   };
 
-  /* ── Currency Picker ── */
-  var CURRENCIES = [
-    { code:'ILS', symbol:'₪',  flag:'🇮🇱', name:'שקל ישראלי',       rate:1,      popular:true  },
-    { code:'USD', symbol:'$',  flag:'🇺🇸', name:'דולר אמריקאי',     rate:3.70,   popular:true  },
-    { code:'EUR', symbol:'€',  flag:'🇪🇺', name:'אירו',              rate:4.02,   popular:true  },
-    { code:'GBP', symbol:'£',  flag:'🇬🇧', name:'פאונד בריטי',      rate:4.68,   popular:true  },
-    { code:'JPY', symbol:'¥',  flag:'🇯🇵', name:'ין יפני',           rate:0.025,  popular:true  },
-    { code:'CHF', symbol:'₣',  flag:'🇨🇭', name:'פרנק שוויצרי',     rate:4.18,   popular:true  },
-    { code:'CAD', symbol:'C$', flag:'🇨🇦', name:'דולר קנדי',        rate:2.71,   popular:false },
-    { code:'AUD', symbol:'A$', flag:'🇦🇺', name:'דולר אוסטרלי',     rate:2.37,   popular:false },
-    { code:'AED', symbol:'د.إ',flag:'🇦🇪', name:'דירהם אמירויות',   rate:1.008,  popular:false },
-    { code:'SAR', symbol:'﷼',  flag:'🇸🇦', name:'ריאל סעודי',       rate:0.986,  popular:false },
-    { code:'JOD', symbol:'JD', flag:'🇯🇴', name:'דינר ירדני',       rate:5.22,   popular:false },
-    { code:'EGP', symbol:'E£', flag:'🇪🇬', name:'פאונד מצרי',       rate:0.076,  popular:false },
-    { code:'CNY', symbol:'¥',  flag:'🇨🇳', name:'יואן סיני',        rate:0.509,  popular:false },
-    { code:'INR', symbol:'₹',  flag:'🇮🇳', name:'רופי הודי',        rate:0.044,  popular:false },
-    { code:'TRY', symbol:'₺',  flag:'🇹🇷', name:'לירה טורקית',      rate:0.108,  popular:false },
-    { code:'BRL', symbol:'R$', flag:'🇧🇷', name:'ריאל ברזילאי',     rate:0.694,  popular:false },
-    { code:'SGD', symbol:'S$', flag:'🇸🇬', name:'דולר סינגפורי',    rate:2.77,   popular:false },
-    { code:'HKD', symbol:'HK$',flag:'🇭🇰', name:'דולר הונג קונג',   rate:0.475,  popular:false },
-  ];
+  /* ── Currency toggle ── */
+  $('btn-currency').onclick = function(){ _openCurrencySheet(); };
 
-  var _selectedCurrency = CURRENCIES[0];
+  /* ══════════════════════════════════════════════════
+     CURRENCY PICKER SHEET
+  ══════════════════════════════════════════════════ */
+  function _openCurrencySheet(){
+    var ex = document.getElementById('_cur-sheet');
+    if(ex) ex.remove();
+    _fetchLiveRates();
 
-  function _buildCurrencyGrid(containerId, popular) {
-    var el = document.getElementById(containerId);
-    if (!el) return;
-    el.innerHTML = '';
-    CURRENCIES.filter(function(c){ return c.popular === popular; }).forEach(function(c) {
-      var div = document.createElement('div');
-      div.className = 'cp-item' + (_selectedCurrency.code === c.code ? ' active' : '');
-      div.innerHTML =
-        '<div class="cp-check"><svg viewBox="0 0 24 24" fill="none" stroke="#04070E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>' +
-        '<div class="cp-flag">' + c.flag + '</div>' +
-        '<div class="cp-info"><div class="cp-code">' + c.code + '</div><div class="cp-name">' + c.name + '</div></div>' +
-        '<div class="cp-symbol">' + c.symbol + '</div>';
-      div.onclick = function() { selectCurrency(c.code); };
-      el.appendChild(div);
+    var sheet = document.createElement('div');
+    sheet.id  = '_cur-sheet';
+    sheet.style.cssText = [
+      'position:fixed;inset:0;z-index:9996',
+      'background:rgba(0,0,0,0.60)',
+      'backdrop-filter:blur(14px)',
+      '-webkit-backdrop-filter:blur(14px)',
+      'display:flex;align-items:flex-end;justify-content:center',
+      'opacity:0;transition:opacity .25s ease'
+    ].join(';');
+
+    var rows = _currencyList.map(function(c){
+      var isActive = c.code === _currency.code;
+      var rateDisp = c.code === 'ILS'
+        ? 'בסיס'
+        : (c.rate >= 1
+            ? '₪1 = ' + c.symbol + c.rate.toFixed(2)
+            : '₪1 = ' + c.symbol + c.rate.toFixed(4));
+      return [
+        '<button onclick="window._setCurrency(\''+c.code+'\')" style="',
+          'width:100%;display:flex;align-items:center;gap:12px;',
+          'padding:13px 16px;background:', isActive ? 'rgba(0,229,255,0.10)' : 'transparent', ';',
+          'border:none;border-bottom:1px solid rgba(255,255,255,0.05);',
+          'cursor:pointer;text-align:right;',
+          'transition:background .15s;',
+          '-webkit-tap-highlight-color:transparent;',
+        '">',
+          '<span style="font-size:22px;line-height:1;flex-shrink:0;">'+c.flag+'</span>',
+          '<div style="flex:1;min-width:0;text-align:right;">',
+            '<div style="font-family:\'Syne\',sans-serif;font-size:14px;font-weight:'+(isActive?900:700)+';',
+              'color:'+(isActive?'#00E5FF':'rgba(255,255,255,0.82)')+';',
+              'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">',
+              c.name,
+            '</div>',
+            '<div style="font-size:10px;color:rgba(255,255,255,0.32);margin-top:1px;font-family:\'JetBrains Mono\',monospace;">',
+              rateDisp,
+            '</div>',
+          '</div>',
+          '<div style="display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;gap:2px;">',
+            '<span style="font-family:\'JetBrains Mono\',monospace;font-size:14px;font-weight:900;',
+              'color:'+(isActive?'#00E5FF':'rgba(255,255,255,0.55)')+';min-width:28px;text-align:left;">',
+              c.symbol,
+            '</span>',
+            isActive ? '<div style="width:6px;height:6px;border-radius:50%;background:#00E5FF;box-shadow:0 0 6px #00E5FF;"></div>' : '',
+          '</div>',
+        '</button>'
+      ].join('');
+    }).join('');
+
+    sheet.innerHTML = [
+      '<div id="_cur-inner" style="',
+        'width:100%;max-width:430px;',
+        'background:linear-gradient(160deg,rgba(10,16,36,0.99),rgba(4,7,18,0.99));',
+        'border:1px solid rgba(0,229,255,0.12);border-radius:24px 24px 0 0;',
+        'max-height:82vh;display:flex;flex-direction:column;',
+        'transform:translateY(100%);',
+        'transition:transform .38s cubic-bezier(0.34,1.10,0.64,1);',
+        'box-shadow:0 -20px 60px rgba(0,0,0,0.65);overflow:hidden;',
+      '">',
+        /* shimmer top */
+        '<div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,0.55),transparent);pointer-events:none;"></div>',
+        /* header */
+        '<div style="flex-shrink:0;padding:12px 16px 14px;border-bottom:1px solid rgba(255,255,255,0.06);">',
+          '<div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.14);margin:0 auto 14px;"></div>',
+          '<div style="display:flex;align-items:center;justify-content:space-between;">',
+            '<div>',
+              '<div style="font-family:\'Syne\',sans-serif;font-size:16px;font-weight:900;color:#fff;">בחר מטבע</div>',
+              '<div style="font-size:11px;color:rgba(255,255,255,0.32);margin-top:2px;" id="_cur-rate-note">שערים עדכניים</div>',
+            '</div>',
+            '<button id="_cur-close" style="width:32px;height:32px;border-radius:10px;border:1px solid rgba(255,255,255,0.10);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.40);cursor:pointer;font-size:15px;line-height:1;">✕</button>',
+          '</div>',
+        '</div>',
+        /* scrollable list */
+        '<div style="flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:env(safe-area-inset-bottom,0);">',
+          rows,
+        '</div>',
+      '</div>'
+    ].join('');
+
+    document.body.appendChild(sheet);
+    var inner = document.getElementById('_cur-inner');
+
+    requestAnimationFrame(function(){
+      sheet.style.opacity = '1';
+      inner.style.transform = 'translateY(0)';
     });
+
+    function closeSheet(){
+      sheet.style.opacity = '0';
+      inner.style.transform = 'translateY(100%)';
+      setTimeout(function(){ if(sheet.parentNode) sheet.remove(); }, 360);
+    }
+    document.getElementById('_cur-close').onclick = closeSheet;
+    sheet.addEventListener('click', function(e){ if(e.target===sheet) closeSheet(); });
+
+    window._setCurrency = function(code){
+      var cur = _currencyList.find(function(x){ return x.code===code; });
+      if(!cur) return;
+      _currency = { code:cur.code, symbol:cur.symbol, rate:cur.rate, name:cur.name };
+      isUSD = (code !== 'ILS'); /* legacy compat */
+      /* update button label */
+      var btn = document.getElementById('btn-currency');
+      if(btn) btn.textContent = cur.symbol;
+      /* update rate note */
+      var note = document.getElementById('_cur-rate-note');
+      if(note) note.textContent = code==='ILS' ? 'מטבע הבסיס' : '1 ₪ = '+cur.symbol+(cur.rate>=1?cur.rate.toFixed(2):cur.rate.toFixed(4));
+      renderAll();
+      setTimeout(closeSheet, 180);
+    };
   }
-
-  window.openCurrencyPicker = function() {
-    _buildCurrencyGrid('cp-grid-popular', true);
-    _buildCurrencyGrid('cp-grid-other', false);
-    document.getElementById('currency-picker-overlay').classList.add('open');
-  };
-
-  window.closeCurrencyPicker = function() {
-    document.getElementById('currency-picker-overlay').classList.remove('open');
-  };
-
-  window.selectCurrency = function(code) {
-    var cur = CURRENCIES.find(function(c){ return c.code === code; });
-    if (!cur) return;
-    _selectedCurrency = cur;
-    var btn = document.getElementById('btn-currency');
-    if (btn) btn.textContent = cur.symbol.length > 2 ? cur.code : cur.symbol;
-    isUSD = (cur.code !== 'ILS');
-    exchangeRate = cur.rate;
-    window._activeCurrencySymbol = cur.symbol;
-    window._activeCurrencyRate   = cur.rate;  // שער המרה מ-ILS
-    closeCurrencyPicker();
-    renderAll();
-    toast('מטבע שונה ל-' + cur.code + ' ' + cur.flag, 'success');
-  };
 
   /* ── Modal ── */
   $('btn-add-income').onclick=function(){ openModal('income'); };
@@ -9572,7 +9366,7 @@ window.deletePhoneIdx = function(i) {
         '<span class="fixed-item-icon">' + emoji + '</span>' +
         '<div class="fixed-item-info">' +
           '<div class="fixed-item-name">' + (item.name||'—') + '</div>' +
-          '<div class="fixed-item-amount" style="color:' + col + ';">' + fmt(item.amount) + ' / פעמיים בשנה</div>' +
+          '<div class="fixed-item-amount" style="color:' + col + ';">₪' + fmt(item.amount) + ' / פעמיים בשנה</div>' +
         '</div>' +
         '<div class="fixed-item-actions">' +
           '<button class="fixed-item-btn edit" onclick="openBimEdit(\'' + item.id + '\',\'' + (item.name||'').replace(/\'/g,"\\'") + '\',' + item.amount + ',\'' + (item.itemType||'expense') + '\')" title="ערוך">' +
