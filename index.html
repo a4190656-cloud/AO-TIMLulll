@@ -4769,6 +4769,12 @@
       var _current = 0;
       var _raf = null;
 
+      /* מאפס את הקאונטר — נקרא בעת החלפת מטבע */
+      window._resetBalanceCounter = function(){
+        if(_raf){ cancelAnimationFrame(_raf); _raf = null; }
+        _current = 0;
+      };
+
       window._animateBalance = function(target, isPositive){
         var el = document.getElementById('balance-display');
         if(!el) return;
@@ -4792,11 +4798,8 @@
         var t0      = null;
 
         function fmtNum(n){
-          if(typeof fmt === 'function') return fmt(Math.round(n));
-          var abs = Math.abs(Math.round(n));
-          var str = abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-          var prefix = n < 0 ? '-' : '';
-          return prefix+'₪'+str;
+          /* תמיד משתמש ב-fmt() הגלובלי כדי שהמרת מטבע תעבוד */
+          return fmt(Math.round(n));
         }
 
         function step(ts){
@@ -9067,6 +9070,8 @@ window.deletePhoneIdx = function(i) {
       if(!cur) return;
       _currency = { code:cur.code, symbol:cur.symbol, rate:cur.rate, name:cur.name };
       isUSD = (code !== 'ILS'); /* legacy compat */
+      /* reset balance counter so animation re-runs cleanly */
+      if(typeof window._resetBalanceCounter === 'function') window._resetBalanceCounter();
       /* update button label */
       var btn = document.getElementById('btn-currency');
       if(btn) btn.textContent = cur.symbol;
