@@ -4885,7 +4885,7 @@
             </div>
           </div>
         </button>
-        <input id="scan-doc-file" type="file" accept="image/*,.pdf,application/pdf" style="display:none">
+        <input id="scan-doc-file" type="file" accept="image/*,.pdf,application/pdf" style="display:none" multiple>
 
         <!-- מצב עיבוד -->
         <div id="scan-doc-processing" class="scan-doc-processing hidden">
@@ -9833,47 +9833,222 @@ window.exportUserData = function() {
     };
   }
 
-  fileInput.onchange = async function() {
-    var files = Array.from(fileInput.files || []);
-    if(!files.length) return;
-    fileInput.value = '';
+  var FILE_LIMIT = 5; /* מקסימום קבצים לסריקה */
 
-    /* בדוק כמה סריקות נותרו */
+  fileInput.onchange = function() {
+    var files = Array.from(fileInput.files || []);
+    fileInput.value = '';
+    if(!files.length) return;
+
+    /* בדוק מגבלה יומית */
     var used = getScanCount();
-    var remaining = DAILY_LIMIT - used;
+    var remaining = Math.min(DAILY_LIMIT - used, FILE_LIMIT);
 
     if(remaining <= 0){
       toast('הגעת למגבלת 7 הסריקות היומית!', 'error');
       return;
     }
 
-    /* קצץ לפי מה שנותר */
+    /* קצץ ל-5 קבצים מקסימום */
+    if(files.length > FILE_LIMIT){
+      toast('ניתן לסרוק עד ' + FILE_LIMIT + ' קבצים בכל פעם', 'error');
+      files = files.slice(0, FILE_LIMIT);
+    }
     if(files.length > remaining){
-      toast('נותרו ' + remaining + ' סריקות — רק ' + remaining + ' קבצים יעובדו', 'error');
+      toast('נותרו ' + remaining + ' סריקות היום — רק ' + remaining + ' קבצים יעובדו', 'error');
       files = files.slice(0, remaining);
     }
 
-    if(files.length > 1){
-      /* ── סריקה מרובה ── */
-      await processMultipleFiles(files);
-    } else {
-      /* ── סריקה בודדת ── */
-      processingEl.classList.remove('hidden');
-      scanBtn.style.opacity      = '0.5';
-      scanBtn.style.pointerEvents = 'none';
-      try {
-        var result = await sendToWorker(files[0]);
-        addScanCount(1);
-        showResult(result);
-      } catch(err) {
-        showError(err.message || 'שגיאה בסריקה — נסה שוב');
-      } finally {
-        processingEl.classList.add('hidden');
-        scanBtn.style.opacity      = '';
-        scanBtn.style.pointerEvents = '';
+    /* ── הצג sheet אישור לפני סריקה ── */
+    _showConfirmSheet(files);
+  };
+
+  /* ══════════════════════════════════════════
+     CONFIRM SHEET — רשימת קבצים לפני סריקה
+  ══════════════════════════════════════════ */
+  function _showConfirmSheet(files){
+    var existing = document.getElementById('_scan-confirm-sheet');
+    if(existing) existing.remove();
+
+    function fmtSize(b){
+      if(b < 1024) return b + ' B';
+      if(b < 1048576) return (b/1024).toFixed(0) + ' KB';
+      return (b/1048576).toFixed(1) + ' MB';
+    }
+    function fmtName(n){ return n.length > 28 ? n.slice(0,25) + '...' : n; }
+    function fileIcon(type){
+      if(type === 'application/pdf')
+        return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6080" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
+      return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>';
+    }
+
+    var rows = files.map(function(f, i){
+      return [
+        '<div id="_cf-row-' + i + '" style="',
+          'display:flex;align-items:center;gap:12px;',
+          'padding:12px 14px;border-radius:14px;',
+          'background:rgba(255,255,255,0.04);',
+          'border:1px solid rgba(255,255,255,0.09);',
+          'transition:all .2s cubic-bezier(0.34,1.56,0.64,1);',
+        '">',
+          '<div style="width:36px;height:36px;border-radius:11px;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;">',
+            fileIcon(f.type),
+          '</div>',
+          '<div style="flex:1;min-width:0;">',
+            '<div style="font-family:\'Syne\',sans-serif;font-size:12px;font-weight:800;color:rgba(255,255,255,0.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(fmtName(f.name)) + '</div>',
+            '<div style="font-size:10px;color:rgba(255,255,255,0.30);margin-top:2px;">' + fmtSize(f.size) + '</div>',
+          '</div>',
+          '<button onclick="window._cfRemove(' + i + ')" style="',
+            'width:28px;height:28px;border-radius:8px;',
+            'border:1px solid rgba(255,255,255,0.10);',
+            'background:rgba(255,80,80,0.08);',
+            'color:rgba(255,120,120,0.70);',
+            'cursor:pointer;font-size:12px;flex-shrink:0;',
+            'transition:all .15s;',
+          '">✕</button>',
+        '</div>'
+      ].join('');
+    }).join('');
+
+    var sheet = document.createElement('div');
+    sheet.id = '_scan-confirm-sheet';
+    sheet.style.cssText = [
+      'position:fixed;inset:0;z-index:9998',
+      'background:rgba(0,0,0,0.58)',
+      'backdrop-filter:blur(14px)',
+      '-webkit-backdrop-filter:blur(14px)',
+      'display:flex;align-items:flex-end;justify-content:center',
+      'padding-bottom:env(safe-area-inset-bottom,0)',
+      'opacity:0;transition:opacity .25s ease'
+    ].join(';');
+
+    sheet.innerHTML = [
+      '<div id="_cf-inner" style="',
+        'width:100%;max-width:430px;',
+        'background:linear-gradient(160deg,rgba(10,16,36,0.99),rgba(4,7,18,0.99));',
+        'border:1px solid rgba(0,229,255,0.14);',
+        'border-radius:24px 24px 0 0;',
+        'padding:0 16px 28px;',
+        'transform:translateY(100%);',
+        'transition:transform .38s cubic-bezier(0.34,1.15,0.64,1);',
+        'box-shadow:0 -24px 64px rgba(0,0,0,0.70);',
+        'position:relative;overflow:hidden;',
+      '">',
+        /* shimmer top line */
+        '<div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,0.55),transparent);"></div>',
+        '<div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.14);margin:12px auto 18px;"></div>',
+
+        /* Header */
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">',
+          '<div>',
+            '<div style="font-family:\'Syne\',sans-serif;font-size:16px;font-weight:900;color:#fff;" id="_cf-title">סריקת ' + files.length + ' קבצים</div>',
+            '<div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px;">AI יזהה סכום וקטגוריה לכל קובץ</div>',
+          '</div>',
+          '<div style="background:rgba(0,229,255,0.10);border:1px solid rgba(0,229,255,0.25);border-radius:10px;padding:4px 10px;font-family:\'JetBrains Mono\',monospace;font-size:12px;font-weight:800;color:var(--cyan);" id="_cf-count">' + files.length + '/' + FILE_LIMIT + '</div>',
+        '</div>',
+
+        /* File list */
+        '<div id="_cf-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px;">',
+          rows,
+        '</div>',
+
+        /* Action buttons */
+        '<button id="_cf-btn-scan" style="',
+          'width:100%;padding:15px;border-radius:15px;',
+          'background:linear-gradient(135deg,rgba(0,229,255,0.18),rgba(0,180,255,0.10));',
+          'border:1px solid rgba(0,229,255,0.35);',
+          'color:var(--cyan);',
+          'font-family:\'Syne\',sans-serif;font-size:15px;font-weight:900;',
+          'cursor:pointer;',
+          'box-shadow:0 6px 24px rgba(0,229,255,0.15),0 1px 0 rgba(255,255,255,0.08) inset;',
+          'transition:all .2s cubic-bezier(0.34,1.56,0.64,1);',
+          'margin-bottom:10px;',
+          '-webkit-tap-highlight-color:transparent;',
+        '">',
+          '<span id="_cf-btn-label">🤖 סרוק ' + files.length + ' קבצים</span>',
+        '</button>',
+        '<button id="_cf-btn-cancel" style="',
+          'width:100%;padding:13px;background:transparent;border:none;',
+          'cursor:pointer;font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;',
+          'color:rgba(255,255,255,0.28);-webkit-tap-highlight-color:transparent;',
+        '">ביטול</button>',
+      '</div>'
+    ].join('');
+
+    document.body.appendChild(sheet);
+    var inner = document.getElementById('_cf-inner');
+
+    /* Animate in */
+    requestAnimationFrame(function(){
+      sheet.style.opacity = '1';
+      inner.style.transform = 'translateY(0)';
+    });
+
+    /* Live list of remaining files (mutable) */
+    var pending = files.slice();
+
+    function closeConfirm(){
+      sheet.style.opacity = '0';
+      inner.style.transform = 'translateY(100%)';
+      setTimeout(function(){ if(sheet.parentNode) sheet.remove(); }, 360);
+    }
+
+    function _updateHeader(){
+      var t = document.getElementById('_cf-title');
+      var c = document.getElementById('_cf-count');
+      var b = document.getElementById('_cf-btn-label');
+      if(t) t.textContent = 'סריקת ' + pending.length + ' קבצים';
+      if(c) c.textContent = pending.length + '/' + FILE_LIMIT;
+      if(b) b.textContent = '🤖 סרוק ' + pending.length + ' קבצים';
+      if(pending.length === 0){
+        var scanBtn2 = document.getElementById('_cf-btn-scan');
+        if(scanBtn2){ scanBtn2.disabled = true; scanBtn2.style.opacity = '0.35'; }
       }
     }
-  };
+
+    window._cfRemove = function(origIdx){
+      pending = pending.filter(function(f){ return files.indexOf(f) !== origIdx; });
+      /* Actually filter by original index stored on row */
+      var row = document.getElementById('_cf-row-' + origIdx);
+      if(row){
+        row.style.opacity = '0';
+        row.style.transform = 'scale(0.93) translateX(20px)';
+        setTimeout(function(){ if(row.parentNode) row.parentNode.removeChild(row); }, 200);
+      }
+      /* rebuild pending from remaining rows */
+      pending = files.filter(function(f, i){
+        return !!document.getElementById('_cf-row-' + i);
+      });
+      setTimeout(_updateHeader, 210);
+    };
+
+    document.getElementById('_cf-btn-cancel').onclick = closeConfirm;
+    sheet.addEventListener('click', function(e){ if(e.target === sheet) closeConfirm(); });
+
+    document.getElementById('_cf-btn-scan').onclick = async function(){
+      if(!pending.length) return;
+      closeConfirm();
+      await new Promise(function(r){ setTimeout(r, 380); }); /* wait for sheet close */
+      if(pending.length === 1){
+        processingEl.classList.remove('hidden');
+        scanBtn.style.opacity = '0.5';
+        scanBtn.style.pointerEvents = 'none';
+        try {
+          var result = await sendToWorker(pending[0]);
+          addScanCount(1);
+          showResult(result);
+        } catch(err) {
+          showError(err.message || 'שגיאה בסריקה — נסה שוב');
+        } finally {
+          processingEl.classList.add('hidden');
+          scanBtn.style.opacity = '';
+          scanBtn.style.pointerEvents = '';
+        }
+      } else {
+        await processMultipleFiles(pending);
+      }
+    };
+  }
 
   /* ── עיבוד מרובה ── */
   async function processMultipleFiles(files){
