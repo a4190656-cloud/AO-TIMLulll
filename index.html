@@ -4662,7 +4662,7 @@
       <div id="hero-orb-main" class="hero-orb"></div>
       <div id="hero-scanline"></div>
 
-      <div class="hero-label-2026">יתרה פנויה</div>
+      <div class="hero-label-2026" data-i18n="balance_title">יתרה פנויה</div>
 
       <div style="display:flex;align-items:center;justify-content:center;gap:14px;position:relative;z-index:2;">
         <p id="balance-display" class="mono bal-pos"></p>
@@ -4857,8 +4857,8 @@
             <div class="action-btn-icon-wrap">
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00E676" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             </div>
-            <span class="action-btn-label">הכנסה</span>
-            <span class="action-btn-sublabel">הוסף הכנסה</span>
+            <span class="action-btn-label" data-i18n="income_label">הכנסה</span>
+            <span class="action-btn-sublabel" data-i18n="income_add">הוסף הכנסה</span>
           </div>
         </button>
         <button id="btn-add-expense" class="action-btn-expense">
@@ -4866,8 +4866,8 @@
             <div class="action-btn-icon-wrap">
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF4D70" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
             </div>
-            <span class="action-btn-label">הוצאה</span>
-            <span class="action-btn-sublabel">הוסף הוצאה</span>
+            <span class="action-btn-label" data-i18n="expense_label">הוצאה</span>
+            <span class="action-btn-sublabel" data-i18n="expense_add">הוסף הוצאה</span>
           </div>
         </button>
       </div>
@@ -4881,7 +4881,7 @@
               <div class="scan-doc-pulse"></div>
             </div>
             <div class="scan-doc-text">
-              <span class="scan-doc-title">סריקת קבלה / חשבונית</span>
+              <span class="scan-doc-title" data-i18n="scan_title">סריקת קבלה / חשבונית</span>
               <span class="scan-doc-sub">AI מזהה ומוסיף אוטומטית · <span id="scan-limit-badge" style="color:rgba(0,229,255,0.8);font-weight:800;">7 סריקות/יום</span></span>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
@@ -4908,7 +4908,7 @@
       </div>
 
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <p style="font-weight:700;font-size:14px">תנועות אחרונות</p>
+        <p style="font-weight:700;font-size:14px" data-i18n="recent_tx">תנועות אחרונות</p>
         <p style="font-size:11px;color:var(--muted)">המחזור הנוכחי</p>
       </div>
       <div id="tx-search-wrap">
@@ -5439,15 +5439,15 @@
       <div class="chart-hero" style="margin-bottom:14px;overflow:hidden;">
         <div style="display:flex;gap:10px;width:100%;min-width:0;">
           <div class="chart-stat-card" style="background:rgba(0,230,118,0.07);border:1px solid rgba(0,230,118,0.18);">
-            <div class="chart-stat-label">הכנסות</div>
+            <div class="chart-stat-label" data-i18n="chart_income">הכנסות</div>
             <div id="chart-income-total" class="chart-stat-value" style="color:var(--green);">₪0</div>
           </div>
           <div class="chart-stat-card" style="background:rgba(255,23,68,0.07);border:1px solid rgba(255,23,68,0.18);">
-            <div class="chart-stat-label">הוצאות</div>
+            <div class="chart-stat-label" data-i18n="chart_expense">הוצאות</div>
             <div id="chart-expense-total" class="chart-stat-value" style="color:var(--red);">₪0</div>
           </div>
           <div class="chart-stat-card" style="background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.16);">
-            <div class="chart-stat-label">יתרה</div>
+            <div class="chart-stat-label" data-i18n="chart_balance">יתרה</div>
             <div id="chart-balance-total" class="chart-stat-value" style="color:var(--cyan);">₪0</div>
           </div>
         </div>
@@ -5455,7 +5455,7 @@
 
       <!-- Donut chart — expenses by category -->
       <div class="chart-hero" style="margin-bottom:14px;">
-        <div class="chart-section-title">הוצאות לפי קטגוריה</div>
+        <div class="chart-section-title" data-i18n="chart_by_cat">הוצאות לפי קטגוריה</div>
         <div id="donut-wrap">
           <svg id="donut-svg" viewBox="0 0 220 220">
             <circle cx="110" cy="110" r="84" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="24"/>
@@ -5472,13 +5472,13 @@
 
       <!-- Bar chart — income by category -->
       <div class="chart-hero" style="margin-bottom:14px;">
-        <div class="chart-section-title">הכנסות לפי קטגוריה</div>
+        <div class="chart-section-title" data-i18n="chart_inc_cat">הכנסות לפי קטגוריה</div>
         <div id="bar-chart-income" class="bar-chart-wrap"></div>
       </div>
 
       <!-- Bar chart — expenses bar (budget vs actual) -->
       <div class="chart-hero" style="margin-bottom:16px;">
-        <div class="chart-section-title">הוצאות — השוואה לתקציב</div>
+        <div class="chart-section-title" data-i18n="chart_budget">הוצאות — השוואה לתקציב</div>
         <div id="bar-chart-budget" class="bar-chart-wrap"></div>
       </div>
 
@@ -6487,15 +6487,15 @@
     </button>
     <button class="nav-btn modern-hover" id="nav-categories" onclick="switchView('categories')">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      קטגוריות
+      <span data-i18n="nav_categories">קטגוריות</span>
     </button>
     <button class="nav-btn modern-hover" id="nav-charts" onclick="switchView('charts')">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
-      תרשימים
+      <span data-i18n="nav_charts">תרשימים</span>
     </button>
     <button class="nav-btn modern-hover" id="nav-settings" onclick="switchView('settings')">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
-      הגדרות
+      <span data-i18n="nav_settings">הגדרות</span>
     </button>
   </nav>
 </div>
@@ -6980,7 +6980,9 @@
   window.openEditModal = function(item) {
     editingItem = item;
     var isInc = item._t === 'income';
-    $('edit-modal-title').textContent = isInc ? 'עריכת הכנסה' : 'עריכת הוצאה';
+    $('edit-modal-title').textContent = isInc
+      ? (window._i18n_current && window._i18n_current.edit_income  || 'עריכת הכנסה')
+      : (window._i18n_current && window._i18n_current.edit_expense || 'עריכת הוצאה');
     $('edit-modal-amount').value = item.amount;
     $('edit-modal-amount').style.color = isInc ? 'var(--green)' : 'var(--text)';
     $('edit-modal-amount').style.borderColor = isInc ? 'rgba(0,230,118,0.3)' : 'rgba(255,23,68,0.3)';
@@ -7330,7 +7332,9 @@
   var _editFixedMeta = null;
   window.openFixedEdit = function(col, id, name, amount) {
     _editFixedMeta = { col:col, id:id };
-    $('fixed-edit-title').textContent = col === 'fixed_incomes' ? 'עריכת הכנסה קבועה' : 'עריכת הוצאה קבועה';
+    $('fixed-edit-title').textContent = col === 'fixed_incomes'
+      ? (window._i18n_current && window._i18n_current.edit_fixed_inc || 'עריכת הכנסה קבועה')
+      : (window._i18n_current && window._i18n_current.edit_fixed_exp || 'עריכת הוצאה קבועה');
     $('fixed-edit-name').value   = name;
     $('fixed-edit-amount').value = amount;
     $('fixed-edit-overlay').classList.add('open');
@@ -7644,7 +7648,13 @@ window.deletePhoneIdx = function(i) {
       }
     }
 
-    /* ── Bars — income by category ── */
+        var s = window._i18n_current || window._i18n['he'];
+        var chartExpBycat = document.querySelector('[data-i18n="chart_by_cat"]');
+        if(chartExpBycat) chartExpBycat.textContent = s.chart_by_cat;
+        var chartIncCat = document.querySelector('[data-i18n="chart_inc_cat"]');
+        if(chartIncCat) chartIncCat.textContent = s.chart_inc_cat;
+        var chartBudget = document.querySelector('[data-i18n="chart_budget"]');
+        if(chartBudget) chartBudget.textContent = s.chart_budget;
     var incByCat={};
     incomes.filter(function(i){ return parseDate(i.date)>=s; }).forEach(function(i){
       var k=i.category||'ללא קטגוריה'; incByCat[k]=(incByCat[k]||0)+Number(i.amount||0);
@@ -9084,14 +9094,17 @@ window.deletePhoneIdx = function(i) {
       if(!cur) return;
       _currency = { code:cur.code, symbol:cur.symbol, rate:cur.rate, name:cur.name };
       isUSD = (code !== 'ILS');
-      /* שמור ב-localStorage */
       try { localStorage.setItem('ao_currency', JSON.stringify(_currency)); } catch(e){}
-      /* reset balance counter */
       if(typeof window._resetBalanceCounter === 'function') window._resetBalanceCounter();
-      /* update button label */
       var btn = document.getElementById('btn-currency');
       if(btn) btn.textContent = cur.symbol;
       renderAll();
+      /* שאל על שינוי שפה — אחרי סגירת ה-sheet */
+      setTimeout(function(){
+        if(typeof window._askLangChange === 'function'){
+          window._askLangChange(cur.code, cur.name, cur.flag);
+        }
+      }, 400);
       setTimeout(closeSheet, 180);
     };
   }
@@ -9102,7 +9115,9 @@ window.deletePhoneIdx = function(i) {
 
   function openModal(type){
     modalType=type;
-    $('modal-title').textContent=type==='income'?'הוספת הכנסה':'הוספת הוצאה';
+    $('modal-title').textContent = type==='income'
+      ? (window._i18n_current && window._i18n_current.modal_income || 'הוספת הכנסה')
+      : (window._i18n_current && window._i18n_current.modal_expense || 'הוספת הוצאה');
     $('modal-amount').style.color=type==='income'?'var(--green)':'var(--text)';
     $('modal-amount').style.borderColor=type==='income'?'rgba(0,230,118,0.3)':'rgba(255,23,68,0.3)';
     $('modal-sheet').style.borderTop='2px solid '+(type==='income'?'var(--green)':'var(--red)');
@@ -9156,7 +9171,9 @@ window.deletePhoneIdx = function(i) {
     var path=$('check-path');
     path.style.animation='none'; path.getBoundingClientRect(); path.style.animation='';
     label.textContent=isInc?'+ '+fmt(amount):'− '+fmt(amount);
-    sub.textContent=isInc?'הכנסה נרשמה ✓':'הוצאה נרשמה ✓';
+      sub.textContent = isInc
+        ? (window._i18n_current && window._i18n_current.toast_income  || 'הכנסה נרשמה ✓')
+        : (window._i18n_current && window._i18n_current.toast_expense || 'הוצאה נרשמה ✓');
     parts.innerHTML='';
     /* 2026 — יותר חלקיקים, צבעים עשירים יותר, אנימציה ממלאת מסך */
     var col=isInc?['#00FF88','#00E676','#00C853','#69F0AE','#B9F6CA','#00BFA5','#1DE9B6']:
@@ -11151,6 +11168,462 @@ window.exportUserData = function() {
       }, 350);
     }
   };
+</script>
+<script>
+/* ══════════════════════════════════════════════════════════════
+   AO BUDGET — i18n SYSTEM
+   מחרוזות עבור כל שפה נתמכת
+══════════════════════════════════════════════════════════════ */
+window._i18n = {
+  he: {
+    dir: 'rtl', lang: 'he',
+    balance_title:   'יתרה פנויה',
+    income_label:    'הכנסה',
+    income_add:      'הוסף הכנסה',
+    expense_label:   'הוצאה',
+    expense_add:     'הוסף הוצאה',
+    scan_title:      'סריקת קבלה / חשבונית',
+    recent_tx:       'תנועות אחרונות',
+    nav_account:     'החשבון שלי',
+    nav_categories:  'קטגוריות',
+    nav_charts:      'תרשימים',
+    nav_settings:    'הגדרות',
+    settings_title:  'הגדרות',
+    cat_title:       'קטגוריות',
+    hist_title:      'היסטוריה',
+    modal_income:    'הוספת הכנסה',
+    modal_expense:   'הוספת הוצאה',
+    modal_desc:      'תיאור / פרטים',
+    modal_amount:    'סכום',
+    modal_cat:       'קטגוריה',
+    modal_date:      'תאריך',
+    modal_save:      'שמור',
+    modal_cancel:    'ביטול',
+    fixed_exp_title: 'הוצאות קבועות',
+    fixed_inc_title: 'הכנסות קבועות',
+    fixed_add_exp:   'הוסף הוצאה',
+    fixed_add_inc:   'הוסף הכנסה',
+    chart_title:     'תרשימים',
+    chart_income:    'הכנסות',
+    chart_expense:   'הוצאות',
+    chart_balance:   'יתרה',
+    chart_by_cat:    'הוצאות לפי קטגוריה',
+    chart_inc_cat:   'הכנסות לפי קטגוריה',
+    chart_budget:    'הוצאות — השוואה לתקציב',
+    edit_income:     'עריכת הכנסה',
+    edit_expense:    'עריכת הוצאה',
+    edit_fixed_inc:  'עריכת הכנסה קבועה',
+    edit_fixed_exp:  'עריכת הוצאה קבועה',
+    toast_income:    'הכנסה נרשמה ✓',
+    toast_expense:   'הוצאה נרשמה ✓',
+  },
+  en: {
+    dir: 'ltr', lang: 'en',
+    balance_title:   'Available Balance',
+    income_label:    'Income',
+    income_add:      'Add Income',
+    expense_label:   'Expense',
+    expense_add:     'Add Expense',
+    scan_title:      'Scan Receipt / Invoice',
+    recent_tx:       'Recent Transactions',
+    nav_account:     'My Account',
+    nav_categories:  'Categories',
+    nav_charts:      'Charts',
+    nav_settings:    'Settings',
+    settings_title:  'Settings',
+    cat_title:       'Categories',
+    hist_title:      'History',
+    modal_income:    'Add Income',
+    modal_expense:   'Add Expense',
+    modal_desc:      'Description / Details',
+    modal_amount:    'Amount',
+    modal_cat:       'Category',
+    modal_date:      'Date',
+    modal_save:      'Save',
+    modal_cancel:    'Cancel',
+    fixed_exp_title: 'Fixed Expenses',
+    fixed_inc_title: 'Fixed Income',
+    fixed_add_exp:   'Add Expense',
+    fixed_add_inc:   'Add Income',
+    chart_title:     'Charts',
+    chart_income:    'Income',
+    chart_expense:   'Expenses',
+    chart_balance:   'Balance',
+    chart_by_cat:    'Expenses by Category',
+    chart_inc_cat:   'Income by Category',
+    chart_budget:    'Expenses vs Budget',
+    edit_income:     'Edit Income',
+    edit_expense:    'Edit Expense',
+    edit_fixed_inc:  'Edit Fixed Income',
+    edit_fixed_exp:  'Edit Fixed Expense',
+    toast_income:    'Income saved ✓',
+    toast_expense:   'Expense saved ✓',
+  },
+  ar: {
+    dir: 'rtl', lang: 'ar',
+    balance_title:   'الرصيد المتاح',
+    income_label:    'دخل',
+    income_add:      'إضافة دخل',
+    expense_label:   'مصروف',
+    expense_add:     'إضافة مصروف',
+    scan_title:      'مسح إيصال / فاتورة',
+    recent_tx:       'آخر المعاملات',
+    nav_account:     'حسابي',
+    nav_categories:  'الفئات',
+    nav_charts:      'الرسوم البيانية',
+    nav_settings:    'الإعدادات',
+    settings_title:  'الإعدادات',
+    cat_title:       'الفئات',
+    hist_title:      'السجل',
+    modal_income:    'إضافة دخل',
+    modal_expense:   'إضافة مصروف',
+    modal_desc:      'الوصف / التفاصيل',
+    modal_amount:    'المبلغ',
+    modal_cat:       'الفئة',
+    modal_date:      'التاريخ',
+    modal_save:      'حفظ',
+    modal_cancel:    'إلغاء',
+    fixed_exp_title: 'المصاريف الثابتة',
+    fixed_inc_title: 'الدخل الثابت',
+    fixed_add_exp:   'إضافة مصروف',
+    fixed_add_inc:   'إضافة دخل',
+    chart_title:     'الرسوم البيانية',
+    chart_income:    'الدخل',
+    chart_expense:   'المصاريف',
+    chart_balance:   'الرصيد',
+    chart_by_cat:    'المصاريف حسب الفئة',
+    chart_inc_cat:   'الدخل حسب الفئة',
+    chart_budget:    'المصاريف مقابل الميزانية',
+    edit_income:     'تعديل الدخل',
+    edit_expense:    'تعديل المصروف',
+    edit_fixed_inc:  'تعديل الدخل الثابت',
+    edit_fixed_exp:  'تعديل المصروف الثابت',
+    toast_income:    'تم حفظ الدخل ✓',
+    toast_expense:   'تم حفظ المصروف ✓',
+  },
+  fr: {
+    dir: 'ltr', lang: 'fr',
+    balance_title:   'Solde disponible',
+    income_label:    'Revenu',
+    income_add:      'Ajouter un revenu',
+    expense_label:   'Dépense',
+    expense_add:     'Ajouter une dépense',
+    scan_title:      'Scanner reçu / facture',
+    recent_tx:       'Transactions récentes',
+    nav_account:     'Mon compte',
+    nav_categories:  'Catégories',
+    nav_charts:      'Graphiques',
+    nav_settings:    'Paramètres',
+    settings_title:  'Paramètres',
+    cat_title:       'Catégories',
+    hist_title:      'Historique',
+    modal_income:    'Ajouter un revenu',
+    modal_expense:   'Ajouter une dépense',
+    modal_desc:      'Description',
+    modal_amount:    'Montant',
+    modal_cat:       'Catégorie',
+    modal_date:      'Date',
+    modal_save:      'Enregistrer',
+    modal_cancel:    'Annuler',
+    fixed_exp_title: 'Charges fixes',
+    fixed_inc_title: 'Revenus fixes',
+    fixed_add_exp:   'Ajouter dépense',
+    fixed_add_inc:   'Ajouter revenu',
+    chart_title:     'Graphiques',
+    chart_income:    'Revenus',
+    chart_expense:   'Dépenses',
+    chart_balance:   'Solde',
+    chart_by_cat:    'Dépenses par catégorie',
+    chart_inc_cat:   'Revenus par catégorie',
+    chart_budget:    'Dépenses vs budget',
+    edit_income:     'Modifier revenu',
+    edit_expense:    'Modifier dépense',
+    edit_fixed_inc:  'Modifier revenu fixe',
+    edit_fixed_exp:  'Modifier dépense fixe',
+    toast_income:    'Revenu enregistré ✓',
+    toast_expense:   'Dépense enregistrée ✓',
+  },
+  de: {
+    dir: 'ltr', lang: 'de',
+    balance_title:   'Verfügbares Guthaben',
+    income_label:    'Einnahme',
+    income_add:      'Einnahme hinzufügen',
+    expense_label:   'Ausgabe',
+    expense_add:     'Ausgabe hinzufügen',
+    scan_title:      'Beleg / Rechnung scannen',
+    recent_tx:       'Letzte Transaktionen',
+    nav_account:     'Mein Konto',
+    nav_categories:  'Kategorien',
+    nav_charts:      'Diagramme',
+    nav_settings:    'Einstellungen',
+    settings_title:  'Einstellungen',
+    cat_title:       'Kategorien',
+    hist_title:      'Verlauf',
+    modal_income:    'Einnahme hinzufügen',
+    modal_expense:   'Ausgabe hinzufügen',
+    modal_desc:      'Beschreibung',
+    modal_amount:    'Betrag',
+    modal_cat:       'Kategorie',
+    modal_date:      'Datum',
+    modal_save:      'Speichern',
+    modal_cancel:    'Abbrechen',
+    fixed_exp_title: 'Fixausgaben',
+    fixed_inc_title: 'Fixeinnahmen',
+    fixed_add_exp:   'Ausgabe hinzufügen',
+    fixed_add_inc:   'Einnahme hinzufügen',
+    chart_title:     'Diagramme',
+    chart_income:    'Einnahmen',
+    chart_expense:   'Ausgaben',
+    chart_balance:   'Guthaben',
+    chart_by_cat:    'Ausgaben nach Kategorie',
+    chart_inc_cat:   'Einnahmen nach Kategorie',
+    chart_budget:    'Ausgaben vs. Budget',
+    edit_income:     'Einnahme bearbeiten',
+    edit_expense:    'Ausgabe bearbeiten',
+    edit_fixed_inc:  'Fixeinnahme bearbeiten',
+    edit_fixed_exp:  'Fixausgabe bearbeiten',
+    toast_income:    'Einnahme gespeichert ✓',
+    toast_expense:   'Ausgabe gespeichert ✓',
+  },
+  es: {
+    dir: 'ltr', lang: 'es',
+    balance_title:   'Saldo disponible',
+    income_label:    'Ingreso',
+    income_add:      'Agregar ingreso',
+    expense_label:   'Gasto',
+    expense_add:     'Agregar gasto',
+    scan_title:      'Escanear recibo / factura',
+    recent_tx:       'Transacciones recientes',
+    nav_account:     'Mi cuenta',
+    nav_categories:  'Categorías',
+    nav_charts:      'Gráficos',
+    nav_settings:    'Ajustes',
+    settings_title:  'Ajustes',
+    cat_title:       'Categorías',
+    hist_title:      'Historial',
+    modal_income:    'Agregar ingreso',
+    modal_expense:   'Agregar gasto',
+    modal_desc:      'Descripción',
+    modal_amount:    'Monto',
+    modal_cat:       'Categoría',
+    modal_date:      'Fecha',
+    modal_save:      'Guardar',
+    modal_cancel:    'Cancelar',
+    fixed_exp_title: 'Gastos fijos',
+    fixed_inc_title: 'Ingresos fijos',
+    fixed_add_exp:   'Agregar gasto',
+    fixed_add_inc:   'Agregar ingreso',
+    chart_title:     'Gráficos',
+    chart_income:    'Ingresos',
+    chart_expense:   'Gastos',
+    chart_balance:   'Saldo',
+    chart_by_cat:    'Gastos por categoría',
+    chart_inc_cat:   'Ingresos por categoría',
+    chart_budget:    'Gastos vs presupuesto',
+    edit_income:     'Editar ingreso',
+    edit_expense:    'Editar gasto',
+    edit_fixed_inc:  'Editar ingreso fijo',
+    edit_fixed_exp:  'Editar gasto fijo',
+    toast_income:    'Ingreso guardado ✓',
+    toast_expense:   'Gasto guardado ✓',
+  },
+  ru: {
+    dir: 'ltr', lang: 'ru',
+    balance_title:   'Доступный баланс',
+    income_label:    'Доход',
+    income_add:      'Добавить доход',
+    expense_label:   'Расход',
+    expense_add:     'Добавить расход',
+    scan_title:      'Сканировать чек / счёт',
+    recent_tx:       'Последние операции',
+    nav_account:     'Мой счёт',
+    nav_categories:  'Категории',
+    nav_charts:      'Графики',
+    nav_settings:    'Настройки',
+    settings_title:  'Настройки',
+    cat_title:       'Категории',
+    hist_title:      'История',
+    modal_income:    'Добавить доход',
+    modal_expense:   'Добавить расход',
+    modal_desc:      'Описание',
+    modal_amount:    'Сумма',
+    modal_cat:       'Категория',
+    modal_date:      'Дата',
+    modal_save:      'Сохранить',
+    modal_cancel:    'Отмена',
+    fixed_exp_title: 'Постоянные расходы',
+    fixed_inc_title: 'Постоянные доходы',
+    fixed_add_exp:   'Добавить расход',
+    fixed_add_inc:   'Добавить доход',
+    chart_title:     'Графики',
+    chart_income:    'Доходы',
+    chart_expense:   'Расходы',
+    chart_balance:   'Баланс',
+    chart_by_cat:    'Расходы по категориям',
+    chart_inc_cat:   'Доходы по категориям',
+    chart_budget:    'Расходы vs бюджет',
+    edit_income:     'Редактировать доход',
+    edit_expense:    'Редактировать расход',
+    edit_fixed_inc:  'Редактировать постоянный доход',
+    edit_fixed_exp:  'Редактировать постоянный расход',
+    toast_income:    'Доход сохранён ✓',
+    toast_expense:   'Расход сохранён ✓',
+  },
+};
+
+/* מיפוי קוד מטבע → שפה */
+window._currencyLangMap = {
+  ILS:'he', USD:'en', GBP:'en', AUD:'en', CAD:'en', SGD:'en', NZD:'en',
+  EUR:'fr', CHF:'de', PLN:'he', SEK:'he', NOK:'he',
+  AED:'ar', JOD:'ar', EGP:'ar', SAR:'ar', KWD:'ar',
+  TRY:'he', BRL:'es', MXN:'es',
+  JPY:'he', CNY:'he', KRW:'he', INR:'he',
+  RUB:'ru',
+};
+
+/* ── מצב שפה נוכחי ── */
+window._appLang = (function(){
+  try { return localStorage.getItem('ao_lang') || 'he'; } catch(e){ return 'he'; }
+})();
+
+/* ── החלת תרגום על כל האלמנטים עם data-i18n ── */
+window._applyLang = function(langCode){
+  var strings = window._i18n[langCode] || window._i18n['he'];
+  window._appLang = langCode;
+  try { localStorage.setItem('ao_lang', langCode); } catch(e){}
+
+  /* כיוון ושפת המסמך */
+  document.documentElement.lang = strings.lang;
+  document.documentElement.dir  = strings.dir;
+  document.body.style.direction  = strings.dir;
+
+  /* כל אלמנטים עם data-i18n */
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    if(strings[key] !== undefined) el.textContent = strings[key];
+  });
+
+  /* עדכון כותרת modal הוספה דינמית */
+  window._i18n_current = strings;
+
+  /* עדכון placeholder למודל */
+  var descInp = document.getElementById('tx-desc');
+  if(descInp) descInp.placeholder = strings.modal_desc || '';
+  var amtInp  = document.getElementById('tx-amount');
+  if(amtInp)  amtInp.placeholder  = strings.modal_amount || '';
+};
+
+/* ── שאל האם לשנות שפה — מוצג אחרי בחירת מטבע ── */
+window._askLangChange = function(currencyCode, currencyName, currencyFlag){
+  var suggestedLang = window._currencyLangMap[currencyCode];
+  if(!suggestedLang || suggestedLang === window._appLang) return; /* אין צורך לשאול */
+
+  var strings = window._i18n[suggestedLang];
+  if(!strings) return;
+
+  /* שמות שפות לתצוגה */
+  var langNames = { he:'עברית', en:'English', ar:'العربية', fr:'Français', de:'Deutsch', es:'Español', ru:'Русский' };
+  var suggestedName = langNames[suggestedLang] || suggestedLang;
+  var currentName   = langNames[window._appLang] || window._appLang;
+
+  var ex = document.getElementById('_lang-ask-sheet');
+  if(ex) ex.remove();
+
+  var sheet = document.createElement('div');
+  sheet.id  = '_lang-ask-sheet';
+  sheet.style.cssText = [
+    'position:fixed;inset:0;z-index:10000',
+    'background:rgba(0,0,0,0.62)',
+    'backdrop-filter:blur(16px)',
+    '-webkit-backdrop-filter:blur(16px)',
+    'display:flex;align-items:center;justify-content:center',
+    'padding:20px',
+    'opacity:0;transition:opacity .22s ease'
+  ].join(';');
+
+  sheet.innerHTML = [
+    '<div style="',
+      'width:100%;max-width:360px;',
+      'background:linear-gradient(150deg,rgba(10,16,36,0.99),rgba(4,7,18,0.99));',
+      'border:1px solid rgba(0,229,255,0.16);',
+      'border-radius:24px;padding:24px 20px;',
+      'box-shadow:0 24px 64px rgba(0,0,0,0.70);',
+      'position:relative;overflow:hidden;',
+      'transform:scale(0.92);transition:transform .30s cubic-bezier(0.34,1.20,0.64,1);',
+    '">',
+      /* shimmer top */
+      '<div style="position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,0.50),transparent);"></div>',
+
+      /* icon */
+      '<div style="font-size:36px;text-align:center;margin-bottom:14px;">',
+        currencyFlag + ' 🌐',
+      '</div>',
+
+      /* title */
+      '<div style="font-family:\'Syne\',sans-serif;font-size:16px;font-weight:900;color:#fff;text-align:center;margin-bottom:8px;">',
+        'שינוי שפת האפליקציה?',
+      '</div>',
+      '<div style="font-size:12px;color:rgba(255,255,255,0.45);text-align:center;margin-bottom:20px;line-height:1.6;">',
+        'בחרת ', currencyName, '<br>',
+        'האם לעבור לשפה <strong style="color:#00E5FF;">', suggestedName, '</strong>?',
+      '</div>',
+
+      /* buttons */
+      '<div style="display:flex;flex-direction:column;gap:10px;">',
+        /* כן */
+        '<button id="_lang-yes" style="',
+          'width:100%;padding:14px;border-radius:14px;cursor:pointer;',
+          'background:linear-gradient(135deg,rgba(0,229,255,0.16),rgba(0,180,255,0.08));',
+          'border:1px solid rgba(0,229,255,0.35);',
+          'color:#00E5FF;font-family:\'Syne\',sans-serif;font-size:14px;font-weight:900;',
+          'box-shadow:0 4px 20px rgba(0,229,255,0.15);',
+          'transition:all .2s cubic-bezier(.34,1.56,.64,1);',
+          '-webkit-tap-highlight-color:transparent;',
+        '">',
+          '✓ כן, עבור ל', suggestedName,
+        '</button>',
+
+        /* לא */
+        '<button id="_lang-no" style="',
+          'width:100%;padding:13px;border-radius:14px;cursor:pointer;',
+          'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);',
+          'color:rgba(255,255,255,0.45);font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;',
+          'transition:all .15s;-webkit-tap-highlight-color:transparent;',
+        '">',
+          '✕ שמור על ' + currentName,
+        '</button>',
+      '</div>',
+    '</div>'
+  ].join('');
+
+  document.body.appendChild(sheet);
+  var card = sheet.firstElementChild;
+
+  requestAnimationFrame(function(){
+    sheet.style.opacity = '1';
+    card.style.transform = 'scale(1)';
+  });
+
+  function closeAsk(){
+    sheet.style.opacity = '0';
+    card.style.transform = 'scale(0.92)';
+    setTimeout(function(){ if(sheet.parentNode) sheet.remove(); }, 280);
+  }
+
+  document.getElementById('_lang-yes').onclick = function(){
+    closeAsk();
+    setTimeout(function(){ window._applyLang(suggestedLang); }, 200);
+  };
+  document.getElementById('_lang-no').onclick  = closeAsk;
+  sheet.addEventListener('click', function(e){ if(e.target===sheet) closeAsk(); });
+};
+
+/* ── הפעל שפה שמורה בטעינה ── */
+(function(){
+  if(window._appLang && window._appLang !== 'he'){
+    window._applyLang(window._appLang);
+  }
+})();
 </script>
 </body>
 </html>
