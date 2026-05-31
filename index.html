@@ -8495,32 +8495,88 @@ window.deletePhoneIdx = function(i) {
 
  /* ══════════════════════════════════════════════
      NATIVE GOOGLE LOGIN — הגשר לאפליקציה
+     Flutter קורא ל-window.receiveGoogleToken(idToken, accessToken)
+     לאחר כניסה נייטיבית דרך google_sign_in
   ══════════════════════════════════════════════ */
-  
-  // 1. הפונקציה שתקבל את הנתונים מהאפליקציה (Flutter יקרא לה מבחוץ!)
+
   window.receiveGoogleToken = function(idToken, accessToken) {
+
+    /* ── מגן מפני double-call (Flutter לפעמים שולח פעמיים) ── */
+    if (window._receiveGoogleTokenBusy) return;
+    window._receiveGoogleTokenBusy = true;
+
+    /* ── מציג מסך טעינה מאובטח ── */
     _googleOAuthPending = true;
-    show('security-loader-overlay'); // מציג מסך טעינה מאובטח
-    var msgEl2 = $('security-msg');
-    if (msgEl2) msgEl2.textContent = 'מתחבר עם חשבון גוגל...';
-    
-    // בונה תעודת זהות של גוגל מתוך האסימונים שקיבלנו מהמכשיר
-    var credential = firebase.auth.GoogleAuthProvider.credential(idToken, accessToken);
-    
-    // נכנס ל-Firebase
-    auth.signInWithCredential(credential).then(function(result) {
-      _googleOAuthPending = false;
-      // הצלחה! onAuthStateChanged (שכבר קיים בקוד) יעביר אותנו לאפליקציה
-    }).catch(function(error) {
+    show('security-loader-overlay');
+    var msgEl = $('security-msg');
+    var subEl = $('security-sub-msg');
+    if (msgEl) msgEl.textContent = 'מתחבר עם חשבון גוגל...';
+    if (subEl) subEl.textContent = 'מאמת זהות';
+
+    /* ── וידוא שהטוקן הגיע ── */
+    if (!idToken || typeof idToken !== 'string' || idToken.trim() === '') {
+      window._receiveGoogleTokenBusy = false;
       _googleOAuthPending = false;
       hide('security-loader-overlay');
-      showLoginErr('שגיאה בחיבור לחשבון: ' + error.message);
-      var gBtn = $('btn-google-login');
-      if(gBtn){ gBtn.disabled=false; gBtn.style.opacity='1'; }
-    });
+      var gBtnErr = $('btn-google-login');
+      if (gBtnErr) { gBtnErr.disabled = false; gBtnErr.style.opacity = '1'; }
+      showLoginErr('שגיאה: לא התקבל טוקן מגוגל — נסו שוב.');
+      return;
+    }
+
+    /* ── בניית Credential מהטוקנים הנייטיביים ──
+       accessToken אופציונלי — google_sign_in לא תמיד מחזיר אותו ── */
+    var credential;
+    try {
+      credential = firebase.auth.GoogleAuthProvider.credential(
+        idToken,
+        accessToken || null
+      );
+    } catch (credErr) {
+      window._receiveGoogleTokenBusy = false;
+      _googleOAuthPending = false;
+      hide('security-loader-overlay');
+      var gBtnErr2 = $('btn-google-login');
+      if (gBtnErr2) { gBtnErr2.disabled = false; gBtnErr2.style.opacity = '1'; }
+      showLoginErr('שגיאה בעיבוד הטוקן: ' + (credErr.message || credErr));
+      return;
+    }
+
+    /* ── כניסה ל-Firebase Auth ── */
+    auth.signInWithCredential(credential)
+      .then(function() {
+        /* הצלחה — onAuthStateChanged יזרום ויקרא ל-bootApp + יסגור את הלודר */
+        window._receiveGoogleTokenBusy = false;
+        _googleOAuthPending = false;
+      })
+      .catch(function(error) {
+        window._receiveGoogleTokenBusy = false;
+        _googleOAuthPending = false;
+        hide('security-loader-overlay');
+        var gBtn = $('btn-google-login');
+        if (gBtn) { gBtn.disabled = false; gBtn.style.opacity = '1'; }
+
+        /* הודעות שגיאה ידידותיות לפי קוד */
+        var errMap = {
+          'auth/invalid-credential':
+            'הטוקן לא תקין — נסו להתחבר מחדש.',
+          'auth/user-disabled':
+            'החשבון הזה הושבת.',
+          'auth/account-exists-with-different-credential':
+            'קיים חשבון עם מייל זה בשיטת כניסה אחרת — נסו כניסה עם מייל.',
+          'auth/network-request-failed':
+            'שגיאת רשת — בדקו חיבור לאינטרנט.',
+          'auth/too-many-requests':
+            'יותר מדי ניסיונות — המתינו מספר דקות.',
+        };
+        var friendlyMsg = errMap[error.code]
+          || ('שגיאה בחיבור לחשבון: ' + (error.message || error.code));
+        showLoginErr(friendlyMsg);
+        console.warn('[AO Auth] receiveGoogleToken failed:', error.code, error.message);
+      });
   };
 
-  // 2. הפעולה של לחיצה על הכפתור
+  /* ── כפתור כניסה עם גוגל ── */
   $('btn-google-login').onclick = function(){
     var btn = this;
     btn.disabled = true;
@@ -8528,17 +8584,42 @@ window.deletePhoneIdx = function(i) {
     var origText = btn.innerHTML;
     btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin360 0.9s linear infinite;display:inline-block;vertical-align:middle;margin-left:6px;"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg> מתחבר...';
 
-    if (window.flutter_inappwebview !== undefined) {
-      // שלח ל-Flutter לפתוח בחירת חשבון גוגל מחדש
+    /* ══ נתיב A: Flutter WebView — כניסה נייטיבית ══
+       Flutter מקבל את הבקשה, מפעיל google_sign_in, וחוזר דרך receiveGoogleToken */
+    if (
+      window.flutter_inappwebview &&
+      typeof window.flutter_inappwebview.callHandler === 'function'
+    ) {
       try {
         window.flutter_inappwebview.callHandler('NativeGoogleLogin', { forceAccountSelect: true });
       } catch(e) {
-        window.flutter_inappwebview.callHandler('NativeGoogleLogin');
+        /* fallback אם ה-Handler הישן לא מקבל פרמטרים */
+        try { window.flutter_inappwebview.callHandler('NativeGoogleLogin'); } catch(e2) {}
       }
-      return;
+
+      /* Timeout בטחון — אם Flutter לא חזר תוך 30 שניות משחררים את הכפתור */
+      var _flutterLoginTimeout = setTimeout(function() {
+        if (btn.disabled) {
+          btn.disabled = false;
+          btn.style.opacity = '1';
+          btn.innerHTML = origText;
+          hide('security-loader-overlay');
+          showLoginErr('הכניסה לקחה יותר מדי זמן — נסו שוב.');
+        }
+      }, 30000);
+
+      /* מנקה את ה-timeout ברגע שהמשתמש מחובר בהצלחה */
+      var _unsubFlutterLogin = auth.onAuthStateChanged(function(user) {
+        if (user) {
+          clearTimeout(_flutterLoginTimeout);
+          if (typeof _unsubFlutterLogin === 'function') _unsubFlutterLogin();
+        }
+      });
+
+      return; /* לא ממשיכים לנתיב ה-Popup */
     }
 
-    /* ── כניסה עם גוגל — ישירות, בלי signOut מיותר שמאט ב-500ms+ ── */
+    /* ══ נתיב B: דפדפן רגיל — signInWithPopup ══ */
     function doGoogleLogin(){
       var provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope('profile');
@@ -8546,10 +8627,9 @@ window.deletePhoneIdx = function(i) {
       /* prompt=select_account מבטיח שגוגל תמיד מציג בחירת חשבון */
       provider.setCustomParameters({ prompt: 'select_account' });
 
-      // בדפדפן — Popup (redirect שבור ב-Chrome חדש עם third-party cookies)
       auth.signInWithPopup(provider)
         .then(function(result){
-          // הצלחה — onAuthStateChanged יטפל
+          /* הצלחה — onAuthStateChanged יטפל */
         })
         .catch(function(e){
           btn.disabled = false;
@@ -8557,7 +8637,7 @@ window.deletePhoneIdx = function(i) {
           btn.innerHTML = origText;
           if(e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') return;
           if(e.code === 'auth/popup-blocked'){
-            // popup נחסם — fallback ל-redirect
+            /* Popup נחסם — fallback ל-redirect */
             sessionStorage.setItem('_googleRedirectPending','1');
             sessionStorage.removeItem('_ao_signed_out');
             ['screen-loading','screen-login','screen-setname','app'].forEach(function(id){
@@ -8577,10 +8657,8 @@ window.deletePhoneIdx = function(i) {
         });
     }
 
-    /* ── אם המשתמש כבר מחובר — signOut קצר לפני popup (כדי לאפשר החלפת חשבון)
-       אחרת — מתחילים ישירות (מהיר יותר ב-500-800ms) ── */
-    var currentUser = auth.currentUser;
-    if (currentUser) {
+    /* signOut רק אם המשתמש מחובר — חוסך 500–800ms בכניסה ראשונה */
+    if (auth.currentUser) {
       auth.signOut().then(doGoogleLogin).catch(doGoogleLogin);
     } else {
       doGoogleLogin();
@@ -8914,6 +8992,24 @@ window.deletePhoneIdx = function(i) {
       setTimeout(doUpdate, 150);
     };
   };
+  /* ══════════════════════════════════════════════
+     NATIVE GOOGLE LOGOUT HELPER
+     שולח הודעה ל-Flutter לנקות את Cache הנייטיבי של גוגל.
+     בטוח לקריאה גם בדפדפן רגיל (אין flutter_inappwebview).
+  ══════════════════════════════════════════════ */
+  function _notifyNativeGoogleLogout() {
+    if (
+      window.flutter_inappwebview &&
+      typeof window.flutter_inappwebview.callHandler === 'function'
+    ) {
+      try {
+        window.flutter_inappwebview.callHandler('NativeGoogleLogout');
+      } catch (e) {
+        console.warn('[AO Auth] NativeGoogleLogout callHandler failed:', e);
+      }
+    }
+  }
+
   $('btn-signout').onclick=function(){
 
     // הודעת אזהרה לפני היציאה
@@ -8926,9 +9022,8 @@ window.deletePhoneIdx = function(i) {
           '<div style="background:rgba(255,193,7,0.07);border:1px solid rgba(255,193,7,0.20);border-radius:14px;padding:14px;margin-bottom:20px;">'+
             '<p style="font-size:12.5px;font-weight:700;color:rgba(255,220,80,0.95);line-height:1.75;text-align:right;">'+
               '⚠️ <strong>שים לב!</strong><br>'+
-              'לאחר היציאה, לחיצה על "כניסה עם גוגל" תחזיר אוטומטית לאותו חשבון.<br><br>'+
-              '🔄 <strong>כדי להיכנס עם חשבון גוגל אחר:</strong><br>'+
-              'יש ללכת להגדרות הטלפון ← אפליקציות ← AO Budget ← אילוץ עצירה ← מחיקת נתונים.'+
+              'יציאה תנתק אתכם מהאפליקציה ותנקה את חשבון הגוגל מהמכשיר.<br><br>'+
+              '🔄 <strong>בכניסה הבאה</strong> תוצג בחירת חשבון גוגל מחדש.'+
             '</p>'+
           '</div>'+
           '<div style="display:flex;flex-direction:column;gap:9px;">'+
@@ -8953,13 +9048,18 @@ window.deletePhoneIdx = function(i) {
           if(k.indexOf('firebase')>-1 || k.indexOf('google')>-1) localStorage.removeItem(k);
         });
       } catch(e){}
-      if(window.flutter_inappwebview !== undefined){
-        try { window.flutter_inappwebview.callHandler('UserSignedOut'); } catch(e){}
-      }
       var doSignOut = function(){
-        auth.signOut().finally(function(){
-          window.location.href = window.location.href.split('?')[0] + '?so=' + Date.now();
-        });
+        auth.signOut()
+          .then(function(){
+            /* ── מודיע ל-Flutter לנקות את Cache הנייטיבי של גוגל ── */
+            _notifyNativeGoogleLogout();
+            window.location.href = window.location.href.split('?')[0] + '?so=' + Date.now();
+          })
+          .catch(function(){
+            /* גם בכישלון — מנקים מקומית ויוצאים */
+            _notifyNativeGoogleLogout();
+            window.location.href = window.location.href.split('?')[0] + '?so=' + Date.now();
+          });
       };
       if(firebase.auth.Auth.Persistence){
         auth.setPersistence(firebase.auth.Auth.Persistence.NONE).then(doSignOut).catch(doSignOut);
@@ -8980,9 +9080,8 @@ window.deletePhoneIdx = function(i) {
           '<div style="background:rgba(255,193,7,0.07);border:1px solid rgba(255,193,7,0.20);border-radius:14px;padding:14px;margin-bottom:20px;">'+
             '<p style="font-size:12.5px;font-weight:700;color:rgba(255,220,80,0.95);line-height:1.75;text-align:right;">'+
               '⚠️ <strong>שים לב!</strong><br>'+
-              'לאחר הניתוק, לחיצה על "כניסה עם גוגל" תחזיר אוטומטית לאותו חשבון.<br><br>'+
-              '🔄 <strong>כדי להיכנס עם חשבון גוגל אחר:</strong><br>'+
-              'יש ללכת להגדרות הטלפון ← אפליקציות ← AO Budget ← אילוץ עצירה ← מחיקת נתונים.'+
+              'ניתוק ינקה את חשבון הגוגל מהמכשיר.<br><br>'+
+              '🔄 <strong>בכניסה הבאה</strong> תוצג בחירת חשבון גוגל מחדש.'+
             '</p>'+
           '</div>'+
           '<div style="display:flex;flex-direction:column;gap:9px;">'+
@@ -9003,13 +9102,17 @@ window.deletePhoneIdx = function(i) {
           if(k.indexOf('firebase')>-1 || k.indexOf('google')>-1) localStorage.removeItem(k);
         });
       } catch(e){}
-      if(window.flutter_inappwebview !== undefined){
-        try { window.flutter_inappwebview.callHandler('UserSignedOut'); } catch(e){}
-      }
       var doSignOut = function(){
-        auth.signOut().finally(function(){
-          window.location.href = window.location.href.split('?')[0] + '?so=' + Date.now();
-        });
+        auth.signOut()
+          .then(function(){
+            /* ── מודיע ל-Flutter לנקות את Cache הנייטיבי של גוגל ── */
+            _notifyNativeGoogleLogout();
+            window.location.href = window.location.href.split('?')[0] + '?so=' + Date.now();
+          })
+          .catch(function(){
+            _notifyNativeGoogleLogout();
+            window.location.href = window.location.href.split('?')[0] + '?so=' + Date.now();
+          });
       };
       if(firebase.auth.Auth.Persistence){
         auth.setPersistence(firebase.auth.Auth.Persistence.NONE).then(doSignOut).catch(doSignOut);
