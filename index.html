@@ -5423,6 +5423,446 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
       </div>
 
       <div id="cat-list2"></div>
+
+      <!-- ╔══════════════════════════════════════════════╗
+           ║  AO EVENTS — ניהול תקציב לפי אירוע 2026    ║
+           ╚══════════════════════════════════════════════╝ -->
+      <style>
+        /* ── אנימציות ── */
+        @keyframes evCardIn  { from{opacity:0;transform:translateY(14px) scale(.97)} to{opacity:1;transform:none} }
+        @keyframes evShimmer { 0%{background-position:-250% center} 100%{background-position:250% center} }
+        @keyframes evPulse   { 0%,100%{opacity:1} 50%{opacity:.55} }
+        @keyframes evRingGrow{ from{transform:scale(0) rotate(-90deg);opacity:0} to{transform:scale(1) rotate(-90deg);opacity:1} }
+
+        /* ── Header ── */
+        #events-section-header {
+          display:flex; align-items:center; justify-content:space-between;
+          margin-top:28px; margin-bottom:14px;
+        }
+        .events-section-label {
+          display:flex; align-items:center; gap:8px;
+          font-size:10px; font-weight:900; letter-spacing:.15em; text-transform:uppercase;
+          color:rgba(255,255,255,0.28);
+        }
+        .events-section-label::before {
+          content:''; width:14px; height:1px;
+          background:linear-gradient(90deg,transparent,rgba(255,255,255,0.28));
+        }
+        .events-section-label::after {
+          content:''; flex:1; height:1px;
+          background:linear-gradient(90deg,rgba(255,255,255,0.14),transparent);
+        }
+        #btn-add-event {
+          display:flex; align-items:center; gap:6px;
+          padding:7px 13px; border-radius:11px; cursor:pointer; border:none;
+          background:linear-gradient(135deg,rgba(167,139,250,.14),rgba(124,58,237,.08));
+          border:1px solid rgba(167,139,250,.26);
+          color:#C4B5FD; font-family:'Syne',sans-serif; font-size:12px; font-weight:800;
+          box-shadow:0 4px 16px rgba(124,58,237,.12);
+          transition:all .2s cubic-bezier(.34,1.56,.64,1);
+          -webkit-tap-highlight-color:transparent;
+        }
+        #btn-add-event:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(124,58,237,.22); }
+        #btn-add-event:active { transform:scale(.96); }
+
+        /* ── Grid אירועים ── */
+        #events-list {
+          display:flex; flex-direction:column; gap:12px;
+          margin-bottom:8px;
+        }
+
+        /* ── כרטיס אירוע ── */
+        .ev-card {
+          position:relative; overflow:hidden;
+          border-radius:22px;
+          background:linear-gradient(145deg,rgba(12,8,30,.97),rgba(6,4,16,.99));
+          border:1px solid rgba(167,139,250,.18);
+          box-shadow:0 8px 32px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05);
+          animation: evCardIn .38s cubic-bezier(.34,1.15,.64,1) both;
+          cursor:pointer;
+          -webkit-tap-highlight-color:transparent;
+          transition:transform .18s var(--spring), box-shadow .18s;
+        }
+        .ev-card:hover { transform:translateY(-3px); box-shadow:0 14px 48px rgba(0,0,0,.55),0 0 0 1px rgba(167,139,250,.28); }
+        .ev-card:active { transform:scale(.98); }
+        .ev-card::before {
+          content:''; position:absolute; top:0; left:8%; right:8%; height:1px;
+          background:linear-gradient(90deg,transparent,rgba(167,139,250,.55),transparent);
+        }
+        /* shimmer top-right orb */
+        .ev-card::after {
+          content:''; position:absolute; top:-30px; right:-30px;
+          width:100px; height:100px; border-radius:50%; pointer-events:none;
+          background:radial-gradient(ellipse,rgba(167,139,250,.08) 0%,transparent 70%);
+        }
+
+        /* ── Header של כרטיס ── */
+        .ev-card-header {
+          display:flex; align-items:center; gap:13px;
+          padding:16px 18px 14px;
+        }
+        .ev-icon-wrap {
+          width:46px; height:46px; flex-shrink:0; border-radius:15px;
+          display:flex; align-items:center; justify-content:center; font-size:22px;
+          background:linear-gradient(145deg,rgba(167,139,250,.14),rgba(124,58,237,.06));
+          border:1px solid rgba(167,139,250,.22);
+          box-shadow:0 0 20px rgba(167,139,250,.16);
+          position:relative; z-index:1;
+        }
+        .ev-title-col { flex:1; min-width:0; }
+        .ev-name {
+          font-size:15px; font-weight:900; color:#fff;
+          white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+          letter-spacing:-.2px;
+        }
+        .ev-meta {
+          display:flex; align-items:center; gap:8px; margin-top:3px; flex-wrap:wrap;
+        }
+        .ev-date-chip {
+          font-size:10px; font-weight:700;
+          color:rgba(167,139,250,.70);
+          background:rgba(167,139,250,.08); border:1px solid rgba(167,139,250,.18);
+          border-radius:6px; padding:2px 7px;
+        }
+        .ev-status-chip {
+          font-size:9px; font-weight:900; letter-spacing:.06em;
+          border-radius:6px; padding:2px 7px; text-transform:uppercase;
+        }
+        .ev-status-active   { background:rgba(0,230,118,.10); border:1px solid rgba(0,230,118,.22); color:#00E676; }
+        .ev-status-upcoming { background:rgba(0,229,255,.08);  border:1px solid rgba(0,229,255,.20);  color:#00E5FF; }
+        .ev-status-done     { background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.40); }
+
+        /* כפתורי פעולה */
+        .ev-actions { display:flex; gap:5px; flex-shrink:0; }
+        .ev-action-btn {
+          width:32px; height:32px; border-radius:10px; border:none; cursor:pointer;
+          display:flex; align-items:center; justify-content:center;
+          transition:all .15s; -webkit-tap-highlight-color:transparent;
+        }
+        .ev-action-btn.edit { background:rgba(167,139,250,.10); color:rgba(167,139,250,.75); }
+        .ev-action-btn.edit:hover { background:rgba(167,139,250,.20); color:#C4B5FD; transform:scale(1.1); }
+        .ev-action-btn.del  { background:rgba(255,50,80,.08); color:rgba(255,80,100,.75); }
+        .ev-action-btn.del:hover  { background:rgba(255,50,80,.18); color:#FF4060; transform:scale(1.1); }
+
+        /* ── גוף הכרטיס — סטטיסטיקות ── */
+        .ev-stats-row {
+          display:grid; grid-template-columns:1fr 1fr 1fr;
+          gap:8px; padding:0 16px 14px;
+        }
+        .ev-stat-block {
+          background:rgba(255,255,255,.03);
+          border:1px solid rgba(255,255,255,.07);
+          border-radius:13px; padding:10px 12px;
+          text-align:center;
+        }
+        .ev-stat-label {
+          font-size:8.5px; font-weight:800; letter-spacing:.08em;
+          text-transform:uppercase; margin-bottom:4px;
+        }
+        .ev-stat-label.exp { color:rgba(255,80,120,.55); }
+        .ev-stat-label.inc { color:rgba(0,220,110,.55); }
+        .ev-stat-label.bal { color:rgba(167,139,250,.55); }
+        .ev-stat-amount {
+          font-family:'JetBrains Mono',monospace;
+          font-size:13px; font-weight:800; line-height:1;
+        }
+        .ev-stat-amount.exp { color:rgba(255,100,130,.90); }
+        .ev-stat-amount.inc { color:rgba(0,230,118,.90); }
+        .ev-stat-amount.bal-pos { color:rgba(0,230,118,1); }
+        .ev-stat-amount.bal-neg { color:rgba(255,80,120,1); }
+        .ev-stat-amount.bal-zero { color:rgba(255,255,255,.45); }
+
+        /* ── Progress bar תקציב ── */
+        .ev-budget-row {
+          padding:0 16px 16px;
+        }
+        .ev-budget-top {
+          display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;
+        }
+        .ev-budget-label { font-size:9px; font-weight:700; color:rgba(255,255,255,.28); }
+        .ev-budget-badge {
+          font-size:9px; font-weight:900;
+          padding:2px 8px; border-radius:6px;
+        }
+        .ev-budget-badge.ok   { background:rgba(0,230,118,.12); color:#00E676; border:1px solid rgba(0,230,118,.22); }
+        .ev-budget-badge.over { background:rgba(255,50,80,.12);  color:#FF4060; border:1px solid rgba(255,50,80,.22); }
+        .ev-budget-badge.near { background:rgba(255,165,0,.10);  color:#FFA500; border:1px solid rgba(255,165,0,.22); }
+        .ev-budget-bar-bg { height:5px; border-radius:4px; background:rgba(255,255,255,.07); overflow:hidden; }
+        .ev-budget-bar-fill { height:100%; border-radius:4px; transition:width .6s cubic-bezier(.34,1.15,.64,1); }
+
+        /* ── Footer "הוסף תנועה" ── */
+        .ev-card-footer {
+          display:flex; border-top:1px solid rgba(255,255,255,.05);
+        }
+        .ev-footer-btn {
+          flex:1; padding:11px 8px;
+          background:none; border:none; cursor:pointer;
+          font-family:'Syne',sans-serif; font-size:11px; font-weight:800;
+          display:flex; align-items:center; justify-content:center; gap:5px;
+          transition:background .15s; -webkit-tap-highlight-color:transparent;
+        }
+        .ev-footer-btn.expense { color:rgba(255,100,130,.75); }
+        .ev-footer-btn.expense:hover { background:rgba(255,50,80,.06); color:#FF6080; }
+        .ev-footer-btn.income  { color:rgba(0,220,110,.75); }
+        .ev-footer-btn.income:hover  { background:rgba(0,230,118,.06); color:#00E676; }
+        .ev-footer-sep { width:1px; background:rgba(255,255,255,.05); align-self:stretch; }
+        .ev-footer-btn.details { color:rgba(167,139,250,.65); }
+        .ev-footer-btn.details:hover { background:rgba(167,139,250,.07); color:#C4B5FD; }
+
+        /* ── Empty state ── */
+        #events-empty {
+          text-align:center; padding:28px 16px 24px;
+          border:1px dashed rgba(167,139,250,.15); border-radius:20px;
+          margin-bottom:8px;
+        }
+        .ev-empty-icon { font-size:32px; margin-bottom:10px; opacity:.6; }
+        .ev-empty-title { font-size:14px; font-weight:900; color:rgba(255,255,255,.55); margin-bottom:5px; }
+        .ev-empty-sub   { font-size:11px; font-weight:600; color:rgba(255,255,255,.25); line-height:1.6; }
+
+        /* ══════════════════════
+           MODAL — יצירה/עריכת אירוע
+        ══════════════════════ */
+        #ev-modal-overlay {
+          position:fixed; inset:0; z-index:9999;
+          background:rgba(0,0,0,.72); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+          display:flex; align-items:flex-end; justify-content:center;
+          opacity:0; pointer-events:none;
+          transition:opacity .25s;
+          padding-bottom:env(safe-area-inset-bottom,0);
+        }
+        #ev-modal-overlay.open { opacity:1; pointer-events:all; }
+        #ev-modal-sheet {
+          width:100%; max-width:430px;
+          background:linear-gradient(160deg,rgba(12,8,28,.99),rgba(6,4,14,.99));
+          border:1px solid rgba(167,139,250,.18);
+          border-radius:28px 28px 0 0;
+          padding:0 20px calc(env(safe-area-inset-bottom,16px) + 24px);
+          transform:translateY(100%);
+          transition:transform .38s cubic-bezier(.34,1.15,.64,1);
+          box-shadow:0 -16px 60px rgba(0,0,0,.70);
+          position:relative; overflow:hidden;
+          max-height:92dvh; overflow-y:auto; -webkit-overflow-scrolling:touch;
+        }
+        #ev-modal-overlay.open #ev-modal-sheet { transform:translateY(0); }
+        #ev-modal-sheet::before {
+          content:''; position:absolute; top:0; left:8%; right:8%; height:1px;
+          background:linear-gradient(90deg,transparent,rgba(167,139,250,.60),transparent);
+        }
+        .ev-modal-handle {
+          width:38px; height:4px; border-radius:2px;
+          background:rgba(255,255,255,.14);
+          margin:14px auto 20px;
+        }
+        .ev-modal-title-row {
+          display:flex; align-items:center; gap:10px; margin-bottom:20px;
+        }
+        .ev-modal-icon-badge {
+          width:40px; height:40px; border-radius:13px; flex-shrink:0;
+          background:linear-gradient(145deg,rgba(167,139,250,.16),rgba(124,58,237,.08));
+          border:1px solid rgba(167,139,250,.26); display:flex; align-items:center; justify-content:center;
+          font-size:18px; box-shadow:0 0 18px rgba(167,139,250,.18);
+        }
+        .ev-modal-title-text {
+          flex:1; font-size:17px; font-weight:900; color:#fff;
+        }
+        /* שדות */
+        .ev-field-label {
+          font-size:10px; font-weight:800; letter-spacing:.10em; text-transform:uppercase;
+          color:rgba(255,255,255,.30); margin-bottom:7px;
+          display:flex; align-items:center; gap:6px;
+        }
+        .ev-inp {
+          display:block; width:100%;
+          background:rgba(255,255,255,.04);
+          border:1px solid rgba(167,139,250,.14);
+          border-radius:14px; padding:13px 15px;
+          color:#fff; font-family:'Syne',sans-serif; font-size:14px; font-weight:700;
+          text-align:right; outline:none; margin-bottom:12px;
+          transition:border-color .2s, box-shadow .2s; -webkit-appearance:none;
+        }
+        .ev-inp:focus {
+          border-color:rgba(167,139,250,.55);
+          box-shadow:0 0 0 3px rgba(167,139,250,.10);
+          background:rgba(255,255,255,.06);
+        }
+        .ev-inp::placeholder { color:rgba(255,255,255,.20); font-size:13px; }
+        /* emoji picker */
+        .ev-emoji-grid {
+          display:flex; flex-wrap:wrap; gap:8px;
+          margin-bottom:14px;
+        }
+        .ev-emoji-btn {
+          width:38px; height:38px; border-radius:10px; border:none; cursor:pointer;
+          background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
+          font-size:18px; display:flex; align-items:center; justify-content:center;
+          transition:all .15s; -webkit-tap-highlight-color:transparent;
+        }
+        .ev-emoji-btn.selected, .ev-emoji-btn:hover {
+          background:rgba(167,139,250,.14); border-color:rgba(167,139,250,.35);
+          transform:scale(1.12);
+          box-shadow:0 0 12px rgba(167,139,250,.20);
+        }
+        /* כפתורי שמירה */
+        .ev-modal-btns { display:flex; gap:9px; margin-top:6px; }
+        .ev-btn-save {
+          flex:1; padding:13px; border:none; border-radius:13px; cursor:pointer;
+          background:linear-gradient(135deg,#7C3AED,#6D28D9);
+          color:#fff; font-family:'Syne',sans-serif; font-size:14px; font-weight:900;
+          box-shadow:0 6px 24px rgba(124,58,237,.35);
+          transition:transform .18s var(--spring), box-shadow .18s;
+        }
+        .ev-btn-save:hover { transform:translateY(-2px); box-shadow:0 10px 32px rgba(124,58,237,.45); }
+        .ev-btn-cancel {
+          flex:0 0 90px; padding:13px; border-radius:13px; cursor:pointer;
+          background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.09);
+          color:rgba(255,255,255,.45); font-family:'Syne',sans-serif; font-size:13px; font-weight:700;
+          transition:background .15s;
+        }
+        .ev-btn-cancel:hover { background:rgba(255,255,255,.09); }
+
+        /* ══════════════════════
+           MODAL — פרטי אירוע
+        ══════════════════════ */
+        #ev-detail-overlay {
+          position:fixed; inset:0; z-index:9998;
+          background:rgba(0,0,0,.72); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+          display:flex; align-items:flex-end; justify-content:center;
+          opacity:0; pointer-events:none; transition:opacity .25s;
+          padding-bottom:env(safe-area-inset-bottom,0);
+        }
+        #ev-detail-overlay.open { opacity:1; pointer-events:all; }
+        #ev-detail-sheet {
+          width:100%; max-width:430px;
+          background:linear-gradient(160deg,rgba(12,8,28,.99),rgba(6,4,14,.99));
+          border:1px solid rgba(167,139,250,.18);
+          border-radius:28px 28px 0 0;
+          padding:0 20px calc(env(safe-area-inset-bottom,16px) + 24px);
+          transform:translateY(100%);
+          transition:transform .38s cubic-bezier(.34,1.15,.64,1);
+          box-shadow:0 -20px 70px rgba(0,0,0,.75);
+          position:relative; overflow:hidden;
+          max-height:88dvh; overflow-y:auto; -webkit-overflow-scrolling:touch;
+        }
+        #ev-detail-overlay.open #ev-detail-sheet { transform:translateY(0); }
+        #ev-detail-sheet::before {
+          content:''; position:absolute; top:0; left:8%; right:8%; height:1px;
+          background:linear-gradient(90deg,transparent,rgba(167,139,250,.60),transparent);
+        }
+        /* tx rows בפרטים */
+        .ev-tx-row {
+          display:flex; align-items:center; gap:11px;
+          padding:11px 14px; border-radius:13px; margin-bottom:7px;
+          position:relative; overflow:hidden;
+          animation: evCardIn .25s var(--spring) both;
+        }
+        .ev-tx-row.expense { background:rgba(255,50,80,.06); border:1px solid rgba(255,50,80,.14); }
+        .ev-tx-row.income  { background:rgba(0,230,118,.05); border:1px solid rgba(0,230,118,.13); }
+        .ev-tx-icon { font-size:16px; flex-shrink:0; }
+        .ev-tx-info { flex:1; min-width:0; }
+        .ev-tx-desc  { font-size:13px; font-weight:800; color:rgba(255,255,255,.88); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .ev-tx-date  { font-size:10px; font-weight:600; color:rgba(255,255,255,.35); margin-top:1px; }
+        .ev-tx-amount { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:800; flex-shrink:0; }
+        .ev-tx-amount.expense { color:rgba(255,100,130,.90); }
+        .ev-tx-amount.income  { color:rgba(0,220,110,.90); }
+        /* כפתור מחיקת tx */
+        .ev-tx-del {
+          width:26px; height:26px; border-radius:8px; border:none; cursor:pointer; flex-shrink:0;
+          background:rgba(255,50,80,.08); color:rgba(255,80,100,.55); font-size:13px;
+          display:flex; align-items:center; justify-content:center; transition:all .15s;
+        }
+        .ev-tx-del:hover { background:rgba(255,50,80,.20); color:#FF4060; transform:scale(1.1); }
+
+        /* Ring progress בפרטים */
+        .ev-ring-wrap {
+          display:flex; flex-direction:column; align-items:center; margin:16px 0 20px;
+        }
+        .ev-ring-svg { transform:rotate(-90deg); }
+        .ev-ring-bg  { fill:none; stroke:rgba(255,255,255,.07); }
+        .ev-ring-fill{ fill:none; stroke-linecap:round; transition:stroke-dashoffset .8s cubic-bezier(.34,1.15,.64,1); }
+        .ev-ring-center {
+          margin-top:-110px; position:relative; z-index:1;
+          text-align:center; margin-bottom:16px;
+        }
+        .ev-ring-pct   { font-family:'JetBrains Mono',monospace; font-size:26px; font-weight:900; color:#fff; }
+        .ev-ring-label { font-size:9px; font-weight:800; letter-spacing:.10em; text-transform:uppercase; color:rgba(255,255,255,.30); margin-top:2px; }
+
+        /* light theme overrides */
+        body.theme-light .ev-card {
+          background:rgba(255,255,255,.55) !important;
+          border-color:rgba(124,58,237,.22) !important;
+          box-shadow: 0 4px 24px rgba(124,58,237,.12), inset 0 2px 0 rgba(255,255,255,.88) !important;
+          backdrop-filter:blur(28px) !important;
+        }
+        body.theme-light .ev-card::before { background:linear-gradient(90deg,transparent,rgba(124,58,237,.35),transparent) !important; }
+        body.theme-light .ev-name         { color:var(--lt-text) !important; }
+        body.theme-light .ev-stat-block   { background:rgba(255,255,255,.55) !important; border-color:rgba(124,58,237,.12) !important; }
+        body.theme-light .ev-card-footer  { border-top-color:rgba(124,58,237,.10) !important; }
+        body.theme-light #ev-modal-sheet,
+        body.theme-light #ev-detail-sheet { background:rgba(255,255,255,.98) !important; border-color:rgba(124,58,237,.22) !important; }
+        body.theme-light .ev-inp          { background:rgba(255,255,255,.88) !important; border-color:rgba(124,58,237,.18) !important; color:var(--lt-text) !important; }
+        body.theme-light .ev-inp:focus    { border-color:rgba(124,58,237,.55) !important; }
+        body.theme-light .ev-modal-title-text,
+        body.theme-light .ev-field-label  { color:var(--lt-text) !important; }
+        body.theme-light .ev-btn-cancel   { background:rgba(0,0,0,.05) !important; border-color:rgba(0,0,0,.12) !important; color:var(--lt-text2) !important; }
+        body.theme-light .ev-tx-desc      { color:var(--lt-text) !important; }
+        body.theme-light #btn-add-event   { background:rgba(124,58,237,.10) !important; border-color:rgba(124,58,237,.30) !important; }
+        body.theme-light .ev-empty-title  { color:var(--lt-text2) !important; }
+        body.theme-light .ev-empty-sub    { color:var(--lt-muted) !important; }
+      </style>
+
+      <!-- Section header -->
+      <div id="events-section-header">
+        <div class="events-section-label">
+          <span>🎉&nbsp;אירועים</span>
+        </div>
+        <button id="btn-add-event" onclick="window.openEvModal()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          אירוע חדש
+        </button>
+      </div>
+
+      <!-- רשימת אירועים -->
+      <div id="events-list"></div>
+
+      <!-- ── Modal יצירה/עריכה ── -->
+      <div id="ev-modal-overlay" onclick="if(event.target===this)window.closeEvModal()">
+        <div id="ev-modal-sheet" onclick="event.stopPropagation()">
+          <div class="ev-modal-handle"></div>
+          <div class="ev-modal-title-row">
+            <div class="ev-modal-icon-badge" id="ev-modal-badge">🎉</div>
+            <div class="ev-modal-title-text" id="ev-modal-title-text">אירוע חדש</div>
+          </div>
+
+          <!-- Emoji picker -->
+          <div class="ev-field-label">בחר אייקון</div>
+          <div class="ev-emoji-grid" id="ev-emoji-grid">
+            <!-- ממולא ב-JS -->
+          </div>
+
+          <div class="ev-field-label">שם האירוע</div>
+          <input id="ev-inp-name"   class="ev-inp" type="text"   placeholder="למשל: חתונה של דנה ויוסי" autocomplete="off">
+
+          <div class="ev-field-label">תאריך האירוע</div>
+          <input id="ev-inp-date"   class="ev-inp" type="date">
+
+          <div class="ev-field-label">תקציב יעד (אופציונלי)</div>
+          <input id="ev-inp-budget" class="ev-inp" type="number" inputmode="decimal" placeholder="0 = ללא תקציב">
+
+          <div class="ev-modal-btns">
+            <button class="ev-btn-save"   id="ev-btn-save"   onclick="window.saveEvModal()">✓ שמור אירוע</button>
+            <button class="ev-btn-cancel" onclick="window.closeEvModal()">ביטול</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Modal פרטי אירוע ── -->
+      <div id="ev-detail-overlay" onclick="if(event.target===this)window.closeEvDetail()">
+        <div id="ev-detail-sheet" onclick="event.stopPropagation()">
+          <div class="ev-modal-handle"></div>
+          <div id="ev-detail-content"></div>
+        </div>
+      </div>
+
     </div>
     <div id="view-charts" class="hidden">
       <style>
@@ -6863,6 +7303,7 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
   var uid = null, resetDay = 1, displayName = '';
   var incomes = [], expenses = [], fixedExpenses = [], fixedIncomes = [], userCategories = [];
   var userPhones = []; // מערך מספרי טלפון לחשבון
+  var userEvents = []; // אירועים
   var modalType = 'income', isRegMode = false, unsubs = [];
   var newCatPanelOpen = false;
   /* ══════════════════════════════════════════════════════
@@ -8311,6 +8752,7 @@ window.deletePhoneIdx = function(i) {
     snapCol('fixed_settings', function(v){ fixedExpenses=v; }, renderFixedLists);
     snapCol('fixed_incomes',  function(v){ fixedIncomes=v; },  renderFixedLists);
     snapCol('bimonthly_items', function(v){ bimonthlyItems=v; renderBimonthlyList(); });
+    snapCol('events', function(v){ userEvents=v; renderEventsList(); });
   }
 
   /* ══════════════════════════════════════════════
@@ -11752,6 +12194,542 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
   if(window._appLang && window._appLang !== 'he'){
     window._applyLang(window._appLang);
   }
+})();
+</script>
+
+<!-- ╔══════════════════════════════════════════════════════╗
+     ║  AO EVENTS JS — ניהול תקציב לפי אירוע 2026         ║
+     ╚══════════════════════════════════════════════════════╝ -->
+<script>
+(function(){
+  /* ── אמוג'ים לבחירה ── */
+  var EV_EMOJIS = ['🎉','💍','✈️','🏠','🎂','🎓','👶','🏋️','🎭','🎸','🚗','🌊','⛪','🎊','🏖️','🍽️'];
+
+  /* ── state מודאל ── */
+  var _evEditId   = null; // null = חדש, string = עריכה
+  var _evSelEmoji = '🎉';
+  var _evDetailId = null;
+
+  /* ── helper ── */
+  function _db(){ return window.db; }
+  function _uid(){ return window.auth && window.auth.currentUser ? window.auth.currentUser.uid : null; }
+  function _ref(){ return _db().collection('users').doc(_uid()).collection('events'); }
+  function _txRef(evId){ return _db().collection('users').doc(_uid()).collection('events').doc(evId).collection('transactions'); }
+  function _fmtDate(d){ if(!d) return ''; try{ var dt=new Date(d); return dt.toLocaleDateString('he-IL',{day:'2-digit',month:'short',year:'numeric'}); }catch(e){return d;} }
+  function _evStatus(ev){
+    if(!ev.date) return 'active';
+    var d=new Date(ev.date); var now=new Date();
+    var diff=(d-now)/(1000*60*60*24);
+    if(diff>14) return 'upcoming';
+    if(diff>-30) return 'active';
+    return 'done';
+  }
+  function _statusLabel(s){ return {upcoming:'קרוב',active:'פעיל',done:'הסתיים'}[s]||'פעיל'; }
+  function _statusClass(s){ return {upcoming:'ev-status-upcoming',active:'ev-status-active',done:'ev-status-done'}[s]||'ev-status-active'; }
+
+  /* ── calc stats per event ── */
+  function _evStats(evId){
+    var txAll = (window._evTxCache && window._evTxCache[evId]) || [];
+    var totalExp = txAll.filter(function(t){ return t.type==='expense'; }).reduce(function(a,t){ return a+Number(t.amount||0); },0);
+    var totalInc = txAll.filter(function(t){ return t.type==='income';  }).reduce(function(a,t){ return a+Number(t.amount||0); },0);
+    return { exp: totalExp, inc: totalInc, bal: totalInc - totalExp };
+  }
+
+  /* ═══════════════════════════════
+     RENDER — רשימת אירועים
+  ═══════════════════════════════ */
+  window.renderEventsList = function(){
+    var el = document.getElementById('events-list');
+    if(!el) return;
+    var evs = window.userEvents || [];
+    if(!evs.length){
+      el.innerHTML =
+        '<div id="events-empty">'+
+          '<div class="ev-empty-icon">🎉</div>'+
+          '<div class="ev-empty-title">אין אירועים עדיין</div>'+
+          '<div class="ev-empty-sub">צור אירוע כדי לנהל הוצאות כמו חתונה,<br>חופשה, שיפוץ ועוד — בנפרד מהתזרים הרגיל.</div>'+
+        '</div>';
+      return;
+    }
+    /* מיין לפי תאריך — הקרוב ראשון */
+    evs = evs.slice().sort(function(a,b){
+      var da=a.date?new Date(a.date):new Date(9e12);
+      var db=b.date?new Date(b.date):new Date(9e12);
+      return da-db;
+    });
+
+    var html = evs.map(function(ev, idx){
+      var stats  = _evStats(ev.id);
+      var status = _evStatus(ev);
+      var fmtFn  = window.fmt || function(n){ return '₪'+Number(n).toLocaleString('he-IL'); };
+      var balClass = stats.bal > 0 ? 'bal-pos' : stats.bal < 0 ? 'bal-neg' : 'bal-zero';
+
+      /* Progress bar תקציב */
+      var budgetHtml = '';
+      if(ev.budget && ev.budget > 0){
+        var pct    = Math.min(stats.exp / ev.budget, 1);
+        var pctStr = (pct*100).toFixed(0);
+        var bClass = pct >= 1 ? 'over' : pct >= 0.8 ? 'near' : 'ok';
+        var bLabel = pct >= 1 ? '⚠ חריגה!' : pct >= 0.8 ? '▲ ' + pctStr + '%' : '✓ ' + pctStr + '%';
+        var bColor = pct >= 1 ? 'linear-gradient(90deg,#FF1744,#FF6D00)' : pct >= 0.8 ? 'linear-gradient(90deg,#FFA000,#FF6D00)' : 'linear-gradient(90deg,#7C3AED,#A855F7)';
+        budgetHtml =
+          '<div class="ev-budget-row">'+
+            '<div class="ev-budget-top">'+
+              '<span class="ev-budget-label">'+fmtFn(stats.exp)+' מתוך יעד '+fmtFn(ev.budget)+'</span>'+
+              '<span class="ev-budget-badge '+bClass+'">'+bLabel+'</span>'+
+            '</div>'+
+            '<div class="ev-budget-bar-bg">'+
+              '<div class="ev-budget-bar-fill" style="width:'+(pct*100).toFixed(1)+'%;background:'+bColor+';"></div>'+
+            '</div>'+
+          '</div>';
+      }
+
+      return '<div class="ev-card" style="animation-delay:'+(idx*0.06)+'s" onclick="window.openEvDetail(\''+ev.id+'\')">'+
+        '<div class="ev-card-header">'+
+          '<div class="ev-icon-wrap">'+(ev.emoji||'🎉')+'</div>'+
+          '<div class="ev-title-col">'+
+            '<div class="ev-name">'+ev.name+'</div>'+
+            '<div class="ev-meta">'+
+              (ev.date ? '<span class="ev-date-chip">'+_fmtDate(ev.date)+'</span>' : '')+
+              '<span class="ev-status-chip '+_statusClass(status)+'">'+_statusLabel(status)+'</span>'+
+            '</div>'+
+          '</div>'+
+          '<div class="ev-actions">'+
+            '<button class="ev-action-btn edit" onclick="event.stopPropagation();window.openEvModal(\''+ev.id+'\')" title="עריכה">'+
+              '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>'+
+            '</button>'+
+            '<button class="ev-action-btn del" onclick="event.stopPropagation();window.deleteEvent(\''+ev.id+'\')" title="מחיקה">'+
+              '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>'+
+            '</button>'+
+          '</div>'+
+        '</div>'+
+        '<div class="ev-stats-row">'+
+          '<div class="ev-stat-block">'+
+            '<div class="ev-stat-label exp">הוצאות</div>'+
+            '<div class="ev-stat-amount exp">'+fmtFn(stats.exp)+'</div>'+
+          '</div>'+
+          '<div class="ev-stat-block">'+
+            '<div class="ev-stat-label inc">הכנסות</div>'+
+            '<div class="ev-stat-amount inc">+'+fmtFn(stats.inc)+'</div>'+
+          '</div>'+
+          '<div class="ev-stat-block">'+
+            '<div class="ev-stat-label bal">מאזן</div>'+
+            '<div class="ev-stat-amount '+balClass+'">'+(stats.bal>=0?'+':'')+fmtFn(stats.bal)+'</div>'+
+          '</div>'+
+        '</div>'+
+        budgetHtml+
+        '<div class="ev-card-footer">'+
+          '<button class="ev-footer-btn expense" onclick="event.stopPropagation();window.openEvTxModal(\''+ev.id+'\',\'expense\')">'+
+            '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'+
+            ' הוצאה'+
+          '</button>'+
+          '<div class="ev-footer-sep"></div>'+
+          '<button class="ev-footer-btn income" onclick="event.stopPropagation();window.openEvTxModal(\''+ev.id+'\',\'income\')">'+
+            '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'+
+            ' הכנסה'+
+          '</button>'+
+          '<div class="ev-footer-sep"></div>'+
+          '<button class="ev-footer-btn details" onclick="event.stopPropagation();window.openEvDetail(\''+ev.id+'\')">'+
+            'פרטים ←'+
+          '</button>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+    el.innerHTML = html;
+  };
+
+  /* ═══════════════════════════════
+     TX CACHE — שמירת transactions
+  ═══════════════════════════════ */
+  window._evTxCache = {};
+  window._evTxUnsubs = {};
+
+  function _watchEvTx(evId){
+    if(window._evTxUnsubs[evId]) return; // כבר מאזין
+    var unsub = _txRef(evId).onSnapshot(function(snap){
+      window._evTxCache[evId] = snap.docs.map(function(d){ return Object.assign({id:d.id},d.data()); });
+      window.renderEventsList();
+      /* אם פרטים פתוחים לאותו אירוע — עדכן */
+      if(window._evDetailId === evId) window._renderEvDetailContent(evId);
+    }, function(){
+      _txRef(evId).get().then(function(snap){
+        window._evTxCache[evId] = snap.docs.map(function(d){ return Object.assign({id:d.id},d.data()); });
+        window.renderEventsList();
+      }).catch(function(){});
+    });
+    window._evTxUnsubs[evId] = unsub;
+  }
+
+  /* hook: כשמגיעים אירועים מ-snapCol, מתחילים להאזין ל-tx שלהם */
+  var _origRenderEvents = window.renderEventsList;
+  window.renderEventsList = function(){
+    var evs = window.userEvents || [];
+    evs.forEach(function(ev){ if(_uid()) _watchEvTx(ev.id); });
+    _origRenderEvents();
+  };
+
+  /* ═══════════════════════════════
+     MODAL — יצירה/עריכה
+  ═══════════════════════════════ */
+  window.openEvModal = function(evId){
+    _evEditId = evId || null;
+    var ev = evId ? (window.userEvents||[]).find(function(e){ return e.id===evId; }) : null;
+
+    /* כותרת */
+    document.getElementById('ev-modal-title-text').textContent = ev ? 'עריכת אירוע' : 'אירוע חדש';
+
+    /* Emoji grid */
+    _evSelEmoji = (ev && ev.emoji) ? ev.emoji : '🎉';
+    _buildEmojiGrid();
+
+    /* שדות */
+    document.getElementById('ev-inp-name').value   = ev ? (ev.name||'') : '';
+    document.getElementById('ev-inp-date').value   = ev ? (ev.date||'') : '';
+    document.getElementById('ev-inp-budget').value = ev ? (ev.budget||'') : '';
+
+    /* badge */
+    document.getElementById('ev-modal-badge').textContent = _evSelEmoji;
+
+    /* open */
+    document.getElementById('ev-modal-overlay').classList.add('open');
+  };
+
+  window.closeEvModal = function(){
+    document.getElementById('ev-modal-overlay').classList.remove('open');
+    _evEditId = null;
+  };
+
+  function _buildEmojiGrid(){
+    var grid = document.getElementById('ev-emoji-grid');
+    if(!grid) return;
+    grid.innerHTML = EV_EMOJIS.map(function(em){
+      return '<button class="ev-emoji-btn'+(em===_evSelEmoji?' selected':'')+'" onclick="window._evPickEmoji(\''+em+'\')">'+em+'</button>';
+    }).join('');
+  }
+
+  window._evPickEmoji = function(em){
+    _evSelEmoji = em;
+    _buildEmojiGrid();
+    document.getElementById('ev-modal-badge').textContent = em;
+  };
+
+  window.saveEvModal = function(){
+    var name   = document.getElementById('ev-inp-name').value.trim();
+    var date   = document.getElementById('ev-inp-date').value;
+    var budget = parseFloat(document.getElementById('ev-inp-budget').value) || 0;
+    if(!name){ if(window.toast) window.toast('נא להזין שם לאירוע','error'); return; }
+    if(!_uid()){ if(window.toast) window.toast('יש להתחבר תחילה','error'); return; }
+
+    var data = { name:name, emoji:_evSelEmoji, date:date||'', budget:budget, updatedAt: new Date().toISOString() };
+
+    var btn = document.getElementById('ev-btn-save');
+    btn.textContent = 'שומר...'; btn.style.opacity = '.7'; btn.disabled = true;
+
+    var prom = _evEditId
+      ? _ref().doc(_evEditId).update(data)
+      : _ref().add(Object.assign(data, {createdAt: new Date().toISOString()}));
+
+    prom.then(function(){
+      window.closeEvModal();
+      if(window.toast) window.toast(_evEditId ? 'האירוע עודכן ✓' : 'האירוע נוצר ✓', 'success');
+    }).catch(function(){
+      if(window.toast) window.toast('שגיאה בשמירה','error');
+    }).finally(function(){
+      btn.textContent = '✓ שמור אירוע'; btn.style.opacity = '1'; btn.disabled = false;
+    });
+  };
+
+  window.deleteEvent = function(evId){
+    if(!_uid()) return;
+    if(!confirm('למחוק את האירוע ואת כל התנועות שלו?')) return;
+    /* מחיקת תתי-אוסף (transactions) לפני מחיקת המסמך */
+    _txRef(evId).get().then(function(snap){
+      var batch = _db().batch();
+      snap.docs.forEach(function(d){ batch.delete(d.ref); });
+      return batch.commit();
+    }).then(function(){
+      return _ref().doc(evId).delete();
+    }).then(function(){
+      /* ניקוי cache */
+      delete window._evTxCache[evId];
+      if(window._evTxUnsubs[evId]){ window._evTxUnsubs[evId](); delete window._evTxUnsubs[evId]; }
+      if(window.toast) window.toast('האירוע נמחק','success');
+    }).catch(function(){
+      if(window.toast) window.toast('שגיאה במחיקה','error');
+    });
+  };
+
+  /* ═══════════════════════════════
+     MODAL — הוספת תנועה לאירוע
+  ═══════════════════════════════ */
+  var _evTxEvId   = null;
+  var _evTxType   = 'expense';
+
+  /* ── build & inject modal DOM once ── */
+  (function(){
+    var overlay = document.createElement('div');
+    overlay.id = 'ev-tx-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;padding-bottom:env(safe-area-inset-bottom,0);';
+    overlay.onclick = function(e){ if(e.target===overlay) window.closeEvTxModal(); };
+    overlay.innerHTML =
+      '<div id="ev-tx-sheet" style="width:100%;max-width:430px;background:linear-gradient(160deg,rgba(12,8,28,.99),rgba(6,4,14,.99));border:1px solid rgba(167,139,250,.18);border-radius:28px 28px 0 0;padding:0 20px calc(env(safe-area-inset-bottom,16px)+24px);transform:translateY(100%);transition:transform .38s cubic-bezier(.34,1.15,.64,1);box-shadow:0 -16px 60px rgba(0,0,0,.70);position:relative;overflow:hidden;max-height:85dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;" onclick="event.stopPropagation()">'+
+        '<div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(167,139,250,.60),transparent);"></div>'+
+        '<div style="width:38px;height:4px;border-radius:2px;background:rgba(255,255,255,.14);margin:14px auto 20px;"></div>'+
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">'+
+          '<div id="ev-tx-badge" style="width:40px;height:40px;border-radius:13px;flex-shrink:0;background:linear-gradient(145deg,rgba(167,139,250,.16),rgba(124,58,237,.08));border:1px solid rgba(167,139,250,.26);display:flex;align-items:center;justify-content:center;font-size:18px;"></div>'+
+          '<div id="ev-tx-title" style="flex:1;font-size:17px;font-weight:900;color:#fff;"></div>'+
+        '</div>'+
+        '<div style="font-size:10px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;color:rgba(255,255,255,.30);margin-bottom:7px;">סכום</div>'+
+        '<input id="ev-tx-amount" type="text" inputmode="decimal" placeholder="0" autocomplete="off" style="display:block;width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(167,139,250,.14);border-radius:14px;padding:13px 15px;color:#fff;font-family:\'JetBrains Mono\',monospace;font-size:28px;font-weight:800;text-align:center;outline:none;margin-bottom:12px;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;">'+
+        '<div style="font-size:10px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;color:rgba(255,255,255,.30);margin-bottom:7px;">תיאור</div>'+
+        '<input id="ev-tx-desc" type="text" placeholder="מה זה?" autocomplete="off" style="display:block;width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(167,139,250,.14);border-radius:14px;padding:13px 15px;color:#fff;font-family:\'Syne\',sans-serif;font-size:14px;font-weight:700;text-align:right;outline:none;margin-bottom:12px;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;">'+
+        '<div style="display:flex;gap:9px;margin-top:6px;">'+
+          '<button id="ev-tx-save" onclick="window.saveEvTx()" style="flex:1;padding:13px;border:none;border-radius:13px;cursor:pointer;background:linear-gradient(135deg,#7C3AED,#6D28D9);color:#fff;font-family:\'Syne\',sans-serif;font-size:14px;font-weight:900;box-shadow:0 6px 24px rgba(124,58,237,.35);transition:all .18s;">✓ הוסף תנועה</button>'+
+          '<button onclick="window.closeEvTxModal()" style="flex:0 0 90px;padding:13px;border-radius:13px;cursor:pointer;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);color:rgba(255,255,255,.45);font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;">ביטול</button>'+
+        '</div>'+
+      '</div>';
+    document.body.appendChild(overlay);
+  })();
+
+  window.openEvTxModal = function(evId, type){
+    _evTxEvId = evId; _evTxType = type||'expense';
+    var ev = (window.userEvents||[]).find(function(e){ return e.id===evId; });
+    var isExp = _evTxType === 'expense';
+    document.getElementById('ev-tx-badge').textContent  = ev ? (ev.emoji||'🎉') : '🎉';
+    document.getElementById('ev-tx-title').textContent  = isExp ? 'הוסף הוצאה — '+(ev?ev.name:'') : 'הוסף הכנסה — '+(ev?ev.name:'');
+    var amtInp = document.getElementById('ev-tx-amount');
+    amtInp.value = ''; amtInp.style.color = isExp ? 'rgba(255,100,130,.95)' : 'rgba(0,230,118,.95)';
+    amtInp.style.borderColor = isExp ? 'rgba(255,50,80,.25)' : 'rgba(0,230,118,.25)';
+    document.getElementById('ev-tx-desc').value = '';
+    var overlay = document.getElementById('ev-tx-overlay');
+    overlay.style.opacity = '1'; overlay.style.pointerEvents = 'all';
+    document.getElementById('ev-tx-sheet').style.transform = 'translateY(0)';
+    setTimeout(function(){ amtInp.focus(); }, 150);
+  };
+
+  window.closeEvTxModal = function(){
+    var overlay = document.getElementById('ev-tx-overlay');
+    overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none';
+    document.getElementById('ev-tx-sheet').style.transform = 'translateY(100%)';
+    _evTxEvId = null;
+  };
+
+  window.saveEvTx = function(){
+    if(!_evTxEvId||!_uid()) return;
+    var rawAmt = document.getElementById('ev-tx-amount').value.replace(/[^\d.]/g,'');
+    var amount = parseFloat(rawAmt);
+    var desc   = document.getElementById('ev-tx-desc').value.trim() || (_evTxType==='expense'?'הוצאה':'הכנסה');
+    if(!amount||amount<=0){ if(window.toast) window.toast('נא להזין סכום חיובי','error'); return; }
+
+    var btn = document.getElementById('ev-tx-save');
+    btn.textContent = 'שומר...'; btn.disabled = true;
+
+    _txRef(_evTxEvId).add({
+      type:    _evTxType,
+      amount:  amount,
+      desc:    desc,
+      date:    new Date().toISOString()
+    }).then(function(){
+      window.closeEvTxModal();
+      if(window.toast) window.toast((_evTxType==='expense'?'הוצאה':'הכנסה')+' נוספה לאירוע ✓','success');
+    }).catch(function(){
+      if(window.toast) window.toast('שגיאה','error');
+    }).finally(function(){
+      btn.textContent = '✓ הוסף תנועה'; btn.disabled = false;
+    });
+  };
+
+  /* ═══════════════════════════════
+     MODAL — פרטי אירוע
+  ═══════════════════════════════ */
+  window.openEvDetail = function(evId){
+    window._evDetailId = evId;
+    var overlay = document.getElementById('ev-detail-overlay');
+    overlay.classList.add('open');
+    window._renderEvDetailContent(evId);
+  };
+  window.closeEvDetail = function(){
+    document.getElementById('ev-detail-overlay').classList.remove('open');
+    window._evDetailId = null;
+  };
+
+  window._renderEvDetailContent = function(evId){
+    var el = document.getElementById('ev-detail-content');
+    if(!el) return;
+    var ev = (window.userEvents||[]).find(function(e){ return e.id===evId; });
+    if(!ev){ el.innerHTML=''; return; }
+
+    var txAll  = (window._evTxCache[evId]) || [];
+    var txExp  = txAll.filter(function(t){ return t.type==='expense'; }).slice().sort(function(a,b){ return new Date(b.date)-new Date(a.date); });
+    var txInc  = txAll.filter(function(t){ return t.type==='income';  }).slice().sort(function(a,b){ return new Date(b.date)-new Date(a.date); });
+    var stats  = _evStats(evId);
+    var fmtFn  = window.fmt || function(n){ return '₪'+Number(n).toLocaleString('he-IL'); };
+    var balClass = stats.bal > 0 ? 'bal-pos' : stats.bal < 0 ? 'bal-neg' : 'bal-zero';
+
+    /* Ring progress */
+    var ringHtml = '';
+    if(ev.budget && ev.budget > 0){
+      var pct      = Math.min(stats.exp / ev.budget, 1);
+      var RADIUS   = 52; var CIRC = 2 * Math.PI * RADIUS;
+      var offset   = CIRC * (1 - pct);
+      var ringColor= pct>=1 ? '#FF1744' : pct>=0.8 ? '#FFA000' : '#7C3AED';
+      ringHtml =
+        '<div class="ev-ring-wrap">'+
+          '<svg class="ev-ring-svg" width="120" height="120" viewBox="0 0 120 120">'+
+            '<circle class="ev-ring-bg" cx="60" cy="60" r="'+RADIUS+'" stroke-width="8"/>'+
+            '<circle class="ev-ring-fill" cx="60" cy="60" r="'+RADIUS+'" stroke-width="8" stroke="'+ringColor+'" stroke-dasharray="'+CIRC.toFixed(2)+'" stroke-dashoffset="'+offset.toFixed(2)+'"/>'+
+          '</svg>'+
+          '<div class="ev-ring-center">'+
+            '<div class="ev-ring-pct">'+Math.round(pct*100)+'%</div>'+
+            '<div class="ev-ring-label">מהתקציב</div>'+
+          '</div>'+
+        '</div>';
+    }
+
+    /* tx rows */
+    function txRows(list, type){
+      if(!list.length) return '<div style="text-align:center;padding:12px 0;font-size:12px;color:rgba(255,255,255,.25);">אין תנועות עדיין</div>';
+      return list.map(function(t){
+        var dStr = t.date ? _fmtDate(t.date.slice(0,10)||t.date) : '';
+        return '<div class="ev-tx-row '+type+'">'+
+          '<span class="ev-tx-icon">'+(type==='expense'?'💸':'💰')+'</span>'+
+          '<div class="ev-tx-info">'+
+            '<div class="ev-tx-desc">'+(t.desc||'—')+'</div>'+
+            '<div class="ev-tx-date">'+dStr+'</div>'+
+          '</div>'+
+          '<div class="ev-tx-amount '+type+'">'+(type==='expense'?'-':'+')+fmtFn(t.amount)+'</div>'+
+          '<button class="ev-tx-del" onclick="window.deleteEvTx(\''+evId+'\',\''+t.id+'\')" title="מחיקה">✕</button>'+
+        '</div>';
+      }).join('');
+    }
+
+    var summaryBlock =
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px;">'+
+        '<div class="ev-stat-block"><div class="ev-stat-label exp">הוצאות</div><div class="ev-stat-amount exp">'+fmtFn(stats.exp)+'</div></div>'+
+        '<div class="ev-stat-block"><div class="ev-stat-label inc">הכנסות</div><div class="ev-stat-amount inc">+'+fmtFn(stats.inc)+'</div></div>'+
+        '<div class="ev-stat-block"><div class="ev-stat-label bal">מאזן</div><div class="ev-stat-amount '+balClass+'">'+(stats.bal>=0?'+':'')+fmtFn(stats.bal)+'</div></div>'+
+      '</div>';
+
+    el.innerHTML =
+      /* כותרת */
+      '<div style="display:flex;align-items:center;gap:13px;margin-bottom:18px;">'+
+        '<div style="width:50px;height:50px;border-radius:16px;background:linear-gradient(145deg,rgba(167,139,250,.14),rgba(124,58,237,.06));border:1px solid rgba(167,139,250,.22);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 0 20px rgba(167,139,250,.18);">'+(ev.emoji||'🎉')+'</div>'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-size:18px;font-weight:900;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+ev.name+'</div>'+
+          (ev.date ? '<div style="font-size:11px;font-weight:700;color:rgba(167,139,250,.70);margin-top:3px;">'+_fmtDate(ev.date)+'</div>' : '')+
+        '</div>'+
+        '<button onclick="window.closeEvDetail()" style="width:36px;height:36px;border-radius:11px;border:none;cursor:pointer;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);color:rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;transition:all .15s;">✕</button>'+
+      '</div>'+
+      ringHtml+
+      summaryBlock+
+      /* כפתורי הוספה */
+      '<div style="display:flex;gap:8px;margin-bottom:20px;">'+
+        '<button onclick="window.closeEvDetail();setTimeout(function(){window.openEvTxModal(\''+evId+'\',\'expense\');},150);" style="flex:1;padding:11px;border-radius:13px;cursor:pointer;background:linear-gradient(135deg,rgba(255,50,80,.18),rgba(180,0,40,.10));border:1px solid rgba(255,50,80,.30);color:rgba(255,100,130,.95);font-family:\'Syne\',sans-serif;font-size:12px;font-weight:900;transition:all .18s;">+ הוצאה</button>'+
+        '<button onclick="window.closeEvDetail();setTimeout(function(){window.openEvTxModal(\''+evId+'\',\'income\');},150);"  style="flex:1;padding:11px;border-radius:13px;cursor:pointer;background:linear-gradient(135deg,rgba(0,230,118,.16),rgba(0,150,70,.08));border:1px solid rgba(0,230,118,.28);color:rgba(0,220,110,.95);font-family:\'Syne\',sans-serif;font-size:12px;font-weight:900;transition:all .18s;">+ הכנסה</button>'+
+      '</div>'+
+      /* רשימות */
+      (txExp.length || txInc.length ?
+        '<div style="font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,80,120,.50);margin-bottom:10px;">הוצאות</div>'+
+        txRows(txExp,'expense')+
+        '<div style="font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,220,110,.50);margin:16px 0 10px;">הכנסות</div>'+
+        txRows(txInc,'income')
+        :
+        '<div style="text-align:center;padding:20px;font-size:13px;color:rgba(255,255,255,.28);">אין תנועות עדיין — הוסף את הראשונה!</div>'
+      );
+  };
+
+  window.deleteEvTx = function(evId, txId){
+    if(!_uid()) return;
+    _txRef(evId).doc(txId).delete().then(function(){
+      if(window.toast) window.toast('התנועה נמחקה','success');
+    }).catch(function(){
+      if(window.toast) window.toast('שגיאה במחיקה','error');
+    });
+  };
+
+  /* ═══════════════════════════════
+     MODAL tx — מודאל הזנת תנועה
+     הוספת שדה "שייך לאירוע"
+  ═══════════════════════════════ */
+  (function(){
+    /* מוסיף select אירוע למודאל הזנת תנועה הרגיל */
+    var modalSheet = document.getElementById('modal-sheet');
+    if(!modalSheet) return;
+
+    var wrap = document.createElement('div');
+    wrap.id = 'ev-link-wrap';
+    wrap.style.cssText = 'margin-bottom:6px;';
+    wrap.innerHTML =
+      '<select id="ev-link-select" class="inp modern-hover" style="color:rgba(255,255,255,.60);">'+
+        '<option value="">📌 שייך לאירוע (אופציונלי)</option>'+
+      '</select>';
+
+    /* מוסיף לפני כפתור ה-submit */
+    var submitBtn = document.getElementById('modal-submit');
+    if(submitBtn) modalSheet.insertBefore(wrap, submitBtn);
+  })();
+
+  /* עדכון select אירועים כשמוקאל נפתח */
+  var _origOpenModal = window.openModalWithCat;
+  if(_origOpenModal){
+    window.openModalWithCat = function(type, catName){
+      _origOpenModal.apply(this, arguments);
+      _populateEvSelect();
+    };
+  }
+  /* גם כשפותחים את action buttons */
+  var _origOpenIncome  = window.openIncomeModal;
+  var _origOpenExpense = window.openExpenseModal;
+  if(_origOpenIncome){
+    window.openIncomeModal = function(){
+      _origOpenIncome.apply(this,arguments);
+      _populateEvSelect();
+    };
+  }
+  if(_origOpenExpense){
+    window.openExpenseModal = function(){
+      _origOpenExpense.apply(this,arguments);
+      _populateEvSelect();
+    };
+  }
+
+  function _populateEvSelect(){
+    var sel = document.getElementById('ev-link-select');
+    if(!sel) return;
+    var evs = window.userEvents || [];
+    sel.innerHTML = '<option value="">📌 שייך לאירוע (אופציונלי)</option>'+
+      evs.map(function(ev){
+        return '<option value="'+ev.id+'">'+(ev.emoji||'🎉')+' '+ev.name+'</option>';
+      }).join('');
+  }
+
+  /* hook לשמירת תנועה — מוסיף eventId אם נבחר */
+  var _origModalSubmit = document.getElementById('modal-submit');
+  if(_origModalSubmit){
+    var _origClick = _origModalSubmit.onclick;
+    _origModalSubmit.addEventListener('click', function(){
+      var sel = document.getElementById('ev-link-select');
+      var evId = sel ? sel.value : '';
+      if(!evId) return; /* אין אירוע — שמירה רגילה */
+      /* נחכה ל-Firestore לשמור, ואז נוסיף tx לאירוע */
+      setTimeout(function(){
+        if(!evId || !_uid()) return;
+        var rawAmt = document.getElementById('modal-amount').value.replace(/[^\d.]/g,'');
+        var amount = parseFloat(rawAmt);
+        var desc   = document.getElementById('modal-desc').value.trim() || '';
+        var type   = window.modalType || 'expense';
+        if(!amount||amount<=0) return;
+        _txRef(evId).add({ type:type, amount:amount, desc:desc, date:new Date().toISOString() })
+          .catch(function(){});
+      }, 800);
+    }, true); /* capture — לפני handler מקורי */
+  }
+
+  /* ── init: populate ev select כשהיוזר מתחבר ── */
+  var _evInitInterval = setInterval(function(){
+    if(_uid()){ clearInterval(_evInitInterval); _populateEvSelect(); }
+  }, 600);
+
 })();
 </script>
 </body>
