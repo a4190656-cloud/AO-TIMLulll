@@ -7051,6 +7051,44 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
       setTimeout(function(){ typewrite(_twText); }, 800);
     }
   })();
+  /* ══════════════════════════════════════════════
+     DEEP LINK HANDLER
+     תומך ב: #delete-account
+     שימוש: https://a4190656-cloud.github.io/AO-TIMLulll/#delete-account
+     יש לקרוא לפונקציה זו מיד לאחר bootApp (לאחר showScreen('app'))
+  ══════════════════════════════════════════════ */
+  function _handleDeepLink() {
+    var hash = (window.location.hash || '').replace('#', '').toLowerCase().trim();
+    if (!hash) return;
+
+    /* ── מנקה את ה-hash מה-URL בלי לטעון מחדש את הדף ── */
+    try {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    } catch(e) {}
+
+    if (hash === 'delete-account') {
+      /* פותח את view ההגדרות ואז מגלל/מציג את אזור מחיקת החשבון */
+      switchView('settings');
+      setTimeout(function() {
+        /* מגלל לאזור מחיקת החשבון */
+        var deleteBtn = document.getElementById('btn-delete-account');
+        if (deleteBtn) {
+          deleteBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          /* הדגשה קצרה כדי שהמשתמש יראה בדיוק על מה ללחוץ */
+          deleteBtn.style.transition = 'box-shadow 0.3s ease';
+          deleteBtn.style.boxShadow = '0 0 0 3px rgba(255,60,60,0.6)';
+          setTimeout(function() {
+            deleteBtn.style.boxShadow = '';
+          }, 2000);
+        }
+      }, 350); /* המתנה קצרה לאחר switchView שיסיים אנימציה */
+      return;
+    }
+
+    /* ── ניתן להוסיף כאן hash-ים נוספים בעתיד ── */
+    /* if (hash === 'settings') { switchView('settings'); return; } */
+  }
+
   function showScreen(name){
     ['screen-loading','screen-login','screen-setname','app'].forEach(hide);
     show(name);
@@ -8362,6 +8400,7 @@ window.deletePhoneIdx = function(i) {
       displayName = name;
       showScreen('app');
       switchView('dashboard');
+      _handleDeepLink(); /* ← deep link: #delete-account וכו' */
       var hn=$('header-name'); if(hn) setHeaderName('שלום, '+displayName.split(' ').slice(0,2).join(' ')+'!');
       var si=$('settings-name-input'); if(si) si.value=displayName;
       var sun=$('settings-user-name'); if(sun) sun.textContent=displayName;
@@ -8375,6 +8414,7 @@ window.deletePhoneIdx = function(i) {
       displayName = name;
       showScreen('app');
       switchView('dashboard');
+      _handleDeepLink(); /* ← deep link: #delete-account וכו' */
       var hn=$('header-name'); if(hn) setHeaderName('שלום, '+displayName.split(' ').slice(0,2).join(' ')+'!');
       var si=$('settings-name-input'); if(si) si.value=displayName;
       startListeners();
@@ -8495,88 +8535,32 @@ window.deletePhoneIdx = function(i) {
 
  /* ══════════════════════════════════════════════
      NATIVE GOOGLE LOGIN — הגשר לאפליקציה
-     Flutter קורא ל-window.receiveGoogleToken(idToken, accessToken)
-     לאחר כניסה נייטיבית דרך google_sign_in
   ══════════════════════════════════════════════ */
-
+  
+  // 1. הפונקציה שתקבל את הנתונים מהאפליקציה (Flutter יקרא לה מבחוץ!)
   window.receiveGoogleToken = function(idToken, accessToken) {
-
-    /* ── מגן מפני double-call (Flutter לפעמים שולח פעמיים) ── */
-    if (window._receiveGoogleTokenBusy) return;
-    window._receiveGoogleTokenBusy = true;
-
-    /* ── מציג מסך טעינה מאובטח ── */
     _googleOAuthPending = true;
-    show('security-loader-overlay');
-    var msgEl = $('security-msg');
-    var subEl = $('security-sub-msg');
-    if (msgEl) msgEl.textContent = 'מתחבר עם חשבון גוגל...';
-    if (subEl) subEl.textContent = 'מאמת זהות';
-
-    /* ── וידוא שהטוקן הגיע ── */
-    if (!idToken || typeof idToken !== 'string' || idToken.trim() === '') {
-      window._receiveGoogleTokenBusy = false;
+    show('security-loader-overlay'); // מציג מסך טעינה מאובטח
+    var msgEl2 = $('security-msg');
+    if (msgEl2) msgEl2.textContent = 'מתחבר עם חשבון גוגל...';
+    
+    // בונה תעודת זהות של גוגל מתוך האסימונים שקיבלנו מהמכשיר
+    var credential = firebase.auth.GoogleAuthProvider.credential(idToken, accessToken);
+    
+    // נכנס ל-Firebase
+    auth.signInWithCredential(credential).then(function(result) {
+      _googleOAuthPending = false;
+      // הצלחה! onAuthStateChanged (שכבר קיים בקוד) יעביר אותנו לאפליקציה
+    }).catch(function(error) {
       _googleOAuthPending = false;
       hide('security-loader-overlay');
-      var gBtnErr = $('btn-google-login');
-      if (gBtnErr) { gBtnErr.disabled = false; gBtnErr.style.opacity = '1'; }
-      showLoginErr('שגיאה: לא התקבל טוקן מגוגל — נסו שוב.');
-      return;
-    }
-
-    /* ── בניית Credential מהטוקנים הנייטיביים ──
-       accessToken אופציונלי — google_sign_in לא תמיד מחזיר אותו ── */
-    var credential;
-    try {
-      credential = firebase.auth.GoogleAuthProvider.credential(
-        idToken,
-        accessToken || null
-      );
-    } catch (credErr) {
-      window._receiveGoogleTokenBusy = false;
-      _googleOAuthPending = false;
-      hide('security-loader-overlay');
-      var gBtnErr2 = $('btn-google-login');
-      if (gBtnErr2) { gBtnErr2.disabled = false; gBtnErr2.style.opacity = '1'; }
-      showLoginErr('שגיאה בעיבוד הטוקן: ' + (credErr.message || credErr));
-      return;
-    }
-
-    /* ── כניסה ל-Firebase Auth ── */
-    auth.signInWithCredential(credential)
-      .then(function() {
-        /* הצלחה — onAuthStateChanged יזרום ויקרא ל-bootApp + יסגור את הלודר */
-        window._receiveGoogleTokenBusy = false;
-        _googleOAuthPending = false;
-      })
-      .catch(function(error) {
-        window._receiveGoogleTokenBusy = false;
-        _googleOAuthPending = false;
-        hide('security-loader-overlay');
-        var gBtn = $('btn-google-login');
-        if (gBtn) { gBtn.disabled = false; gBtn.style.opacity = '1'; }
-
-        /* הודעות שגיאה ידידותיות לפי קוד */
-        var errMap = {
-          'auth/invalid-credential':
-            'הטוקן לא תקין — נסו להתחבר מחדש.',
-          'auth/user-disabled':
-            'החשבון הזה הושבת.',
-          'auth/account-exists-with-different-credential':
-            'קיים חשבון עם מייל זה בשיטת כניסה אחרת — נסו כניסה עם מייל.',
-          'auth/network-request-failed':
-            'שגיאת רשת — בדקו חיבור לאינטרנט.',
-          'auth/too-many-requests':
-            'יותר מדי ניסיונות — המתינו מספר דקות.',
-        };
-        var friendlyMsg = errMap[error.code]
-          || ('שגיאה בחיבור לחשבון: ' + (error.message || error.code));
-        showLoginErr(friendlyMsg);
-        console.warn('[AO Auth] receiveGoogleToken failed:', error.code, error.message);
-      });
+      showLoginErr('שגיאה בחיבור לחשבון: ' + error.message);
+      var gBtn = $('btn-google-login');
+      if(gBtn){ gBtn.disabled=false; gBtn.style.opacity='1'; }
+    });
   };
 
-  /* ── כפתור כניסה עם גוגל ── */
+  // 2. הפעולה של לחיצה על הכפתור
   $('btn-google-login').onclick = function(){
     var btn = this;
     btn.disabled = true;
@@ -8584,42 +8568,17 @@ window.deletePhoneIdx = function(i) {
     var origText = btn.innerHTML;
     btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin360 0.9s linear infinite;display:inline-block;vertical-align:middle;margin-left:6px;"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg> מתחבר...';
 
-    /* ══ נתיב A: Flutter WebView — כניסה נייטיבית ══
-       Flutter מקבל את הבקשה, מפעיל google_sign_in, וחוזר דרך receiveGoogleToken */
-    if (
-      window.flutter_inappwebview &&
-      typeof window.flutter_inappwebview.callHandler === 'function'
-    ) {
+    if (window.flutter_inappwebview !== undefined) {
+      // שלח ל-Flutter לפתוח בחירת חשבון גוגל מחדש
       try {
         window.flutter_inappwebview.callHandler('NativeGoogleLogin', { forceAccountSelect: true });
       } catch(e) {
-        /* fallback אם ה-Handler הישן לא מקבל פרמטרים */
-        try { window.flutter_inappwebview.callHandler('NativeGoogleLogin'); } catch(e2) {}
+        window.flutter_inappwebview.callHandler('NativeGoogleLogin');
       }
-
-      /* Timeout בטחון — אם Flutter לא חזר תוך 30 שניות משחררים את הכפתור */
-      var _flutterLoginTimeout = setTimeout(function() {
-        if (btn.disabled) {
-          btn.disabled = false;
-          btn.style.opacity = '1';
-          btn.innerHTML = origText;
-          hide('security-loader-overlay');
-          showLoginErr('הכניסה לקחה יותר מדי זמן — נסו שוב.');
-        }
-      }, 30000);
-
-      /* מנקה את ה-timeout ברגע שהמשתמש מחובר בהצלחה */
-      var _unsubFlutterLogin = auth.onAuthStateChanged(function(user) {
-        if (user) {
-          clearTimeout(_flutterLoginTimeout);
-          if (typeof _unsubFlutterLogin === 'function') _unsubFlutterLogin();
-        }
-      });
-
-      return; /* לא ממשיכים לנתיב ה-Popup */
+      return;
     }
 
-    /* ══ נתיב B: דפדפן רגיל — signInWithPopup ══ */
+    /* ── כניסה עם גוגל — ישירות, בלי signOut מיותר שמאט ב-500ms+ ── */
     function doGoogleLogin(){
       var provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope('profile');
@@ -8627,9 +8586,10 @@ window.deletePhoneIdx = function(i) {
       /* prompt=select_account מבטיח שגוגל תמיד מציג בחירת חשבון */
       provider.setCustomParameters({ prompt: 'select_account' });
 
+      // בדפדפן — Popup (redirect שבור ב-Chrome חדש עם third-party cookies)
       auth.signInWithPopup(provider)
         .then(function(result){
-          /* הצלחה — onAuthStateChanged יטפל */
+          // הצלחה — onAuthStateChanged יטפל
         })
         .catch(function(e){
           btn.disabled = false;
@@ -8637,7 +8597,7 @@ window.deletePhoneIdx = function(i) {
           btn.innerHTML = origText;
           if(e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') return;
           if(e.code === 'auth/popup-blocked'){
-            /* Popup נחסם — fallback ל-redirect */
+            // popup נחסם — fallback ל-redirect
             sessionStorage.setItem('_googleRedirectPending','1');
             sessionStorage.removeItem('_ao_signed_out');
             ['screen-loading','screen-login','screen-setname','app'].forEach(function(id){
@@ -8657,8 +8617,10 @@ window.deletePhoneIdx = function(i) {
         });
     }
 
-    /* signOut רק אם המשתמש מחובר — חוסך 500–800ms בכניסה ראשונה */
-    if (auth.currentUser) {
+    /* ── אם המשתמש כבר מחובר — signOut קצר לפני popup (כדי לאפשר החלפת חשבון)
+       אחרת — מתחילים ישירות (מהיר יותר ב-500-800ms) ── */
+    var currentUser = auth.currentUser;
+    if (currentUser) {
       auth.signOut().then(doGoogleLogin).catch(doGoogleLogin);
     } else {
       doGoogleLogin();
@@ -8992,132 +8954,47 @@ window.deletePhoneIdx = function(i) {
       setTimeout(doUpdate, 150);
     };
   };
-  /* ══════════════════════════════════════════════
-     NATIVE GOOGLE LOGOUT HELPER
-     שולח הודעה ל-Flutter לנקות את Cache הנייטיבי של גוגל.
-     בטוח לקריאה גם בדפדפן רגיל (אין flutter_inappwebview).
-  ══════════════════════════════════════════════ */
-  function _notifyNativeGoogleLogout() {
-    if (
-      window.flutter_inappwebview &&
-      typeof window.flutter_inappwebview.callHandler === 'function'
-    ) {
-      try {
-        window.flutter_inappwebview.callHandler('NativeGoogleLogout');
-      } catch (e) {
-        console.warn('[AO Auth] NativeGoogleLogout callHandler failed:', e);
-      }
-    }
-  }
-
   $('btn-signout').onclick=function(){
-
-    // הודעת אזהרה לפני היציאה
-    var overlay = document.createElement('div');
-    overlay.innerHTML =
-      '<div style="position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:24px;">'+
-        '<div style="background:linear-gradient(150deg,rgba(10,16,32,0.99),rgba(4,7,14,0.99));border:1px solid rgba(255,193,7,0.25);border-radius:24px;padding:28px 22px;width:100%;max-width:340px;box-shadow:0 20px 60px rgba(0,0,0,0.7);">'+
-          '<div style="width:52px;height:52px;border-radius:16px;margin:0 auto 16px;background:rgba(255,193,7,0.10);border:1px solid rgba(255,193,7,0.25);display:flex;align-items:center;justify-content:center;font-size:24px;">⚠️</div>'+
-          '<p style="font-family:\'Syne\',sans-serif;font-size:17px;font-weight:900;text-align:center;color:#fff;margin-bottom:14px;">יציאה מהחשבון</p>'+
-          '<div style="background:rgba(255,193,7,0.07);border:1px solid rgba(255,193,7,0.20);border-radius:14px;padding:14px;margin-bottom:20px;">'+
-            '<p style="font-size:12.5px;font-weight:700;color:rgba(255,220,80,0.95);line-height:1.75;text-align:right;">'+
-              '⚠️ <strong>שים לב!</strong><br>'+
-              'יציאה תנתק אתכם מהאפליקציה ותנקה את חשבון הגוגל מהמכשיר.<br><br>'+
-              '🔄 <strong>בכניסה הבאה</strong> תוצג בחירת חשבון גוגל מחדש.'+
-            '</p>'+
-          '</div>'+
-          '<div style="display:flex;flex-direction:column;gap:9px;">'+
-            '<button id="_so_confirm" style="padding:14px;border-radius:14px;border:1px solid rgba(255,100,100,0.4);background:rgba(255,23,68,0.12);color:#FF6080;font-family:\'Syne\',sans-serif;font-size:14px;font-weight:900;cursor:pointer;">יציאה מהחשבון</button>'+
-            '<button id="_so_cancel" style="padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.4);font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">ביטול</button>'+
-          '</div>'+
-        '</div>'+
-      '</div>';
-    document.body.appendChild(overlay);
-
-    overlay.querySelector('#_so_cancel').onclick = function(){
-      document.body.removeChild(overlay);
+    unsubs.forEach(function(u){ u(); });
+    sessionStorage.clear();
+    sessionStorage.setItem('_ao_signed_out','1');
+    try {
+      Object.keys(localStorage).forEach(function(k){
+        if(k.indexOf('firebase')>-1 || k.indexOf('google')>-1) localStorage.removeItem(k);
+      });
+    } catch(e){}
+    _notifyNativeGoogleLogout();
+    var doSignOut = function(){
+      auth.signOut().finally(function(){
+        window.location.href = window.location.href.split('?')[0] + '?so=' + Date.now();
+      });
     };
-
-    overlay.querySelector('#_so_confirm').onclick = function(){
-      document.body.removeChild(overlay);
-      unsubs.forEach(function(u){ u(); });
-      sessionStorage.clear();
-      sessionStorage.setItem('_ao_signed_out','1');
-      try {
-        Object.keys(localStorage).forEach(function(k){
-          if(k.indexOf('firebase')>-1 || k.indexOf('google')>-1) localStorage.removeItem(k);
-        });
-      } catch(e){}
-      var doSignOut = function(){
-        auth.signOut()
-          .then(function(){
-            /* ── מודיע ל-Flutter לנקות את Cache הנייטיבי של גוגל ── */
-            _notifyNativeGoogleLogout();
-            window.location.href = window.location.href.split('?')[0] + '?so=' + Date.now();
-          })
-          .catch(function(){
-            /* גם בכישלון — מנקים מקומית ויוצאים */
-            _notifyNativeGoogleLogout();
-            window.location.href = window.location.href.split('?')[0] + '?so=' + Date.now();
-          });
-      };
-      if(firebase.auth.Auth.Persistence){
-        auth.setPersistence(firebase.auth.Auth.Persistence.NONE).then(doSignOut).catch(doSignOut);
-      } else {
-        doSignOut();
-      }
-    };
+    if(firebase.auth.Auth.Persistence){
+      auth.setPersistence(firebase.auth.Auth.Persistence.NONE).then(doSignOut).catch(doSignOut);
+    } else {
+      doSignOut();
+    }
   };
 
   /* ── Disconnect button in settings ── */
   $('btn-disconnect').onclick=function(){
-    var overlay = document.createElement('div');
-    overlay.innerHTML =
-      '<div style="position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:24px;">'+
-        '<div style="background:linear-gradient(150deg,rgba(10,16,32,0.99),rgba(4,7,14,0.99));border:1px solid rgba(255,193,7,0.25);border-radius:24px;padding:28px 22px;width:100%;max-width:340px;box-shadow:0 20px 60px rgba(0,0,0,0.7);">'+
-          '<div style="width:52px;height:52px;border-radius:16px;margin:0 auto 16px;background:rgba(255,193,7,0.10);border:1px solid rgba(255,193,7,0.25);display:flex;align-items:center;justify-content:center;font-size:24px;">⚠️</div>'+
-          '<p style="font-family:\'Syne\',sans-serif;font-size:17px;font-weight:900;text-align:center;color:#fff;margin-bottom:14px;">ניתוק חשבון</p>'+
-          '<div style="background:rgba(255,193,7,0.07);border:1px solid rgba(255,193,7,0.20);border-radius:14px;padding:14px;margin-bottom:20px;">'+
-            '<p style="font-size:12.5px;font-weight:700;color:rgba(255,220,80,0.95);line-height:1.75;text-align:right;">'+
-              '⚠️ <strong>שים לב!</strong><br>'+
-              'ניתוק ינקה את חשבון הגוגל מהמכשיר.<br><br>'+
-              '🔄 <strong>בכניסה הבאה</strong> תוצג בחירת חשבון גוגל מחדש.'+
-            '</p>'+
-          '</div>'+
-          '<div style="display:flex;flex-direction:column;gap:9px;">'+
-            '<button id="_dc_confirm" style="padding:14px;border-radius:14px;border:1px solid rgba(255,100,100,0.4);background:rgba(255,23,68,0.12);color:#FF6080;font-family:\'Syne\',sans-serif;font-size:14px;font-weight:900;cursor:pointer;">ניתוק מהחשבון</button>'+
-            '<button id="_dc_cancel" style="padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.4);font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">ביטול</button>'+
-          '</div>'+
-        '</div>'+
-      '</div>';
-    document.body.appendChild(overlay);
-    overlay.querySelector('#_dc_cancel').onclick = function(){ document.body.removeChild(overlay); };
-    overlay.querySelector('#_dc_confirm').onclick = function(){
-      document.body.removeChild(overlay);
-      unsubs.forEach(function(u){ u(); });
-      sessionStorage.clear();
-      sessionStorage.setItem('_ao_signed_out','1');
-      try {
-        Object.keys(localStorage).forEach(function(k){
-          if(k.indexOf('firebase')>-1 || k.indexOf('google')>-1) localStorage.removeItem(k);
-        });
-      } catch(e){}
-      var doSignOut = function(){
-        auth.signOut()
-          .then(function(){
-            /* ── מודיע ל-Flutter לנקות את Cache הנייטיבי של גוגל ── */
-            _notifyNativeGoogleLogout();
-            window.location.href = window.location.href.split('?')[0] + '?so=' + Date.now();
-          })
-          .catch(function(){
-            _notifyNativeGoogleLogout();
-            window.location.href = window.location.href.split('?')[0] + '?so=' + Date.now();
-          });
-      };
-      if(firebase.auth.Auth.Persistence){
-        auth.setPersistence(firebase.auth.Auth.Persistence.NONE).then(doSignOut).catch(doSignOut);
-      } else { doSignOut(); }
+    unsubs.forEach(function(u){ u(); });
+    sessionStorage.clear();
+    sessionStorage.setItem('_ao_signed_out','1');
+    try {
+      Object.keys(localStorage).forEach(function(k){
+        if(k.indexOf('firebase')>-1 || k.indexOf('google')>-1) localStorage.removeItem(k);
+      });
+    } catch(e){}
+    _notifyNativeGoogleLogout();
+    var doSignOut = function(){
+      auth.signOut().finally(function(){
+        window.location.href = window.location.href.split('?')[0] + '?so=' + Date.now();
+      });
     };
+    if(firebase.auth.Auth.Persistence){
+      auth.setPersistence(firebase.auth.Auth.Persistence.NONE).then(doSignOut).catch(doSignOut);
+    } else { doSignOut(); }
   };
 
   /* ── DELETE ACCOUNT ── */
