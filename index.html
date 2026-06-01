@@ -7283,6 +7283,7 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
 
   /* ── Nav ── */
   window.switchView = function(v){
+    window.scrollTo(0, 0); /* איפוס גלילה בכל מעבר בין views */
     hide('view-dashboard'); hide('view-settings'); hide('view-categories'); hide('view-charts');
     $('nav-dashboard').classList.remove('active');
     $('nav-settings').classList.remove('active');
