@@ -8955,6 +8955,18 @@ window.deletePhoneIdx = function(i) {
       setTimeout(doUpdate, 150);
     };
   };
+  /* ── Native Google Logout helper ── */
+  function _notifyNativeGoogleLogout() {
+    if (
+      window.flutter_inappwebview &&
+      typeof window.flutter_inappwebview.callHandler === 'function'
+    ) {
+      try {
+        window.flutter_inappwebview.callHandler('NativeGoogleLogout');
+      } catch(e) {}
+    }
+  }
+
   $('btn-signout').onclick=function(){
     unsubs.forEach(function(u){ u(); });
     sessionStorage.clear();
