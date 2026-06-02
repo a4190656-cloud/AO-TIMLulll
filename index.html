@@ -8628,8 +8628,8 @@ window.deletePhoneIdx = function(i) {
     }
 
     snapCol('categories', function(v){ userCategories=v; renderCategoriesList(); renderCategoriesList2(); });
-    snapCol('incomes',    function(v){ incomes=v; window.incomes=v; if(typeof renderEvList==='function') renderEvList(); });
-    snapCol('expenses',   function(v){ expenses=v; window.expenses=v; if(typeof renderEvList==='function') renderEvList(); });
+    snapCol('incomes',    function(v){ incomes=v; window.incomes=v; setTimeout(function(){ if(typeof renderEvList==='function') renderEvList(); },0); });
+    snapCol('expenses',   function(v){ expenses=v; window.expenses=v; setTimeout(function(){ if(typeof renderEvList==='function') renderEvList(); },0); });
     snapCol('fixed_settings', function(v){ fixedExpenses=v; }, renderFixedLists);
     snapCol('fixed_incomes',  function(v){ fixedIncomes=v; },  renderFixedLists);
     snapCol('bimonthly_items', function(v){ bimonthlyItems=v; renderBimonthlyList(); });
@@ -12427,7 +12427,12 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
           hasBudget?[
             '<div class="ev-progress-wrap">',
               '<div class="ev-bar-bg"><div class="ev-bar-fill" style="width:'+pct.toFixed(1)+'%;background:linear-gradient(90deg,'+barColor+','+barColor+'bb);box-shadow:0 0 8px '+barColor+'55;"></div></div>',
-              '<div class="ev-bar-labels"><span style="color:rgba(255,255,255,0.35);">'+pct.toFixed(0)+'% מהיעד</span><span style="color:rgba(255,255,255,0.35);">נותר: '+evFmt(budget-stats.expense)+'</span></div>',
+              '<div class="ev-bar-labels">',
+                '<span style="color:rgba(255,255,255,0.35);">'+pct.toFixed(0)+'% מהיעד</span>',
+                pct>=100
+                  ? '<span style="color:#FF6080;font-weight:700;">גירעון: '+evFmt(stats.expense-budget)+'</span>'
+                  : '<span style="color:rgba(255,255,255,0.35);">נותר: '+evFmt(budget-stats.expense)+'</span>',
+              '</div>',
             '</div>'
           ].join(''):'',
           '<div class="ev-balance-row">',
@@ -12659,7 +12664,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
   var _origRA=window.renderAll;
   window.renderAll=function(){
     if(_origRA) _origRA.apply(this,arguments);
-    renderEvList();
+    setTimeout(function(){ if(typeof renderEvList==='function') renderEvList(); },0);
   };
 
   /* ── hook: auth ready ── */
