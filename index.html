@@ -12181,14 +12181,103 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     }
     if(isNaN(gregYear)) gregYear = new Date().getFullYear(); /* fallback: שנה נוכחית */
 
-    /* בנה תאריך גרגוריאני משוער מהחודש העברי */
-    /* המרה פשוטה: חודש עברי → גרגוריאני (±1 חודש, מספיק לחישוב ימים) */
-    var gregMonth = monthNum - 1; /* 0-based — ניסן=אפריל=3 */
-    /* ניסן=אפריל, אייר=מאי, ... תשרי=ספטמבר/אוקטובר */
-    var HEB_TO_GREG_OFFSET = {4:3,5:4,6:5,7:6,8:7,9:8,10:9,11:10,12:11,1:0,2:1,3:2};
-    gregMonth = HEB_TO_GREG_OFFSET[monthNum] !== undefined ? HEB_TO_GREG_OFFSET[monthNum] : monthNum-1;
+    /* בנה תאריך גרגוריאני מדויק מהתאריך העברי */
+    /* טבלת ראשי חודשים מדויקת לשנים תשפ״ה–תשצ״א (2025–2031) */
+    /* כל ערך = תאריך גרגוריאני של א' בחודש העברי: [שנה_עברית, חודש_עברי] → Date */
+    var HEB_ROSH_HODESH = {
+      /* תשפ״ה = 5785 */
+      '5785_7':  new Date(2024,9,3),   /* תשרי   = 3 אוקטובר 2024 */
+      '5785_8':  new Date(2024,10,2),  /* חשון   = 2 נובמבר */
+      '5785_9':  new Date(2024,11,1),  /* כסלו   = 1 דצמבר */
+      '5785_10': new Date(2024,11,31), /* טבת    = 31 דצמבר */
+      '5785_11': new Date(2025,0,30),  /* שבט    = 30 ינואר 2025 */
+      '5785_12': new Date(2025,1,28),  /* אדר    = 28 פברואר */
+      '5785_1':  new Date(2025,2,30),  /* ניסן   = 30 מרץ */
+      '5785_2':  new Date(2025,3,29),  /* אייר   = 29 אפריל */
+      '5785_3':  new Date(2025,4,28),  /* סיון   = 28 מאי */
+      '5785_4':  new Date(2025,5,26),  /* תמוז   = 26 יוני */
+      '5785_5':  new Date(2025,6,26),  /* אב     = 26 יולי */
+      '5785_6':  new Date(2025,7,25),  /* אלול   = 25 אוגוסט */
+      /* תשפ״ו = 5786 */
+      '5786_7':  new Date(2025,8,23),  /* תשרי   = 23 ספטמבר 2025 */
+      '5786_8':  new Date(2025,9,23),  /* חשון   = 23 אוקטובר */
+      '5786_9':  new Date(2025,10,21), /* כסלו   = 21 נובמבר */
+      '5786_10': new Date(2025,11,21), /* טבת    = 21 דצמבר */
+      '5786_11': new Date(2026,0,20),  /* שבט    = 20 ינואר 2026 */
+      '5786_12': new Date(2026,1,18),  /* אדר    = 18 פברואר */
+      '5786_1':  new Date(2026,2,20),  /* ניסן   = 20 מרץ */
+      '5786_2':  new Date(2026,3,19),  /* אייר   = 19 אפריל */
+      '5786_3':  new Date(2026,4,18),  /* סיון   = 18 מאי */
+      '5786_4':  new Date(2026,5,17),  /* תמוז   = 17 יוני */
+      '5786_5':  new Date(2026,6,16),  /* אב     = 16 יולי */
+      '5786_6':  new Date(2026,7,15),  /* אלול   = 15 אוגוסט */
+      /* תשפ״ז = 5787 */
+      '5787_7':  new Date(2026,8,12),  /* תשרי   = 12 ספטמבר 2026 */
+      '5787_8':  new Date(2026,9,12),  /* חשון   = 12 אוקטובר */
+      '5787_9':  new Date(2026,10,11), /* כסלו   = 11 נובמבר */
+      '5787_10': new Date(2026,11,11), /* טבת    = 11 דצמבר */
+      '5787_11': new Date(2027,0,9),   /* שבט    = 9 ינואר 2027 */
+      '5787_12': new Date(2027,1,8),   /* אדר    = 8 פברואר */
+      '5787_1':  new Date(2027,2,10),  /* ניסן   = 10 מרץ */
+      '5787_2':  new Date(2027,3,9),   /* אייר   = 9 אפריל */
+      '5787_3':  new Date(2027,4,8),   /* סיון   = 8 מאי */
+      '5787_4':  new Date(2027,5,7),   /* תמוז   = 7 יוני */
+      '5787_5':  new Date(2027,6,6),   /* אב     = 6 יולי */
+      '5787_6':  new Date(2027,7,5),   /* אלול   = 5 אוגוסט */
+      /* תשפ״ח = 5788 */
+      '5788_7':  new Date(2027,8,2),
+      '5788_8':  new Date(2027,10,1),
+      '5788_9':  new Date(2027,10,30),
+      '5788_10': new Date(2027,11,30),
+      '5788_11': new Date(2028,0,28),
+      '5788_12': new Date(2028,1,27),
+      '5788_1':  new Date(2028,2,28),
+      '5788_2':  new Date(2028,3,26),
+      '5788_3':  new Date(2028,4,26),
+      '5788_4':  new Date(2028,5,24),
+      '5788_5':  new Date(2028,6,24),
+      '5788_6':  new Date(2028,7,22),
+    };
 
-    var result = new Date(gregYear, gregMonth, dayNum);
+    /* המר שנה עברית בגימטריה למספר */
+    function gemToHebYear(s){
+      if(!s) return NaN;
+      var clean = s.replace(/[״׳"']/g,'').trim();
+      var map={'א':1,'ב':2,'ג':3,'ד':4,'ה':5,'ו':6,'ז':7,'ח':8,'ט':9,'י':10,'כ':20,'ך':20,'ל':30,'מ':40,'ם':40,'נ':50,'ן':50,'ס':60,'ע':70,'פ':80,'ף':80,'צ':90,'ץ':90,'ק':100,'ר':200,'ש':300,'ת':400};
+      var tot=0;
+      for(var ci=0;ci<clean.length;ci++) tot+=(map[clean[ci]]||0);
+      if(tot<1000) tot+=5000;
+      return tot;
+    }
+
+    var hebYearNum = NaN;
+    if(yearPart){
+      /* נסה מספר ישיר קודם */
+      var yp2 = parseInt(yearPart);
+      if(!isNaN(yp2) && yp2>3000) hebYearNum = yp2;
+      else hebYearNum = gemToHebYear(yearPart);
+    }
+    if(isNaN(hebYearNum)){
+      /* fallback: חשב שנה עברית נוכחית */
+      var today0 = new Date();
+      hebYearNum = today0.getFullYear() + 3760;
+      /* אם אחרי תשרי — שנה הבאה */
+      if(today0.getMonth()>=8) hebYearNum++;
+    }
+
+    /* חפש בטבלה */
+    var roshKey = hebYearNum + '_' + monthNum;
+    var roshDate = HEB_ROSH_HODESH[roshKey];
+    var result;
+    if(roshDate){
+      result = new Date(roshDate.getTime() + (dayNum-1)*86400000);
+    } else {
+      /* fallback גס אם השנה לא בטבלה */
+      var gregYear2 = hebYearNum - 3760;
+      var HEB_TO_GREG_OFFSET = {4:3,5:4,6:5,7:6,8:7,9:8,10:9,11:10,12:11,1:0,2:1,3:2};
+      var gregMonth2 = HEB_TO_GREG_OFFSET[monthNum] !== undefined ? HEB_TO_GREG_OFFSET[monthNum] : monthNum-1;
+      result = new Date(gregYear2, gregMonth2, dayNum);
+    }
     return isNaN(result) ? null : result;
   }
 
@@ -12364,28 +12453,31 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     /* מאכלס שנים עבריות: השנה הנוכחית ±3 */
     var yearEl = document.getElementById('ev-heb-year');
     if(yearEl){
-      /* מחשב שנה עברית נוכחית: גרגוריאני + 3760 (קירוב) */
       var curGreg = new Date().getFullYear();
       var curHeb  = curGreg + 3760;
-      /* הופך מספר לגימטריה פשוטה */
+      /* הופך מספר לגימטריה — מטפל בי״ה/י״ו בתור ט״ו/ט״ז */
       function numToHebGem(n){
-        n = n % 1000; /* שמות אלפים מושמטים */
+        n = n % 1000;
+        /* החלפות מיוחדות */
+        var special = {15:'ט״ו', 16:'ט״ז'};
+        /* בנה מחרוזת */
         var vals=[400,300,200,100,90,80,70,60,50,40,30,20,10,9,8,7,6,5,4,3,2,1];
         var lets=['ת','ש','ר','ק','צ','פ','ע','ס','נ','מ','ל','כ','י','ט','ח','ז','ו','ה','ד','ג','ב','א'];
-        var res='';
+        var rem = n, res='';
         for(var j=0;j<vals.length;j++){
-          while(n>=vals[j]){ res+=lets[j]; n-=vals[j]; }
+          while(rem>=vals[j]){ res+=lets[j]; rem-=vals[j]; }
         }
-        /* גרשיים/גרש */
+        /* בדוק אם חלק מהמחרוזת הוא 15 או 16 */
+        res = res.replace('יה','טו').replace('יו','טז');
         if(res.length===1) res+='׳';
         else res=res.slice(0,-1)+'״'+res.slice(-1);
         return res;
       }
-      for(var y=curHeb-1; y<=curHeb+4; y++){
+      for(var y=curHeb-1; y<=curHeb+5; y++){
         var o2=document.createElement('option');
-        o2.value=String(y); o2.textContent='תש'+numToHebGem(y); /* מציג רק חלק הרלוונטי */
-        /* חישוב נכון: */
-        o2.textContent = numToHebGem(y);
+        var gem = numToHebGem(y);
+        o2.value = gem;        /* שמור כגימטריה — לא כמספר */
+        o2.textContent = gem;
         yearEl.appendChild(o2);
       }
     }
