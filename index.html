@@ -5609,6 +5609,18 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
         }
         .ev-cal-btn.active { background:rgba(168,85,247,0.14); border-color:rgba(168,85,247,0.40); color:rgba(200,130,255,0.95); }
 
+        /* Hebrew datepicker */
+        .ev-heb-picker-row { display:flex; gap:7px; margin-bottom:10px; }
+        .ev-heb-sel { flex:1; min-width:0; margin-bottom:0 !important; appearance:none; -webkit-appearance:none; cursor:pointer; }
+        #ev-heb-preview {
+          display:none; margin-bottom:10px; padding:9px 14px;
+          border-radius:11px; background:rgba(168,85,247,0.09);
+          border:1px solid rgba(168,85,247,0.22);
+          font-family:'Syne',sans-serif; font-size:13px; font-weight:700;
+          color:rgba(200,130,255,0.95); text-align:right; line-height:1.5;
+        }
+        body.theme-light #ev-heb-preview { background:rgba(168,85,247,.10) !important; color:#6D28D9 !important; }
+
         /* save btn */
         .ev-save-btn {
           width:100%; padding:14px; border-radius:14px; border:none; cursor:pointer;
@@ -5674,8 +5686,34 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
           <div class="ev-field-label">תאריך האירוע <span style="opacity:.5">(אופציונלי)</span></div>
           <input id="ev-inp-date" class="ev-inp" type="date">
 
-          <!-- Hebrew date (shown when hebrew mode) -->
-          <input id="ev-inp-heb-date" class="ev-inp hidden" type="text" placeholder="למשל: י״ד בניסן תשפ״ו">
+          <!-- Hebrew date picker (shown when hebrew mode) -->
+          <div id="ev-heb-picker-wrap" class="hidden">
+            <div class="ev-heb-picker-row">
+              <select id="ev-heb-day" class="ev-inp ev-heb-sel">
+                <option value="">יום</option>
+              </select>
+              <select id="ev-heb-month" class="ev-inp ev-heb-sel">
+                <option value="">חודש</option>
+                <option value="ניסן">ניסן</option>
+                <option value="אייר">אייר</option>
+                <option value="סיון">סיון</option>
+                <option value="תמוז">תמוז</option>
+                <option value="אב">אב</option>
+                <option value="אלול">אלול</option>
+                <option value="תשרי">תשרי</option>
+                <option value="חשון">חשון</option>
+                <option value="כסלו">כסלו</option>
+                <option value="טבת">טבת</option>
+                <option value="שבט">שבט</option>
+                <option value="אדר">אדר</option>
+              </select>
+              <select id="ev-heb-year" class="ev-inp ev-heb-sel">
+                <option value="">שנה</option>
+              </select>
+            </div>
+            <div id="ev-heb-preview"></div>
+            <input id="ev-inp-heb-date" type="hidden">
+          </div>
 
           <!-- Budget -->
           <div class="ev-field-label">תקציב יעד <span style="opacity:.5">(אופציונלי)</span></div>
@@ -12307,6 +12345,97 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
   }
 
   /* ── Sheet open/close ── */
+  /* ── Hebrew picker init ── */
+  (function(){
+    /* מאכלס את ה-select של הימים (א-ל) */
+    var dayEl = document.getElementById('ev-heb-day');
+    if(dayEl){
+      var hebNums = ['א','ב','ג','ד','ה','ו','ז','ח','ט','י','יא','יב','יג','יד','טו','טז','יז','יח','יט','כ','כא','כב','כג','כד','כה','כו','כז','כח','כט','ל'];
+      for(var i=0;i<30;i++){
+        var o=document.createElement('option');
+        o.value=String(i+1); o.textContent=hebNums[i];
+        dayEl.appendChild(o);
+      }
+    }
+    /* מאכלס שנים עבריות: השנה הנוכחית ±3 */
+    var yearEl = document.getElementById('ev-heb-year');
+    if(yearEl){
+      /* מחשב שנה עברית נוכחית: גרגוריאני + 3760 (קירוב) */
+      var curGreg = new Date().getFullYear();
+      var curHeb  = curGreg + 3760;
+      /* הופך מספר לגימטריה פשוטה */
+      function numToHebGem(n){
+        n = n % 1000; /* שמות אלפים מושמטים */
+        var vals=[400,300,200,100,90,80,70,60,50,40,30,20,10,9,8,7,6,5,4,3,2,1];
+        var lets=['ת','ש','ר','ק','צ','פ','ע','ס','נ','מ','ל','כ','י','ט','ח','ז','ו','ה','ד','ג','ב','א'];
+        var res='';
+        for(var j=0;j<vals.length;j++){
+          while(n>=vals[j]){ res+=lets[j]; n-=vals[j]; }
+        }
+        /* גרשיים/גרש */
+        if(res.length===1) res+='׳';
+        else res=res.slice(0,-1)+'״'+res.slice(-1);
+        return res;
+      }
+      for(var y=curHeb-1; y<=curHeb+4; y++){
+        var o2=document.createElement('option');
+        o2.value=String(y); o2.textContent='תש'+numToHebGem(y); /* מציג רק חלק הרלוונטי */
+        /* חישוב נכון: */
+        o2.textContent = numToHebGem(y);
+        yearEl.appendChild(o2);
+      }
+    }
+  })();
+
+  /* ── עדכון preview בזמן אמת ── */
+  function _updateHebPreview(){
+    var day   = document.getElementById('ev-heb-day').value;
+    var month = document.getElementById('ev-heb-month').value;
+    var year  = document.getElementById('ev-heb-year').value;
+    var prev  = document.getElementById('ev-heb-preview');
+    if(!prev) return;
+
+    /* בנה string לשמירה */
+    var hebStr = '';
+    if(day && month){
+      var hebDayNames=['א','ב','ג','ד','ה','ו','ז','ח','ט','י','יא','יב','יג','יד','טו','טז','יז','יח','יט','כ','כא','כב','כג','כד','כה','כו','כז','כח','כט','ל'];
+      hebStr = hebDayNames[parseInt(day)-1] + ' ב' + month + (year?' '+year:'');
+    }
+
+    /* שמור ב-hidden input */
+    document.getElementById('ev-inp-heb-date').value = hebStr;
+
+    if(!day || !month || !year){
+      prev.style.display='none';
+      return;
+    }
+
+    /* חשב ימים */
+    var fakeEv = { date: hebStr, calType:'hebrew' };
+    var info = calcDaysTo(fakeEv);
+    if(!info){ prev.style.display='none'; return; }
+
+    var icon, msg;
+    if(info.today){
+      icon='🎉'; msg='היום!';
+    } else if(info.past){
+      icon='📅'; msg='לפני '+info.days+(info.days===1?' יום':' ימים');
+    } else {
+      if(info.days<=7)       icon='🔥';
+      else if(info.days<=30) icon='⏳';
+      else                   icon='📅';
+      msg = 'בעוד '+info.days+(info.days===1?' יום':' ימים');
+    }
+    prev.style.display='block';
+    prev.innerHTML = icon+' <strong>'+hebStr+'</strong> — '+msg;
+  }
+
+  /* hook לאירועי שינוי */
+  ['ev-heb-day','ev-heb-month','ev-heb-year'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.addEventListener('change', _updateHebPreview);
+  });
+
   window.openEvSheet = function(evId){
     var overlay=document.getElementById('ev-overlay');
     if(!overlay) return;
@@ -12319,6 +12448,11 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     document.getElementById('ev-inp-date').value='';
     document.getElementById('ev-inp-heb-date').value='';
     document.getElementById('ev-inp-budget').value='';
+    /* איפוס picker עברי */
+    document.getElementById('ev-heb-day').value='';
+    document.getElementById('ev-heb-month').value='';
+    document.getElementById('ev-heb-year').value='';
+    document.getElementById('ev-heb-preview').style.display='none';
     setEvCal('gregorian');
 
     if(evId){
@@ -12329,8 +12463,23 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
         document.getElementById('ev-inp-budget').value=ev.budget||'';
         var ct=ev.calType||'gregorian';
         setEvCal(ct);
-        if(ct==='hebrew'){ document.getElementById('ev-inp-heb-date').value=ev.date||''; }
-        else             { document.getElementById('ev-inp-date').value=ev.date||''; }
+        if(ct==='hebrew'){
+          /* פרסר את המחרוזת השמורה בחזרה לשדות */
+          var saved=ev.date||'';
+          document.getElementById('ev-inp-heb-date').value=saved;
+          /* נסה לפרק: "יד בניסן תשפו" */
+          var hebDayNamesR=['א','ב','ג','ד','ה','ו','ז','ח','ט','י','יא','יב','יג','יד','טו','טז','יז','יח','יט','כ','כא','כב','כג','כד','כה','כו','כז','כח','כט','ל'];
+          var pm=saved.match(/^([^\s]+)\s+ב?(ניסן|אייר|סיון|תמוז|אב|אלול|תשרי|חשון|כסלו|טבת|שבט|אדר)\s*(.*)$/);
+          if(pm){
+            var dIdx=hebDayNamesR.indexOf(pm[1]);
+            if(dIdx>=0) document.getElementById('ev-heb-day').value=String(dIdx+1);
+            document.getElementById('ev-heb-month').value=pm[2];
+            if(pm[3]) document.getElementById('ev-heb-year').value=pm[3].trim();
+            _updateHebPreview();
+          }
+        } else {
+          document.getElementById('ev-inp-date').value=ev.date||'';
+        }
       }
     }
     buildEmojiGrid(_evEmoji);
@@ -12350,11 +12499,11 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     var greg=document.getElementById('ev-cal-gregorian');
     var heb =document.getElementById('ev-cal-hebrew');
     var dateInp=document.getElementById('ev-inp-date');
-    var hebInp =document.getElementById('ev-inp-heb-date');
+    var hebWrap=document.getElementById('ev-heb-picker-wrap');
     if(greg) greg.classList.toggle('active',type==='gregorian');
     if(heb)  heb.classList.toggle('active', type==='hebrew');
     if(dateInp) dateInp.classList.toggle('hidden',type!=='gregorian');
-    if(hebInp)  hebInp.classList.toggle('hidden', type!=='hebrew');
+    if(hebWrap) hebWrap.classList.toggle('hidden', type!=='hebrew');
   };
 
   /* ── שמירה ── */
