@@ -12354,28 +12354,59 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     if(hebInp)  hebInp.classList.toggle('hidden', type!=='hebrew');
   };
 
+  /* ── עזר: קבל/צור collection עם המתנה ל-auth ── */
+  function getEvColReady(callback){
+    var col = evCol();
+    if(col){ callback(col); return; }
+    /* אין משתמש — ננסה sign-in אנונימי אם Firebase auth קיים */
+    if(window.auth){
+      window.auth.signInAnonymously()
+        .then(function(){
+          var retryInterval = setInterval(function(){
+            var c = evCol();
+            if(c){ clearInterval(retryInterval); callback(c); }
+          }, 300);
+          setTimeout(function(){ clearInterval(retryInterval); window.toast&&window.toast('לא ניתן להתחבר','error'); }, 8000);
+        })
+        .catch(function(e){
+          window.toast&&window.toast('שגיאת התחברות: '+e.message,'error');
+        });
+    } else {
+      /* auth לא אותחל — נחכה עד 8 שניות */
+      var waited = 0;
+      var waitInterval = setInterval(function(){
+        waited += 400;
+        var c = evCol();
+        if(c){ clearInterval(waitInterval); callback(c); return; }
+        if(waited >= 8000){ clearInterval(waitInterval); window.toast&&window.toast('לא מחובר — נסה לרענן','error'); }
+      }, 400);
+    }
+  }
+
   /* ── שמירה ── */
   window.saveEvSheet = function(){
     var name=document.getElementById('ev-inp-name').value.trim();
     if(!name){ window.toast&&window.toast('נא להזין שם לאירוע','error'); return; }
-    var col=evCol();
-    if(!col){ window.toast&&window.toast('לא מחובר','error'); return; }
 
     var dateVal=_evCal==='hebrew'
       ?document.getElementById('ev-inp-heb-date').value.trim()
       :document.getElementById('ev-inp-date').value;
     var budgetVal=Number(document.getElementById('ev-inp-budget').value)||0;
 
-    var dataObj={ name:name, emoji:_evEmoji, calType:_evCal, date:dateVal||'', budget:budgetVal,
-                  updatedAt:firebase.firestore.FieldValue.serverTimestamp() };
-    var prom;
-    if(_evEditing){ prom=col.doc(_evEditing).update(dataObj); }
-    else { dataObj.createdAt=firebase.firestore.FieldValue.serverTimestamp(); prom=col.add(dataObj); }
+    window.toast&&window.toast('שומר...','info');
 
-    prom.then(function(){
-      window.toast&&window.toast(_evEditing?'האירוע עודכן ✓':'האירוע נוצר ✓','success');
-      closeEvSheet();
-    }).catch(function(e){ window.toast&&window.toast('שגיאה: '+e.message,'error'); });
+    getEvColReady(function(col){
+      var dataObj={ name:name, emoji:_evEmoji, calType:_evCal, date:dateVal||'', budget:budgetVal,
+                    updatedAt:firebase.firestore.FieldValue.serverTimestamp() };
+      var prom;
+      if(_evEditing){ prom=col.doc(_evEditing).update(dataObj); }
+      else { dataObj.createdAt=firebase.firestore.FieldValue.serverTimestamp(); prom=col.add(dataObj); }
+
+      prom.then(function(){
+        window.toast&&window.toast(_evEditing?'האירוע עודכן ✓':'האירוע נוצר ✓','success');
+        closeEvSheet();
+      }).catch(function(e){ window.toast&&window.toast('שגיאה: '+e.message,'error'); });
+    });
   };
 
   /* ── מחיקה ── */
@@ -12412,6 +12443,17 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     setTimeout(tryStart,900);
   }
   setTimeout(tryStart,1600);
+
+  /* ── האזנה לשינויי auth בזמן אמת ── */
+  (function waitForAuth(){
+    if(window.auth){
+      window.auth.onAuthStateChanged(function(user){
+        if(user && window.db){ startEvListener(); }
+      });
+    } else {
+      setTimeout(waitForAuth, 500);
+    }
+  })();
 
 })();
 </script>
