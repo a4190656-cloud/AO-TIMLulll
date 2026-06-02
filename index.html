@@ -1318,7 +1318,8 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
     .nav-dual-icons svg { width:17px; height:17px; }
     .nav-ev-icon { opacity:.65; }
     .nav-btn-dual.active .nav-ev-icon { opacity:1; }
-    .nav-dual-label { font-size:9.5px; letter-spacing:.01em; white-space:nowrap; }
+    .nav-dual-label { font-size:9px; letter-spacing:.01em; white-space:nowrap; line-height:1.3; display:flex; flex-direction:column; align-items:center; gap:0; }
+    .nav-dual-label span { display:block; }
 
     /* ── MODAL ── */
     #modal-overlay {
@@ -6932,7 +6933,7 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
         <svg class="nav-ev-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       </div>
-      <span class="nav-dual-label"><span data-i18n="nav_categories">קטגוריות</span> &amp; אירועים</span>
+      <span class="nav-dual-label"><span>קטגוריות</span><span>ואירועים</span></span>
     </button>
     <button class="nav-btn modern-hover" id="nav-charts" onclick="switchView('charts')">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
@@ -8627,8 +8628,8 @@ window.deletePhoneIdx = function(i) {
     }
 
     snapCol('categories', function(v){ userCategories=v; renderCategoriesList(); renderCategoriesList2(); });
-    snapCol('incomes',    function(v){ incomes=v; window.incomes=v; });
-    snapCol('expenses',   function(v){ expenses=v; window.expenses=v; });
+    snapCol('incomes',    function(v){ incomes=v; window.incomes=v; if(typeof renderEvList==='function') renderEvList(); });
+    snapCol('expenses',   function(v){ expenses=v; window.expenses=v; if(typeof renderEvList==='function') renderEvList(); });
     snapCol('fixed_settings', function(v){ fixedExpenses=v; }, renderFixedLists);
     snapCol('fixed_incomes',  function(v){ fixedIncomes=v; },  renderFixedLists);
     snapCol('bimonthly_items', function(v){ bimonthlyItems=v; renderBimonthlyList(); });
@@ -12432,7 +12433,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
           '<div class="ev-balance-row">',
             '<div class="ev-stat ev-stat-in"><span class="ev-stat-label">הכנסות</span><span class="ev-stat-val">'+evFmt(stats.income)+'</span></div>',
             '<div class="ev-stat ev-stat-out"><span class="ev-stat-label">הוצאות</span><span class="ev-stat-val">'+evFmt(stats.expense)+'</span></div>',
-            '<div class="ev-stat ev-stat-net"><span class="ev-stat-label">מאזן</span><span class="ev-stat-val" style="color:'+netColor+';">'+evFmt(stats.net)+'</span></div>',
+            '<div class="ev-stat ev-stat-net"><span class="ev-stat-label">יתרה</span><span class="ev-stat-val" style="color:'+netColor+';">'+evFmt(stats.net)+'</span></div>',
           '</div>',
         '</div>'
       ].join('');
