@@ -12142,9 +12142,10 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
       return isNaN(d2)?null:d2;
     }
 
-    /* תאריך עברי: "י״ד בניסן תשפ״ו" / "14 ניסן תשפ״ו" */
-    /* שלב 1: נרמל "ב" לפני שם חודש */
-    str = str.replace(/\bב(ניסן|אייר|סיון|תמוז|אב|אלול|תשרי|חשון|מרחשון|כסלו|טבת|שבט|אדר)/,'$1');
+    /* תאריך עברי: "כה בסיון תשפו" / "י״ד בניסן תשפ״ו" / "14 ניסן תשפ״ו" */
+    /* שלב 1: נרמל "ב" לפני שם חודש — גם עם רווח וגם בלי */
+    str = str.replace(/\s+ב(ניסן|אייר|סיון|תמוז|אב|אלול|תשרי|חשון|מרחשון|כסלו|טבת|שבט|אדר)/g,' $1');
+    str = str.replace(/\bב(ניסן|אייר|סיון|תמוז|אב|אלול|תשרי|חשון|מרחשון|כסלו|טבת|שבט|אדר)/g,'$1');
 
     var parts = str.split(/\s+/);
     if(parts.length < 2) return null;
@@ -12167,12 +12168,15 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     var yearPart = parts[monthIdx+1]||'';
     var gregYear = NaN;
     if(yearPart){
-      /* ניסיון פרשנות כגימטריה */
-      gregYear = hebYearToGreg(yearPart);
-      /* אם לא הצליח — נסה כמספר לועזי */
+      /* קודם כל נסה כמספר לועזי */
+      var yp = parseInt(yearPart);
+      if(!isNaN(yp)){
+        if(yp > 3000) gregYear = yp - 3760; /* שנה עברית מספרית כמו 5786 */
+        else if(yp > 100) gregYear = yp;    /* שנה לועזית רגילה */
+      }
+      /* אם לא הצליח — נסה כגימטריה */
       if(isNaN(gregYear)){
-        var yp = parseInt(yearPart);
-        if(!isNaN(yp)) gregYear = yp > 3000 ? yp-3760 : yp;
+        gregYear = hebYearToGreg(yearPart);
       }
     }
     if(isNaN(gregYear)) gregYear = new Date().getFullYear(); /* fallback: שנה נוכחית */
@@ -12395,22 +12399,19 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     var prev  = document.getElementById('ev-heb-preview');
     if(!prev) return;
 
-    /* בנה string לשמירה */
-    var hebStr = '';
-    if(day && month){
-      var hebDayNames=['א','ב','ג','ד','ה','ו','ז','ח','ט','י','יא','יב','יג','יד','טו','טז','יז','יח','יט','כ','כא','כב','כג','כד','כה','כו','כז','כח','כט','ל'];
-      hebStr = hebDayNames[parseInt(day)-1] + ' ב' + month + (year?' '+year:'');
+    if(!day || !month){
+      prev.style.display='none';
+      document.getElementById('ev-inp-heb-date').value='';
+      return;
     }
+
+    var hebDayNames=['א','ב','ג','ד','ה','ו','ז','ח','ט','י','יא','יב','יג','יד','טו','טז','יז','יח','יט','כ','כא','כב','כג','כד','כה','כו','כז','כח','כט','ל'];
+    var hebStr = hebDayNames[parseInt(day)-1] + ' ב' + month + (year?' '+year:'');
 
     /* שמור ב-hidden input */
     document.getElementById('ev-inp-heb-date').value = hebStr;
 
-    if(!day || !month || !year){
-      prev.style.display='none';
-      return;
-    }
-
-    /* חשב ימים */
+    /* חשב ימים — עובד גם בלי שנה (calcDaysTo יטול שנה נוכחית כ-fallback) */
     var fakeEv = { date: hebStr, calType:'hebrew' };
     var info = calcDaysTo(fakeEv);
     if(!info){ prev.style.display='none'; return; }
