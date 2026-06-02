@@ -1312,6 +1312,14 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
     .nav-btn.active { background:rgba(0,229,255,0.08); color:var(--cyan); box-shadow:inset 0 1px 0 rgba(0,229,255,0.15); }
     .nav-btn svg { width:20px; height:20px; }
 
+    /* ── dual nav btn (קטגוריות & אירועים) ── */
+    .nav-btn-dual { position:relative; }
+    .nav-dual-icons { display:flex; align-items:center; justify-content:center; gap:3px; }
+    .nav-dual-icons svg { width:17px; height:17px; }
+    .nav-ev-icon { opacity:.65; }
+    .nav-btn-dual.active .nav-ev-icon { opacity:1; }
+    .nav-dual-label { font-size:9.5px; letter-spacing:.01em; white-space:nowrap; }
+
     /* ── MODAL ── */
     #modal-overlay {
       position:fixed; inset:0; z-index:200;
@@ -6919,9 +6927,12 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
       החשבון שלי
     </button>
-    <button class="nav-btn modern-hover" id="nav-categories" onclick="switchView('categories')">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      <span data-i18n="nav_categories">קטגוריות</span>
+    <button class="nav-btn nav-btn-dual modern-hover" id="nav-categories" onclick="switchView('categories')">
+      <div class="nav-dual-icons">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <svg class="nav-ev-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <span class="nav-dual-label"><span data-i18n="nav_categories">קטגוריות</span> &amp; אירועים</span>
     </button>
     <button class="nav-btn modern-hover" id="nav-charts" onclick="switchView('charts')">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
