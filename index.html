@@ -12055,9 +12055,120 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
   }
   function escEv(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
+  /* ── המרת תאריך עברי לאובייקט Date ── */
+  /* תומך בפורמטים: "י״ד בניסן תשפ״ו" / "14 ניסן תשפ״ו" / "14/3/2026" */
+  var HEB_MONTHS = {
+    'ניסן':4,'אייר':5,'סיון':6,'תמוז':7,'אב':8,'אלול':9,
+    'תשרי':10,'חשון':11,'מרחשון':11,'כסלו':12,'טבת':1,'שבט':2,'אדר':3,'אדר א':3,'אדר ב':3
+  };
+  /* ממיר גימטריה פשוטה לספרה */
+  function hebGematriaToNum(s){
+    if(!s) return NaN;
+    s = s.replace(/[״׳"']/g,'').trim();
+    var map = {
+      'א':1,'ב':2,'ג':3,'ד':4,'ה':5,'ו':6,'ז':7,'ח':8,'ט':9,
+      'י':10,'כ':20,'ך':20,'ל':30,'מ':40,'ם':40,'נ':50,'ן':50,
+      'ס':60,'ע':70,'פ':80,'ף':80,'צ':90,'ץ':90,
+      'ק':100,'ר':200,'ש':300,'ת':400
+    };
+    var total=0;
+    for(var i=0;i<s.length;i++){ total+=(map[s[i]]||0); }
+    return total||NaN;
+  }
+
+  /* ממיר שנה עברית כמחרוזת גימטריה לשנה לועזית */
+  function hebYearToGreg(s){
+    s = s.replace(/[״׳"']/g,'').trim();
+    var num = hebGematriaToNum(s);
+    if(isNaN(num)) return NaN;
+    /* ה' אלפים = 5000, מחסרים 3760 להמרה לשנה לועזית */
+    if(num < 1000) num += 5000; /* קיצור — תשפ״ו → 786 → 5786 */
+    return num - 3760;
+  }
+
+  /* מחזיר Date (חצות, שעון מקומי) מתאריך עברי או null */
+  function parseHebDate(str){
+    if(!str) return null;
+    str = str.trim();
+
+    /* נסה לועזי תחילה: YYYY-MM-DD / DD/MM/YYYY */
+    var iso = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    if(iso){ var d=new Date(str); return isNaN(d)?null:d; }
+    var ddmm = str.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})$/);
+    if(ddmm){
+      var y=parseInt(ddmm[3]); if(y<100) y+=2000;
+      var d2=new Date(y,parseInt(ddmm[2])-1,parseInt(ddmm[1]));
+      return isNaN(d2)?null:d2;
+    }
+
+    /* תאריך עברי: "י״ד בניסן תשפ״ו" / "14 ניסן תשפ״ו" */
+    /* שלב 1: נרמל "ב" לפני שם חודש */
+    str = str.replace(/\bב(ניסן|אייר|סיון|תמוז|אב|אלול|תשרי|חשון|מרחשון|כסלו|טבת|שבט|אדר)/,'$1');
+
+    var parts = str.split(/\s+/);
+    if(parts.length < 2) return null;
+
+    /* מצא חודש */
+    var monthIdx = -1, monthNum = 0;
+    for(var i=0;i<parts.length;i++){
+      var p = parts[i].replace(/[״׳"']/g,'');
+      if(HEB_MONTHS[p] !== undefined){ monthIdx=i; monthNum=HEB_MONTHS[p]; break; }
+    }
+    if(monthIdx < 0) return null;
+
+    /* יום — לפני החודש */
+    var dayPart = parts[monthIdx-1]||parts[0];
+    var dayNum = parseInt(dayPart);
+    if(isNaN(dayNum)) dayNum = hebGematriaToNum(dayPart);
+    if(isNaN(dayNum)||dayNum<1||dayNum>30) return null;
+
+    /* שנה — אחרי החודש */
+    var yearPart = parts[monthIdx+1]||'';
+    var gregYear = NaN;
+    if(yearPart){
+      /* ניסיון פרשנות כגימטריה */
+      gregYear = hebYearToGreg(yearPart);
+      /* אם לא הצליח — נסה כמספר לועזי */
+      if(isNaN(gregYear)){
+        var yp = parseInt(yearPart);
+        if(!isNaN(yp)) gregYear = yp > 3000 ? yp-3760 : yp;
+      }
+    }
+    if(isNaN(gregYear)) gregYear = new Date().getFullYear(); /* fallback: שנה נוכחית */
+
+    /* בנה תאריך גרגוריאני משוער מהחודש העברי */
+    /* המרה פשוטה: חודש עברי → גרגוריאני (±1 חודש, מספיק לחישוב ימים) */
+    var gregMonth = monthNum - 1; /* 0-based — ניסן=אפריל=3 */
+    /* ניסן=אפריל, אייר=מאי, ... תשרי=ספטמבר/אוקטובר */
+    var HEB_TO_GREG_OFFSET = {4:3,5:4,6:5,7:6,8:7,9:8,10:9,11:10,12:11,1:0,2:1,3:2};
+    gregMonth = HEB_TO_GREG_OFFSET[monthNum] !== undefined ? HEB_TO_GREG_OFFSET[monthNum] : monthNum-1;
+
+    var result = new Date(gregYear, gregMonth, dayNum);
+    return isNaN(result) ? null : result;
+  }
+
+  /* ── חישוב ימים עד אירוע ── */
+  /* מחזיר: { days: N, past: bool } או null אם אין תאריך */
+  function calcDaysTo(ev){
+    var d = null;
+    if(!ev.date) return null;
+    if(ev.calType === 'gregorian'){
+      d = new Date(ev.date);
+    } else {
+      d = parseHebDate(ev.date);
+    }
+    if(!d || isNaN(d)) return null;
+
+    var today = new Date();
+    today.setHours(0,0,0,0);
+    d.setHours(0,0,0,0);
+    var diff = Math.round((d - today) / 86400000);
+    return { days: Math.abs(diff), past: diff < 0, today: diff === 0 };
+  }
+
   /* ── Firestore collection ── */
   function evCol(){
-    var uid = window.uid || (window.auth && window.auth.currentUser && window.auth.currentUser.uid);
+    var uid = (window.auth && window.auth.currentUser && window.auth.currentUser.uid);
     if(!uid || !window.db) return null;
     return window.db.collection('users').doc(uid).collection('events');
   }
@@ -12099,14 +12210,51 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
       var pct = hasBudget?Math.min(100,(stats.expense/budget)*100):0;
       var barColor= pct>=100?'#FF6080':pct>80?'#FFB300':'#A855F7';
 
+      /* תאריך לתצוגה */
       var dateStr='';
       if(ev.date){
-        if(ev.calType==='hebrew'){ dateStr=ev.date; }
-        else{ try{ dateStr=new Date(ev.date).toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'}); }catch(e){ dateStr=ev.date; } }
+        if(ev.calType==='hebrew'){
+          dateStr = ev.date; /* כבר טקסט עברי */
+        } else {
+          try{ dateStr=new Date(ev.date).toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'}); }
+          catch(e){ dateStr=ev.date; }
+        }
       }
 
-      var txAll = ((window.incomes||[]).concat(window.expenses||[])).filter(function(t){ return t.eventId===ev.id; });
-      var txCount = txAll.length;
+      /* ספירה לאחור */
+      var cdInfo = calcDaysTo(ev);
+      var countdownHtml = '';
+      if(cdInfo !== null){
+        var cdColor, cdLabel, cdVal;
+        if(cdInfo.today){
+          cdColor='#A855F7'; cdLabel=''; cdVal='🎉 היום!';
+        } else if(cdInfo.past){
+          cdColor='rgba(255,255,255,0.30)';
+          cdLabel='לפני';
+          cdVal = cdInfo.days + (cdInfo.days===1?' יום':' ימים');
+        } else {
+          /* צבע לפי דחיפות */
+          if(cdInfo.days<=7)       cdColor='#FF6080';
+          else if(cdInfo.days<=30) cdColor='#FFB300';
+          else                     cdColor='#A855F7';
+          cdLabel='עוד';
+          cdVal = cdInfo.days + (cdInfo.days===1?' יום':' ימים');
+        }
+        countdownHtml = [
+          '<div style="',
+            'display:inline-flex;align-items:center;gap:6px;',
+            'background:rgba(168,85,247,0.09);',
+            'border:1px solid rgba(168,85,247,0.22);',
+            'border-radius:10px;padding:4px 10px;margin-top:6px;',
+          '">',
+            cdInfo.today ? '' : '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="'+cdColor+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+            cdLabel ? '<span style="font-size:9.5px;font-weight:700;color:rgba(255,255,255,0.38);">'+cdLabel+'</span>' : '',
+            '<span style="font-size:12px;font-weight:900;color:'+cdColor+';font-family:\'JetBrains Mono\',monospace;">'+cdVal+'</span>',
+          '</div>'
+        ].join('');
+      }
+
+      var txCount = ((window.incomes||[]).concat(window.expenses||[])).filter(function(t){ return t.eventId===ev.id; }).length;
 
       var statusHtml;
       if(!hasBudget){ statusHtml='<span class="ev-status-badge ev-status-open">פתוח ✦</span>'; }
@@ -12120,7 +12268,10 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
             '<div class="ev-info">',
               '<div class="ev-name">'+escEv(ev.name||'—')+'</div>',
               '<div class="ev-meta">'+(dateStr?'📅 '+dateStr+'&nbsp;&nbsp;':'')+(hasBudget?'יעד: '+evFmt(budget)+'&nbsp;&nbsp;':'')+txCount+' תנועות</div>',
-              '<div style="margin-top:5px;">'+statusHtml+'</div>',
+              '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:5px;">',
+                statusHtml,
+                countdownHtml,
+              '</div>',
             '</div>',
             '<div class="ev-actions">',
               '<button class="ev-action-btn ev-edit-btn" onclick="openEvSheet(\''+ev.id+'\')" title="ערוך"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>',
@@ -12256,8 +12407,8 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
 
   /* ── hook: auth ready ── */
   function tryStart(){
-    var uid=window.uid||(window.auth&&window.auth.currentUser&&window.auth.currentUser.uid);
-    if(uid&&window.db){ window.uid=window.uid||uid; startEvListener(); return; }
+    var uid = window.auth && window.auth.currentUser && window.auth.currentUser.uid;
+    if(uid && window.db){ startEvListener(); return; }
     setTimeout(tryStart,900);
   }
   setTimeout(tryStart,1600);
