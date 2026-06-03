@@ -5987,8 +5987,8 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
       <div class="chart-hero" style="margin-bottom:14px;">
         <div class="chart-section-title" data-i18n="chart_by_cat">הוצאות לפי קטגוריה</div>
         <div id="donut-wrap">
-          <svg id="donut-svg" viewBox="0 0 220 220">
-            <circle cx="110" cy="110" r="84" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="24"/>
+          <canvas id="donut-canvas" width="220" height="220" style="width:220px;height:220px;cursor:pointer;"></canvas>
+          <svg id="donut-svg" viewBox="0 0 220 220" style="position:absolute;inset:0;width:220px;height:220px;pointer-events:none;opacity:0;">
             <g id="donut-arcs"></g>
           </svg>
           <div id="donut-center">
@@ -8200,74 +8200,98 @@ window.deletePhoneIdx = function(i) {
       centerSub.textContent = expEntries.length + ' קטגוריות';
     }
     if(arcsEl){
+      var canvas = document.getElementById('donut-canvas');
+      if(!canvas){ return; }
+      var ctx = canvas.getContext('2d');
+      var dpr = window.devicePixelRatio || 1;
+      canvas.width  = 220 * dpr;
+      canvas.height = 220 * dpr;
+      canvas.style.width  = '220px';
+      canvas.style.height = '220px';
+      ctx.scale(dpr, dpr);
+
+      var cx=110, cy=110, r=84, lineW=22;
+      ctx.clearRect(0,0,220,220);
+
       if(!expEntries.length){
-        arcsEl.innerHTML='<circle cx="110" cy="110" r="84" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="24"/>';
+        /* עיגול ריק */
+        ctx.beginPath();
+        ctx.arc(cx,cy,r,0,Math.PI*2);
+        ctx.strokeStyle='rgba(255,255,255,0.07)';
+        ctx.lineWidth=lineW;
+        ctx.stroke();
         if(legEl) legEl.innerHTML='<div class="chart-empty"><span class="chart-empty-icon">📊</span>אין הוצאות במחזור הנוכחי</div>';
       } else {
-        var r=84, circ=2*Math.PI*r, offset=0, svgArcs='';
+        /* רקע */
+        ctx.beginPath();
+        ctx.arc(cx,cy,r,0,Math.PI*2);
+        ctx.strokeStyle='rgba(255,255,255,0.06)';
+        ctx.lineWidth=lineW;
+        ctx.stroke();
+
+        /* קשתות לפי קטגוריה */
+        var startAngle = -Math.PI/2; /* מ-12 בשעון */
+        var gap = 0.025; /* רווח קטן בין פרוסות */
         expEntries.forEach(function(item,idx){
           var pct = donutTotal>0 ? item.amt/donutTotal : 0;
-          var dash = pct*circ, gap = circ-dash;
-          var color = CHART_COLORS[idx%CHART_COLORS.length];
-          /* gap of 2px between segments */
-          svgArcs += '<circle cx="110" cy="110" r="84" fill="none" stroke="'+color+'" stroke-width="23"'+
-            ' stroke-dasharray="'+(dash-2.5).toFixed(2)+' '+(gap+2.5).toFixed(2)+'"'+
-            ' stroke-dashoffset="'+(-offset).toFixed(2)+'"'+
-            ' style="filter:drop-shadow(0 0 7px '+color+'99);transition:stroke-dashoffset .7s cubic-bezier(.16,1,.3,1);"/>';
-          offset += dash;
+          var sweep = pct * Math.PI * 2 - gap;
+          if(sweep <= 0) return;
+          var color = CHART_COLORS[idx % CHART_COLORS.length];
+
+          ctx.save();
+          ctx.shadowColor = color;
+          ctx.shadowBlur  = 10;
+          ctx.beginPath();
+          ctx.arc(cx, cy, r, startAngle + gap/2, startAngle + gap/2 + sweep);
+          ctx.strokeStyle = color;
+          ctx.lineWidth   = lineW;
+          ctx.lineCap     = 'round';
+          ctx.stroke();
+          ctx.restore();
+
+          startAngle += pct * Math.PI * 2;
         });
-        arcsEl.innerHTML = svgArcs;
 
-        /* ── hover interactivity on arcs ── */
-        setTimeout(function(){
-          var arcs = arcsEl.querySelectorAll('circle');
-          arcs.forEach(function(arc, idx){
-            arc.setAttribute('data-idx', idx);
-            arc.style.cursor = 'pointer';
-            arc.addEventListener('mouseenter', function(){
-              arcsEl.classList.add('has-hover');
-              arc.classList.add('arc-hovered');
-              var tip = document.getElementById('donut-tooltip');
-              var ca = document.getElementById('donut-center-amount');
-              var cl = document.getElementById('donut-center-label');
-              if(tip){ tip.textContent = expEntries[idx].name+' — '+fmt(expEntries[idx].amt); tip.classList.add('visible'); }
-              if(ca){ ca.textContent = Math.round(expEntries[idx].amt/donutTotal*100)+'%'; ca.style.color=CHART_COLORS[idx%CHART_COLORS.length]; }
-              if(cl){ cl.textContent = expEntries[idx].name; }
-            });
-            arc.addEventListener('mouseleave', function(){
-              arcsEl.classList.remove('has-hover');
-              arc.classList.remove('arc-hovered');
-              var tip = document.getElementById('donut-tooltip');
-              var ca = document.getElementById('donut-center-amount');
-              var cl = document.getElementById('donut-center-label');
-              if(tip) tip.classList.remove('visible');
-              if(ca){ ca.textContent = fmt(donutTotal); ca.style.color=''; }
-              if(cl){ cl.textContent = 'סה"כ'; }
-            });
-            /* touch support */
-            arc.addEventListener('touchstart', function(e){
-              e.preventDefault();
-              var tip = document.getElementById('donut-tooltip');
-              var ca = document.getElementById('donut-center-amount');
-              var cl = document.getElementById('donut-center-label');
-              arcsEl.querySelectorAll('circle').forEach(function(a){ a.classList.remove('arc-hovered'); });
-              arcsEl.classList.add('has-hover');
-              arc.classList.add('arc-hovered');
-              if(tip){ tip.textContent = expEntries[idx].name+' — '+fmt(expEntries[idx].amt); tip.classList.add('visible'); }
-              if(ca){ ca.textContent = Math.round(expEntries[idx].amt/donutTotal*100)+'%'; ca.style.color=CHART_COLORS[idx%CHART_COLORS.length]; }
-              if(cl){ cl.textContent = expEntries[idx].name; }
+        /* touch/click interactivity */
+        canvas._expEntries = expEntries;
+        canvas._donutTotal = donutTotal;
+        canvas.onclick = canvas.ontouchend = function(e){
+          e.preventDefault();
+          var rect = canvas.getBoundingClientRect();
+          var clientX = e.touches ? e.changedTouches[0].clientX : e.clientX;
+          var clientY = e.touches ? e.changedTouches[0].clientY : e.clientY;
+          var mx = clientX - rect.left - cx;
+          var my = clientY - rect.top  - cy;
+          var dist = Math.sqrt(mx*mx+my*my);
+          if(dist < r-lineW || dist > r+lineW) return;
+          var angle = Math.atan2(my,mx) + Math.PI/2;
+          if(angle < 0) angle += Math.PI*2;
+          var cumAngle = 0;
+          for(var i=0; i<expEntries.length; i++){
+            var arc = (expEntries[i].amt/donutTotal)*Math.PI*2;
+            if(angle >= cumAngle && angle < cumAngle+arc){
+              var ca=document.getElementById('donut-center-amount');
+              var cl=document.getElementById('donut-center-label');
+              var tip=document.getElementById('donut-tooltip');
+              if(ca){ ca.textContent=Math.round(expEntries[i].amt/donutTotal*100)+'%'; ca.style.color=CHART_COLORS[i%CHART_COLORS.length]; }
+              if(cl){ cl.textContent=expEntries[i].name; }
+              if(tip){ tip.textContent=expEntries[i].name+' — '+fmt(expEntries[i].amt); tip.classList.add('visible'); }
               setTimeout(function(){
-                arcsEl.classList.remove('has-hover');
-                arc.classList.remove('arc-hovered');
-                if(tip) tip.classList.remove('visible');
                 if(ca){ ca.textContent=fmt(donutTotal); ca.style.color=''; }
-                if(cl) cl.textContent='סה"כ';
-              }, 2200);
-            },{passive:false});
-          });
-        }, 50);
+                if(cl){ cl.textContent='סה"כ'; }
+                if(tip) tip.classList.remove('visible');
+              }, 2500);
+              break;
+            }
+            cumAngle += arc;
+          }
+        };
+      }
 
-        /* ── insight strip: גדולה ביותר, ממוצע, מספר קטגוריות ── */
+      /* Legacy SVG fallback hidden */
+      arcsEl.innerHTML = '';
+
+        /* ── insight strip ── */
         var insightEl = document.getElementById('chart-insight-strip');
         if(insightEl && expEntries.length){
           var topCat = expEntries[0];
@@ -8291,12 +8315,11 @@ window.deletePhoneIdx = function(i) {
           ].join('');
         } else if(insightEl){ insightEl.innerHTML=''; }
 
-        /* legend with progress bar + % badge */
-        if(legEl) legEl.innerHTML = expEntries.map(function(item,idx){
+        /* legend */
+        if(legEl && expEntries.length) legEl.innerHTML = expEntries.map(function(item,idx){
           var pct   = donutTotal>0 ? item.amt/donutTotal*100 : 0;
           var pctRound = Math.round(pct);
           var color = CHART_COLORS[idx%CHART_COLORS.length];
-          var hexAlpha = Math.round(pct*1.8).toString(16).padStart(2,'0');
           var delay = idx * 0.045;
           return [
             '<div class="chart-legend-item" style="border-color:'+color+'22;animation-delay:'+delay+'s;" ',
@@ -8316,7 +8339,6 @@ window.deletePhoneIdx = function(i) {
             '</div>'
           ].join('');
         }).join('');
-      }
     }
 
         var i18nS = window._i18n_current || window._i18n['he'];
