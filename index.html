@@ -5630,6 +5630,71 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
         }
         body.theme-light #ev-heb-preview { background:rgba(168,85,247,.10) !important; color:#6D28D9 !important; }
 
+        /* ── event tag in tx list ── */
+        .tx-ev-tag {
+          display:inline-flex; align-items:center; gap:4px;
+          padding:2px 9px 2px 7px; border-radius:20px;
+          background:linear-gradient(135deg,rgba(168,85,247,0.18),rgba(124,58,237,0.12));
+          border:1px solid rgba(168,85,247,0.35);
+          font-size:10px; font-weight:800; color:rgba(200,140,255,0.95);
+          cursor:pointer; letter-spacing:.01em;
+          transition:background .18s, transform .15s cubic-bezier(.34,1.56,.64,1);
+        }
+        .tx-ev-tag:active { transform:scale(0.94); }
+
+        /* ── event detail overlay ── */
+        #ev-detail-overlay {
+          position:fixed; inset:0; z-index:2000;
+          background:rgba(0,0,0,0);
+          display:flex; align-items:flex-end; justify-content:center;
+          pointer-events:none; transition:background .3s;
+        }
+        #ev-detail-overlay.open { background:rgba(0,0,0,0.65); pointer-events:all; backdrop-filter:blur(6px); }
+        #ev-detail-sheet {
+          width:100%; max-width:520px; max-height:92vh; overflow-y:auto;
+          background:linear-gradient(180deg,#1A1535 0%,#120E28 100%);
+          border-radius:28px 28px 0 0; border-top:1px solid rgba(168,85,247,0.3);
+          padding:0 0 40px; transform:translateY(110%);
+          transition:transform .38s cubic-bezier(.16,1,.3,1);
+          box-shadow:0 -16px 60px rgba(0,0,0,0.6), 0 -1px 0 rgba(168,85,247,0.2);
+        }
+        #ev-detail-overlay.open #ev-detail-sheet { transform:translateY(0); }
+        #ev-detail-header {
+          position:relative; padding:28px 22px 22px;
+          border-bottom:1px solid rgba(255,255,255,0.06); overflow:hidden;
+        }
+        #ev-detail-header::before {
+          content:''; position:absolute; inset:0;
+          background:radial-gradient(ellipse at 70% 0%, rgba(168,85,247,0.18) 0%, transparent 65%);
+          pointer-events:none;
+        }
+        #ev-detail-drag { width:36px; height:4px; border-radius:2px; background:rgba(255,255,255,0.18); margin:0 auto 20px; }
+        #ev-detail-emoji-wrap {
+          width:64px; height:64px; border-radius:20px;
+          background:rgba(168,85,247,0.15); border:1.5px solid rgba(168,85,247,0.3);
+          display:flex; align-items:center; justify-content:center;
+          font-size:30px; margin-bottom:14px; box-shadow:0 8px 28px rgba(168,85,247,0.2);
+        }
+        #ev-detail-name { font-family:'Syne',sans-serif; font-size:26px; font-weight:900; color:#fff; line-height:1.1; margin-bottom:6px; }
+        #ev-detail-date-row { display:flex; align-items:center; gap:8px; font-size:12px; color:rgba(255,255,255,0.45); font-weight:600; }
+        #ev-detail-countdown { display:inline-flex; align-items:center; gap:5px; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:900; margin-top:10px; }
+        #ev-detail-stats { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; padding:18px 16px 0; }
+        .ev-det-stat { padding:14px 12px; border-radius:16px; text-align:center; border:1px solid rgba(255,255,255,0.07); background:rgba(255,255,255,0.03); }
+        .ev-det-stat-label { font-size:9px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,0.35); margin-bottom:6px; }
+        .ev-det-stat-val { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:900; }
+        #ev-detail-budget-section { padding:16px 16px 0; }
+        .ev-det-budget-bar-bg { height:8px; border-radius:4px; background:rgba(255,255,255,0.07); overflow:hidden; margin:8px 0 5px; }
+        .ev-det-budget-bar-fill { height:100%; border-radius:4px; transition:width .8s cubic-bezier(.16,1,.3,1); }
+        #ev-detail-tx-section { padding:16px 16px 0; }
+        .ev-det-section-title { font-size:10px; font-weight:900; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.05); }
+        .ev-det-tx-item { display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:12px; margin-bottom:6px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.055); }
+        .ev-det-tx-left { display:flex; flex-direction:column; gap:3px; }
+        .ev-det-tx-desc { font-size:13px; font-weight:700; color:rgba(255,255,255,0.88); }
+        .ev-det-tx-meta { font-size:10px; color:rgba(255,255,255,0.35); }
+        .ev-det-tx-amt { font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:900; }
+        #ev-detail-close { position:absolute; top:22px; left:18px; width:34px; height:34px; border-radius:50%; border:none; background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.6); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .18s; }
+        #ev-detail-close:active { background:rgba(255,255,255,0.14); }
+
         /* save btn */
         .ev-save-btn {
           width:100%; padding:14px; border-radius:14px; border:none; cursor:pointer;
@@ -5778,7 +5843,7 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
           background:radial-gradient(ellipse at 50% 50%, rgba(0,229,255,0.055) 0%, transparent 65%);
           pointer-events:none;
         }
-        #donut-svg { width:220px; height:220px; transform:rotate(-90deg); }
+        #donut-svg { width:220px; height:220px; transform:rotate(-90deg); cursor:pointer; }
         #donut-center {
           position:absolute; inset:0; display:flex; flex-direction:column;
           align-items:center; justify-content:center; pointer-events:none;
@@ -5790,8 +5855,32 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
         #donut-center-amount {
           font-family:'JetBrains Mono',monospace; font-size:23px; font-weight:900;
           color:#fff; text-shadow:0 0 20px rgba(0,229,255,0.38); line-height:1;
+          transition: all .25s ease;
         }
         #donut-center-sub { font-size:10px; color:rgba(255,100,100,0.70); font-weight:700; margin-top:4px; }
+        #donut-tooltip {
+          position:absolute; bottom:-36px; left:50%; transform:translateX(-50%);
+          background:rgba(20,18,40,0.95); border:1px solid rgba(255,255,255,0.12);
+          border-radius:10px; padding:5px 12px; font-size:12px; font-weight:700;
+          color:#fff; white-space:nowrap; pointer-events:none; opacity:0;
+          transition:opacity .2s; backdrop-filter:blur(8px); z-index:10;
+        }
+        #donut-tooltip.visible { opacity:1; }
+        /* insight strip */
+        #chart-insight-strip {
+          display:flex; gap:8px; margin:10px 0 4px; flex-wrap:wrap;
+        }
+        .insight-chip {
+          flex:1; min-width:0; padding:8px 11px; border-radius:12px;
+          background:rgba(255,255,255,0.035); border:1px solid rgba(255,255,255,0.07);
+          display:flex; flex-direction:column; gap:3px; text-align:center;
+        }
+        .insight-chip-label { font-size:9px; font-weight:800; letter-spacing:.08em; color:rgba(255,255,255,0.35); text-transform:uppercase; }
+        .insight-chip-val { font-size:13px; font-weight:900; font-family:'JetBrains Mono',monospace; }
+        /* donut arc hover */
+        #donut-arcs circle { transition: opacity .2s, stroke-width .2s; }
+        #donut-arcs.has-hover circle { opacity: .35; }
+        #donut-arcs.has-hover circle.arc-hovered { opacity:1; stroke-width:28 !important; }
 
         /* ── Legend premium cards ── */
         .chart-legend { display:flex; flex-direction:column; gap:7px; margin-top:18px; }
@@ -5907,7 +5996,9 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
             <div id="donut-center-amount">₪0</div>
             <div id="donut-center-sub"></div>
           </div>
+          <div id="donut-tooltip"></div>
         </div>
+        <div id="chart-insight-strip"></div>
         <div id="chart-exp-legend" class="chart-legend"></div>
       </div>
 
@@ -7756,6 +7847,13 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
       var isInc=item._t==='income', notLast=idx<all.length-1;
       var catHtml=item.category?'<span class="cat-tag">'+item.category+'</span>':'';
       var waHtml = item.source === 'WhatsApp' ? '<span class="wa-tag"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> וואטסאפ</span>' : '';
+      /* event tag */
+      var evTag = '';
+      if(item.eventId && window._evList){
+        var ev = window._evList.find(function(e){ return e.id===item.eventId; });
+        if(ev) evTag = '<span class="tx-ev-tag" onclick="event.stopPropagation();openEvDetail(\''+ev.id+'\')">'+
+          (ev.emoji||'🎊')+' '+ev.name+'</span>';
+      }
       var itemJson = JSON.stringify(item).replace(/'/g,"&#39;").replace(/"/g,"&quot;");
       return '<div class="tx-row modern-hover"'+(notLast?' style="border-bottom:1px solid rgba(255,255,255,0.04)"':'')+'>'+
         '<div style="display:flex;align-items:center;gap:11px">'+
@@ -7768,7 +7866,9 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
         '<p class="mono" style="font-size:10px;color:var(--muted);margin-top:2px">'+
         parseDate(item.date).toLocaleDateString('he-IL',{day:'numeric',month:'long'})+
         ' · '+parseDate(item.date).toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})+
-        '</p></div></div>'+
+        '</p>'+
+        (evTag?'<p style="margin-top:5px;">'+evTag+'</p>':'')+
+        '</div></div>'+
         '<div style="display:flex;align-items:center;gap:8px">'+
         '<span class="mono" style="font-weight:700;font-size:13px;color:'+(isInc?'var(--green)':'var(--text)')+'">'+
         (isInc?'+':'−')+fmt(item.amount)+'</span>'+
@@ -8116,6 +8216,79 @@ window.deletePhoneIdx = function(i) {
         });
         arcsEl.innerHTML = svgArcs;
 
+        /* ── hover interactivity on arcs ── */
+        setTimeout(function(){
+          var arcs = arcsEl.querySelectorAll('circle');
+          arcs.forEach(function(arc, idx){
+            arc.setAttribute('data-idx', idx);
+            arc.style.cursor = 'pointer';
+            arc.addEventListener('mouseenter', function(){
+              arcsEl.classList.add('has-hover');
+              arc.classList.add('arc-hovered');
+              var tip = document.getElementById('donut-tooltip');
+              var ca = document.getElementById('donut-center-amount');
+              var cl = document.getElementById('donut-center-label');
+              if(tip){ tip.textContent = expEntries[idx].name+' — '+fmt(expEntries[idx].amt); tip.classList.add('visible'); }
+              if(ca){ ca.textContent = Math.round(expEntries[idx].amt/donutTotal*100)+'%'; ca.style.color=CHART_COLORS[idx%CHART_COLORS.length]; }
+              if(cl){ cl.textContent = expEntries[idx].name; }
+            });
+            arc.addEventListener('mouseleave', function(){
+              arcsEl.classList.remove('has-hover');
+              arc.classList.remove('arc-hovered');
+              var tip = document.getElementById('donut-tooltip');
+              var ca = document.getElementById('donut-center-amount');
+              var cl = document.getElementById('donut-center-label');
+              if(tip) tip.classList.remove('visible');
+              if(ca){ ca.textContent = fmt(donutTotal); ca.style.color=''; }
+              if(cl){ cl.textContent = 'סה"כ'; }
+            });
+            /* touch support */
+            arc.addEventListener('touchstart', function(e){
+              e.preventDefault();
+              var tip = document.getElementById('donut-tooltip');
+              var ca = document.getElementById('donut-center-amount');
+              var cl = document.getElementById('donut-center-label');
+              arcsEl.querySelectorAll('circle').forEach(function(a){ a.classList.remove('arc-hovered'); });
+              arcsEl.classList.add('has-hover');
+              arc.classList.add('arc-hovered');
+              if(tip){ tip.textContent = expEntries[idx].name+' — '+fmt(expEntries[idx].amt); tip.classList.add('visible'); }
+              if(ca){ ca.textContent = Math.round(expEntries[idx].amt/donutTotal*100)+'%'; ca.style.color=CHART_COLORS[idx%CHART_COLORS.length]; }
+              if(cl){ cl.textContent = expEntries[idx].name; }
+              setTimeout(function(){
+                arcsEl.classList.remove('has-hover');
+                arc.classList.remove('arc-hovered');
+                if(tip) tip.classList.remove('visible');
+                if(ca){ ca.textContent=fmt(donutTotal); ca.style.color=''; }
+                if(cl) cl.textContent='סה"כ';
+              }, 2200);
+            },{passive:false});
+          });
+        }, 50);
+
+        /* ── insight strip: גדולה ביותר, ממוצע, מספר קטגוריות ── */
+        var insightEl = document.getElementById('chart-insight-strip');
+        if(insightEl && expEntries.length){
+          var topCat = expEntries[0];
+          var avgExp = donutTotal / expEntries.length;
+          insightEl.innerHTML = [
+            '<div class="insight-chip">',
+              '<span class="insight-chip-label">🏆 הגדולה</span>',
+              '<span class="insight-chip-val" style="color:'+CHART_COLORS[0]+';">'+topCat.name+'</span>',
+              '<span style="font-size:11px;color:rgba(255,255,255,0.45);">'+fmt(topCat.amt)+'</span>',
+            '</div>',
+            '<div class="insight-chip">',
+              '<span class="insight-chip-label">📊 ממוצע</span>',
+              '<span class="insight-chip-val" style="color:#00E5FF;">'+fmt(Math.round(avgExp))+'</span>',
+              '<span style="font-size:11px;color:rgba(255,255,255,0.45);">לקטגוריה</span>',
+            '</div>',
+            '<div class="insight-chip">',
+              '<span class="insight-chip-label">🗂 קטגוריות</span>',
+              '<span class="insight-chip-val" style="color:#AB47BC;">'+expEntries.length+'</span>',
+              '<span style="font-size:11px;color:rgba(255,255,255,0.45);">פעילות</span>',
+            '</div>',
+          ].join('');
+        } else if(insightEl){ insightEl.innerHTML=''; }
+
         /* legend with progress bar + % badge */
         if(legEl) legEl.innerHTML = expEntries.map(function(item,idx){
           var pct   = donutTotal>0 ? item.amt/donutTotal*100 : 0;
@@ -8144,13 +8317,13 @@ window.deletePhoneIdx = function(i) {
       }
     }
 
-        var s = window._i18n_current || window._i18n['he'];
+        var i18nS = window._i18n_current || window._i18n['he'];
         var chartExpBycat = document.querySelector('[data-i18n="chart_by_cat"]');
-        if(chartExpBycat) chartExpBycat.textContent = s.chart_by_cat;
+        if(chartExpBycat) chartExpBycat.textContent = i18nS.chart_by_cat;
         var chartIncCat = document.querySelector('[data-i18n="chart_inc_cat"]');
-        if(chartIncCat) chartIncCat.textContent = s.chart_inc_cat;
+        if(chartIncCat) chartIncCat.textContent = i18nS.chart_inc_cat;
         var chartBudget = document.querySelector('[data-i18n="chart_budget"]');
-        if(chartBudget) chartBudget.textContent = s.chart_budget;
+        if(chartBudget) chartBudget.textContent = i18nS.chart_budget;
     var incByCat={};
     incomes.filter(function(i){ return parseDate(i.date)>=s; }).forEach(function(i){
       var k=i.category||'ללא קטגוריה'; incByCat[k]=(incByCat[k]||0)+Number(i.amount||0);
@@ -8619,17 +8792,19 @@ window.deletePhoneIdx = function(i) {
       unsubs.push(uRef.collection(name).onSnapshot(function(s){
         assign(s.docs.map(function(d){ return Object.assign({id:d.id},d.data()); }));
         renderAll(); if(extra) extra();
+        setTimeout(function(){ if(typeof window._renderEvList==='function') window._renderEvList(); },0);
       }, function(){ /* if blocked, fallback to get() once */
         uRef.collection(name).get().then(function(s){
           assign(s.docs.map(function(d){ return Object.assign({id:d.id},d.data()); }));
           renderAll(); if(extra) extra();
+          setTimeout(function(){ if(typeof window._renderEvList==='function') window._renderEvList(); },0);
         }).catch(function(){});
       }));
     }
 
     snapCol('categories', function(v){ userCategories=v; renderCategoriesList(); renderCategoriesList2(); });
-    snapCol('incomes',    function(v){ incomes=v; window.incomes=v; setTimeout(function(){ if(typeof renderEvList==='function') renderEvList(); },0); });
-    snapCol('expenses',   function(v){ expenses=v; window.expenses=v; setTimeout(function(){ if(typeof renderEvList==='function') renderEvList(); },0); });
+    snapCol('incomes',    function(v){ incomes=v; window.incomes=v; });
+    snapCol('expenses',   function(v){ expenses=v; window.expenses=v; });
     snapCol('fixed_settings', function(v){ fixedExpenses=v; }, renderFixedLists);
     snapCol('fixed_incomes',  function(v){ fixedIncomes=v; },  renderFixedLists);
     snapCol('bimonthly_items', function(v){ bimonthlyItems=v; renderBimonthlyList(); });
@@ -11278,8 +11453,15 @@ window.exportUserData = function() {
     }
 
     var amount = parseFloat(result.amount);
+    /* אם לא זוהה — בדוק שדה ידני */
     if (!amount || isNaN(amount)) {
-      alert('לא זוהה סכום תקין.');
+      var manualInp = document.getElementById('scan-manual-amount');
+      if(manualInp) amount = parseFloat(manualInp.value);
+    }
+    if (!amount || isNaN(amount)) {
+      window.toast&&window.toast('נא להזין סכום','error');
+      var manualInp2 = document.getElementById('scan-manual-amount');
+      if(manualInp2){ manualInp2.style.borderColor='rgba(255,80,80,0.7)'; manualInp2.focus(); }
       return;
     }
 
@@ -11391,7 +11573,16 @@ window.exportUserData = function() {
               '<div style="font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:3px;">🤖 זוהה על ידי AI</div>'+
               (r.amount
                 ? '<div style="font-family:\'JetBrains Mono\',monospace;font-size:24px;font-weight:900;color:'+tColor+';text-shadow:0 0 16px '+tColor+'55;line-height:1;">'+tSym+' ₪'+Number(r.amount).toLocaleString('he-IL')+'</div>'
-                : '<div style="font-size:13px;color:rgba(255,200,0,0.85);font-weight:700;">⚠️ לא זוהה סכום</div>')+
+                : '<div style="font-size:12px;color:rgba(255,200,0,0.85);font-weight:700;margin-bottom:6px;">⚠️ לא זוהה סכום — הכנס ידנית:</div>'+
+                  '<div style="display:flex;align-items:center;gap:7px;">'+
+                    '<span style="font-size:16px;font-weight:900;color:'+tColor+';">₪</span>'+
+                    '<input id="scan-manual-amount" type="number" inputmode="decimal" min="0" placeholder="0.00" '+
+                      'oninput="window._scanResult.amount=parseFloat(this.value)||null;" '+
+                      'style="flex:1;padding:10px 12px;border-radius:11px;border:1.5px solid rgba(255,200,0,0.4);'+
+                      'background:rgba(255,200,0,0.07);color:#fff;font-family:\'JetBrains Mono\',monospace;'+
+                      'font-size:18px;font-weight:900;outline:none;width:100%;"/>'+
+                  '</div>'
+                )+
               '<div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.60);margin-top:3px;">'+escHtml(r.description||'—')+'</div>'+
             '</div>'+
           '</div>'+
@@ -11415,9 +11606,30 @@ window.exportUserData = function() {
             '</div>'+
           '</div>'+
 
-          /* ── בחירת קטגוריה ── */
+          /* ── בחירת קטגוריה + כפתור הוספה ── */
           '<div>'+
-            '<div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:7px;">קטגוריה</div>'+
+            '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;">'+
+              '<div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.28);">קטגוריה</div>'+
+              '<button onclick="window._openScanAddCat()" style="'+
+                'display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:8px;border:1px solid rgba(0,229,255,0.3);'+
+                'background:rgba(0,229,255,0.07);color:#00E5FF;font-family:\'Syne\',sans-serif;font-size:10px;font-weight:800;cursor:pointer;">'+
+                '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> קטגוריה חדשה'+
+              '</button>'+
+            '</div>'+
+            '<div id="scan-add-cat-row" style="display:none;margin-bottom:8px;">'+
+              '<div style="display:flex;gap:7px;align-items:center;">'+
+                '<input id="scan-new-cat-name" type="text" placeholder="שם קטגוריה חדשה" maxlength="30" style="'+
+                  'flex:1;padding:9px 12px;border-radius:11px;border:1.5px solid rgba(0,229,255,0.3);'+
+                  'background:rgba(0,229,255,0.06);color:#fff;font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;outline:none;"/>'+
+                '<button onclick="window._saveScanNewCat()" style="'+
+                  'padding:9px 14px;border-radius:11px;border:none;cursor:pointer;'+
+                  'background:linear-gradient(135deg,rgba(0,229,255,0.2),rgba(0,229,255,0.1));'+
+                  'color:#00E5FF;font-family:\'Syne\',sans-serif;font-size:12px;font-weight:900;">הוסף</button>'+
+                '<button onclick="document.getElementById(\'scan-add-cat-row\').style.display=\'none\'" style="'+
+                  'padding:9px 10px;border-radius:11px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;'+
+                  'background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.4);font-size:13px;">✕</button>'+
+              '</div>'+
+            '</div>'+
             '<div style="position:relative;">'+
               '<select id="scan-cat-select" onchange="window._scanResult.category=this.value" style="'+
                 'width:100%;padding:12px 14px;border-radius:13px;border:1px solid '+tBdr+';'+
@@ -11460,6 +11672,42 @@ window.exportUserData = function() {
     }
 
     window.renderScanResult = renderScanResult;
+
+    /* ── פתיחת שורת קטגוריה חדשה ── */
+    window._openScanAddCat = function(){
+      var row = document.getElementById('scan-add-cat-row');
+      if(row){ row.style.display = row.style.display==='none'?'block':'none'; }
+      setTimeout(function(){ var inp=document.getElementById('scan-new-cat-name'); if(inp) inp.focus(); },50);
+    };
+
+    /* ── שמירת קטגוריה חדשה מסריקה ── */
+    window._saveScanNewCat = function(){
+      var inp = document.getElementById('scan-new-cat-name');
+      var sel = document.getElementById('scan-cat-select');
+      if(!inp||!sel) return;
+      var name = inp.value.trim();
+      if(!name){ inp.style.borderColor='rgba(255,80,80,0.6)'; return; }
+      var type = (window._scanResult && window._scanResult.type==='income') ? 'income' : 'expense';
+      var user = firebase.auth().currentUser;
+      if(!user){ window.toast&&window.toast('לא מחובר','error'); return; }
+      firebase.firestore().collection('users').doc(user.uid).collection('categories').add({ name:name, type:type })
+        .then(function(ref){
+          /* הוסף option ל-select ובחר אותו */
+          var opt = document.createElement('option');
+          opt.value = name; opt.textContent = name; opt.selected = true;
+          sel.appendChild(opt);
+          if(window._scanResult) window._scanResult.category = name;
+          /* עדכן גם את רשימת הקטגוריות הגלובלית */
+          if(window._appUserCategories) window._appUserCategories.push({id:ref.id, name:name, type:type});
+          /* הסתר שורת הוספה */
+          var row = document.getElementById('scan-add-cat-row');
+          if(row) row.style.display='none';
+          inp.value='';
+          window.toast&&window.toast('קטגוריה נוספה ✓','success');
+        })
+        .catch(function(e){ window.toast&&window.toast('שגיאה: '+e.message,'error'); });
+    };
+
     renderScanResult();
   } // end showResult
 
@@ -12079,6 +12327,122 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
   if(window._appLang && window._appLang !== 'he'){
     window._applyLang(window._appLang);
   }
+
+  /* ══ Event Detail Sheet ══ */
+  window._evList = window._evList || [];
+
+  window.openEvDetail = function(evId){
+    var ev = (window._evList||[]).find(function(e){ return e.id===evId; });
+    if(!ev) return;
+
+    var overlay = document.getElementById('ev-detail-overlay');
+    if(!overlay) return;
+
+    var stats = window.calcEvStats ? window.calcEvStats(evId) : {income:0,expense:0,net:0};
+    var budget = Number(ev.budget||0);
+    var hasBudget = budget>0;
+
+    /* countdown */
+    var cdInfo = null;
+    if(ev.date && typeof window.calcDaysTo === 'function') cdInfo = window.calcDaysTo(ev);
+
+    var fmt2 = window.fmt || function(n){ return '₪'+Number(n).toLocaleString('he-IL'); };
+
+    /* header */
+    document.getElementById('ev-detail-emoji-wrap').textContent = ev.emoji||'🎊';
+    document.getElementById('ev-detail-name').textContent = ev.name||'';
+    var dateRow = document.getElementById('ev-detail-date-row');
+    dateRow.innerHTML = ev.date
+      ? '<svg width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='4' width='18' height='18' rx='2'/><line x1='16' y1='2' x2='16' y2='6'/><line x1='8' y1='2' x2='8' y2='6'/><line x1='3' y1='10' x2='21' y2='10'/></svg>'+ev.date
+      : 'ללא תאריך';
+
+    var cdEl = document.getElementById('ev-detail-countdown');
+    if(cdInfo){
+      var icon, msg, bg, col;
+      if(cdInfo.today){ icon='🎉'; msg='היום!'; bg='rgba(0,230,118,0.15)'; col='#00E676'; }
+      else if(cdInfo.past){ icon='📅'; msg='לפני '+cdInfo.days+(cdInfo.days===1?' יום':' ימים'); bg='rgba(255,255,255,0.07)'; col='rgba(255,255,255,0.4)'; }
+      else if(cdInfo.days<=7){ icon='🔥'; msg='בעוד '+cdInfo.days+(cdInfo.days===1?' יום':' ימים'); bg='rgba(255,150,0,0.15)'; col='#FF9800'; }
+      else if(cdInfo.days<=30){ icon='⏳'; msg='בעוד '+cdInfo.days+' ימים'; bg='rgba(0,229,255,0.12)'; col='#00E5FF'; }
+      else{ icon='📅'; msg='בעוד '+cdInfo.days+' ימים'; bg='rgba(168,85,247,0.12)'; col='#AB47BC'; }
+      cdEl.style.cssText='background:'+bg+';color:'+col+';border:1px solid '+col+'44;';
+      cdEl.innerHTML = icon+' '+msg;
+      cdEl.style.display='inline-flex';
+    } else { cdEl.style.display='none'; }
+
+    /* stats grid */
+    var netColor = stats.net>=0?'#00E676':'#FF6080';
+    document.getElementById('ev-detail-stats').innerHTML = [
+      '<div class='ev-det-stat'>',
+        '<div class='ev-det-stat-label'>💰 הכנסות</div>',
+        '<div class='ev-det-stat-val' style='color:#00E676;'>'+fmt2(stats.income)+'</div>',
+      '</div>',
+      '<div class='ev-det-stat'>',
+        '<div class='ev-det-stat-label'>💸 הוצאות</div>',
+        '<div class='ev-det-stat-val' style='color:#FF6080;'>'+fmt2(stats.expense)+'</div>',
+      '</div>',
+      '<div class='ev-det-stat'>',
+        '<div class='ev-det-stat-label'>⚖️ יתרה</div>',
+        '<div class='ev-det-stat-val' style='color:'+netColor+';'>'+fmt2(stats.net)+'</div>',
+      '</div>',
+    ].join('');
+
+    /* budget bar */
+    var bSection = document.getElementById('ev-detail-budget-section');
+    if(hasBudget){
+      var pct = Math.min(stats.expense/budget*100,100);
+      var barCol = pct>=100?'#FF1744':pct>80?'#FF9800':'#00E676';
+      var remaining = budget - stats.expense;
+      bSection.innerHTML = [
+        '<div class='ev-det-section-title'>🎯 תקציב אירוע</div>',
+        '<div style='display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:4px;'>',
+          '<span>'+fmt2(stats.expense)+' מתוך '+fmt2(budget)+'</span>',
+          '<span style='color:'+barCol+';font-weight:800;'>'+Math.round(pct)+'%</span>',
+        '</div>',
+        '<div class='ev-det-budget-bar-bg'>',
+          '<div class='ev-det-budget-bar-fill' style='width:'+pct.toFixed(1)+'%;background:'+barCol+';box-shadow:0 0 8px '+barCol+'88;'></div>',
+        '</div>',
+        pct>=100
+          ? '<div style='font-size:11px;color:#FF6080;font-weight:800;margin-top:4px;'>⚠️ גירעון: '+fmt2(stats.expense-budget)+'</div>'
+          : '<div style='font-size:11px;color:rgba(255,255,255,0.38);margin-top:4px;'>נותר: '+fmt2(remaining)+'</div>',
+      ].join('');
+    } else { bSection.innerHTML=''; }
+
+    /* transactions */
+    var allTx = [];
+    (window.incomes||[]).forEach(function(t){ if(t.eventId===evId) allTx.push(Object.assign({},t,{_t:'income'})); });
+    (window.expenses||[]).forEach(function(t){ if(t.eventId===evId) allTx.push(Object.assign({},t,{_t:'expense'})); });
+    allTx.sort(function(a,b){ return new Date(b.date)-new Date(a.date); });
+
+    var txSection = document.getElementById('ev-detail-tx-section');
+    if(allTx.length){
+      txSection.innerHTML = '<div class='ev-det-section-title'>📋 תנועות ('+allTx.length+')</div>' +
+        allTx.map(function(t){
+          var isInc = t._t==='income';
+          var d = new Date(t.date);
+          var dStr = isNaN(d)?t.date:d.toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'});
+          return [
+            '<div class='ev-det-tx-item'>',
+              '<div class='ev-det-tx-left'>',
+                '<span class='ev-det-tx-desc'>'+(t.description||t.category||'—')+'</span>',
+                '<span class='ev-det-tx-meta'>'+(t.category?'<span style='background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:6px;'>'+t.category+'</span> · ':'')+dStr+'</span>',
+              '</div>',
+              '<span class='ev-det-tx-amt' style='color:'+(isInc?'#00E676':'#FF6080')+';'>',
+                (isInc?'+':'−')+fmt2(t.amount),
+              '</span>',
+            '</div>'
+          ].join('');
+        }).join('');
+    } else {
+      txSection.innerHTML = '<div class='ev-det-section-title'>📋 תנועות</div><div style='text-align:center;padding:20px;color:rgba(255,255,255,0.28);font-size:13px;'>אין תנועות לאירוע זה עדיין</div>';
+    }
+
+    overlay.classList.add('open');
+  };
+
+  window.closeEvDetail = function(){
+    var o = document.getElementById('ev-detail-overlay');
+    if(o) o.classList.remove('open');
+  };
 })();
 </script>
 
@@ -12320,15 +12684,19 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
   }
 
   /* ── listener ── */
+  var _evListenerStarted = false;
   function startEvListener(){
+    if(_evListenerStarted && _evUnsub) return; /* כבר פועל */
+    _evListenerStarted = true;
     if(_evUnsub){ try{ _evUnsub(); }catch(e){} }
     var col = evCol();
-    if(!col) return;
+    if(!col){ _evListenerStarted=false; return; }
     _evUnsub = col.orderBy('createdAt','desc').onSnapshot(function(snap){
       _evList = snap.docs.map(function(d){ var data=d.data(); data.id=d.id; return data; });
+      window._evList = _evList;
       renderEvList();
       _reloadModalEvents();
-    }, function(){});
+    }, function(){ _evListenerStarted=false; });
   }
 
   /* ── חישוב סטטיסטיקות לפי אירוע ── */
@@ -12342,6 +12710,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
 
   /* ── render ── */
   function renderEvList(){
+    window._renderEvList = renderEvList; /* חשוף גלובלית */
     var el = document.getElementById('ev-list');
     if(!el) return;
     if(!_evList.length){
@@ -12660,11 +13029,15 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
   }
   window._reloadModalEvents=_reloadModalEvents;
 
-  /* ── hook: renderAll — לעדכן כרטיסי אירועים כש-incomes/expenses מתרעננים ── */
+  window._renderEvList = renderEvList;
+  window.calcEvStats   = calcEvStats;
+  window.calcDaysTo    = calcDaysTo;
+
+  /* ── hook: renderAll — גיבוי נוסף ── */
   var _origRA=window.renderAll;
   window.renderAll=function(){
     if(_origRA) _origRA.apply(this,arguments);
-    setTimeout(function(){ if(typeof renderEvList==='function') renderEvList(); },0);
+    setTimeout(function(){ if(typeof window._renderEvList==='function') window._renderEvList(); },0);
   };
 
   /* ── hook: auth ready ── */
@@ -12677,5 +13050,22 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
 
 })();
 </script>
+
+<!-- ══ Event Detail Overlay ══ -->
+<div id="ev-detail-overlay" onclick="if(event.target===this)closeEvDetail()">
+  <div id="ev-detail-sheet">
+    <div id="ev-detail-header">
+      <div id="ev-detail-drag"></div>
+      <button id="ev-detail-close" onclick="closeEvDetail()">✕</button>
+      <div id="ev-detail-emoji-wrap"></div>
+      <div id="ev-detail-name"></div>
+      <div id="ev-detail-date-row"></div>
+      <div id="ev-detail-countdown"></div>
+    </div>
+    <div id="ev-detail-stats"></div>
+    <div id="ev-detail-budget-section"></div>
+    <div id="ev-detail-tx-section"></div>
+  </div>
+</div>
 </body>
 </html>
