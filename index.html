@@ -7696,12 +7696,11 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
 
   /* ── Nav ── */
   window.switchView = function(v){
-    window.scrollTo(0, 0); /* איפוס גלילה בכל מעבר בין views */
+    window.scrollTo(0, 0);
     hide('view-dashboard'); hide('view-settings'); hide('view-categories'); hide('view-charts');
-    $('nav-dashboard').classList.remove('active');
-    $('nav-settings').classList.remove('active');
-    $('nav-categories').classList.remove('active');
-    if($('nav-charts')) $('nav-charts').classList.remove('active');
+    ['nav-dashboard','nav-settings','nav-categories','nav-charts'].forEach(function(id){
+      var el=$(id); if(el) el.classList.remove('active');
+    });
     if (v === 'dashboard'){
       show('view-dashboard'); $('nav-dashboard').classList.add('active');
     } else if (v === 'categories'){
@@ -7710,7 +7709,8 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
     } else if (v === 'charts'){
       show('view-charts');
       if($('nav-charts')) $('nav-charts').classList.add('active');
-      renderCharts();
+      /* נתן ל-DOM להתרענן לפני ציור */
+      setTimeout(function(){ renderCharts(); }, 30);
     } else {
       show('view-settings'); $('nav-settings').classList.add('active');
       renderFixedLists(); renderCategoriesList(); renderPhonesList();
@@ -8152,7 +8152,10 @@ window.deletePhoneIdx = function(i) {
     el.classList.remove('hidden');
   }
 
-  function renderAll(){ renderStats(); renderTx(); renderCategoriesList2(); renderDashBudgetAlerts(); }
+  function renderAll(){ renderStats(); renderTx(); renderCategoriesList2(); renderDashBudgetAlerts();
+    /* אם תרשימים פתוחים — עדכן גם אותם */
+    if(document.getElementById('view-charts') && !document.getElementById('view-charts').classList.contains('hidden')) renderCharts();
+  }
 
   /* ══════════════════════════════════════════════
      CHARTS
@@ -8170,7 +8173,6 @@ window.deletePhoneIdx = function(i) {
     var label = monthNames[s.getMonth()] + ' ' + s.getFullYear();
     var cycleLabel = $('charts-cycle-label');
     if (cycleLabel) cycleLabel.textContent = label;
-    var s = cycleStart();
     var totalInc = calcIncome();
     var totalExp = calcFixedExp() + calcVarExp();
     var totalBal = calcBal();
@@ -9718,7 +9720,7 @@ window.deletePhoneIdx = function(i) {
     window._setCurrency = function(code){
       var cur = _currencyList.find(function(x){ return x.code===code; });
       if(!cur) return;
-      _currency = { code:cur.code, symbol:cur.symbol, rate:cur.rate, name:cur.name };
+      _currency = { code:cur.code, symbol:cur.symbol, rate:cur.rate, name:cur.name, flag:cur.flag||'' };
       isUSD = (code !== 'ILS');
       try { localStorage.setItem('ao_currency', JSON.stringify(_currency)); } catch(e){}
       if(typeof window._resetBalanceCounter === 'function') window._resetBalanceCounter();
@@ -11470,6 +11472,8 @@ window.exportUserData = function() {
     // קטגוריה — קודם מה-select (אם פתוח), אחר כך מה-result
     var scanSel = document.getElementById('scan-cat-select');
     var cat = (scanSel && scanSel.value) ? scanSel.value : (result.category || '');
+    var scanEvSel = document.getElementById('scan-event-select');
+    var eventId = (scanEvSel && scanEvSel.value) ? scanEvSel.value : (result.eventId || null);
 
     var dataObj = {
       amount: amount,
@@ -11477,9 +11481,8 @@ window.exportUserData = function() {
       date: new Date().toISOString()
     };
 
-    if (cat) {
-      dataObj.category = cat;
-    }
+    if (cat) dataObj.category = cat;
+    if (eventId) dataObj.eventId = eventId;
 
     var col = (type === 'income') ? 'incomes' : 'expenses';
     
@@ -11647,8 +11650,32 @@ window.exportUserData = function() {
             '</div>'+
           '</div>'+
 
-          /* ── כפתורים ── */
-          '<div style="display:flex;gap:8px;margin-top:2px;">'+
+          /* ── שיוך לאירוע ── */
+          (function(){
+            var evList = window._evList || [];
+            if(!evList.length) return '';
+            var opts = '<option value="">— ללא אירוע —</option>' +
+              evList.map(function(ev){
+                var sel = (r.eventId && r.eventId===ev.id) ? 'selected' : '';
+                return '<option value="'+ev.id+'" '+sel+'>'+(ev.emoji||'🎊')+' '+ev.name+'</option>';
+              }).join('');
+            return '<div>'+
+              '<div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:7px;">🎊 שיוך לאירוע</div>'+
+              '<div style="position:relative;">'+
+                '<select id="scan-event-select" onchange="window._scanResult.eventId=this.value||null" style="'+
+                  'width:100%;padding:12px 14px;border-radius:13px;'+
+                  'border:1px solid rgba(168,85,247,0.3);'+
+                  'background:rgba(168,85,247,0.05);color:#fff;'+
+                  'font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;'+
+                  'appearance:none;-webkit-appearance:none;outline:none;cursor:pointer;">'+
+                  opts+
+                '</select>'+
+                '<div style="position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:rgba(168,85,247,0.8);">'+
+                  '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'+
+                '</div>'+
+              '</div>'+
+            '</div>';
+          })()+
             '<button onclick="window._scanResult&&saveScannedTransaction(window._scanResult)" style="'+
               'flex:1;padding:13px;border-radius:13px;border:none;cursor:pointer;'+
               'background:linear-gradient(135deg,'+tBg+',rgba(0,0,0,0.1));border:1px solid '+tBdr+';'+
@@ -12353,7 +12380,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     document.getElementById('ev-detail-name').textContent = ev.name||'';
     var dateRow = document.getElementById('ev-detail-date-row');
     dateRow.innerHTML = ev.date
-      ? '<svg width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='4' width='18' height='18' rx='2'/><line x1='16' y1='2' x2='16' y2='6'/><line x1='8' y1='2' x2='8' y2='6'/><line x1='3' y1='10' x2='21' y2='10'/></svg>'+ev.date
+      ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> '+ev.date
       : 'ללא תאריך';
 
     var cdEl = document.getElementById('ev-detail-countdown');
