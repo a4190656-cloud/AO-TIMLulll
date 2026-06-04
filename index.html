@@ -11116,15 +11116,34 @@ window.exportUserData = function() {
     var titleEl   = document.getElementById('_msr-title');
     var subEl     = document.getElementById('_msr-sub');
 
+    /* ── גלילה: מנע scroll על body, אפשר רק על _msr-list ── */
+    var _savedBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    sheet.addEventListener('touchmove', function(e){
+      /* אפשר scroll רק אם ה-touch מתחיל בתוך listEl */
+      if(listEl && listEl.contains(e.target)){
+        /* אם ה-list יכול לגלול — אפשר */
+        var canScrollDown = listEl.scrollTop < (listEl.scrollHeight - listEl.clientHeight);
+        var canScrollUp   = listEl.scrollTop > 0;
+        if(canScrollDown || canScrollUp){ return; } /* אל תבלום */
+      }
+      e.preventDefault();
+    }, { passive: false });
+
+    /* שחזר overflow כשה-sheet נסגר */
+    var _origClose = function(){
+      document.body.style.overflow = _savedBodyOverflow;
+      sheet.style.transform = 'translateY(100%)';
+      setTimeout(function(){ if(sheet.parentNode) sheet.remove(); }, 420);
+    };
+
     /* animate in */
     requestAnimationFrame(function(){
       sheet.style.transform = 'translateY(0)';
     });
 
-    function closeSheet(){
-      sheet.style.transform = 'translateY(100%)';
-      setTimeout(function(){ if(sheet.parentNode) sheet.remove(); }, 420);
-    }
+    function closeSheet(){ _origClose(); }
     document.getElementById('_msr-close').onclick = closeSheet;
 
     /* ── helpers ── */
@@ -11191,7 +11210,7 @@ window.exportUserData = function() {
         /* ── header row (always visible, tap to expand/collapse) ── */
         '<div onclick="window._msrToggle('+i+')" style="',
           'display:flex;align-items:center;gap:11px;padding:13px 14px;cursor:pointer;',
-          '-webkit-tap-highlight-color:transparent;touch-action:manipulation;',
+        '-webkit-tap-highlight-color:transparent;',
         '">',
           /* type icon */
           '<div style="width:40px;height:40px;flex-shrink:0;border-radius:13px;',
