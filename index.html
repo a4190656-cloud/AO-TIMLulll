@@ -8238,12 +8238,11 @@ window.deletePhoneIdx = function(i) {
       : expEntries.map(function(item,idx){
           var col=CHART_COLORS[idx%CHART_COLORS.length];
           var pct=donutTotal>0?item.amt/donutTotal*100:0;
-          return '<div class="ch-leg-row" style="border-color:'+col+'18;" ontouchstart="this.style.background=''+col+'10'" ontouchend="this.style.background=''" onmouseenter="this.style.background=''+col+'10';this.style.borderColor=''+col+'33'" onmouseleave="this.style.background='';this.style.borderColor=''+col+'18'">'+
+          return '<div class="ch-leg-row" style="border-color:'+col+'18;">'+
             '<div class="ch-leg-dot" style="background:'+col+';box-shadow:0 0 7px '+col+'88;"></div>'+
             '<span class="ch-leg-name">'+item.name+'</span>'+
             '<span class="ch-leg-amt" style="color:'+col+';">'+fmt(item.amt)+'</span>'+
             '<span class="ch-leg-pct" style="background:'+col+'18;color:'+col+';">'+Math.round(pct)+'%</span>'+
-            '<div class="ch-leg-bar-track" style="display:none"></div>'+
           '</div>';
         }).join('');
 
@@ -9595,18 +9594,18 @@ window.deletePhoneIdx = function(i) {
               'color:'+(isActive?'#00E5FF':'rgba(255,255,255,0.82)')+';',
               'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">',
               c.name,
-            '</div>',
+            "</div>",
             '<div style="font-size:10px;color:rgba(255,255,255,0.32);margin-top:1px;font-family:\'JetBrains Mono\',monospace;">',
               rateDisp,
-            '</div>',
-          '</div>',
+            "</div>",
+          "</div>",
           '<div style="display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;gap:2px;">',
             '<span style="font-family:\'JetBrains Mono\',monospace;font-size:14px;font-weight:900;',
               'color:'+(isActive?'#00E5FF':'rgba(255,255,255,0.55)')+';min-width:28px;text-align:left;">',
               c.symbol,
             '</span>',
             isActive ? '<div style="width:6px;height:6px;border-radius:50%;background:#00E5FF;box-shadow:0 0 6px #00E5FF;"></div>' : '',
-          '</div>',
+          "</div>",
         '</button>'
       ].join('');
     }).join('');
@@ -9630,14 +9629,14 @@ window.deletePhoneIdx = function(i) {
             '<div>',
               '<div style="font-family:\'Syne\',sans-serif;font-size:16px;font-weight:900;color:#fff;">בחר מטבע</div>',
               '<div style="font-size:11px;color:rgba(255,255,255,0.32);margin-top:2px;" id="_cur-rate-note">שערים עדכניים</div>',
-            '</div>',
+            "</div>",
             '<button id="_cur-close" style="width:32px;height:32px;border-radius:10px;border:1px solid rgba(255,255,255,0.10);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.40);cursor:pointer;font-size:15px;line-height:1;">✕</button>',
-          '</div>',
-        '</div>',
+          "</div>",
+        "</div>",
         /* scrollable list */
         '<div style="flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:env(safe-area-inset-bottom,0);">',
           rows,
-        '</div>',
+        "</div>",
       '</div>'
     ].join('');
 
@@ -10660,11 +10659,11 @@ window.exportUserData = function() {
         '">',
           '<div style="width:42px;height:42px;border-radius:13px;background:rgba(0,229,255,0.12);border:1px solid rgba(0,229,255,0.28);display:flex;align-items:center;justify-content:center;flex-shrink:0;">',
             '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>',
-          '</div>',
+          "</div>",
           '<div style="text-align:right;flex:1;">',
             '<div style="font-family:\'Syne\',sans-serif;font-size:14px;font-weight:900;color:#00E5FF;">צלם קבלה</div>',
             '<div style="font-family:\'Syne\',sans-serif;font-size:11px;color:rgba(255,255,255,0.38);margin-top:2px;">פתח מצלמה ישירות</div>',
-          '</div>',
+          "</div>",
         '</button>',
 
         /* גלריה / קבצים */
@@ -10678,11 +10677,11 @@ window.exportUserData = function() {
         '">',
           '<div style="width:42px;height:42px;border-radius:13px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);display:flex;align-items:center;justify-content:center;flex-shrink:0;">',
             '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>',
-          '</div>',
+          "</div>",
           '<div style="text-align:right;flex:1;">',
             '<div style="font-family:\'Syne\',sans-serif;font-size:14px;font-weight:900;color:rgba(255,255,255,0.85);">בחר מהגלריה / קבצים</div>',
             '<div style="font-family:\'Syne\',sans-serif;font-size:11px;color:rgba(255,255,255,0.38);margin-top:2px;">PDF, תמונה קיימת</div>',
-          '</div>',
+          "</div>",
         '</button>',
 
         /* ביטול */
@@ -10795,11 +10794,11 @@ window.exportUserData = function() {
         '">',
           '<div style="width:36px;height:36px;border-radius:11px;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;">',
             fileIcon(f.type),
-          '</div>',
+          "</div>",
           '<div style="flex:1;min-width:0;">',
-            '<div style="font-family:\'Syne\',sans-serif;font-size:12px;font-weight:800;color:rgba(255,255,255,0.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(fmtName(f.name)) + '</div>',
-            '<div style="font-size:10px;color:rgba(255,255,255,0.30);margin-top:2px;">' + fmtSize(f.size) + '</div>',
-          '</div>',
+            '<div style="font-family:\'Syne\',sans-serif;font-size:12px;font-weight:800;color:rgba(255,255,255,0.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(fmtName(f.name)) + "</div>",
+            '<div style="font-size:10px;color:rgba(255,255,255,0.30);margin-top:2px;">' + fmtSize(f.size) + "</div>",
+          "</div>",
           '<button onclick="window._cfRemove(' + i + ')" style="',
             'width:28px;height:28px;border-radius:8px;',
             'border:1px solid rgba(255,255,255,0.10);',
@@ -10845,14 +10844,14 @@ window.exportUserData = function() {
           '<div>',
             '<div style="font-family:\'Syne\',sans-serif;font-size:16px;font-weight:900;color:#fff;" id="_cf-title">סריקת ' + files.length + ' קבצים</div>',
             '<div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px;">AI יזהה סכום וקטגוריה לכל קובץ</div>',
-          '</div>',
-          '<div style="background:rgba(0,229,255,0.10);border:1px solid rgba(0,229,255,0.25);border-radius:10px;padding:4px 10px;font-family:\'JetBrains Mono\',monospace;font-size:12px;font-weight:800;color:var(--cyan);" id="_cf-count">' + files.length + '/' + FILE_LIMIT + '</div>',
-        '</div>',
+          "</div>",
+          '<div style="background:rgba(0,229,255,0.10);border:1px solid rgba(0,229,255,0.25);border-radius:10px;padding:4px 10px;font-family:\'JetBrains Mono\',monospace;font-size:12px;font-weight:800;color:var(--cyan);" id="_cf-count">' + files.length + '/' + FILE_LIMIT + "</div>",
+        "</div>",
 
         /* File list */
         '<div id="_cf-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px;">',
           rows,
-        '</div>',
+        "</div>",
 
         /* Action buttons */
         '<button id="_cf-btn-scan" style="',
@@ -10995,7 +10994,7 @@ window.exportUserData = function() {
           '<div>',
             '<div style="font-family:\'Syne\',sans-serif;font-size:17px;font-weight:900;color:#fff;" id="_msr-title">סורק ' + files.length + ' קבצים...</div>',
             '<div style="font-size:11px;color:rgba(255,255,255,0.32);margin-top:2px;" id="_msr-sub">AI מזהה סכום וקטגוריה</div>',
-          '</div>',
+          "</div>",
           '<button id="_msr-close" style="',
             'width:32px;height:32px;border-radius:10px;',
             'border:1px solid rgba(255,255,255,0.10);',
@@ -11003,8 +11002,8 @@ window.exportUserData = function() {
             'color:rgba(255,255,255,0.40);cursor:pointer;font-size:15px;',
             'flex-shrink:0;line-height:1;',
           '">✕</button>',
-        '</div>',
-      '</div>',
+        "</div>",
+      "</div>",
 
       /* ── Scrollable list ── */
       '<div id="_msr-list" style="',
@@ -11075,11 +11074,11 @@ window.exportUserData = function() {
         '<div style="display:flex;align-items:center;gap:12px;padding:14px;">',
           '<div style="width:36px;height:36px;flex-shrink:0;border-radius:11px;background:rgba(0,229,255,0.07);border:1px solid rgba(0,229,255,0.16);display:flex;align-items:center;justify-content:center;">',
             '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(0,229,255,0.70)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin360 1s linear infinite;"><path d="M12 2a10 10 0 0 1 10 10"/></svg>',
-          '</div>',
+          "</div>",
           '<div style="flex:1;min-width:0;">',
-            '<div style="font-family:\'Syne\',sans-serif;font-size:12px;font-weight:700;color:rgba(255,255,255,0.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(it.file.name.length>32?it.file.name.slice(0,29)+'...':it.file.name) + '</div>',
+            '<div style="font-family:\'Syne\',sans-serif;font-size:12px;font-weight:700;color:rgba(255,255,255,0.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(it.file.name.length>32?it.file.name.slice(0,29)+'...':it.file.name) + "</div>",
             '<div style="font-size:10px;color:rgba(255,255,255,0.22);margin-top:3px;">AI סורק...</div>',
-          '</div>',
+          "</div>",
         '</div>'
       ].join('');
     }
@@ -11104,13 +11103,13 @@ window.exportUserData = function() {
 
         /* header row */
         '<div style="display:flex;align-items:center;gap:12px;padding:14px 14px 10px;">',
-          '<div style="width:38px;height:38px;flex-shrink:0;border-radius:12px;background:' + bg + ';border:1px solid ' + bdr + ';display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:' + col + ';">' + sym + '</div>',
+          '<div style="width:38px;height:38px;flex-shrink:0;border-radius:12px;background:' + bg + ';border:1px solid ' + bdr + ';display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:' + col + ';">' + sym + "</div>",
           '<div style="flex:1;min-width:0;">',
-            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:20px;font-weight:900;color:' + col + ';line-height:1;" id="_msr-amt-display-' + i + '">' + sym + ' ₪' + (it.editAmount ? Number(it.editAmount).toLocaleString('he-IL') : '—') + '</div>',
-            '<div style="font-size:10px;color:rgba(255,255,255,0.28);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(it.file.name.length>30?it.file.name.slice(0,27)+'...':it.file.name) + '</div>',
-          '</div>',
+            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:20px;font-weight:900;color:' + col + ';line-height:1;" id="_msr-amt-display-' + i + '">' + sym + ' ₪' + (it.editAmount ? Number(it.editAmount).toLocaleString('he-IL') : '—') + "</div>",
+            '<div style="font-size:10px;color:rgba(255,255,255,0.28);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(it.file.name.length>30?it.file.name.slice(0,27)+'...':it.file.name) + "</div>",
+          "</div>",
           '<button onclick="window._msrRemove(' + i + ')" style="width:28px;height:28px;border-radius:8px;border:1px solid rgba(255,255,255,0.09);background:rgba(255,80,80,0.07);color:rgba(255,120,120,0.60);cursor:pointer;font-size:12px;flex-shrink:0;line-height:1;">✕</button>',
-        '</div>',
+        "</div>",
 
         /* edit fields */
         '<div style="padding:0 14px 14px;display:flex;flex-direction:column;gap:10px;">',
@@ -11133,7 +11132,7 @@ window.exportUserData = function() {
                 ? 'background:rgba(0,230,118,0.14);border:1px solid rgba(0,230,118,0.40);color:#00E676;'
                 : 'background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.28);'),
             '">+ הכנסה</button>',
-          '</div>',
+          "</div>",
 
           /* amount */
           '<div style="position:relative;">',
@@ -11144,7 +11143,7 @@ window.exportUserData = function() {
               'background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.11);',
               'color:#fff;font-family:\'JetBrains Mono\',monospace;font-size:15px;font-weight:800;',
               'outline:none;-webkit-appearance:none;text-align:right;" />',
-          '</div>',
+          "</div>",
 
           /* description */
           '<input id="_msr-inp-desc-' + i + '" type="text" value="' + escHtml(it.editDesc) + '" placeholder="תיאור" ',
@@ -11165,8 +11164,8 @@ window.exportUserData = function() {
             '</select>',
             '<div style="position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;color:' + col + ';">',
               '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>',
-            '</div>',
-          '</div>',
+            "</div>",
+          "</div>",
 
         '</div>' /* end fields */
       ].join('');
@@ -11181,8 +11180,8 @@ window.exportUserData = function() {
           '<div style="width:36px;height:36px;flex-shrink:0;border-radius:11px;background:rgba(255,23,68,0.10);border:1px solid rgba(255,23,68,0.25);display:flex;align-items:center;justify-content:center;color:#FF6080;font-size:16px;">!</div>',
           '<div style="flex:1;min-width:0;">',
             '<div style="font-family:\'Syne\',sans-serif;font-size:12px;font-weight:800;color:#FF6080;">שגיאת סריקה</div>',
-            '<div style="font-size:10px;color:rgba(255,255,255,0.28);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(it.file.name.length>32?it.file.name.slice(0,29)+'...':it.file.name) + '</div>',
-          '</div>',
+            '<div style="font-size:10px;color:rgba(255,255,255,0.28);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(it.file.name.length>32?it.file.name.slice(0,29)+'...':it.file.name) + "</div>",
+          "</div>",
         '</div>'
       ].join('');
     }
@@ -12228,16 +12227,16 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
       /* icon */
       '<div style="font-size:36px;text-align:center;margin-bottom:14px;">',
         currencyFlag + ' 🌐',
-      '</div>',
+      "</div>",
 
       /* title */
       '<div style="font-family:\'Syne\',sans-serif;font-size:16px;font-weight:900;color:#fff;text-align:center;margin-bottom:8px;">',
         'שינוי שפת האפליקציה?',
-      '</div>',
+      "</div>",
       '<div style="font-size:12px;color:rgba(255,255,255,0.45);text-align:center;margin-bottom:20px;line-height:1.6;">',
         'בחרת ', currencyName, '<br>',
         'האם לעבור לשפה <strong style="color:#00E5FF;">', suggestedName, '</strong>?',
-      '</div>',
+      "</div>",
 
       /* buttons */
       '<div style="display:flex;flex-direction:column;gap:10px;">',
@@ -12263,7 +12262,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
         '">',
           '✕ שמור על ' + currentName,
         '</button>',
-      '</div>',
+      "</div>",
     '</div>'
   ].join('');
 
@@ -12349,20 +12348,10 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
 
     /* stats grid */
     var netColor = stats.net>=0?'#00E676':'#FF6080';
-    document.getElementById('ev-detail-stats').innerHTML = [
-      '<div class='ev-det-stat'>',
-        '<div class='ev-det-stat-label'>💰 הכנסות</div>',
-        '<div class='ev-det-stat-val' style='color:#00E676;'>'+fmt2(stats.income)+'</div>',
-      '</div>',
-      '<div class='ev-det-stat'>',
-        '<div class='ev-det-stat-label'>💸 הוצאות</div>',
-        '<div class='ev-det-stat-val' style='color:#FF6080;'>'+fmt2(stats.expense)+'</div>',
-      '</div>',
-      '<div class='ev-det-stat'>',
-        '<div class='ev-det-stat-label'>⚖️ יתרה</div>',
-        '<div class='ev-det-stat-val' style='color:'+netColor+';'>'+fmt2(stats.net)+'</div>',
-      '</div>',
-    ].join('');
+    document.getElementById('ev-detail-stats').innerHTML =
+      '<div class="ev-det-stat"><div class="ev-det-stat-label">💰 הכנסות</div><div class="ev-det-stat-val" style="color:#00E676;">'+fmt2(stats.income)+'</div></div>'+
+      '<div class="ev-det-stat"><div class="ev-det-stat-label">💸 הוצאות</div><div class="ev-det-stat-val" style="color:#FF6080;">'+fmt2(stats.expense)+'</div></div>'+
+      '<div class="ev-det-stat"><div class="ev-det-stat-label">⚖️ יתרה</div><div class="ev-det-stat-val" style="color:'+netColor+';">'+fmt2(stats.net)+'</div></div>';
 
     /* budget bar */
     var bSection = document.getElementById('ev-detail-budget-section');
@@ -12370,19 +12359,18 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
       var pct = Math.min(stats.expense/budget*100,100);
       var barCol = pct>=100?'#FF1744':pct>80?'#FF9800':'#00E676';
       var remaining = budget - stats.expense;
-      bSection.innerHTML = [
-        '<div class='ev-det-section-title'>🎯 תקציב אירוע</div>',
-        '<div style='display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:4px;'>',
-          '<span>'+fmt2(stats.expense)+' מתוך '+fmt2(budget)+'</span>',
-          '<span style='color:'+barCol+';font-weight:800;'>'+Math.round(pct)+'%</span>',
-        '</div>',
-        '<div class='ev-det-budget-bar-bg'>',
-          '<div class='ev-det-budget-bar-fill' style='width:'+pct.toFixed(1)+'%;background:'+barCol+';box-shadow:0 0 8px '+barCol+'88;'></div>',
-        '</div>',
-        pct>=100
-          ? '<div style='font-size:11px;color:#FF6080;font-weight:800;margin-top:4px;'>⚠️ גירעון: '+fmt2(stats.expense-budget)+'</div>'
-          : '<div style='font-size:11px;color:rgba(255,255,255,0.38);margin-top:4px;'>נותר: '+fmt2(remaining)+'</div>',
-      ].join('');
+      bSection.innerHTML =
+        '<div class="ev-det-section-title">🎯 תקציב אירוע</div>'+
+        '<div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:4px;">'+
+          '<span>'+fmt2(stats.expense)+' מתוך '+fmt2(budget)+'</span>'+
+          '<span style="color:'+barCol+';font-weight:800;">'+Math.round(pct)+'%</span>'+
+        '</div>'+
+        '<div class="ev-det-budget-bar-bg">'+
+          '<div class="ev-det-budget-bar-fill" style="width:'+pct.toFixed(1)+'%;background:'+barCol+';box-shadow:0 0 8px '+barCol+'88;"></div>'+
+        '</div>'+
+        (pct>=100
+          ? '<div style="font-size:11px;color:#FF6080;font-weight:800;margin-top:4px;">⚠️ גירעון: '+fmt2(stats.expense-budget)+'</div>'
+          : '<div style="font-size:11px;color:rgba(255,255,255,0.38);margin-top:4px;">נותר: '+fmt2(remaining)+'</div>');
     } else { bSection.innerHTML=''; }
 
     /* transactions */
@@ -12393,25 +12381,25 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
 
     var txSection = document.getElementById('ev-detail-tx-section');
     if(allTx.length){
-      txSection.innerHTML = '<div class='ev-det-section-title'>📋 תנועות ('+allTx.length+')</div>' +
+      txSection.innerHTML = '<div class="ev-det-section-title">📋 תנועות ('+allTx.length+')</div>' +
         allTx.map(function(t){
           var isInc = t._t==='income';
           var d = new Date(t.date);
           var dStr = isNaN(d)?t.date:d.toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'});
           return [
-            '<div class='ev-det-tx-item'>',
-              '<div class='ev-det-tx-left'>',
-                '<span class='ev-det-tx-desc'>'+(t.description||t.category||'—')+'</span>',
-                '<span class='ev-det-tx-meta'>'+(t.category?'<span style='background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:6px;'>'+t.category+'</span> · ':'')+dStr+'</span>',
-              '</div>',
-              '<span class='ev-det-tx-amt' style='color:'+(isInc?'#00E676':'#FF6080')+';'>',
+            "<div class=\"ev-det-tx-item\">",
+              "<div class=\"ev-det-tx-left\">",
+                "<span class=\"ev-det-tx-desc\">"+(t.description||t.category||'—')+'</span>',
+                '<span class="ev-det-tx-meta">'+(t.category?'<span style="background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:6px;">'+t.category+'</span> · ':'')+dStr+'</span>',
+              "</div>",
+              '<span class="ev-det-tx-amt" style="color:'+(isInc?'#00E676':'#FF6080')+';">',
                 (isInc?'+':'−')+fmt2(t.amount),
               '</span>',
             '</div>'
           ].join('');
         }).join('');
     } else {
-      txSection.innerHTML = '<div class='ev-det-section-title'>📋 תנועות</div><div style='text-align:center;padding:20px;color:rgba(255,255,255,0.28);font-size:13px;'>אין תנועות לאירוע זה עדיין</div>';
+      txSection.innerHTML = '<div class="ev-det-section-title">📋 תנועות</div><div style="text-align:center;padding:20px;color:rgba(255,255,255,0.28);font-size:13px;">אין תנועות לאירוע זה עדיין</div>';
     }
 
     overlay.classList.add('open');
@@ -12757,20 +12745,20 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
       return [
         '<div class="ev-card">',
           '<div class="ev-card-header">',
-            '<div class="ev-emoji-wrap">'+(ev.emoji||'🎊')+'</div>',
+            '<div class="ev-emoji-wrap">'+(ev.emoji||'🎊')+"</div>",
             '<div class="ev-info">',
-              '<div class="ev-name">'+escEv(ev.name||'—')+'</div>',
+              '<div class="ev-name">'+escEv(ev.name||'—')+"</div>",
               '<div class="ev-meta">'+(dateStr?'📅 '+dateStr+'&nbsp;&nbsp;':'')+(hasBudget?'יעד: '+evFmt(budget)+'&nbsp;&nbsp;':'')+txCount+' תנועות</div>',
               '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:5px;">',
                 statusHtml,
                 countdownHtml,
-              '</div>',
-            '</div>',
+              "</div>",
+            "</div>",
             '<div class="ev-actions">',
               '<button class="ev-action-btn ev-edit-btn" onclick="openEvSheet(\''+ev.id+'\')" title="ערוך"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>',
               '<button class="ev-action-btn ev-del-btn" onclick="deleteEv(\''+ev.id+'\')" title="מחק"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>',
-            '</div>',
-          '</div>',
+            "</div>",
+          "</div>",
           hasBudget?[
             '<div class="ev-progress-wrap">',
               '<div class="ev-bar-bg"><div class="ev-bar-fill" style="width:'+pct.toFixed(1)+'%;background:linear-gradient(90deg,'+barColor+','+barColor+'bb);box-shadow:0 0 8px '+barColor+'55;"></div></div>',
@@ -12779,14 +12767,14 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
                 pct>=100
                   ? '<span style="color:#FF6080;font-weight:700;">גירעון: '+evFmt(stats.expense-budget)+'</span>'
                   : '<span style="color:rgba(255,255,255,0.35);">נותר: '+evFmt(budget-stats.expense)+'</span>',
-              '</div>',
+              "</div>",
             '</div>'
           ].join(''):'',
           '<div class="ev-balance-row">',
             '<div class="ev-stat ev-stat-in"><span class="ev-stat-label">הכנסות</span><span class="ev-stat-val">'+evFmt(stats.income)+'</span></div>',
             '<div class="ev-stat ev-stat-out"><span class="ev-stat-label">הוצאות</span><span class="ev-stat-val">'+evFmt(stats.expense)+'</span></div>',
             '<div class="ev-stat ev-stat-net"><span class="ev-stat-label">יתרה</span><span class="ev-stat-val" style="color:'+netColor+';">'+evFmt(stats.net)+'</span></div>',
-          '</div>',
+          "</div>",
         '</div>'
       ].join('');
     }).join('');
