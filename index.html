@@ -9997,7 +9997,7 @@ window.deletePhoneIdx = function(i) {
         '<span class="fixed-item-icon">' + emoji + '</span>' +
         '<div class="fixed-item-info">' +
           '<div class="fixed-item-name">' + (item.name||'—') + '</div>' +
-          '<div class="fixed-item-amount" style="color:' + col + ';">₪' + fmt(item.amount) + ' / פעמיים בשנה</div>' +
+          '<div class="fixed-item-amount" style="color:' + col + ';">₪' + fmt(item.amount) + ' / 6 פעמים בשנה</div>' +
         '</div>' +
         '<div class="fixed-item-actions">' +
           '<button class="fixed-item-btn edit" onclick="openBimEdit(\'' + item.id + '\',\'' + (item.name||'').replace(/\'/g,"\\'") + '\',' + item.amount + ',\'' + (item.itemType||'expense') + '\')" title="ערוך">' +
@@ -11083,10 +11083,11 @@ window.exportUserData = function() {
 
       /* ── Scrollable list ── */
       '<div id="_msr-list" style="',
-        'flex:1;overflow-y:auto;overflow-x:hidden;',
+        'flex:1;overflow-y:scroll;overflow-x:hidden;',
         '-webkit-overflow-scrolling:touch;',
+        'overscroll-behavior:contain;',
         'padding:14px 16px 8px;',
-        'display:flex;flex-direction:column;gap:12px;',
+        'display:flex;flex-direction:column;gap:10px;',
       '"></div>',
 
       /* ── Footer (fixed) ── */
@@ -11167,83 +11168,140 @@ window.exportUserData = function() {
       var bdr = bdrOf(it.editType);
       var sym = symOf(it.editType);
       var i   = it.idx;
+      var isExpanded = it._expanded !== false; /* פתוח כברירת מחדל */
+
       div.style.cssText = [
         'border-radius:18px;overflow:hidden;',
         'border:1px solid ' + bdr + ';',
-        'background:rgba(255,255,255,0.03);',
-        'transition:border-color .3s ease;'
+        'background:linear-gradient(160deg,rgba(14,10,28,0.98),rgba(6,4,16,0.99));',
+        'transition:border-color .25s ease;',
+        'position:relative;'
       ].join('');
+
+      /* event options */
+      var evOpts = '<option value="">— ללא אירוע —</option>' +
+        (window._evList||[]).map(function(ev){
+          return '<option value="'+ev.id+'">'+(ev.emoji||'🎊')+' '+ev.name+'</option>';
+        }).join('');
+
       div.innerHTML = [
-        /* top color line */
-        '<div style="height:2px;background:linear-gradient(90deg,transparent,' + col + '80,transparent);"></div>',
+        /* top shimmer line */
+        '<div style="height:2px;background:linear-gradient(90deg,transparent,'+col+'66,transparent);"></div>',
 
-        /* header row */
-        '<div style="display:flex;align-items:center;gap:12px;padding:14px 14px 10px;">',
-          '<div style="width:38px;height:38px;flex-shrink:0;border-radius:12px;background:' + bg + ';border:1px solid ' + bdr + ';display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:' + col + ';">' + sym + "</div>",
+        /* ── header row (always visible, tap to expand/collapse) ── */
+        '<div onclick="window._msrToggle('+i+')" style="',
+          'display:flex;align-items:center;gap:11px;padding:13px 14px;cursor:pointer;',
+          '-webkit-tap-highlight-color:transparent;touch-action:manipulation;',
+        '">',
+          /* type icon */
+          '<div style="width:40px;height:40px;flex-shrink:0;border-radius:13px;',
+            'background:'+bg+';border:1px solid '+bdr+';',
+            'display:flex;align-items:center;justify-content:center;',
+            'font-size:18px;font-weight:900;color:'+col+';">'+sym+'</div>',
+
+          /* info */
           '<div style="flex:1;min-width:0;">',
-            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:20px;font-weight:900;color:' + col + ';line-height:1;" id="_msr-amt-display-' + i + '">' + sym + ' ₪' + (it.editAmount ? Number(it.editAmount).toLocaleString('he-IL') : '—') + "</div>",
-            '<div style="font-size:10px;color:rgba(255,255,255,0.28);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(it.file.name.length>30?it.file.name.slice(0,27)+'...':it.file.name) + "</div>",
-          "</div>",
-          '<button onclick="window._msrRemove(' + i + ')" style="width:28px;height:28px;border-radius:8px;border:1px solid rgba(255,255,255,0.09);background:rgba(255,80,80,0.07);color:rgba(255,120,120,0.60);cursor:pointer;font-size:12px;flex-shrink:0;line-height:1;">✕</button>',
-        "</div>",
+            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:19px;font-weight:900;color:'+col+';line-height:1;" id="_msr-amt-display-'+i+'">'+
+              sym+' ₪'+(it.editAmount?Number(it.editAmount).toLocaleString('he-IL'):'—')+
+            '</div>',
+            '<div style="font-size:10px;color:rgba(255,255,255,0.28);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+
+              escHtml(it.file.name.length>34?it.file.name.slice(0,31)+'...':it.file.name)+
+            '</div>',
+          '</div>',
 
-        /* edit fields */
-        '<div style="padding:0 14px 14px;display:flex;flex-direction:column;gap:10px;">',
+          /* expand chevron + remove btn */
+          '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">',
+            '<span id="_msr-chev-'+i+'" style="color:rgba(255,255,255,0.3);font-size:14px;transition:transform .22s;">'+
+              (isExpanded?'▲':'▼')+
+            '</span>',
+            '<button onclick="event.stopPropagation();window._msrRemove('+i+')" style="',
+              'width:30px;height:30px;border-radius:9px;',
+              'border:1px solid rgba(255,255,255,0.09);',
+              'background:rgba(255,80,80,0.08);color:rgba(255,120,120,0.65);',
+              'cursor:pointer;font-size:13px;line-height:1;',
+              'touch-action:manipulation;',
+            '">✕</button>',
+          '</div>',
+        '</div>',
+
+        /* ── collapsible fields ── */
+        '<div id="_msr-fields-'+i+'" style="',
+          'padding:0 14px 14px;display:flex;flex-direction:column;gap:9px;',
+          (isExpanded?'':'display:none;'),
+        '">',
 
           /* type toggle */
-          '<div style="display:flex;gap:8px;">',
-            '<button id="_msr-t-exp-' + i + '" onclick="window._msrSetType(' + i + ',\'expense\')" style="',
-              'flex:1;padding:9px;border-radius:11px;cursor:pointer;',
+          '<div style="display:flex;gap:7px;">',
+            '<button id="_msr-t-exp-'+i+'" onclick="window._msrSetType('+i+',\'expense\')" style="',
+              'flex:1;padding:9px 0;border-radius:11px;cursor:pointer;',
               'font-family:\'Syne\',sans-serif;font-size:12px;font-weight:800;',
-              'transition:all .2s;-webkit-tap-highlight-color:transparent;',
+              'touch-action:manipulation;-webkit-tap-highlight-color:transparent;',
               (it.editType==='expense'
-                ? 'background:rgba(255,23,68,0.14);border:1px solid rgba(255,23,68,0.40);color:#FF6080;'
-                : 'background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.28);'),
+                ?'background:rgba(255,23,68,0.15);border:1.5px solid rgba(255,23,68,0.45);color:#FF6080;'
+                :'background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.09);color:rgba(255,255,255,0.28);'),
             '">− הוצאה</button>',
-            '<button id="_msr-t-inc-' + i + '" onclick="window._msrSetType(' + i + ',\'income\')" style="',
-              'flex:1;padding:9px;border-radius:11px;cursor:pointer;',
+            '<button id="_msr-t-inc-'+i+'" onclick="window._msrSetType('+i+',\'income\')" style="',
+              'flex:1;padding:9px 0;border-radius:11px;cursor:pointer;',
               'font-family:\'Syne\',sans-serif;font-size:12px;font-weight:800;',
-              'transition:all .2s;-webkit-tap-highlight-color:transparent;',
+              'touch-action:manipulation;-webkit-tap-highlight-color:transparent;',
               (it.editType==='income'
-                ? 'background:rgba(0,230,118,0.14);border:1px solid rgba(0,230,118,0.40);color:#00E676;'
-                : 'background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.28);'),
+                ?'background:rgba(0,230,118,0.15);border:1.5px solid rgba(0,230,118,0.45);color:#00E676;'
+                :'background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.09);color:rgba(255,255,255,0.28);'),
             '">+ הכנסה</button>',
-          "</div>",
+          '</div>',
 
           /* amount */
           '<div style="position:relative;">',
-            '<div style="position:absolute;right:13px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:800;color:rgba(255,255,255,0.35);pointer-events:none;">₪</div>',
-            '<input id="_msr-inp-amt-' + i + '" type="number" inputmode="decimal" value="' + escHtml(String(it.editAmount)) + '" placeholder="סכום" ',
-              'oninput="window._msrSetAmt(' + i + ',this.value)" ',
-              'style="width:100%;box-sizing:border-box;padding:11px 36px 11px 14px;border-radius:12px;',
-              'background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.11);',
-              'color:#fff;font-family:\'JetBrains Mono\',monospace;font-size:15px;font-weight:800;',
+            '<span style="position:absolute;right:13px;top:50%;transform:translateY(-50%);',
+              'font-size:14px;font-weight:800;color:rgba(255,255,255,0.35);pointer-events:none;">₪</span>',
+            '<input id="_msr-inp-amt-'+i+'" type="number" inputmode="decimal" value="'+escHtml(String(it.editAmount))+'" ',
+              'placeholder="סכום" oninput="window._msrSetAmt('+i+',this.value)" ',
+              'style="width:100%;box-sizing:border-box;padding:12px 36px 12px 14px;border-radius:12px;',
+              'background:rgba(255,255,255,0.05);border:1.5px solid '+bdr+';',
+              'color:'+col+';font-family:\'JetBrains Mono\',monospace;font-size:16px;font-weight:900;',
               'outline:none;-webkit-appearance:none;text-align:right;" />',
-          "</div>",
+          '</div>',
 
           /* description */
-          '<input id="_msr-inp-desc-' + i + '" type="text" value="' + escHtml(it.editDesc) + '" placeholder="תיאור" ',
-            'oninput="window._msrSetDesc(' + i + ',this.value)" ',
+          '<input id="_msr-inp-desc-'+i+'" type="text" value="'+escHtml(it.editDesc)+'" ',
+            'placeholder="תיאור (אופציונלי)" oninput="window._msrSetDesc('+i+',this.value)" ',
             'style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:12px;',
-            'background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.11);',
+            'background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.10);',
             'color:#fff;font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;',
             'outline:none;" />',
 
-          /* category select */
+          /* category */
           '<div style="position:relative;">',
-            '<select id="_msr-sel-cat-' + i + '" onchange="window._msrSetCat(' + i + ',this.value)" style="',
-              'width:100%;box-sizing:border-box;padding:11px 14px;border-radius:12px;',
-              'background:rgba(255,255,255,0.05);border:1px solid ' + bdr + ';',
+            '<select id="_msr-sel-cat-'+i+'" onchange="window._msrSetCat('+i+',this.value)" style="',
+              'width:100%;box-sizing:border-box;padding:11px 14px 11px 36px;border-radius:12px;',
+              'background:rgba(255,255,255,0.05);border:1px solid '+bdr+';',
               'color:#fff;font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;',
               'appearance:none;-webkit-appearance:none;outline:none;cursor:pointer;">',
               buildCatSelect(it),
             '</select>',
-            '<div style="position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;color:' + col + ';">',
+            '<span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;color:'+col+';">',
               '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>',
-            "</div>",
-          "</div>",
+            '</span>',
+          '</div>',
 
-        '</div>' /* end fields */
+          /* event */
+          (window._evList && window._evList.length ? [
+            '<div style="position:relative;">',
+              '<select id="_msr-sel-ev-'+i+'" onchange="window._msrSetEv('+i+',this.value)" style="',
+                'width:100%;box-sizing:border-box;padding:11px 14px 11px 36px;border-radius:12px;',
+                'background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.28);',
+                'color:#fff;font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;',
+                'appearance:none;-webkit-appearance:none;outline:none;cursor:pointer;">',
+                evOpts,
+              '</select>',
+              '<span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;color:rgba(168,85,247,0.8);">',
+                '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>',
+              '</span>',
+            '</div>'
+          ].join('') : ''),
+
+        '</div>', /* end fields */
+
       ].join('');
     }
 
@@ -11335,12 +11393,19 @@ window.exportUserData = function() {
     scanBtn.style.pointerEvents = '';
     refreshSaveBtn();
 
-    /* ── callbacks גלובליים ── */
+    window._msrToggle = function(idx){
+      var it = items[idx];
+      if(!it || it.status !== 'done') return;
+      it._expanded = !it._expanded;
+      var fields = document.getElementById('_msr-fields-'+idx);
+      var chev   = document.getElementById('_msr-chev-'+idx);
+      if(fields) fields.style.display = it._expanded ? 'flex' : 'none';
+      if(chev)   chev.textContent      = it._expanded ? '▲' : '▼';
+    };
     window._msrSetType = function(idx, type){
       var it = items[idx];
       if(!it || it.status !== 'done') return;
       it.editType = type;
-      /* rebuild cat list for new type */
       var cats3 = type === 'income' ? incCats : expCats;
       var stillValid = cats3.find(function(c){ return c.name === it.editCat; });
       if(!stillValid) it.editCat = '';
@@ -11355,12 +11420,9 @@ window.exportUserData = function() {
       var disp = document.getElementById('_msr-amt-display-' + idx);
       if(disp) disp.textContent = sym + ' ₪' + (val ? Number(val).toLocaleString('he-IL') : '—');
     };
-    window._msrSetDesc = function(idx, val){
-      var it = items[idx]; if(!it) return; it.editDesc = val;
-    };
-    window._msrSetCat  = function(idx, val){
-      var it = items[idx]; if(!it) return; it.editCat = val;
-    };
+    window._msrSetDesc = function(idx, val){ var it=items[idx]; if(!it) return; it.editDesc=val; };
+    window._msrSetCat  = function(idx, val){ var it=items[idx]; if(!it) return; it.editCat=val; };
+    window._msrSetEv   = function(idx, val){ var it=items[idx]; if(!it) return; it.editEventId=val||null; };
     window._msrRemove  = function(idx){
       var it  = items[idx]; if(!it) return;
       it.status = 'removed';
@@ -11390,7 +11452,8 @@ window.exportUserData = function() {
           amount:      it.editAmount,
           description: it.editDesc,
           category:    it.editCat,
-          type:        it.editType
+          type:        it.editType,
+          eventId:     it.editEventId || null
         });
         saved++;
         it.status = 'saved';
