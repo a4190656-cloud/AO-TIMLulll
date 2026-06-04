@@ -7050,8 +7050,8 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>
     </div>
     <h3 style="font-size:22px;font-weight:900;color:#fff;letter-spacing:-0.5px;margin-bottom:8px;">חודש חדש התחיל! ✨</h3>
-    <p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.5;">התקציב שלך התאפס. הנה ההכנסות וההוצאות הקבועות שמוגדרות לחודש הקרוב:</p>
-    
+    <p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.5;">התקציב שלך התאפס. הנה הסכומים הקבועים לחודש הקרוב:</p>
+
     <div class="cycle-totals-grid">
       <div class="cycle-total-card">
         <div class="cycle-total-title">הכנסות קבועות</div>
@@ -7062,9 +7062,23 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
         <div id="cycle-fe-total" class="cycle-total-amount" style="color:var(--red);">₪0</div>
       </div>
     </div>
-    
+
+    <!-- דו-חודשי — מוצג רק אם יש -->
+    <div id="cycle-bimonthly-row" style="display:none;margin:10px 0 4px;">
+      <div class="cycle-total-card" style="border-color:rgba(171,71,188,0.3);background:rgba(171,71,188,0.07);">
+        <div class="cycle-total-title" style="color:#CE93D8;">דו-חודשי (החודש)</div>
+        <div id="cycle-bm-total" class="cycle-total-amount" style="color:#CE93D8;">₪0</div>
+      </div>
+    </div>
+
+    <!-- יתרה צפויה -->
+    <div style="margin:12px 0 16px;padding:10px 14px;border-radius:14px;background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.18);display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.5);">יתרה צפויה החודש</span>
+      <span id="cycle-expected-bal" style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:900;color:#00E5FF;">₪0</span>
+    </div>
+
     <p style="font-size:14px;font-weight:800;color:#fff;margin-bottom:16px;">האם חל שינוי בסכומים הקבועים?</p>
-    
+
     <button id="btn-cycle-ok" class="btn btn-cyan modern-hover" style="font-size:15px;padding:14px;margin-bottom:12px;">
       לא, הכל נשאר אותו דבר
     </button>
@@ -10397,57 +10411,109 @@ window.resetProfilePic = function() {
     }, 50); 
   };
 /* ── בדיקת איפוס חודש והצגת מודל קבועות ── */
+  var _cyclePromptShown = false; /* מניעת הצגה כפולה בתוך אותה session */
+
   window.checkCyclePrompt = function() {
     if (!uid) return;
+    if (_cyclePromptShown) return; /* כבר הוצג בsession זה */
+
     var s = cycleStart();
-    var cycleKey = s.getFullYear() + '-' + (s.getMonth() + 1); // למשל: "2026-5"
-    
+    var cycleKey = s.getFullYear() + '-' + (s.getMonth() + 1);
+
+    /* מפתח ייחודי ל-localStorage לפי uid + מחזור — מניעת הצגה כפולה על אותו מכשיר */
+    var localKey = 'ao_cycle_seen_' + uid + '_' + cycleKey;
+    if (localStorage.getItem(localKey)) return; /* כבר הוצג במכשיר זה */
+
+    /* וידוא שהנתונים כבר נטענו מ-Firestore */
+    if (!fixedIncomes || !fixedExpenses) return;
+    var fiTotal = fixedIncomes.reduce(function(a,i){ return a+Number(i.amount||0); }, 0);
+    var feTotal = fixedExpenses.reduce(function(a,i){ return a+Number(i.amount||0); }, 0);
+    if (fiTotal === 0 && feTotal === 0 && fixedIncomes.length === 0 && fixedExpenses.length === 0) return;
+
     db.collection('users').doc(uid).get().then(function(doc) {
-      if (doc.exists) {
-        var data = doc.data();
-        // בודק אם כבר הראינו לו את ההודעה בחודש הספציפי הזה
-        if (data.lastCycleSeen !== cycleKey) {
-          
-          // חישוב הסכומים מתוך המערכים
-          var fiTotal = fixedIncomes.reduce(function(a,i){ return a+Number(i.amount||0); },0);
-          var feTotal = fixedExpenses.reduce(function(a,i){ return a+Number(i.amount||0); },0);
-          
-          $('cycle-fi-total').textContent = fmt(fiTotal);
-          $('cycle-fe-total').textContent = fmt(feTotal);
-          
-          show('cycle-modal-overlay');
-          
-          // כפתור 1: אין שינוי -> שומר את החודש במערכת וסוגר
-          $('btn-cycle-ok').onclick = function() {
-            db.collection('users').doc(uid).set({lastCycleSeen: cycleKey}, {merge:true});
-            hide('cycle-modal-overlay');
-          };
-          
-          // כפתור 2: יש שינוי -> שומר, סוגר ומעביר למסך ההגדרות ישר להוצאות הקבועות
-          $('btn-cycle-edit').onclick = function() {
-            db.collection('users').doc(uid).set({lastCycleSeen: cycleKey}, {merge:true});
-            hide('cycle-modal-overlay');
-            switchView('settings');
-            setTimeout(function(){ 
-              var section = document.getElementById('fe-name');
-              if (section) section.scrollIntoView({behavior:'smooth', block:'center'});
-            }, 300);
-          };
+      if (!doc.exists) return;
+      var data = doc.data();
+      if (data.lastCycleSeen === cycleKey) return; /* כבר נשמר ב-Firestore — לא מציג */
+
+      _cyclePromptShown = true;
+      localStorage.setItem(localKey, '1'); /* שמור מקומית — מונע הצגה כפולה ב-tab נוסף */
+
+      /* חישוב סכומים */
+      var fiEl = $('cycle-fi-total');
+      var feEl = $('cycle-fe-total');
+      if (fiEl) fiEl.textContent = fmt(fiTotal);
+      if (feEl) feEl.textContent = fmt(feTotal);
+
+      /* דו-חודשי — bimonthly */
+      var bimonthlyItems = typeof bimonthlyExpenses !== 'undefined' ? bimonthlyExpenses : [];
+      var now = new Date();
+      var isEvenMonth = (now.getMonth() % 2 === 0); /* חודש זוגי = חודש של דו-חודשי */
+      var bmTotal = 0;
+      if (isEvenMonth) {
+        bmTotal = bimonthlyItems.reduce(function(a,i){ return a+Number(i.amount||0); }, 0);
+      }
+      var bmRow = document.getElementById('cycle-bimonthly-row');
+      var bmEl  = document.getElementById('cycle-bm-total');
+      if (bmRow && bmEl) {
+        if (bmTotal > 0) {
+          bmEl.textContent = fmt(bmTotal);
+          bmRow.style.display = 'block';
+        } else {
+          bmRow.style.display = 'none';
         }
       }
-    });
+
+      /* יתרה צפויה */
+      var expectedBal = fiTotal - feTotal - bmTotal;
+      var balEl = document.getElementById('cycle-expected-bal');
+      if (balEl) {
+        balEl.textContent = fmt(Math.abs(expectedBal));
+        balEl.style.color = expectedBal >= 0 ? '#00E5FF' : '#FF6080';
+        balEl.textContent = (expectedBal < 0 ? '-' : '') + fmt(Math.abs(expectedBal));
+      }
+
+      show('cycle-modal-overlay');
+
+      /* כפתורים — הגדרה פעם אחת עם onetime flag */
+      var okBtn   = $('btn-cycle-ok');
+      var editBtn = $('btn-cycle-edit');
+
+      function saveCycleAndClose() {
+        db.collection('users').doc(uid).set({lastCycleSeen: cycleKey}, {merge:true});
+        hide('cycle-modal-overlay');
+      }
+
+      if (okBtn) {
+        okBtn.onclick = null;
+        okBtn.onclick = saveCycleAndClose;
+      }
+      if (editBtn) {
+        editBtn.onclick = null;
+        editBtn.onclick = function() {
+          saveCycleAndClose();
+          switchView('settings');
+          setTimeout(function(){
+            var section = document.getElementById('fe-name');
+            if (section) section.scrollIntoView({behavior:'smooth', block:'center'});
+          }, 300);
+        };
+      }
+    }).catch(function(e){ console.warn('checkCyclePrompt error:', e); });
   };
 
-  /* טיימר חכם שממתין שהנתונים ייטענו ואז בודק אם התחלף חודש */
+  /* טיימר חכם — ממתין שהנתונים ייטענו ואז בודק אם התחלף מחזור */
   var _cycleCheckTries = 0;
   var cycleCheckInterval = setInterval(function() {
     _cycleCheckTries++;
-    // מוודא שהמשתמש מחובר ושההכנסות/הוצאות הקבועות נמשכו מהרשת
-    if (uid && typeof fixedExpenses !== 'undefined' && typeof fixedIncomes !== 'undefined') {
+    var dataReady = uid &&
+      typeof fixedExpenses !== 'undefined' && typeof fixedIncomes !== 'undefined' &&
+      Array.isArray(fixedExpenses) && Array.isArray(fixedIncomes);
+    if (dataReady) {
       clearInterval(cycleCheckInterval);
-      setTimeout(window.checkCyclePrompt, 1500); // ממתין שנייה וחצי לחוויה חלקה
-    } else if (_cycleCheckTries > 30) {
-      clearInterval(cycleCheckInterval); // safety — מניעת דליפת זיכרון לאחר 30 שניות
+      /* ממתין 2 שניות לוודא שהנתונים נטענו מ-Firestore ולא null */
+      setTimeout(window.checkCyclePrompt, 2000);
+    } else if (_cycleCheckTries > 60) {
+      clearInterval(cycleCheckInterval); /* safety — עצור אחרי 60 שניות */
     }
   }, 1000);
   // פונקציה לייצוא נתוני המשתמש לקובץ CSV
