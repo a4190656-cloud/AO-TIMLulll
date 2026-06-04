@@ -5473,13 +5473,9 @@ body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { back
           border:1px solid rgba(168,85,247,0.20);
           box-shadow:0 6px 28px rgba(0,0,0,0.38),inset 0 1px 0 rgba(255,255,255,0.05);
           transition:transform .22s cubic-bezier(.34,1.56,.64,1),box-shadow .22s;
-          position:relative;
+          position:relative; touch-action:manipulation;
         }
-        .ev-card::before {
-          content:''; position:absolute; top:0; left:8%; right:8%; height:1px;
-          background:linear-gradient(90deg,transparent,rgba(168,85,247,0.45),transparent);
-        }
-        .ev-card:active { transform:scale(0.99); }
+        .ev-card:active { transform:scale(0.98); box-shadow:0 2px 14px rgba(0,0,0,0.5); }
 
         /* header */
         .ev-card-header {
@@ -8231,18 +8227,24 @@ window.deletePhoneIdx = function(i) {
       ].join('');
     } else if(chipsEl){ chipsEl.innerHTML=''; }
 
-    /* donut legend rows */
+    /* donut legend rows — name + color + pct + amount all visible inline */
     var legEl=document.getElementById('ch-donut-legend');
     if(legEl) legEl.innerHTML = !expEntries.length
       ? '<div class="ch-empty"><span class="ch-empty-icon">📭</span>אין הוצאות במחזור</div>'
       : expEntries.map(function(item,idx){
           var col=CHART_COLORS[idx%CHART_COLORS.length];
           var pct=donutTotal>0?item.amt/donutTotal*100:0;
-          return '<div class="ch-leg-row" style="border-color:'+col+'18;">'+
-            '<div class="ch-leg-dot" style="background:'+col+';box-shadow:0 0 7px '+col+'88;"></div>'+
-            '<span class="ch-leg-name">'+item.name+'</span>'+
-            '<span class="ch-leg-amt" style="color:'+col+';">'+fmt(item.amt)+'</span>'+
-            '<span class="ch-leg-pct" style="background:'+col+'18;color:'+col+';">'+Math.round(pct)+'%</span>'+
+          var barW=pct.toFixed(1);
+          return '<div class="ch-leg-row" style="border-color:'+col+'28;flex-direction:column;gap:5px;align-items:stretch;">'+
+            '<div style="display:flex;align-items:center;gap:9px;">'+
+              '<div class="ch-leg-dot" style="background:'+col+';box-shadow:0 0 8px '+col+'99;"></div>'+
+              '<span style="flex:1;font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+item.name+'</span>'+
+              '<span style="font-family:JetBrains Mono,monospace;font-size:13px;font-weight:900;color:'+col+';">'+fmt(item.amt)+'</span>'+
+              '<span style="font-size:11px;font-weight:900;padding:2px 8px;border-radius:20px;background:'+col+'20;color:'+col+';min-width:40px;text-align:center;">'+Math.round(pct)+'%</span>'+
+            '</div>'+
+            '<div style="height:4px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;">'+
+              '<div style="height:100%;width:'+barW+'%;background:linear-gradient(90deg,'+col+','+col+'bb);border-radius:99px;transition:width .7s cubic-bezier(.16,1,.3,1);"></div>'+
+            '</div>'+
           '</div>';
         }).join('');
 
@@ -8339,6 +8341,14 @@ window.deletePhoneIdx = function(i) {
     }, 80);
 
     /* ── 6. Trend chart ── */
+    renderTrendChart();
+  };
+
+  var _trendPeriod = 6;
+  window.setTrendPeriod = function(months, btn){
+    _trendPeriod = months;
+    document.querySelectorAll('.trend-period-btn').forEach(function(b){ b.classList.remove('active'); });
+    if(btn) btn.classList.add('active');
     renderTrendChart();
   };
 
@@ -12743,7 +12753,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
       else { statusHtml='<span class="ev-status-badge ev-status-ok">בתקציב ✓</span>'; }
 
       return [
-        '<div class="ev-card">',
+        '<div class="ev-card" onclick="openEvDetail(\''+ev.id+'\')" style="cursor:pointer;">',
           '<div class="ev-card-header">',
             '<div class="ev-emoji-wrap">'+(ev.emoji||'🎊')+"</div>",
             '<div class="ev-info">',
@@ -12755,8 +12765,8 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
               "</div>",
             "</div>",
             '<div class="ev-actions">',
-              '<button class="ev-action-btn ev-edit-btn" onclick="openEvSheet(\''+ev.id+'\')" title="ערוך"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>',
-              '<button class="ev-action-btn ev-del-btn" onclick="deleteEv(\''+ev.id+'\')" title="מחק"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>',
+              '<button class="ev-action-btn ev-edit-btn" onclick="event.stopPropagation();openEvSheet(\''+ev.id+'\')" title="ערוך"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>',
+              '<button class="ev-action-btn ev-del-btn" onclick="event.stopPropagation();deleteEv(\''+ev.id+'\')" title="מחק"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>',
             "</div>",
           "</div>",
           hasBudget?[
