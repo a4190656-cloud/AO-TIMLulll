@@ -267,11 +267,13 @@ body.theme-light {
 
   background: var(--lt-bg-1) !important;
   color: var(--lt-text) !important;
+  /* Create stacking context so z-index:-1 pseudo-elements stay behind content */
+  isolation: isolate;
 }
 
 /* ─── Background Canvas — Multi-layer moving mesh ────────────────────────── */
 body.theme-light::before {
-  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  content:''; position:fixed; inset:0; z-index:-1; pointer-events:none;
   background:
     radial-gradient(ellipse 85% 75% at  -5%  -5%, rgba(99,102,241,.32)  0%, transparent 50%),
     radial-gradient(ellipse 70% 65% at 108%  -3%, rgba(16,185,129,.22)  0%, transparent 48%),
@@ -286,7 +288,7 @@ body.theme-light::before {
 
 /* Micro-dot grid overlay */
 body.theme-light::after {
-  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  content:''; position:fixed; inset:0; z-index:-1; pointer-events:none;
   background-image:
     radial-gradient(circle, rgba(79,70,229,.14) 1px, transparent 1px) !important;
   background-size: 22px 22px !important;
@@ -311,6 +313,21 @@ body.theme-light *:not(input):not(textarea):not(select):not(button):not([class*=
 body.theme-light #app-root,
 body.theme-light .app-content,
 body.theme-light .view-content { background:transparent !important; }
+
+/* ── Critical fix: #app must sit above body::before/::after pseudo-layers ── */
+body.theme-light #app {
+  position: relative !important;
+  z-index: 1 !important;
+  background: transparent !important;
+}
+
+/* ── Ensure login screen is also above background layers ── */
+body.theme-light #screen-login,
+body.theme-light #screen-loading,
+body.theme-light #screen-setname {
+  position: relative !important;
+  z-index: 1 !important;
+}
 
 /* ─── Top status bar ─────────────────────────────────────────────────────── */
 body.theme-light #top-status-bar {
