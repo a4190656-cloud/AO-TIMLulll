@@ -7,8 +7,8 @@
   <title>AO Budget — ניהול תקציב חכם</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#04070E" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#04070E" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#04070E">
+  <meta name="theme-color" content="#F0F2F5" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#04070E" id="theme-color-main">
   <meta name="color-scheme" content="dark">
   <meta name="description" content="ניהול תקציב אישי חכם עם סנכרון בין מכשירים, קטגוריות, ובוט וואטסאפ.">
 <script>
@@ -738,7 +738,35 @@ body.theme-light .scan-doc-result,
 body.theme-light [class*="scan-doc"] { background: var(--lt-surf) !important; border: 1px solid var(--lt-border) !important; box-shadow: var(--lt-sh-sm) !important; }
 body.theme-light #scan-manual-amount { background: #FFFBEB !important; border-color: rgba(217,119,6,.35) !important; color: var(--lt-text) !important; }
 
+/* ════════════════════════════════════════
+   LATE-OVERRIDE — מנצח את ה-!important של .cat-tile (שורה ~1557)
+   חייב להופיע כאן, אחרי כל הגדרות ה-dark-mode classes
+   Android WebView: backdrop-filter מטשטש את כל המסך
+════════════════════════════════════════ */
+body.theme-light .cat-tile,
+body.theme-light .cat-tile::before,
+body.theme-light .cat-tile::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: var(--lt-surf) !important;
+  border: 1px solid var(--lt-border) !important;
+  box-shadow: var(--lt-sh-md) !important;
+  filter: none !important;
+}
 
+/* #nav — blur(20px) על nav ב-Android WebView מטשטש תוכן מאחורי הbar */
+body.theme-light #nav {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Overlays — blur שנשאר אחרי סגירה גורם לטשטוש כללי */
+body.theme-light [id*="overlay"]:not([id*="sheet"]),
+body.theme-light #ev-overlay,
+body.theme-light #ev-detail-overlay {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
 
 
 
@@ -8594,7 +8622,9 @@ window.deletePhoneIdx = function(i) {
         if(lc) lc.style.display = 'none';
       }
       document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){
-        m.content = t === 'light' ? '#F0F2F5' : '#04070E';
+        if(!m.getAttribute('media')){
+          m.content = t === 'light' ? '#F0F2F5' : '#04070E';
+        }
       });
     }
 
