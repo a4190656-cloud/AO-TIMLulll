@@ -359,26 +359,36 @@ body.theme-light [class*="card"]:active {
    ACTION BUTTONS (הוצאה / הכנסה)
 ════════════════════════════════════════ */
 body.theme-light .action-btn-expense {
-  background: #FFF1F2 !important;
-  border: 1.5px solid rgba(220,38,38,.18) !important;
-  box-shadow: var(--lt-sh-sm) !important;
+  background: #FEF2F2 !important;
+  border: 1.5px solid rgba(220,38,38,.15) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 2px 8px rgba(220,38,38,.08) !important;
 }
-body.theme-light .action-btn-expense .action-btn-label   { color: #DC2626 !important; font-weight:800 !important; }
-body.theme-light .action-btn-expense .action-btn-sublabel{ color: rgba(220,38,38,.55) !important; }
+body.theme-light .action-btn-expense::before,
+body.theme-light .action-btn-expense::after { display:none !important; }
+body.theme-light .action-btn-expense:hover  { transform: translateY(-1px) !important; box-shadow: 0 4px 14px rgba(220,38,38,.14) !important; }
+body.theme-light .action-btn-expense:active { transform: scale(.97) !important; }
+body.theme-light .action-btn-expense .action-btn-label    { color: #DC2626 !important; font-weight:800 !important; }
+body.theme-light .action-btn-expense .action-btn-sublabel { color: rgba(220,38,38,.52) !important; }
 body.theme-light .action-btn-expense .action-btn-icon-wrap {
   background: rgba(220,38,38,.10) !important;
-  border-color: rgba(220,38,38,.20) !important;
+  border: 1px solid rgba(220,38,38,.18) !important;
+  box-shadow: none !important;
 }
 body.theme-light .action-btn-income {
   background: #F0FDF4 !important;
-  border: 1.5px solid rgba(22,163,74,.18) !important;
-  box-shadow: var(--lt-sh-sm) !important;
+  border: 1.5px solid rgba(22,163,74,.15) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 2px 8px rgba(22,163,74,.08) !important;
 }
+body.theme-light .action-btn-income::before,
+body.theme-light .action-btn-income::after { display:none !important; }
+body.theme-light .action-btn-income:hover  { transform: translateY(-1px) !important; box-shadow: 0 4px 14px rgba(22,163,74,.14) !important; }
+body.theme-light .action-btn-income:active { transform: scale(.97) !important; }
 body.theme-light .action-btn-income .action-btn-label    { color: #16A34A !important; font-weight:800 !important; }
-body.theme-light .action-btn-income .action-btn-sublabel { color: rgba(22,163,74,.55) !important; }
+body.theme-light .action-btn-income .action-btn-sublabel { color: rgba(22,163,74,.52) !important; }
 body.theme-light .action-btn-income .action-btn-icon-wrap {
   background: rgba(22,163,74,.10) !important;
-  border-color: rgba(22,163,74,.20) !important;
+  border: 1px solid rgba(22,163,74,.18) !important;
+  box-shadow: none !important;
 }
 
 /* ════════════════════════════════════════
@@ -652,13 +662,19 @@ body.theme-light [style*="background:linear-gradient(135deg,#1D4ED8"] *,
 body.theme-light [style*="background:linear-gradient(160deg, #2563EB"] *,
 body.theme-light [style*="background:linear-gradient(160deg, #1D4ED8"] * { color: #fff !important; }
 
-/* keep coloured amounts */
-body.theme-light [style*="color:#00E676"] { color: var(--lt-green) !important; }
+/* keep coloured amounts — adjusted for light bg */
+body.theme-light [style*="color:#00E676"] { color: #16A34A !important; }
 body.theme-light [style*="color:#FF6080"],
-body.theme-light [style*="color:#FF1744"] { color: var(--lt-red)   !important; }
-body.theme-light [style*="color:#00E5FF"] { color: var(--lt-blue)  !important; }
+body.theme-light [style*="color:#FF1744"],
+body.theme-light [style*="color:#FF4D70"] { color: #DC2626 !important; }
+body.theme-light [style*="color:#00E5FF"] { color: var(--lt-blue) !important; }
 
-/* bug modal */
+body.theme-light .action-btn-svg-income { color: #16A34A !important; }
+body.theme-light .action-btn-svg-expense { color: #DC2626 !important; }
+
+/* ── Fix inline [style*="background:#0"] override catching action buttons ── */
+body.theme-light .action-btn-income[style],
+body.theme-light .action-btn-expense[style] { background: unset !important; }
 body.theme-light #bug-modal { background: var(--lt-surf) !important; backdrop-filter:none !important; box-shadow: var(--lt-sh-lg) !important; }
 body.theme-light .bug-contact-card { background: var(--lt-surf-2) !important; border: 1px solid var(--lt-border) !important; box-shadow: var(--lt-sh-sm) !important; }
 body.theme-light .bug-modal-icon   { background: rgba(37,99,235,.07) !important; border-color: rgba(37,99,235,.14) !important; }
@@ -4697,7 +4713,7 @@ body.theme-light #scan-manual-amount { background: #FFFBEB !important; border-co
         <button id="btn-add-income" class="action-btn-income">
           <div class="action-btn-inner">
             <div class="action-btn-icon-wrap">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00E676" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:#00E676" class="action-btn-svg-income"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             </div>
             <span class="action-btn-label" data-i18n="income_label">הכנסה</span>
             <span class="action-btn-sublabel" data-i18n="income_add">הוסף הכנסה</span>
@@ -4706,7 +4722,7 @@ body.theme-light #scan-manual-amount { background: #FFFBEB !important; border-co
         <button id="btn-add-expense" class="action-btn-expense">
           <div class="action-btn-inner">
             <div class="action-btn-icon-wrap">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF4D70" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:#FF4D70" class="action-btn-svg-expense"><line x1="5" y1="12" x2="19" y2="12"/></svg>
             </div>
             <span class="action-btn-label" data-i18n="expense_label">הוצאה</span>
             <span class="action-btn-sublabel" data-i18n="expense_add">הוסף הוצאה</span>
