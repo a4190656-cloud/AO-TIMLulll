@@ -190,8 +190,8 @@
   100%{ box-shadow:0 0 0 0   rgba(16,185,129,0);  }
 }
 @keyframes cardStaggerIn {
-  from { opacity:0; transform:translateY(16px) scale(.97) rotateX(3deg); filter:blur(4px); }
-  to   { opacity:1; transform:translateY(0)    scale(1)   rotateX(0deg); filter:blur(0); }
+  from { opacity:0; transform:translateY(14px) scale(.97); }
+  to   { opacity:1; transform:translateY(0)    scale(1);   }
 }
 @keyframes floatBubble {
   0%,100%{ transform:translateY(0) scale(1); }
@@ -1622,11 +1622,11 @@ body.theme-light #scan-manual-amount { background: #FFFBEB !important; border-co
 
     /* ── CARD ENTRY MICRO-ANIMATIONS 2029 ── */
     @keyframes cardIn2029 {
-      0%   { opacity: 0; transform: translateY(28px) scale(0.90) rotateX(8deg); filter: blur(6px) brightness(0.7); }
-      55%  { opacity: 1; filter: blur(0) brightness(1); }
-      78%  { transform: translateY(-4px) scale(1.02) rotateX(0deg); }
-      90%  { transform: translateY(2px) scale(0.99); }
-      100% { transform: translateY(0) scale(1) rotateX(0deg); }
+      0%   { opacity: 0; transform: translateY(22px) scale(0.93); }
+      55%  { opacity: 1; }
+      78%  { transform: translateY(-3px) scale(1.01); }
+      90%  { transform: translateY(1px) scale(0.995); }
+      100% { transform: translateY(0) scale(1); }
     }
     .cat-tile {
       animation: cardIn2029 0.55s var(--spring) both;
@@ -1872,11 +1872,11 @@ body.theme-light #scan-manual-amount { background: #FFFBEB !important; border-co
       opacity: 0;
     }
     @keyframes epicCardPop {
-      0%   { opacity:0; transform:scale(0.6) translateY(40px) rotateX(15deg); filter:blur(8px); }
-      50%  { opacity:1; filter:blur(0); }
-      70%  { transform:scale(1.05) translateY(-4px) rotateX(0deg); }
+      0%   { opacity:0; transform:scale(0.65) translateY(36px); }
+      50%  { opacity:1; }
+      70%  { transform:scale(1.04) translateY(-3px); }
       85%  { transform:scale(0.97) translateY(2px); }
-      100% { opacity:1; transform:scale(1) translateY(0) rotateX(0deg); }
+      100% { opacity:1; transform:scale(1) translateY(0); }
     }
     .success-card.income-card {
       background: linear-gradient(160deg, rgba(0,30,15,0.98) 0%, rgba(0,15,8,0.99) 100%);
