@@ -738,35 +738,7 @@ body.theme-light .scan-doc-result,
 body.theme-light [class*="scan-doc"] { background: var(--lt-surf) !important; border: 1px solid var(--lt-border) !important; box-shadow: var(--lt-sh-sm) !important; }
 body.theme-light #scan-manual-amount { background: #FFFBEB !important; border-color: rgba(217,119,6,.35) !important; color: var(--lt-text) !important; }
 
-/* ════════════════════════════════════════
-   LATE-OVERRIDE — מנצח את ה-!important של .cat-tile (שורה ~1557)
-   חייב להופיע כאן, אחרי כל הגדרות ה-dark-mode classes
-   Android WebView: backdrop-filter מטשטש את כל המסך
-════════════════════════════════════════ */
-body.theme-light .cat-tile,
-body.theme-light .cat-tile::before,
-body.theme-light .cat-tile::after {
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  background: var(--lt-surf) !important;
-  border: 1px solid var(--lt-border) !important;
-  box-shadow: var(--lt-sh-md) !important;
-  filter: none !important;
-}
 
-/* #nav — blur(20px) על nav ב-Android WebView מטשטש תוכן מאחורי הbar */
-body.theme-light #nav {
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-/* Overlays — blur שנשאר אחרי סגירה גורם לטשטוש כללי */
-body.theme-light [id*="overlay"]:not([id*="sheet"]),
-body.theme-light #ev-overlay,
-body.theme-light #ev-detail-overlay {
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
 
 
 
