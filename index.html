@@ -267,6 +267,24 @@ body.theme-light::before { display:none !important; content:none !important; opa
 body.theme-light::after  { display:none !important; content:none !important; opacity:0 !important; visibility:hidden !important; }
 body.theme-light { background: #F0F2F5 !important; }
 
+/* ── Flutter WebView fix: force GPU composite off ── */
+body.theme-light,
+body.theme-light #app,
+body.theme-light #view-dashboard,
+body.theme-light #view-settings,
+body.theme-light #view-categories,
+body.theme-light #view-charts {
+  filter: none !important;
+  -webkit-filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transform: none !important;
+  will-change: auto !important;
+  isolation: auto !important;
+  mix-blend-mode: normal !important;
+  opacity: 1 !important;
+}
+
 /* ── Hide dark-only FX ── */
 body.theme-light .scanline,
 body.theme-light #hero-scanline,
@@ -8582,14 +8600,52 @@ window.deletePhoneIdx = function(i) {
 
     window._setTheme = function(t){
       localStorage.setItem('_ao_theme', t);
-      /* apply immediately — no overlay, no setTimeout race */
       document.body.classList.toggle('theme-light', t === 'light');
       _updateUI(t);
+      if(t === 'light'){
+        /* Flutter WebView: force kill all filters/compositing on every ancestor */
+        [document.documentElement, document.body].forEach(function(el){
+          el.style.filter          = 'none';
+          el.style.webkitFilter    = 'none';
+          el.style.backdropFilter  = 'none';
+          el.style.webkitBackdropFilter = 'none';
+          el.style.willChange      = 'auto';
+          el.style.transform       = 'none';
+          el.style.opacity         = '1';
+          el.style.mixBlendMode    = 'normal';
+        });
+        /* also kill on #app */
+        var app = document.getElementById('app');
+        if(app){
+          app.style.filter         = 'none';
+          app.style.webkitFilter   = 'none';
+          app.style.backdropFilter = 'none';
+          app.style.willChange     = 'auto';
+          app.style.transform      = 'none';
+          app.style.opacity        = '1';
+        }
+      } else {
+        /* restore dark mode */
+        [document.documentElement, document.body].forEach(function(el){
+          el.style.filter = '';
+          el.style.webkitFilter = '';
+          el.style.backdropFilter = '';
+          el.style.willChange = '';
+          el.style.transform = '';
+          el.style.opacity = '';
+        });
+        var app2 = document.getElementById('app');
+        if(app2){
+          app2.style.filter = '';
+          app2.style.backdropFilter = '';
+          app2.style.willChange = '';
+          app2.style.transform = '';
+          app2.style.opacity = '';
+        }
+      }
       /* force repaint on Samsung WebView */
       document.body.style.display = 'none';
-      /* jshint ignore:start */
       void document.body.offsetHeight;
-      /* jshint ignore:end */
       document.body.style.display = '';
     };
 
@@ -8597,6 +8653,18 @@ window.deletePhoneIdx = function(i) {
     var saved = localStorage.getItem('_ao_theme') || 'dark';
     document.body.classList.toggle('theme-light', saved === 'light');
     _updateUI(saved);
+    /* if light mode on load, kill all filters immediately */
+    if(saved === 'light'){
+      [document.documentElement, document.body].forEach(function(el){
+        el.style.filter = 'none';
+        el.style.webkitFilter = 'none';
+        el.style.backdropFilter = 'none';
+        el.style.webkitBackdropFilter = 'none';
+        el.style.willChange = 'auto';
+        el.style.transform = 'none';
+        el.style.opacity = '1';
+      });
+    }
   })();
 
   /* ══════════════════════════════════════════════
