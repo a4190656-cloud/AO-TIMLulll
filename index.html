@@ -306,7 +306,7 @@ body.theme-light .app-content,
 body.theme-light .view-content   { background:transparent !important; }
 
 /* ════════════════════════════════════════
-   NUCLEAR BLUR FIX — כיבוי כל backdrop-filter במצב בהיר
+   NUCLEAR BLUR FIX — כיבוי כל backdrop-filter ו-filter במצב בהיר
    Samsung Android WebView מרנדר blur על כל המסך כמו screenshot
 ════════════════════════════════════════ */
 body.theme-light *,
@@ -314,6 +314,8 @@ body.theme-light *::before,
 body.theme-light *::after {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+  filter: none !important;
+  -webkit-filter: none !important;
 }
 
 /* ════════════════════════════════════════
@@ -4755,36 +4757,6 @@ body.theme-light #scan-manual-amount { background: #FFFBEB !important; border-co
       <div id="dash-budget-alerts" class="hidden" style="margin-bottom:14px;"></div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:20px" class="rise d3">
-      <!-- DEBUG BUTTON - לבדיקה בלבד -->
-      <div id="_debug_panel" style="display:none;position:fixed;top:60px;left:8px;right:8px;z-index:99999;background:#fff;border:2px solid red;padding:10px;font-size:11px;font-family:monospace;color:#000;border-radius:8px;max-height:50vh;overflow-y:auto;"></div>
-      <button onclick="
-        var p=document.getElementById('_debug_panel');
-        p.style.display=p.style.display==='none'?'block':'none';
-        if(p.style.display==='block'){
-          var body=document.body;
-          var app=document.getElementById('app');
-          var card=document.querySelector('.card');
-          var cs=window.getComputedStyle(body);
-          var ca=app?window.getComputedStyle(app):{};
-          var cc=card?window.getComputedStyle(card):{};
-          p.innerHTML='<b>body classes:</b> '+body.className+'<br>'+
-            '<b>body bg:</b> '+cs.backgroundColor+'<br>'+
-            '<b>body filter:</b> '+cs.filter+'<br>'+
-            '<b>body backdrop:</b> '+cs.backdropFilter+'<br>'+
-            '<b>body opacity:</b> '+cs.opacity+'<br>'+
-            '<b>app filter:</b> '+ca.filter+'<br>'+
-            '<b>app opacity:</b> '+ca.opacity+'<br>'+
-            '<b>card bg:</b> '+cc.backgroundColor+'<br>'+
-            '<b>card filter:</b> '+cc.filter+'<br>'+
-            '<b>card backdrop:</b> '+cc.backdropFilter+'<br>'+
-            '<b>card opacity:</b> '+cc.opacity+'<br>'+
-            '<b>Elements with filter:</b><br>'+
-            Array.from(document.querySelectorAll('*')).filter(function(el){
-              var s=window.getComputedStyle(el);
-              return s.filter&&s.filter!==\'none\'&&s.filter!==\'\';
-            }).map(function(el){return el.tagName+\'#\'+el.id+\'.\'+el.className.toString().split(\' \')[0];}).join(\'<br>\');
-        }
-      " style="position:fixed;bottom:120px;left:8px;z-index:99999;background:red;color:#fff;border:none;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;">DEBUG</button>
 
         <button id="btn-add-income" class="action-btn-income">
           <div class="action-btn-inner">
