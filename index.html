@@ -11,7 +11,23 @@
   <meta name="theme-color" content="#04070E">
   <meta name="color-scheme" content="dark">
   <meta name="description" content="ניהול תקציב אישי חכם עם סנכרון בין מכשירים, קטגוריות, ובוט וואטסאפ.">
-<script>if(localStorage.getItem('_ao_theme')==='light'){document.documentElement.style.background='#F0F2F5';document.body&&document.body.classList.add('theme-light');}</script>
+<script>
+(function(){
+  var t=localStorage.getItem('_ao_theme');
+  if(t==='light'){
+    document.documentElement.style.background='#F0F2F5';
+    document.documentElement.classList.add('theme-light-pre');
+    function applyLight(){
+      if(document.body){
+        document.body.classList.add('theme-light');
+        document.body.style.background='#F0F2F5';
+      }
+    }
+    if(document.body) applyLight();
+    else document.addEventListener('DOMContentLoaded', applyLight);
+  }
+})();
+</script>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="AO Budget">
@@ -8535,32 +8551,21 @@ window.deletePhoneIdx = function(i) {
 
     window._setTheme = function(t){
       localStorage.setItem('_ao_theme', t);
-      /* flash overlay */
-      var ov = document.getElementById('_theme_ov');
-      if(!ov){
-        ov = document.createElement('div');
-        ov.id = '_theme_ov';
-        ov.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;opacity:0;transition:opacity .14s ease;';
-        document.body.appendChild(ov);
-      }
-      ov.style.background = t === 'light' ? '#F0F2F5' : '#04070E';
-      ov.style.opacity = '0.7';
-      setTimeout(function(){
-        document.body.classList.toggle('theme-light', t === 'light');
-        _updateUI(t);
-        setTimeout(function(){ ov.style.opacity = '0'; }, 40);
-      }, 90);
+      /* apply immediately — no overlay, no setTimeout race */
+      document.body.classList.toggle('theme-light', t === 'light');
+      _updateUI(t);
+      /* force repaint on Samsung WebView */
+      document.body.style.display = 'none';
+      /* jshint ignore:start */
+      void document.body.offsetHeight;
+      /* jshint ignore:end */
+      document.body.style.display = '';
     };
 
-    /* apply on load */
+    /* apply on load — synchronous, no setTimeout */
     var saved = localStorage.getItem('_ao_theme') || 'dark';
     document.body.classList.toggle('theme-light', saved === 'light');
-    /* update UI after DOM ready */
-    if(document.readyState === 'loading'){
-      document.addEventListener('DOMContentLoaded', function(){ _updateUI(saved); });
-    } else {
-      setTimeout(function(){ _updateUI(saved); }, 0);
-    }
+    _updateUI(saved);
   })();
 
   /* ══════════════════════════════════════════════
