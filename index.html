@@ -11124,9 +11124,10 @@ window.exportUserData = function() {
       /* ── SCROLLABLE LIST ── */
       '<div id="_msr-list" style="',
         'flex:1;min-height:0;',
-        'overflow-y:auto;overflow-x:hidden;',
+        'overflow-y:scroll;overflow-x:hidden;',
         '-webkit-overflow-scrolling:touch;',
         'overscroll-behavior-y:contain;',
+        'touch-action:pan-y;',
         'padding:14px 16px 8px;',
         'display:flex;flex-direction:column;gap:10px;',
       '"></div>',
@@ -11160,20 +11161,28 @@ window.exportUserData = function() {
 
     /* lock body scroll */
     var _savedBodyOverflow = document.body.style.overflow;
+    var _savedBodyPosition = document.body.style.position;
     document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width    = '100%';
 
-    /* ── allow scroll only inside listEl ── */
-    sheet.addEventListener('touchmove', function(e){
-      var node = e.target;
-      while(node && node !== sheet){
-        if(node === listEl) return;
-        node = node.parentNode;
-      }
-      e.preventDefault();
-    }, { passive: false });
+    /* ── CSS-only scroll management (no JS touchmove blocker) ──
+       The sheet is position:fixed full-screen.
+       Header + footer have touch-action:none so they don't scroll.
+       listEl has overflow-y:scroll + touch-action:pan-y.
+       This is the only reliable way on Android WebView. ── */
+    var headerEl = sheet.querySelector('div');
+    var footerEl = sheet.lastElementChild;
+    if(headerEl){ headerEl.style.touchAction = 'none'; }
+    if(footerEl){ footerEl.style.touchAction = 'none'; }
+    listEl.style.touchAction     = 'pan-y';
+    listEl.style.overscrollBehaviorY = 'contain';
+    listEl.style.webkitOverflowScrolling = 'touch';
 
     var _origClose = function(){
       document.body.style.overflow = _savedBodyOverflow;
+      document.body.style.position = _savedBodyPosition;
+      document.body.style.width    = '';
       sheet.style.transform = 'translateY(100%)';
       setTimeout(function(){ if(sheet.parentNode) sheet.remove(); }, 420);
     };
@@ -11249,11 +11258,13 @@ window.exportUserData = function() {
         : '0 4px 18px rgba(0,0,0,0.22)';
 
       div.style.cssText=[
-        'border-radius:18px;overflow:hidden;',
+        'border-radius:18px;',
+        'overflow:visible;',
         'border:1px solid '+bdr+';',
         'background:'+_cardBg+';',
         'box-shadow:'+cardShadow+';',
         'position:relative;',
+        'flex-shrink:0;',
         'transition:box-shadow .22s,transform .18s;',
       ].join('');
 
@@ -11416,9 +11427,10 @@ window.exportUserData = function() {
       ].join('');
 
       /* shimmer top border */
-      var shimmerLine = '<div style="height:2px;background:linear-gradient(90deg,transparent,'+col+'55,transparent);"></div>';
+      var shimmerLine = '<div style="height:2px;background:linear-gradient(90deg,transparent,'+col+'55,transparent);border-radius:18px 18px 0 0;"></div>';
 
-      div.innerHTML = shimmerLine + summaryRow + editPanel;
+      var inner = '<div style="border-radius:18px;overflow:hidden;">' + shimmerLine + summaryRow + editPanel + '</div>';
+      div.innerHTML = inner;
     }
 
     /* ── placeholder while scanning ── */
