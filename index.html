@@ -7,11 +7,27 @@
   <title>AO Budget — ניהול תקציב חכם</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#04070E" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#04070E" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#04070E">
+  <meta name="theme-color" content="#F0F2F5" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#04070E" id="theme-color-main">
   <meta name="color-scheme" content="dark">
   <meta name="description" content="ניהול תקציב אישי חכם עם סנכרון בין מכשירים, קטגוריות, ובוט וואטסאפ.">
-<script>if(localStorage.getItem('_ao_theme')==='light'){document.documentElement.style.background='#F4F6FB';document.body&&document.body.classList.add('theme-light');}</script>
+<script>
+(function(){
+  var t=localStorage.getItem('_ao_theme');
+  if(t==='light'){
+    document.documentElement.style.background='#F0F2F5';
+    document.documentElement.classList.add('theme-light-pre');
+    function applyLight(){
+      if(document.body){
+        document.body.classList.add('theme-light');
+        document.body.style.background='#F0F2F5';
+      }
+    }
+    if(document.body) applyLight();
+    else document.addEventListener('DOMContentLoaded', applyLight);
+  }
+})();
+</script>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="AO Budget">
@@ -190,8 +206,8 @@
   100%{ box-shadow:0 0 0 0   rgba(16,185,129,0);  }
 }
 @keyframes cardStaggerIn {
-  from { opacity:0; transform:translateY(16px) scale(.97) rotateX(3deg); filter:blur(4px); }
-  to   { opacity:1; transform:translateY(0)    scale(1)   rotateX(0deg); filter:blur(0); }
+  from { opacity:0; transform:translateY(14px) scale(.97); }
+  to   { opacity:1; transform:translateY(0)    scale(1);   }
 }
 @keyframes floatBubble {
   0%,100%{ transform:translateY(0) scale(1); }
@@ -208,731 +224,520 @@
 
 /* ─── Design tokens ──────────────────────────────────────────────────────── */
 body.theme-light {
-  /* Canvas */
-  --lt-bg-1:    #F4F6FB;
-  --lt-bg-2:    #EEF2FF;
-  --lt-bg-3:    #E8F4FF;
+  /* ── Canvas ── */
+  --lt-bg:      #F0F2F5;
+  --lt-surf:    #FFFFFF;
+  --lt-surf-2:  #F7F8FA;
+  --lt-border:  rgba(0,0,0,0.07);
 
-  /* Glassmorphism surfaces */
-  --lt-surf:    rgba(255,255,255,0.65);
-  --lt-surf-hi: rgba(255,255,255,0.82);
-  --lt-surf-lo: rgba(255,255,255,0.45);
-  --lt-bdr:     rgba(255,255,255,0.78);
-  --lt-bdr-lo:  rgba(160,150,220,0.18);
-  --lt-bdr-hi:  rgba(255,255,255,0.95);
-  --lt-blur:    blur(40px) saturate(180%);
+  /* ── Brand ── */
+  --lt-blue:    #2563EB;
+  --lt-blue-dk: #1D4ED8;
+  --lt-green:   #16A34A;
+  --lt-red:     #DC2626;
+  --lt-orange:  #EA580C;
+  --lt-amber:   #D97706;
 
-  /* Brand palette */
-  --lt-indigo:  #4F46E5;
-  --lt-violet:  #7C3AED;
-  --lt-mint:    #10B981;
-  --lt-rose:    #F43F5E;
-  --lt-amber:   #F59E0B;
-  --lt-sky:     #0EA5E9;
+  /* ── Text ── */
+  --lt-text:    #0F172A;
+  --lt-text2:   #475569;
+  --lt-muted:   #94A3B8;
 
-  /* Typography — Deep Midnight Ink */
-  --lt-text:    #11132D;
-  --lt-text2:   rgba(17,19,45,0.58);
-  --lt-muted:   rgba(17,19,45,0.38);
-  --lt-faint:   rgba(17,19,45,0.20);
+  /* ── Shadows — layered like iOS ── */
+  --lt-sh-sm:   0 1px 2px rgba(0,0,0,.05);
+  --lt-sh-md:   0 1px 3px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.06);
+  --lt-sh-lg:   0 2px 6px rgba(0,0,0,.07), 0 8px 24px rgba(0,0,0,.08);
+  --lt-sh-blue: 0 4px 16px rgba(37,99,235,.28), 0 1px 4px rgba(37,99,235,.16);
 
-  /* Coloured shadows */
-  --lt-sh-card:
-    inset 0 2px 0 rgba(255,255,255,.92),
-    0 1px 0 rgba(255,255,255,.75),
-    0 14px 44px rgba(79,70,229,.12),
-    0 4px 12px  rgba(79,70,229,.07);
-  --lt-sh-hover:
-    inset 0 2px 0 rgba(255,255,255,.96),
-    0 26px 68px rgba(79,70,229,.22),
-    0 8px 22px  rgba(79,70,229,.12),
-    0 0 0 1.5px rgba(79,70,229,.18);
-  --lt-sh-mint:
-    inset 0 2px 0 rgba(255,255,255,.88),
-    0 14px 44px rgba(16,185,129,.15),
-    0 4px 12px  rgba(16,185,129,.08);
-  --lt-sh-rose:
-    inset 0 2px 0 rgba(255,255,255,.88),
-    0 14px 44px rgba(244,63,94,.14),
-    0 4px 12px  rgba(244,63,94,.07);
-
-  /* Remap global vars */
-  --bg:    var(--lt-bg-1);
+  /* Remap globals */
+  --bg:    var(--lt-bg);
   --card:  var(--lt-surf);
   --text:  var(--lt-text);
   --muted: var(--lt-muted);
-  --cyan:  var(--lt-indigo);
-  --green: var(--lt-mint);
-  --red:   var(--lt-rose);
+  --cyan:  var(--lt-blue);
+  --green: var(--lt-green);
+  --red:   var(--lt-red);
 
-  background: var(--lt-bg-1) !important;
+  background: var(--lt-bg) !important;
   color: var(--lt-text) !important;
 }
 
-/* ─── Background Canvas — Multi-layer moving mesh ────────────────────────── */
-body.theme-light::before {
-  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
-  background:
-    radial-gradient(ellipse 85% 75% at  -5%  -5%, rgba(99,102,241,.32)  0%, transparent 50%),
-    radial-gradient(ellipse 70% 65% at 108%  -3%, rgba(16,185,129,.22)  0%, transparent 48%),
-    radial-gradient(ellipse 78% 72% at 106% 106%, rgba(124,58,237,.20)  0%, transparent 50%),
-    radial-gradient(ellipse 66% 62% at  -4% 106%, rgba(14,165,233,.18)  0%, transparent 48%),
-    radial-gradient(ellipse 52% 48% at  52%  50%, rgba(199,210,254,.28) 0%, transparent 58%),
-    radial-gradient(ellipse 40% 35% at  28%  72%, rgba(167,139,250,.16) 0%, transparent 52%),
-    radial-gradient(ellipse 38% 32% at  75%  25%, rgba(52,211,153,.14)  0%, transparent 50%),
-    linear-gradient(158deg, #F2F0FF 0%, #EDF2FF 28%, #E9F4FF 56%, #F0EEFF 80%, #F5F3FF 100%) !important;
-  /* animation removed — causes blur on some Android WebViews */
+/* ── Background: clean gray, no gradients ── */
+body.theme-light::before { display:none !important; content:none !important; opacity:0 !important; visibility:hidden !important; }
+body.theme-light::after  { display:none !important; content:none !important; opacity:0 !important; visibility:hidden !important; }
+body.theme-light { background: #F0F2F5 !important; }
+
+/* ── Flutter WebView fix: force GPU composite off ── */
+body.theme-light,
+body.theme-light #app,
+body.theme-light #view-dashboard,
+body.theme-light #view-settings,
+body.theme-light #view-categories,
+body.theme-light #view-charts {
+  filter: none !important;
+  -webkit-filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transform: none !important;
+  will-change: auto !important;
+  isolation: auto !important;
+  mix-blend-mode: normal !important;
+  opacity: 1 !important;
 }
 
-/* Micro-dot grid overlay */
-body.theme-light::after {
-  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
-  background-image:
-    radial-gradient(circle, rgba(79,70,229,.14) 1px, transparent 1px) !important;
-  background-size: 22px 22px !important;
-  opacity: .45 !important;
-}
-
-/* ─── OLED-only FX — hide in light ───────────────────────────────────────── */
+/* ── Hide dark-only FX ── */
 body.theme-light .scanline,
-body.theme-light #hero-scanline { display:none !important; }
+body.theme-light #hero-scanline,
 body.theme-light #hero-particles,
-body.theme-light #login-particles { opacity:.06 !important; filter:hue-rotate(240deg) saturate(.15) brightness(1.6) !important; }
+body.theme-light #login-particles { display:none !important; }
 
-/* ─── Global transitions — spring physics ─────────────────────────────────── */
-body.theme-light * {
-  transition-timing-function: var(--spring) !important;
-}
-body.theme-light *:not(input):not(textarea):not(select):not(button):not([class*="mono"]):not([style*="color:#0"]):not([style*="color:#1"]):not([style*="color: #"]) {
+/* ── Global color reset ── */
+body.theme-light *:not(input):not(textarea):not(select):not(button):not(canvas):not([class*="mono"]):not([style*="color:#0"]):not([style*="color:#1"]):not([style*="color: #"]) {
   color: var(--lt-text) !important;
 }
 
-/* ─── Layout base ───────────────────────────────────────────────────────── */
+/* ── Screen layering ── */
+body.theme-light #app,
+body.theme-light #screen-login,
+body.theme-light #screen-loading,
+body.theme-light #screen-setname { position:relative !important; z-index:1 !important; }
 body.theme-light #app-root,
 body.theme-light .app-content,
-body.theme-light .view-content { background:transparent !important; }
+body.theme-light .view-content   { background:transparent !important; }
 
-/* ─── Top status bar ─────────────────────────────────────────────────────── */
+/* ════════════════════════════════════════
+   NUCLEAR BLUR FIX — כיבוי כל backdrop-filter במצב בהיר
+   Samsung Android WebView מרנדר blur על כל המסך כמו screenshot
+════════════════════════════════════════ */
+body.theme-light *,
+body.theme-light *::before,
+body.theme-light *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* ════════════════════════════════════════
+   TOP STATUS BAR
+════════════════════════════════════════ */
 body.theme-light #top-status-bar {
-  background: rgba(244,246,251,.88) !important;
-  border-bottom: 1px solid rgba(79,70,229,.10) !important;
+  background: #F0F2F5 !important;
+  border-bottom: 1px solid rgba(0,0,0,.06) !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
   color: var(--lt-text) !important;
-  box-shadow: 0 1px 0 rgba(255,255,255,.9), 0 4px 20px rgba(79,70,229,.06) !important;
 }
 body.theme-light #top-status-bar * { color: var(--lt-text) !important; }
-body.theme-light #cycle-display    { color: var(--lt-indigo) !important; font-weight:800 !important; }
+body.theme-light #cycle-display { color: var(--lt-blue) !important; font-weight:800 !important; }
 
-/* ─── Bottom nav ─────────────────────────────────────────────────────────── */
+/* ════════════════════════════════════════
+   BOTTOM NAV
+════════════════════════════════════════ */
 body.theme-light #nav {
-  background: rgba(255,255,255,.72) !important;
-  border-top: 1px solid rgba(255,255,255,.88) !important;
-  backdrop-filter: var(--lt-blur) !important;
-  box-shadow:
-    0 -1px 0 rgba(79,70,229,.10),
-    0 -8px 32px rgba(79,70,229,.08),
-    inset 0 1px 0 rgba(255,255,255,.95) !important;
+  background: rgba(255,255,255,0.96) !important;
+  border-top: 1px solid rgba(0,0,0,.06) !important;
+  border-left: none !important; border-right: none !important; border-bottom: none !important;
+  backdrop-filter: blur(20px) !important; -webkit-backdrop-filter: blur(20px) !important;
+  box-shadow: 0 -1px 0 rgba(0,0,0,.05), 0 -4px 20px rgba(0,0,0,.04) !important;
 }
-body.theme-light .nav-btn { color: var(--lt-muted) !important; }
+body.theme-light .nav-btn { color: #94A3B8 !important; }
 body.theme-light .nav-btn.active {
-  color: var(--lt-indigo) !important;
-  background: rgba(79,70,229,.09) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.95),
-    0 4px 16px rgba(79,70,229,.14) !important;
+  color: var(--lt-blue) !important;
+  background: rgba(37,99,235,.07) !important;
+  box-shadow: none !important;
 }
 body.theme-light .nav-btn svg { stroke: currentColor !important; }
+body.theme-light .nav-label   { font-weight:700 !important; }
 
-/* ─── Cards ──────────────────────────────────────────────────────────────── */
+/* ════════════════════════════════════════
+   HERO BALANCE CARD
+════════════════════════════════════════ */
+body.theme-light #hero-balance-card {
+  background: linear-gradient(135deg, #1E40AF 0%, #2563EB 45%, #3B82F6 100%) !important;
+  border: none !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+  box-shadow: var(--lt-sh-blue) !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+body.theme-light #hero-balance-card::before {
+  content:'';
+  position:absolute; top:-40%; right:-10%; width:70%; padding-bottom:70%;
+  border-radius:50%; z-index:0; pointer-events:none;
+  background: radial-gradient(circle, rgba(255,255,255,.14) 0%, transparent 70%) !important;
+  animation: none !important; mask-image:none !important; -webkit-mask-image:none !important;
+}
+body.theme-light #hero-balance-card * { color: #FFFFFF !important; }
+body.theme-light #hero-balance-card .hero-orb { opacity:.08 !important; }
+
+/* ════════════════════════════════════════
+   STAT MINI-CARDS (3 under hero)
+════════════════════════════════════════ */
+body.theme-light .stat-pill,
+body.theme-light .mini-card,
+body.theme-light .kpi-card,
+body.theme-light [class*="stat-"] {
+  background: var(--lt-surf) !important;
+  border: 1px solid var(--lt-border) !important;
+  box-shadow: var(--lt-sh-md) !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+}
+
+/* ════════════════════════════════════════
+   ALL CARDS
+════════════════════════════════════════ */
 body.theme-light .card,
 body.theme-light [class*="card"],
 body.theme-light .inp-card,
 body.theme-light .section-card {
   background: var(--lt-surf) !important;
-  border: 1px solid var(--lt-bdr) !important;
-  box-shadow: var(--lt-sh-card) !important;
+  border: 1px solid var(--lt-border) !important;
+  box-shadow: var(--lt-sh-md) !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
 }
-body.theme-light .card:hover,
-body.theme-light [class*="card"]:hover {
-  box-shadow: var(--lt-sh-hover) !important;
-  transform: translateY(-1px) scale(1.004) !important;
-}
-
-/* ─── Hero balance card ──────────────────────────────────────────────────── */
-body.theme-light #hero-balance-card {
-  background: rgba(255,255,255,.72) !important;
-  border: 1px solid rgba(255,255,255,.88) !important;
-  backdrop-filter: blur(60px) saturate(200%) !important;
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,.96),
-    inset 0 -1px 0 rgba(79,70,229,.08),
-    0 20px 60px rgba(79,70,229,.16),
-    0 8px 24px  rgba(79,70,229,.10) !important;
-  position: relative !important;
-  overflow: hidden !important;
-}
-/* Holographic shimmer border on hero */
-body.theme-light #hero-balance-card::before {
-  content:''; position:absolute; inset:-1px; border-radius:inherit; z-index:0;
-  background: linear-gradient(
-    135deg,
-    rgba(99,102,241,.0) 0%,
-    rgba(99,102,241,.35) 25%,
-    rgba(167,139,250,.40) 50%,
-    rgba(52,211,153,.30) 75%,
-    rgba(99,102,241,.0) 100%
-  ) !important;
-  background-size: 300% 300% !important;
-  animation: none !important; opacity: 0 !important;
-  pointer-events: none !important;
-  mask-image: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 4px, rgba(0,0,0,0) calc(100% - 4px), rgba(0,0,0,1) 100%), linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 4px, rgba(0,0,0,0) calc(100% - 4px), rgba(0,0,0,1) 100%) !important;
-  mask-composite: intersect !important;
-  -webkit-mask-image: linear-gradient(rgba(0,0,0,1) 0%, rgba(0,0,0,1) 100%) !important;
-  opacity: .6 !important;
-}
-body.theme-light #hero-balance-card .balance-amount,
-body.theme-light #hero-balance-card .main-amount,
-body.theme-light #hero-balance-card [id*="balance"] { color: var(--lt-text) !important; }
-body.theme-light .hero-orb { background: rgba(79,70,229,.08) !important; }
-
-/* ─── Stat pills / mini cards ────────────────────────────────────────────── */
-body.theme-light .stat-pill,
-body.theme-light .mini-card,
-body.theme-light .kpi-card,
-body.theme-light [class*="stat-"] {
-  background: rgba(255,255,255,.60) !important;
-  border: 1px solid rgba(255,255,255,.82) !important;
-  backdrop-filter: blur(24px) saturate(160%) !important;
-  box-shadow: var(--lt-sh-card) !important;
+body.theme-light .card:active,
+body.theme-light [class*="card"]:active {
+  transform: scale(.98) !important;
+  box-shadow: var(--lt-sh-sm) !important;
 }
 
-/* ─── Inputs & textareas ─────────────────────────────────────────────────── */
+/* ════════════════════════════════════════
+   ACTION BUTTONS (הוצאה / הכנסה)
+════════════════════════════════════════ */
+body.theme-light .action-btn-expense {
+  background: #FEF2F2 !important;
+  border: 1.5px solid rgba(220,38,38,.15) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 2px 8px rgba(220,38,38,.08) !important;
+}
+body.theme-light .action-btn-expense::before,
+body.theme-light .action-btn-expense::after { display:none !important; }
+body.theme-light .action-btn-expense:hover  { transform: translateY(-1px) !important; box-shadow: 0 4px 14px rgba(220,38,38,.14) !important; }
+body.theme-light .action-btn-expense:active { transform: scale(.97) !important; }
+body.theme-light .action-btn-expense .action-btn-label    { color: #DC2626 !important; font-weight:800 !important; }
+body.theme-light .action-btn-expense .action-btn-sublabel { color: rgba(220,38,38,.52) !important; }
+body.theme-light .action-btn-expense .action-btn-icon-wrap {
+  background: rgba(220,38,38,.10) !important;
+  border: 1px solid rgba(220,38,38,.18) !important;
+  box-shadow: none !important;
+}
+body.theme-light .action-btn-income {
+  background: #F0FDF4 !important;
+  border: 1.5px solid rgba(22,163,74,.15) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 2px 8px rgba(22,163,74,.08) !important;
+}
+body.theme-light .action-btn-income::before,
+body.theme-light .action-btn-income::after { display:none !important; }
+body.theme-light .action-btn-income:hover  { transform: translateY(-1px) !important; box-shadow: 0 4px 14px rgba(22,163,74,.14) !important; }
+body.theme-light .action-btn-income:active { transform: scale(.97) !important; }
+body.theme-light .action-btn-income .action-btn-label    { color: #16A34A !important; font-weight:800 !important; }
+body.theme-light .action-btn-income .action-btn-sublabel { color: rgba(22,163,74,.52) !important; }
+body.theme-light .action-btn-income .action-btn-icon-wrap {
+  background: rgba(22,163,74,.10) !important;
+  border: 1px solid rgba(22,163,74,.18) !important;
+  box-shadow: none !important;
+}
+
+/* ════════════════════════════════════════
+   SCAN DOC BUTTON
+════════════════════════════════════════ */
+body.theme-light .scan-doc-btn {
+  background: var(--lt-surf) !important;
+  border: 1px solid var(--lt-border) !important;
+  box-shadow: var(--lt-sh-md) !important;
+}
+body.theme-light .scan-doc-title { color: var(--lt-text) !important; }
+
+/* ════════════════════════════════════════
+   TRANSACTION ROWS
+════════════════════════════════════════ */
+body.theme-light .tx-row,
+body.theme-light [class*="tx-row"] {
+  background: var(--lt-surf) !important;
+  border: 1px solid var(--lt-border) !important;
+  box-shadow: var(--lt-sh-sm) !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+}
+body.theme-light .tx-row:active { transform: scale(.985) !important; background: #F8FAFF !important; }
+body.theme-light .tx-icon {
+  background: #F1F5FF !important;
+  border-color: rgba(37,99,235,.10) !important;
+  box-shadow: none !important;
+}
+body.theme-light .tx-name   { color: var(--lt-text)  !important; font-weight:700 !important; }
+body.theme-light .tx-date   { color: var(--lt-muted) !important; }
+body.theme-light .tx-amount-pos { color: var(--lt-green) !important; font-weight:800 !important; }
+body.theme-light .tx-amount-neg { color: var(--lt-red)   !important; font-weight:800 !important; }
+
+/* ════════════════════════════════════════
+   INPUTS
+════════════════════════════════════════ */
 body.theme-light input,
 body.theme-light textarea,
 body.theme-light select {
-  background: rgba(255,255,255,.78) !important;
-  border: 1.5px solid rgba(160,150,220,.25) !important;
+  background: var(--lt-surf) !important;
+  border: 1.5px solid rgba(0,0,0,.11) !important;
   color: var(--lt-text) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.95),
-    inset 0 2px 8px rgba(79,70,229,.04) !important;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,.04) !important;
 }
 body.theme-light input::placeholder,
 body.theme-light textarea::placeholder { color: var(--lt-muted) !important; }
 body.theme-light input:focus,
 body.theme-light textarea:focus,
 body.theme-light select:focus {
-  border-color: rgba(79,70,229,.55) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.95),
-    0 0 0 3px rgba(79,70,229,.12),
-    0 4px 16px rgba(79,70,229,.10) !important;
+  border-color: rgba(37,99,235,.50) !important;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.12), inset 0 1px 2px rgba(0,0,0,.03) !important;
   outline: none !important;
-  background: rgba(255,255,255,.92) !important;
 }
-body.theme-light .inp,
-body.theme-light [class*="inp"] {
-  background: rgba(255,255,255,.72) !important;
-  border-color: rgba(160,150,220,.22) !important;
-  color: var(--lt-text) !important;
-}
-body.theme-light .inp:focus { border-color: rgba(79,70,229,.50) !important; }
 
-/* ─── Buttons ────────────────────────────────────────────────────────────── */
+/* ════════════════════════════════════════
+   BUTTONS
+════════════════════════════════════════ */
 body.theme-light .btn-primary,
 body.theme-light .btn-cyan,
 body.theme-light [class*="btn-primary"],
 body.theme-light [class*="btn-cyan"] {
-  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%) !important;
-  border: none !important;
-  color: #fff !important;
-  box-shadow:
-    0 8px 28px rgba(79,70,229,.36),
-    0 2px 8px  rgba(79,70,229,.20),
-    inset 0 1px 0 rgba(255,255,255,.22) !important;
-  transition: transform .18s var(--spring), box-shadow .18s var(--spring) !important;
+  background: linear-gradient(160deg, #2563EB, #1D4ED8) !important;
+  border: none !important; color: #fff !important;
+  box-shadow: var(--lt-sh-blue) !important;
 }
 body.theme-light .btn-primary:active,
-body.theme-light .btn-cyan:active {
-  transform: scale(.96) translateY(1px) !important;
-  box-shadow: 0 4px 14px rgba(79,70,229,.28) !important;
-}
+body.theme-light .btn-cyan:active { transform: scale(.97) !important; opacity:.92 !important; }
+
 body.theme-light .btn-ghost,
 body.theme-light [class*="btn-ghost"] {
-  background: rgba(255,255,255,.65) !important;
-  border: 1px solid rgba(160,150,220,.28) !important;
+  background: var(--lt-surf) !important;
+  border: 1px solid rgba(0,0,0,.10) !important;
   color: var(--lt-text) !important;
-  box-shadow: var(--lt-sh-card) !important;
+  box-shadow: var(--lt-sh-sm) !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
 }
-body.theme-light .btn-ghost:active { transform: scale(.96) !important; }
-
-/* Green / income buttons */
 body.theme-light .btn-green,
-body.theme-light [class*="btn-income"],
-body.theme-light [class*="btn-green"] {
-  background: linear-gradient(135deg, #059669 0%, #10B981 100%) !important;
-  color: #fff !important;
-  box-shadow: 0 8px 28px rgba(16,185,129,.30), inset 0 1px 0 rgba(255,255,255,.22) !important;
+body.theme-light [class*="btn-green"],
+body.theme-light [class*="btn-income"] {
+  background: linear-gradient(160deg, #16A34A, #15803D) !important;
+  border: none !important; color: #fff !important;
+  box-shadow: 0 4px 14px rgba(22,163,74,.28) !important;
 }
-/* Red / expense buttons */
 body.theme-light .btn-red,
-body.theme-light [class*="btn-expense"],
-body.theme-light [class*="btn-red"] {
-  background: linear-gradient(135deg, #E11D48 0%, #F43F5E 100%) !important;
-  color: #fff !important;
-  box-shadow: 0 8px 28px rgba(244,63,94,.28), inset 0 1px 0 rgba(255,255,255,.22) !important;
+body.theme-light [class*="btn-red"],
+body.theme-light [class*="btn-expense"] {
+  background: linear-gradient(160deg, #DC2626, #B91C1C) !important;
+  border: none !important; color: #fff !important;
+  box-shadow: 0 4px 14px rgba(220,38,38,.26) !important;
 }
 
-/* ─── Modals & overlays ──────────────────────────────────────────────────── */
-body.theme-light [id*="modal"],
-body.theme-light [id*="overlay"],
+/* header icon buttons */
+body.theme-light #btn-logout,
+body.theme-light #btn-reset,
+body.theme-light #btn-cycle,
+body.theme-light [id^="btn-hdr-"],
+body.theme-light .header-icon-btn {
+  background: var(--lt-surf) !important;
+  border: 1px solid var(--lt-border) !important;
+  color: var(--lt-text2) !important;
+  box-shadow: var(--lt-sh-sm) !important;
+}
+
+/* ════════════════════════════════════════
+   MODALS / SHEETS / OVERLAYS
+════════════════════════════════════════ */
+body.theme-light [id*="modal"] > div,
 body.theme-light [id*="sheet"],
+body.theme-light #edit-modal,
+body.theme-light #cycle-modal-sheet,
 body.theme-light ._scan-sheet,
-body.theme-light ._scan-confirm-sheet,
-body.theme-light #ev-overlay > div,
-body.theme-light #cycle-modal-sheet {
-  background: rgba(248,246,255,.94) !important;
-  border: 1px solid rgba(255,255,255,.88) !important;
-  backdrop-filter: blur(60px) saturate(200%) !important;
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,.96),
-    0 32px 80px rgba(79,70,229,.22),
-    0 12px 32px rgba(79,70,229,.12) !important;
+body.theme-light ._scan-confirm-sheet {
+  background: var(--lt-surf) !important;
+  border: 1px solid var(--lt-border) !important;
+  box-shadow: 0 -4px 30px rgba(0,0,0,.12), 0 0 0 1px rgba(0,0,0,.04) !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
   color: var(--lt-text) !important;
 }
-body.theme-light [id*="overlay"]:not([id*="sheet"]):not([class*="sheet"]) {
-  background: rgba(30,27,75,.40) !important;
+body.theme-light [id*="overlay"]:not([id*="sheet"]) {
+  background: rgba(15,23,42,.38) !important;
+  backdrop-filter: blur(4px) !important;
 }
 body.theme-light #ev-overlay {
-  background: rgba(30,27,75,.38) !important;
-  backdrop-filter: blur(8px) !important;
-}
-body.theme-light #edit-modal {
-  background: rgba(248,246,255,.96) !important;
-  box-shadow: 0 28px 80px rgba(79,70,229,.28) !important;
+  background: rgba(15,23,42,.35) !important;
+  backdrop-filter: blur(4px) !important;
 }
 
-/* ─── Edit / add modal internals ─────────────────────────────────────────── */
-body.theme-light .modal-title,
-body.theme-light #edit-modal-title,
-body.theme-light [id*="modal-title"] { color: var(--lt-text) !important; font-weight:900 !important; }
-body.theme-light .modal-label,
-body.theme-light [class*="modal-label"]  { color: var(--lt-text2) !important; }
-body.theme-light .toggle-income,
-body.theme-light [id*="toggle-income"] {
-  background: rgba(16,185,129,.12) !important;
-  border-color: rgba(16,185,129,.35) !important;
-  color: var(--lt-mint) !important;
-}
-body.theme-light .toggle-expense,
-body.theme-light [id*="toggle-expense"] {
-  background: rgba(244,63,94,.12) !important;
-  border-color: rgba(244,63,94,.35) !important;
-  color: var(--lt-rose) !important;
-}
-body.theme-light .toggle-income.active,
-body.theme-light [id*="toggle-income"].active {
-  background: linear-gradient(135deg,#059669,#10B981) !important;
-  color: #fff !important;
-  box-shadow: 0 6px 20px rgba(16,185,129,.35) !important;
-}
-body.theme-light .toggle-expense.active,
-body.theme-light [id*="toggle-expense"].active {
-  background: linear-gradient(135deg,#E11D48,#F43F5E) !important;
-  color: #fff !important;
-  box-shadow: 0 6px 20px rgba(244,63,94,.32) !important;
+/* modal handle bar */
+body.theme-light [id*="sheet"] > div:first-child[style*="height:4px"],
+body.theme-light [id*="sheet"] > div:first-child[style*="width:34px"] {
+  background: rgba(0,0,0,.14) !important;
 }
 
-/* ─── Transaction rows ──────────────────────────────────────────────────── */
-body.theme-light .tx-row,
-body.theme-light [class*="tx-row"] {
-  background: rgba(255,255,255,.62) !important;
-  border-color: rgba(160,150,220,.14) !important;
-  transition: background .18s var(--spring), box-shadow .18s var(--spring) !important;
-}
-body.theme-light .tx-row:active {
-  background: rgba(79,70,229,.06) !important;
-  box-shadow: 0 4px 16px rgba(79,70,229,.10) !important;
-}
-body.theme-light .tx-icon {
-  background: rgba(255,255,255,.80) !important;
-  border-color: rgba(160,150,220,.20) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.95) !important;
-}
-body.theme-light .tx-ev-tag {
-  background: linear-gradient(135deg,rgba(124,58,237,.12),rgba(79,70,229,.08)) !important;
-  border-color: rgba(124,58,237,.28) !important;
-  color: var(--lt-violet) !important;
-}
-body.theme-light .cat-tag {
-  background: rgba(79,70,229,.10) !important;
-  color: var(--lt-indigo) !important;
-  border: 1px solid rgba(79,70,229,.18) !important;
-}
-body.theme-light .wa-tag {
-  background: rgba(16,185,129,.10) !important;
-  color: var(--lt-mint) !important;
-}
-
-/* Income / expense amounts */
-body.theme-light [style*="color:var(--green)"],
-body.theme-light [style*="color: var(--green)"]  { color: var(--lt-mint)  !important; }
-body.theme-light [style*="color:var(--red)"],
-body.theme-light [style*="color: var(--red)"]    { color: var(--lt-rose)  !important; }
-body.theme-light [style*="color:var(--cyan)"],
-body.theme-light [style*="color: var(--cyan)"]   { color: var(--lt-indigo) !important; }
-
-/* ─── Category cards ─────────────────────────────────────────────────────── */
+/* ════════════════════════════════════════
+   CATEGORY & EVENT CARDS
+════════════════════════════════════════ */
 body.theme-light .cat-card,
 body.theme-light [class*="cat-card"] {
-  background: rgba(255,255,255,.65) !important;
-  border: 1px solid rgba(255,255,255,.85) !important;
-  box-shadow: var(--lt-sh-card) !important;
+  background: var(--lt-surf) !important;
+  border: 1px solid var(--lt-border) !important;
+  box-shadow: var(--lt-sh-md) !important;
 }
-body.theme-light .cat-card:active {
-  transform: scale(.97) !important;
-  box-shadow: 0 4px 20px rgba(79,70,229,.14) !important;
-}
-body.theme-light .cat-name,
-body.theme-light [class*="cat-name"] { color: var(--lt-text) !important; font-weight:800 !important; }
-body.theme-light .cat-amount,
-body.theme-light [class*="cat-amount"] { color: var(--lt-text2) !important; }
-body.theme-light .budget-bar-fill,
-body.theme-light [class*="budget-bar-fill"],
-body.theme-light [class*="bar-fill"] { filter:saturate(1.2) brightness(.9) !important; }
+body.theme-light .cat-name  { color: var(--lt-text)  !important; font-weight:800 !important; }
+body.theme-light .cat-budget{ color: var(--lt-text2) !important; }
+body.theme-light .cat-spent { color: var(--lt-muted) !important; }
+body.theme-light .cat-budget-bar { background: rgba(0,0,0,.06) !important; }
 
-/* ─── Budget alert chips ──────────────────────────────────────────────────── */
-body.theme-light .budget-alert-item,
-body.theme-light [class*="budget-alert"] {
-  background: rgba(255,255,255,.70) !important;
-  border-color: rgba(160,150,220,.18) !important;
-}
-body.theme-light .budget-alert-remain.over {
-  background: rgba(244,63,94,.12) !important;
-  color: var(--lt-rose) !important;
-  border-color: rgba(244,63,94,.25) !important;
-}
-body.theme-light .budget-alert-remain.near {
-  background: rgba(245,158,11,.10) !important;
-  color: var(--lt-amber) !important;
-  border-color: rgba(245,158,11,.22) !important;
-}
-
-/* ─── Charts view ────────────────────────────────────────────────────────── */
-body.theme-light .ch-card {
-  background: rgba(255,255,255,.68) !important;
-  border: 1px solid rgba(255,255,255,.88) !important;
-  box-shadow: var(--lt-sh-card) !important;
-}
-body.theme-light .ch-title    { color: var(--lt-muted) !important; }
-body.theme-light .ch-chip     {
-  background: rgba(255,255,255,.58) !important;
-  border-color: rgba(160,150,220,.18) !important;
-}
-body.theme-light .ch-leg-row  {
-  background: rgba(255,255,255,.50) !important;
-  border-color: rgba(160,150,220,.14) !important;
-}
-body.theme-light .ch-leg-name { color: var(--lt-text) !important; }
-body.theme-light .ch-hbar-track,
-body.theme-light .ch-bud-track,
-body.theme-light .ch-rate-track { background: rgba(160,150,220,.14) !important; }
-body.theme-light .trend-period-btn {
-  background: rgba(255,255,255,.60) !important;
-  border-color: rgba(160,150,220,.22) !important;
-  color: var(--lt-text2) !important;
-}
-body.theme-light .trend-period-btn.active {
-  background: rgba(79,70,229,.12) !important;
-  border-color: rgba(79,70,229,.35) !important;
-  color: var(--lt-indigo) !important;
-  box-shadow: 0 4px 16px rgba(79,70,229,.14) !important;
-}
-body.theme-light #ch-donut-center { color: var(--lt-text) !important; }
-body.theme-light #ch-donut-clabel { color: var(--lt-muted) !important; }
-body.theme-light #ch-donut-cval   { color: var(--lt-text) !important; }
-
-/* ─── Events view ────────────────────────────────────────────────────────── */
 body.theme-light .ev-card {
-  background: rgba(255,255,255,.68) !important;
-  border: 1px solid rgba(255,255,255,.88) !important;
-  box-shadow: var(--lt-sh-card) !important;
-}
-body.theme-light .ev-card:active  { transform: scale(.985) !important; }
-body.theme-light .ev-name         { color: var(--lt-text) !important; font-weight:900 !important; }
-body.theme-light .ev-meta         { color: var(--lt-text2) !important; }
-body.theme-light .ev-stat         {
-  background: rgba(255,255,255,.55) !important;
-  border-color: rgba(160,150,220,.16) !important;
-}
-body.theme-light .ev-stat-label   { color: var(--lt-muted) !important; }
-body.theme-light #btn-add-event   {
-  background: rgba(79,70,229,.08) !important;
-  border-color: rgba(79,70,229,.22) !important;
-  color: var(--lt-indigo) !important;
-}
-body.theme-light #btn-add-event:active { background: rgba(79,70,229,.15) !important; }
-body.theme-light #ev-sheet {
-  background: rgba(248,246,255,.97) !important;
-  box-shadow: 0 -16px 60px rgba(79,70,229,.20), inset 0 1px 0 rgba(255,255,255,.96) !important;
-}
-body.theme-light .ev-inp {
-  background: rgba(255,255,255,.88) !important;
-  border-color: rgba(160,150,220,.22) !important;
-  color: var(--lt-text) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.95) !important;
-}
-body.theme-light .ev-inp:focus {
-  border-color: rgba(79,70,229,.50) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 0 0 3px rgba(79,70,229,.10) !important;
-}
-body.theme-light .ev-cal-btn      {
-  background: rgba(255,255,255,.62) !important;
-  border-color: rgba(160,150,220,.20) !important;
-  color: var(--lt-text2) !important;
-}
-body.theme-light .ev-cal-btn.active {
-  background: rgba(79,70,229,.12) !important;
-  border-color: rgba(79,70,229,.35) !important;
-  color: var(--lt-indigo) !important;
-}
-body.theme-light .ev-save-btn {
-  background: linear-gradient(135deg,#4F46E5,#7C3AED) !important;
-  box-shadow: 0 8px 28px rgba(79,70,229,.32) !important;
-  color: #fff !important;
-}
-body.theme-light .ev-empty        { color: var(--lt-muted) !important; }
-body.theme-light #ev-heb-preview  {
-  background: rgba(124,58,237,.08) !important;
-  border-color: rgba(124,58,237,.20) !important;
-  color: var(--lt-violet) !important;
-}
-body.theme-light .ev-heb-sel {
-  background: rgba(255,255,255,.82) !important;
-  border-color: rgba(160,150,220,.22) !important;
-  color: var(--lt-text) !important;
+  background: var(--lt-surf) !important;
+  border: 1px solid var(--lt-border) !important;
+  box-shadow: var(--lt-sh-md) !important;
 }
 
-/* ─── Event detail overlay ──────────────────────────────────────────────── */
-body.theme-light #ev-detail-sheet   {
-  background: rgba(248,246,255,.96) !important;
-  border-top-color: rgba(79,70,229,.18) !important;
-  box-shadow: 0 -20px 60px rgba(79,70,229,.22), inset 0 1px 0 rgba(255,255,255,.96) !important;
+/* ════════════════════════════════════════
+   SETTINGS
+════════════════════════════════════════ */
+body.theme-light .setting-row,
+body.theme-light [class*="setting-row"],
+body.theme-light .settings-item {
+  background: var(--lt-surf) !important;
+  border-bottom: 1px solid rgba(0,0,0,.05) !important;
 }
-body.theme-light #ev-detail-name    { color: var(--lt-text) !important; }
-body.theme-light #ev-detail-date-row { color: var(--lt-text2) !important; }
-body.theme-light .ev-det-stat       {
-  background: rgba(255,255,255,.62) !important;
-  border-color: rgba(160,150,220,.16) !important;
-}
-body.theme-light .ev-det-stat-label { color: var(--lt-muted) !important; }
-body.theme-light .ev-det-section-title { color: var(--lt-muted) !important; }
-body.theme-light .ev-det-tx-item    {
-  background: rgba(255,255,255,.55) !important;
-  border-color: rgba(160,150,220,.14) !important;
-}
-body.theme-light .ev-det-tx-desc    { color: var(--lt-text) !important; }
-body.theme-light .ev-det-tx-meta    { color: var(--lt-text2) !important; }
-body.theme-light #ev-detail-close   {
-  background: rgba(255,255,255,.72) !important;
-  border-color: rgba(160,150,220,.22) !important;
-  color: var(--lt-text2) !important;
-}
-body.theme-light .ev-det-budget-bar-bg { background: rgba(160,150,220,.14) !important; }
+body.theme-light .setting-label { color: var(--lt-text) !important; font-weight:600 !important; }
+body.theme-light .setting-value,
+body.theme-light .setting-desc  { color: var(--lt-text2) !important; }
+body.theme-light .setting-section-title,
+body.theme-light [class*="settings-title"],
+body.theme-light .section-label { color: var(--lt-muted) !important; font-weight:700 !important; font-size:11px !important; text-transform:uppercase !important; letter-spacing:.05em !important; }
 
-/* ─── Settings / Fixed items ─────────────────────────────────────────────── */
-body.theme-light .fixed-block,
-body.theme-light [class*="fixed-block"] {
-  background: rgba(255,255,255,.65) !important;
-  border: 1px solid rgba(255,255,255,.85) !important;
-  box-shadow: var(--lt-sh-card) !important;
-}
-body.theme-light .fixed-block-title,
-body.theme-light [class*="fixed-block-title"] { color: var(--lt-text) !important; font-weight:900 !important; }
-body.theme-light .fixed-block-sub,
-body.theme-light [class*="fixed-block-sub"]   { color: var(--lt-text2) !important; }
+/* ════════════════════════════════════════
+   FIXED ITEMS / KPI STRIP
+════════════════════════════════════════ */
 body.theme-light .fixed-item,
 body.theme-light [class*="fixed-item"] {
-  background: rgba(255,255,255,.55) !important;
-  border-color: rgba(160,150,220,.14) !important;
+  background: var(--lt-surf) !important;
+  border: 1px solid var(--lt-border) !important;
+  box-shadow: var(--lt-sh-sm) !important;
 }
-body.theme-light .fixed-item-name  { color: var(--lt-text) !important; }
-body.theme-light .fixed-item-amount { color: var(--lt-text2) !important; }
+body.theme-light .fixed-item-name   { color: var(--lt-text)  !important; font-weight:700 !important; }
+body.theme-light .fixed-item-amount { color: var(--lt-text2) !important; font-weight:800 !important; }
 body.theme-light .fixed-item-amount[style*="income"],
-body.theme-light .fixed-item-amount[style*="green"] { color: var(--lt-mint) !important; }
+body.theme-light .fixed-item-amount[style*="green"] { color: var(--lt-green) !important; }
 body.theme-light .fixed-item-amount[style*="expense"],
-body.theme-light .fixed-item-amount[style*="red"]   { color: var(--lt-rose) !important; }
+body.theme-light .fixed-item-amount[style*="red"]   { color: var(--lt-red)   !important; }
 
-/* ─── Section labels / dividers ──────────────────────────────────────────── */
-body.theme-light .section-label,
-body.theme-light [class*="section-label"],
-body.theme-light .setting-section-title,
-body.theme-light [class*="settings-title"] {
-  color: var(--lt-muted) !important;
-  font-weight:800 !important;
+body.theme-light .ch-kpi {
+  background: var(--lt-surf) !important;
+  border: 1px solid var(--lt-border) !important;
+  box-shadow: var(--lt-sh-sm) !important;
 }
-body.theme-light hr,
-body.theme-light .divider,
-body.theme-light [class*="divider"] {
-  border-color: rgba(160,150,220,.14) !important;
-  opacity:1 !important;
-}
+body.theme-light .ch-kpi-label { color: var(--lt-muted) !important; font-size:11px !important; font-weight:700 !important; }
 
-/* ─── Charts view extra ─────────────────────────────────────────────────── */
+/* ════════════════════════════════════════
+   CHARTS
+════════════════════════════════════════ */
 body.theme-light .chart-hero,
 body.theme-light [class*="chart-hero"] {
-  background: rgba(255,255,255,.65) !important;
-  border-color: rgba(255,255,255,.86) !important;
-  box-shadow: var(--lt-sh-card) !important;
+  background: var(--lt-surf) !important;
+  border: 1px solid var(--lt-border) !important;
+  box-shadow: var(--lt-sh-md) !important;
 }
-body.theme-light .chart-legend { background:transparent !important; }
 body.theme-light .chart-legend-item {
-  background: rgba(255,255,255,.55) !important;
-  border-color: rgba(160,150,220,.14) !important;
+  background: var(--lt-surf-2) !important;
+  border: 1px solid var(--lt-border) !important;
 }
-body.theme-light .chart-legend-name  { color: var(--lt-text) !important; }
-body.theme-light .chart-legend-amt   { font-weight:800 !important; }
-body.theme-light .chart-empty        { color: var(--lt-muted) !important; }
-body.theme-light .insight-chip       {
-  background: rgba(255,255,255,.58) !important;
-  border-color: rgba(160,150,220,.16) !important;
+body.theme-light .chart-empty { color: var(--lt-muted) !important; }
+body.theme-light .insight-chip {
+  background: #EFF6FF !important;
+  border: 1px solid rgba(37,99,235,.12) !important;
 }
-body.theme-light .insight-chip-label { color: var(--lt-muted) !important; }
-body.theme-light .insight-chip-val   { color: var(--lt-text) !important; }
+body.theme-light .insight-chip-label { color: var(--lt-text2) !important; }
+body.theme-light .insight-chip-val   { color: var(--lt-blue)  !important; font-weight:800 !important; }
 
-/* ─── Search bar ─────────────────────────────────────────────────────────── */
+/* ════════════════════════════════════════
+   SEARCH
+════════════════════════════════════════ */
 body.theme-light #tx-search,
 body.theme-light [id*="search"] {
-  background: rgba(255,255,255,.72) !important;
-  border-color: rgba(160,150,220,.22) !important;
+  background: var(--lt-surf) !important;
+  border: 1px solid var(--lt-border) !important;
   color: var(--lt-text) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.92), 0 2px 8px rgba(79,70,229,.05) !important;
+  box-shadow: var(--lt-sh-sm) !important;
 }
-body.theme-light #tx-search:focus { box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 0 0 3px rgba(79,70,229,.10) !important; }
+body.theme-light #tx-search:focus {
+  border-color: rgba(37,99,235,.40) !important;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.10) !important;
+}
 
-/* ─── Cycle / aipos modal ────────────────────────────────────────────────── */
-body.theme-light #cycle-modal-sheet   {
-  background: rgba(248,246,255,.96) !important;
-  box-shadow: 0 -20px 60px rgba(79,70,229,.22), inset 0 1px 0 rgba(255,255,255,.96) !important;
-}
-body.theme-light .cycle-icon-wrap     {
-  background: rgba(79,70,229,.10) !important;
-  border: 1.5px solid rgba(79,70,229,.22) !important;
-  box-shadow: 0 8px 28px rgba(79,70,229,.14) !important;
-}
-body.theme-light .cycle-total-card    {
-  background: rgba(255,255,255,.65) !important;
-  border: 1px solid rgba(255,255,255,.88) !important;
-  box-shadow: var(--lt-sh-card) !important;
-}
-body.theme-light .cycle-total-title   { color: var(--lt-text2) !important; }
-body.theme-light .cycle-total-amount  { font-weight:900 !important; }
-
-/* ─── Toast / notifications ─────────────────────────────────────────────── */
+/* ════════════════════════════════════════
+   TOAST
+════════════════════════════════════════ */
 body.theme-light .toast,
 body.theme-light [class*="toast"] {
-  background: rgba(255,255,255,.88) !important;
-  border: 1px solid rgba(255,255,255,.95) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.96),
-    0 8px 28px rgba(79,70,229,.18),
-    0 3px 10px rgba(79,70,229,.10) !important;
+  background: var(--lt-surf) !important;
+  border: 1px solid var(--lt-border) !important;
+  box-shadow: var(--lt-sh-lg) !important;
   color: var(--lt-text) !important;
 }
-body.theme-light .toast-icon    { color: var(--lt-indigo) !important; }
-body.theme-light .toast-message { color: var(--lt-text) !important; }
-body.theme-light .toast-success { border-color: rgba(16,185,129,.35) !important; box-shadow: 0 8px 28px rgba(16,185,129,.18) !important; }
-body.theme-light .toast-error   { border-color: rgba(244,63,94,.30) !important; box-shadow: 0 8px 28px rgba(244,63,94,.16) !important; }
+body.theme-light .toast-icon    { color: var(--lt-blue)  !important; }
+body.theme-light .toast-message { color: var(--lt-text)  !important; }
+body.theme-light .toast-success { border-left: 3px solid #16A34A !important; }
+body.theme-light .toast-error   { border-left: 3px solid #DC2626 !important; }
 
-/* ─── Bug report / support modal ─────────────────────────────────────────── */
-body.theme-light #bug-modal         {
-  background: rgba(248,246,255,.94) !important;
-  border-color: rgba(255,255,255,.90) !important;
-  backdrop-filter: blur(60px) !important;
-  box-shadow: 0 28px 80px rgba(79,70,229,.26) !important;
-}
-body.theme-light .bug-modal-title   { color: var(--lt-text) !important; font-weight:900 !important; }
-body.theme-light .bug-modal-desc,
-body.theme-light .bug-modal-subtitle { color: var(--lt-text2) !important; }
-body.theme-light .bug-modal-icon    { background:rgba(79,70,229,.10) !important; border-color:rgba(79,70,229,.22) !important; }
-body.theme-light .bug-contact-card  { background:rgba(255,255,255,.72) !important; border-color:rgba(255,255,255,.90) !important; backdrop-filter:blur(20px) !important; }
-body.theme-light .bug-contact-label { color: var(--lt-muted) !important; }
-body.theme-light .bug-contact-value { color: var(--lt-text) !important; font-weight:800 !important; }
-body.theme-light .bug-contact-icon  { color: var(--lt-indigo) !important; }
-body.theme-light .bug-modal-close   { background:rgba(255,255,255,.72) !important; border-color:rgba(255,255,255,.90) !important; color:var(--lt-text2) !important; }
+/* ════════════════════════════════════════
+   MISC
+════════════════════════════════════════ */
+body.theme-light hr, body.theme-light .divider { border-color: rgba(0,0,0,.06) !important; }
+body.theme-light .del-btn { color: var(--lt-red) !important; }
+body.theme-light .del-btn:hover { background: rgba(220,38,38,.08) !important; }
+body.theme-light ::-webkit-scrollbar-track { background: transparent !important; }
+body.theme-light ::-webkit-scrollbar-thumb { background: rgba(0,0,0,.14) !important; border-radius:99px !important; }
 
-/* ─── PWA install banners ────────────────────────────────────────────────── */
-body.theme-light #pwa-install-banner,
-body.theme-light #pwa-ios-overlay   {
-  background: rgba(248,246,255,.92) !important;
-  border-color: rgba(255,255,255,.88) !important;
-  backdrop-filter: blur(40px) !important;
-  box-shadow: 0 -8px 32px rgba(79,70,229,.12) !important;
-}
-body.theme-light #pwa-install-banner *,
-body.theme-light #pwa-ios-sheet *   { color: var(--lt-text) !important; }
-
-/* ─── Success / loading screens ─────────────────────────────────────────── */
-body.theme-light .success-ring      { border-color: rgba(79,70,229,.24) !important; }
-body.theme-light .success-sublabel  { color: var(--lt-text2) !important; }
-
-/* ─── Scan doc result ────────────────────────────────────────────────────── */
-body.theme-light .scan-doc-result,
-body.theme-light [class*="scan-doc"] {
-  background: rgba(255,255,255,.72) !important;
-  border-color: rgba(160,150,220,.22) !important;
-  box-shadow: var(--lt-sh-card) !important;
-}
-body.theme-light #scan-manual-amount {
-  border-color: rgba(245,158,11,.40) !important;
-  background: rgba(254,252,232,.70) !important;
-  color: var(--lt-text) !important;
-}
-
-/* ─── Scrollbars ─────────────────────────────────────────────────────────── */
-body.theme-light ::-webkit-scrollbar-track { background: rgba(79,70,229,.04) !important; }
-body.theme-light ::-webkit-scrollbar-thumb { background: rgba(79,70,229,.20) !important; border-radius:99px !important; }
-body.theme-light ::-webkit-scrollbar-thumb:hover { background: rgba(79,70,229,.38) !important; }
-
-/* ─── Inline style overrides — catch dark-mode hardcoded colours ────────── */
+/* ── Inline style overrides for hardcoded dark colours ── */
 body.theme-light [style*="color:rgba(255,255,255"],
-body.theme-light [style*="color: rgba(255,255,255"]   { color: var(--lt-text) !important; }
-body.theme-light [style*="color:#fff"]                { color: var(--lt-text) !important; }
+body.theme-light [style*="color: rgba(255,255,255"],
+body.theme-light [style*="color:#fff"]              { color: var(--lt-text) !important; }
 body.theme-light [style*="background:rgba(0,0,0"],
-body.theme-light [style*="background: rgba(0,0,0"]    { background: rgba(255,255,255,.72) !important; }
-body.theme-light [style*="background:linear-gradient"][style*="#0"],
-body.theme-light [style*="background:linear-gradient"][style*="rgba(4"],
+body.theme-light [style*="background: rgba(0,0,0"]  { background: var(--lt-surf) !important; }
+body.theme-light [style*="background:linear-gradient"][style*="rgba(4,"],
 body.theme-light [style*="background:linear-gradient"][style*="rgba(6,"],
 body.theme-light [style*="background:linear-gradient"][style*="rgba(10,"],
-body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"]  { background: rgba(255,255,255,.68) !important; }
-body.theme-light [style*="background:#1"],
-body.theme-light [style*="background: #1"]            { background: rgba(255,255,255,.68) !important; }
-body.theme-light [style*="background:#0"],
-body.theme-light [style*="background: #0"]            { background: rgba(255,255,255,.65) !important; }
-/* Fix inline white text on coloured backgrounds — keep if it's a badge */
+body.theme-light [style*="background:linear-gradient"][style*="rgba(13,"] { background: var(--lt-surf) !important; }
+body.theme-light [style*="background:#04"],
+body.theme-light [style*="background:#06"],
+body.theme-light [style*="background:#0d"] { background: var(--lt-surf) !important; }
+
+/* keep white text on coloured buttons / badges */
 body.theme-light .toast *[style*="color:#fff"],
 body.theme-light button[style*="color:#fff"],
-body.theme-light [style*="background:linear-gradient(135deg,#4F46E5"] *,
-body.theme-light [style*="background:linear-gradient(135deg, #4F46E5"] * { color: #fff !important; }
+body.theme-light [style*="background:linear-gradient(135deg,#1D4ED8"] *,
+body.theme-light [style*="background:linear-gradient(160deg, #2563EB"] *,
+body.theme-light [style*="background:linear-gradient(160deg, #1D4ED8"] * { color: #fff !important; }
 
-/* ─── Misc elements ──────────────────────────────────────────────────────── */
-body.theme-light .mono,
-body.theme-light [class*="mono"] { color: inherit !important; }
-body.theme-light .del-btn        { color: var(--lt-rose) !important; }
-body.theme-light .del-btn:hover  { background: rgba(244,63,94,.10) !important; }
-body.theme-light [class*="modern-hover"]:hover {
-  box-shadow: var(--lt-sh-hover) !important;
-  transform: translateY(-1px) !important;
-}
-body.theme-light [class*="modern-hover"]:active { transform: scale(.97) !important; }
+/* keep coloured amounts — adjusted for light bg */
+body.theme-light [style*="color:#00E676"] { color: #16A34A !important; }
+body.theme-light [style*="color:#FF6080"],
+body.theme-light [style*="color:#FF1744"],
+body.theme-light [style*="color:#FF4D70"] { color: #DC2626 !important; }
+body.theme-light [style*="color:#00E5FF"] { color: var(--lt-blue) !important; }
 
-/* Card entry stagger animation */
-body.theme-light .cat-card,
-body.theme-light .ev-card,
-body.theme-light .tx-row,
-body.theme-light .ch-card,
-body.theme-light .fixed-item {
-  animation: cardStaggerIn .35s ease both !important;
-}
+body.theme-light .action-btn-svg-income { color: #16A34A !important; }
+body.theme-light .action-btn-svg-expense { color: #DC2626 !important; }
+
+/* ── Fix inline [style*="background:#0"] override catching action buttons ── */
+body.theme-light .action-btn-income[style],
+body.theme-light .action-btn-expense[style] { background: unset !important; }
+body.theme-light #bug-modal { background: var(--lt-surf) !important; backdrop-filter:none !important; box-shadow: var(--lt-sh-lg) !important; }
+body.theme-light .bug-contact-card { background: var(--lt-surf-2) !important; border: 1px solid var(--lt-border) !important; box-shadow: var(--lt-sh-sm) !important; }
+body.theme-light .bug-modal-icon   { background: rgba(37,99,235,.07) !important; border-color: rgba(37,99,235,.14) !important; }
+body.theme-light .bug-contact-icon { color: var(--lt-blue) !important; }
+body.theme-light .bug-modal-close  { background: var(--lt-surf-2) !important; border: 1px solid var(--lt-border) !important; color: var(--lt-text2) !important; }
+
+/* cycle / pwa banners */
+body.theme-light #cycle-modal-sheet { background: var(--lt-surf) !important; box-shadow: 0 -8px 40px rgba(0,0,0,.12) !important; }
+body.theme-light .cycle-icon-wrap   { background: rgba(37,99,235,.07) !important; border-color: rgba(37,99,235,.14) !important; }
+body.theme-light .cycle-total-card  { background: var(--lt-surf-2) !important; border: 1px solid var(--lt-border) !important; }
+body.theme-light #pwa-install-banner,
+body.theme-light #pwa-ios-overlay   { background: var(--lt-surf) !important; backdrop-filter: none !important; box-shadow: 0 -4px 24px rgba(0,0,0,.10) !important; }
+
+/* scan doc */
+body.theme-light .scan-doc-result,
+body.theme-light [class*="scan-doc"] { background: var(--lt-surf) !important; border: 1px solid var(--lt-border) !important; box-shadow: var(--lt-sh-sm) !important; }
+body.theme-light #scan-manual-amount { background: #FFFBEB !important; border-color: rgba(217,119,6,.35) !important; color: var(--lt-text) !important; }
+
 
 
 
@@ -1851,11 +1656,11 @@ body.theme-light .fixed-item {
 
     /* ── CARD ENTRY MICRO-ANIMATIONS 2029 ── */
     @keyframes cardIn2029 {
-      0%   { opacity: 0; transform: translateY(28px) scale(0.90) rotateX(8deg); filter: blur(6px) brightness(0.7); }
-      55%  { opacity: 1; filter: blur(0) brightness(1); }
-      78%  { transform: translateY(-4px) scale(1.02) rotateX(0deg); }
-      90%  { transform: translateY(2px) scale(0.99); }
-      100% { transform: translateY(0) scale(1) rotateX(0deg); }
+      0%   { opacity: 0; transform: translateY(22px) scale(0.93); }
+      55%  { opacity: 1; }
+      78%  { transform: translateY(-3px) scale(1.01); }
+      90%  { transform: translateY(1px) scale(0.995); }
+      100% { transform: translateY(0) scale(1); }
     }
     .cat-tile {
       animation: cardIn2029 0.55s var(--spring) both;
@@ -2101,11 +1906,11 @@ body.theme-light .fixed-item {
       opacity: 0;
     }
     @keyframes epicCardPop {
-      0%   { opacity:0; transform:scale(0.6) translateY(40px) rotateX(15deg); filter:blur(8px); }
-      50%  { opacity:1; filter:blur(0); }
-      70%  { transform:scale(1.05) translateY(-4px) rotateX(0deg); }
+      0%   { opacity:0; transform:scale(0.65) translateY(36px); }
+      50%  { opacity:1; }
+      70%  { transform:scale(1.04) translateY(-3px); }
       85%  { transform:scale(0.97) translateY(2px); }
-      100% { opacity:1; transform:scale(1) translateY(0) rotateX(0deg); }
+      100% { opacity:1; transform:scale(1) translateY(0); }
     }
     .success-card.income-card {
       background: linear-gradient(160deg, rgba(0,30,15,0.98) 0%, rgba(0,15,8,0.99) 100%);
@@ -4950,10 +4755,41 @@ body.theme-light .fixed-item {
       <div id="dash-budget-alerts" class="hidden" style="margin-bottom:14px;"></div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:20px" class="rise d3">
+      <!-- DEBUG BUTTON - לבדיקה בלבד -->
+      <div id="_debug_panel" style="display:none;position:fixed;top:60px;left:8px;right:8px;z-index:99999;background:#fff;border:2px solid red;padding:10px;font-size:11px;font-family:monospace;color:#000;border-radius:8px;max-height:50vh;overflow-y:auto;"></div>
+      <button onclick="
+        var p=document.getElementById('_debug_panel');
+        p.style.display=p.style.display==='none'?'block':'none';
+        if(p.style.display==='block'){
+          var body=document.body;
+          var app=document.getElementById('app');
+          var card=document.querySelector('.card');
+          var cs=window.getComputedStyle(body);
+          var ca=app?window.getComputedStyle(app):{};
+          var cc=card?window.getComputedStyle(card):{};
+          p.innerHTML='<b>body classes:</b> '+body.className+'<br>'+
+            '<b>body bg:</b> '+cs.backgroundColor+'<br>'+
+            '<b>body filter:</b> '+cs.filter+'<br>'+
+            '<b>body backdrop:</b> '+cs.backdropFilter+'<br>'+
+            '<b>body opacity:</b> '+cs.opacity+'<br>'+
+            '<b>app filter:</b> '+ca.filter+'<br>'+
+            '<b>app opacity:</b> '+ca.opacity+'<br>'+
+            '<b>card bg:</b> '+cc.backgroundColor+'<br>'+
+            '<b>card filter:</b> '+cc.filter+'<br>'+
+            '<b>card backdrop:</b> '+cc.backdropFilter+'<br>'+
+            '<b>card opacity:</b> '+cc.opacity+'<br>'+
+            '<b>Elements with filter:</b><br>'+
+            Array.from(document.querySelectorAll('*')).filter(function(el){
+              var s=window.getComputedStyle(el);
+              return s.filter&&s.filter!==\'none\'&&s.filter!==\'\';
+            }).map(function(el){return el.tagName+\'#\'+el.id+\'.\'+el.className.toString().split(\' \')[0];}).join(\'<br>\');
+        }
+      " style="position:fixed;bottom:120px;left:8px;z-index:99999;background:red;color:#fff;border:none;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;">DEBUG</button>
+
         <button id="btn-add-income" class="action-btn-income">
           <div class="action-btn-inner">
             <div class="action-btn-icon-wrap">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00E676" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:#00E676" class="action-btn-svg-income"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             </div>
             <span class="action-btn-label" data-i18n="income_label">הכנסה</span>
             <span class="action-btn-sublabel" data-i18n="income_add">הוסף הכנסה</span>
@@ -4962,7 +4798,7 @@ body.theme-light .fixed-item {
         <button id="btn-add-expense" class="action-btn-expense">
           <div class="action-btn-inner">
             <div class="action-btn-icon-wrap">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF4D70" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:#FF4D70" class="action-btn-svg-expense"><line x1="5" y1="12" x2="19" y2="12"/></svg>
             </div>
             <span class="action-btn-label" data-i18n="expense_label">הוצאה</span>
             <span class="action-btn-sublabel" data-i18n="expense_add">הוסף הוצאה</span>
@@ -5582,7 +5418,7 @@ body.theme-light .fixed-item {
           font-family:'Syne',sans-serif; font-size:13px; font-weight:700;
           color:rgba(200,130,255,0.95); text-align:right; line-height:1.5;
         }
-        body.theme-light #ev-heb-preview { background:rgba(168,85,247,.10) !important; color:#6D28D9 !important; }
+        body.theme-light #ev-heb-preview { background:rgba(29,78,216,.08) !important; color:#1E40AF !important; }
 
         /* ── event tag in tx list ── */
         .tx-ev-tag {
@@ -5668,13 +5504,13 @@ body.theme-light .fixed-item {
         .ev-cancel-btn:active { background:rgba(255,255,255,0.08); }
 
         /* light mode overrides */
-        body.theme-light .ev-card { background:rgba(255,255,255,.60) !important; border-color:rgba(168,85,247,.22) !important; box-shadow:0 6px 28px rgba(168,85,247,.10) !important; }
-        body.theme-light .ev-name { color:#1E1B4B !important; }
+        body.theme-light .ev-card { background:rgba(255,255,255,1) !important; border-color:rgba(0,0,0,.08) !important; box-shadow:0 6px 28px rgba(29,78,216,.08) !important; }
+        body.theme-light .ev-name { color:#111827 !important; }
         body.theme-light .ev-meta { color:rgba(30,27,75,.42) !important; }
         body.theme-light #ev-sheet { background:rgba(245,240,255,.97) !important; }
-        body.theme-light .ev-inp   { background:rgba(255,255,255,.88) !important; border-color:rgba(168,85,247,.18) !important; color:#1E1B4B !important; }
+        body.theme-light .ev-inp   { background:rgba(255,255,255,.88) !important; border-color:rgba(0,0,0,.08) !important; color:#111827 !important; }
         body.theme-light .ev-empty { color:rgba(30,27,75,.35) !important; }
-        body.theme-light #btn-add-event { background:rgba(168,85,247,.08) !important; }
+        body.theme-light #btn-add-event { background:rgba(29,78,216,.06) !important; }
       </style>
 
       <div class="ev-section-label">
@@ -8758,37 +8594,78 @@ window.deletePhoneIdx = function(i) {
         if(lc) lc.style.display = 'none';
       }
       document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){
-        m.content = t === 'light' ? '#F4F6FB' : '#04070E';
+        if(!m.getAttribute('media')){
+          m.content = t === 'light' ? '#F0F2F5' : '#04070E';
+        }
       });
     }
 
     window._setTheme = function(t){
       localStorage.setItem('_ao_theme', t);
-      /* flash overlay */
-      var ov = document.getElementById('_theme_ov');
-      if(!ov){
-        ov = document.createElement('div');
-        ov.id = '_theme_ov';
-        ov.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;opacity:0;transition:opacity .14s ease;';
-        document.body.appendChild(ov);
+      document.body.classList.toggle('theme-light', t === 'light');
+      _updateUI(t);
+      if(t === 'light'){
+        /* Flutter WebView: force kill all filters/compositing on every ancestor */
+        [document.documentElement, document.body].forEach(function(el){
+          el.style.filter          = 'none';
+          el.style.webkitFilter    = 'none';
+          el.style.backdropFilter  = 'none';
+          el.style.webkitBackdropFilter = 'none';
+          el.style.willChange      = 'auto';
+          el.style.transform       = 'none';
+          el.style.opacity         = '1';
+          el.style.mixBlendMode    = 'normal';
+        });
+        /* also kill on #app */
+        var app = document.getElementById('app');
+        if(app){
+          app.style.filter         = 'none';
+          app.style.webkitFilter   = 'none';
+          app.style.backdropFilter = 'none';
+          app.style.willChange     = 'auto';
+          app.style.transform      = 'none';
+          app.style.opacity        = '1';
+        }
+      } else {
+        /* restore dark mode */
+        [document.documentElement, document.body].forEach(function(el){
+          el.style.filter = '';
+          el.style.webkitFilter = '';
+          el.style.backdropFilter = '';
+          el.style.willChange = '';
+          el.style.transform = '';
+          el.style.opacity = '';
+        });
+        var app2 = document.getElementById('app');
+        if(app2){
+          app2.style.filter = '';
+          app2.style.backdropFilter = '';
+          app2.style.willChange = '';
+          app2.style.transform = '';
+          app2.style.opacity = '';
+        }
       }
-      ov.style.background = t === 'light' ? '#F4F6FB' : '#04070E';
-      ov.style.opacity = '0.7';
-      setTimeout(function(){
-        document.body.classList.toggle('theme-light', t === 'light');
-        _updateUI(t);
-        setTimeout(function(){ ov.style.opacity = '0'; }, 40);
-      }, 90);
+      /* force repaint on Samsung WebView */
+      document.body.style.display = 'none';
+      void document.body.offsetHeight;
+      document.body.style.display = '';
     };
 
-    /* apply on load */
+    /* apply on load — synchronous, no setTimeout */
     var saved = localStorage.getItem('_ao_theme') || 'dark';
     document.body.classList.toggle('theme-light', saved === 'light');
-    /* update UI after DOM ready */
-    if(document.readyState === 'loading'){
-      document.addEventListener('DOMContentLoaded', function(){ _updateUI(saved); });
-    } else {
-      setTimeout(function(){ _updateUI(saved); }, 0);
+    _updateUI(saved);
+    /* if light mode on load, kill all filters immediately */
+    if(saved === 'light'){
+      [document.documentElement, document.body].forEach(function(el){
+        el.style.filter = 'none';
+        el.style.webkitFilter = 'none';
+        el.style.backdropFilter = 'none';
+        el.style.webkitBackdropFilter = 'none';
+        el.style.willChange = 'auto';
+        el.style.transform = 'none';
+        el.style.opacity = '1';
+      });
     }
   })();
 
@@ -9611,28 +9488,38 @@ window.deletePhoneIdx = function(i) {
     var saveCol   = isDark ? 'var(--cyan)' : '#fff';
     var saveShadow= isDark ? '0 6px 24px rgba(0,229,255,0.12)' : '0 8px 28px rgba(79,70,229,0.32)';
 
-    sheet.style.background = sheetBg;
+    sheet.style.cssText += ';display:flex;align-items:flex-end;justify-content:center';
 
     sheet.innerHTML = [
-      /* ── Header ── */
-      '<div id="_msr-header" style="flex-shrink:0;padding:env(safe-area-inset-top,0) 18px 0;position:relative;z-index:2;background:'+headerBg+';">',
-        '<div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,'+accentLine+',transparent);"></div>',
-        '<div style="width:38px;height:4px;border-radius:2px;background:'+dragCol+';margin:14px auto 16px;"></div>',
-        '<div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid '+borderCol+';">',
-          '<div>',
-            '<div style="font-family:\'Syne\',sans-serif;font-size:18px;font-weight:900;color:'+titleCol+';letter-spacing:-.3px;" id="_msr-title">סורק '+files.length+' קבצים...</div>',
-            '<div style="font-size:11.5px;color:'+subCol+';margin-top:3px;font-weight:600;" id="_msr-sub">🤖 AI מזהה סכום, קטגוריה ופרטים</div>',
+      '<div id="_cur-inner" style="',
+        'width:100%;max-width:480px;',
+        'background:'+sheetBg+';',
+        'border-radius:24px 24px 0 0;',
+        'border:1px solid '+borderCol+';border-bottom:none;',
+        'display:flex;flex-direction:column;',
+        'max-height:82vh;',
+        'transform:translateY(100%);transition:transform .32s cubic-bezier(0.34,1.10,0.64,1);',
+        'overflow:hidden;',
+      '">',
+
+        /* drag + header */
+        '<div style="flex-shrink:0;padding:0 18px;position:sticky;top:0;z-index:2;background:'+sheetBg+';">',
+          '<div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,'+accentLine+',transparent);"></div>',
+          '<div style="width:38px;height:4px;border-radius:2px;background:'+dragCol+';margin:14px auto 12px;"></div>',
+          '<div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid '+borderCol+';">',
+            '<div>',
+              '<div style="font-family:\'Syne\',sans-serif;font-size:18px;font-weight:900;color:'+titleCol+';letter-spacing:-.3px;">בחר מטבע</div>',
+              '<div style="font-size:11.5px;color:'+subCol+';margin-top:3px;font-weight:600;">שערים חיים • '+_currencyList.length+' מטבעות</div>',
+            '</div>',
+            '<button id="_cur-close" style="width:34px;height:34px;border-radius:11px;border:1px solid '+closeBdr+';background:'+closeBg+';color:'+closeCol+';cursor:pointer;font-size:16px;flex-shrink:0;line-height:1;display:flex;align-items:center;justify-content:center;font-weight:700;-webkit-tap-highlight-color:transparent;">✕</button>',
           '</div>',
-          '<button id="_msr-close" style="width:34px;height:34px;border-radius:11px;border:1px solid '+closeBdr+';background:'+closeBg+';color:'+closeCol+';cursor:pointer;font-size:16px;flex-shrink:0;line-height:1;display:flex;align-items:center;justify-content:center;font-weight:700;">✕</button>',
         '</div>',
-      '</div>',
 
-      /* ── Scrollable list ── */
-      '<div id="_msr-list" style="flex:1;min-height:0;overflow-y:scroll;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding:14px 16px 8px;display:flex;flex-direction:column;gap:12px;"></div>',
+        /* scrollable list */
+        '<div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding:8px 0 calc(env(safe-area-inset-bottom,0px)+8px);">',
+          rows,
+        '</div>',
 
-      /* ── Footer ── */
-      '<div id="_msr-footer" style="flex-shrink:0;padding:12px 16px calc(env(safe-area-inset-bottom,0px)+12px);background:'+footerBg+';position:relative;z-index:2;">',
-        '<button id="_msr-save-all" style="width:100%;padding:17px;border-radius:18px;background:'+saveBg+';border:1px solid '+saveBdr+';color:'+saveCol+';font-family:\'Syne\',sans-serif;font-size:15px;font-weight:900;cursor:pointer;opacity:0.35;pointer-events:none;box-shadow:'+saveShadow+';transition:all .25s cubic-bezier(0.34,1.56,0.64,1);">שומר...</button>',
       '</div>'
     ].join('');
 
@@ -11000,62 +10887,97 @@ window.exportUserData = function() {
   }
 
   /* ══════════════════════════════════════════════════════
-     processMultipleFiles — סורק + מציג bottom sheet מלא
-     עם עריכה לכל פריט, גלילה פנימית, שמירת הכל
+     processMultipleFiles — v2 — כרטיסים סגורים כברירת מחדל
+     עם כפתור עריכה, הוספת קטגוריה, עיצוב מודרני
   ══════════════════════════════════════════════════════ */
   async function processMultipleFiles(files){
     var _allCats  = window._appUserCategories || [];
     var expCats   = _allCats.filter(function(c){ return c.type==='expense'; });
     var incCats   = _allCats.filter(function(c){ return c.type==='income';  });
 
-    /* state — מערך תוצאות, אחד לכל קובץ */
+    /* state */
     var items = files.map(function(f,i){
       return { idx:i, file:f, status:'scanning', result:null, error:null,
-               editType:null, editCat:'', editDesc:'', editAmount:'' };
+               editType:null, editCat:'', editDesc:'', editAmount:'', editEventId:null,
+               _expanded: false /* ← סגור כברירת מחדל */ };
     });
 
-    /* ── בנה את ה-sheet ── */
     var existing = document.getElementById('_msr-sheet');
     if(existing) existing.remove();
 
+    var _lt = document.body.classList.contains('theme-light');
+
+    /* ── design tokens ── */
+    var _bg      = _lt ? 'linear-gradient(180deg,#F6F8FF,#EEF2FF)' : 'linear-gradient(180deg,rgba(6,10,24,0.99),rgba(4,7,18,1))';
+    var _hdrBg   = _lt ? 'rgba(244,246,251,0.97)' : 'rgba(6,10,24,0.98)';
+    var _ftBg    = _lt ? 'rgba(244,246,251,0.98)' : 'rgba(4,7,18,0.98)';
+    var _accent  = _lt ? '#4F46E5' : '#00E5FF';
+    var _cardBg  = _lt ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.04)';
+    var _cardTxt = _lt ? '#11132D' : '#fff';
+    var _subTxt  = _lt ? 'rgba(17,19,45,0.50)' : 'rgba(255,255,255,0.38)';
+    var _inpBg   = _lt ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.06)';
+    var _inpBdr  = _lt ? 'rgba(160,150,220,0.30)' : 'rgba(255,255,255,0.12)';
+    var _inpCol  = _lt ? '#11132D' : '#fff';
+    var _selBg   = _lt ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.06)';
+    var _rowBdr  = _lt ? 'rgba(79,70,229,0.12)' : 'rgba(255,255,255,0.06)';
+    var _shimmer = _lt ? 'rgba(79,70,229,0.35)' : 'rgba(0,229,255,0.45)';
+    var _removeBg= _lt ? 'rgba(225,29,72,0.08)' : 'rgba(255,80,80,0.10)';
+    var _removeCol=_lt ? '#E11D48' : 'rgba(255,120,120,0.75)';
+    var _editBg  = _lt ? 'rgba(79,70,229,0.08)' : 'rgba(0,229,255,0.08)';
+    var _editBdr = _lt ? 'rgba(79,70,229,0.28)' : 'rgba(0,229,255,0.28)';
+    var _editCol = _lt ? '#4F46E5' : '#00E5FF';
+    var _divider = _lt ? 'rgba(79,70,229,0.08)' : 'rgba(255,255,255,0.05)';
+    var _newCatBg  = _lt ? 'rgba(16,185,129,0.08)' : 'rgba(0,230,118,0.08)';
+    var _newCatBdr = _lt ? 'rgba(16,185,129,0.28)' : 'rgba(0,230,118,0.28)';
+    var _newCatCol = _lt ? '#059669' : '#00E676';
+
+    function colorOf(type){ return type==='income'
+      ? (_lt ? '#059669' : '#00E676')
+      : (_lt ? '#E11D48' : '#FF6080'); }
+    function bgOf(type){ return type==='income'
+      ? (_lt ? 'rgba(5,150,105,0.09)' : 'rgba(0,230,118,0.10)')
+      : (_lt ? 'rgba(225,29,72,0.08)' : 'rgba(255,23,68,0.10)'); }
+    function bdrOf(type){ return type==='income'
+      ? (_lt ? 'rgba(5,150,105,0.30)' : 'rgba(0,230,118,0.30)')
+      : (_lt ? 'rgba(225,29,72,0.26)' : 'rgba(255,23,68,0.30)'); }
+    function symOf(type){ return type==='income' ? '+' : '−'; }
+
+    /* ── build sheet HTML ── */
     var sheet = document.createElement('div');
     sheet.id  = '_msr-sheet';
     sheet.style.cssText = [
       'position:fixed;top:0;left:0;right:0;bottom:0;z-index:9997',
       'display:flex;flex-direction:column',
-      'height:100%;max-height:100%',
-      'background:linear-gradient(180deg,rgba(6,10,24,0.98),rgba(4,7,18,0.99))',
+      'background:'+(_lt?'#F0F2F5':'#04070E'),
       'transform:translateY(100%)',
-      'transition:transform .40s cubic-bezier(0.32,1.10,0.60,1)'
+      'transition:transform .38s cubic-bezier(0.32,1.08,0.60,1)'
     ].join(';');
 
     sheet.innerHTML = [
-      /* ── Header (fixed) ── */
-      '<div id="_msr-header" style="',
-        'flex-shrink:0;',
-        'padding:env(safe-area-inset-top,0) 16px 0;',
-        'background:linear-gradient(180deg,rgba(6,10,24,1),rgba(6,10,24,0.0));',
+      /* ── HEADER (fixed, no scroll) ── */
+      '<div style="',
+        'flex-shrink:0;padding:env(safe-area-inset-top,0px) 18px 0;',
+        'background:'+_hdrBg+';',
+        'border-bottom:1px solid '+_divider+';',
         'position:relative;z-index:2;',
-        'touch-action:none;',
       '">',
-        '<div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,0.50),transparent);"></div>',
-        '<div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.12);margin:12px auto 14px;"></div>',
-        '<div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.06);">',
+        (_lt?'':'<div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,'+_shimmer+',transparent);"></div>'),
+        '<div style="width:34px;height:4px;border-radius:2px;background:'+(_lt?'rgba(79,70,229,0.18)':'rgba(255,255,255,0.12)')+';margin:12px auto 14px;"></div>',
+        '<div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;">',
           '<div>',
-            '<div style="font-family:\'Syne\',sans-serif;font-size:17px;font-weight:900;color:#fff;" id="_msr-title">סורק ' + files.length + ' קבצים...</div>',
-            '<div style="font-size:11px;color:rgba(255,255,255,0.32);margin-top:2px;" id="_msr-sub">AI מזהה סכום וקטגוריה</div>',
-          "</div>",
+            '<div style="font-family:\'Syne\',sans-serif;font-size:18px;font-weight:900;color:'+_cardTxt+';" id="_msr-title">סורק...</div>',
+            '<div style="font-size:11px;color:'+_subTxt+';margin-top:2px;" id="_msr-sub">AI מזהה סכום וקטגוריה</div>',
+          '</div>',
           '<button id="_msr-close" style="',
-            'width:32px;height:32px;border-radius:10px;',
-            'border:1px solid rgba(255,255,255,0.10);',
-            'background:rgba(255,255,255,0.04);',
-            'color:rgba(255,255,255,0.40);cursor:pointer;font-size:15px;',
-            'flex-shrink:0;line-height:1;',
+            'width:34px;height:34px;border-radius:11px;',
+            'border:1px solid '+(_lt?'rgba(79,70,229,0.18)':'rgba(255,255,255,0.12)')+';',
+            'background:'+(_lt?'rgba(79,70,229,0.06)':'rgba(255,255,255,0.05)')+';',
+            'color:'+_subTxt+';cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;',
           '">✕</button>',
-        "</div>",
-      "</div>",
+        '</div>',
+      '</div>',
 
-      /* ── Scrollable list ── */
+      /* ── SCROLLABLE LIST ── */
       '<div id="_msr-list" style="',
         'flex:1;min-height:0;',
         'overflow-y:scroll;overflow-x:hidden;',
@@ -11066,24 +10988,24 @@ window.exportUserData = function() {
         'display:flex;flex-direction:column;gap:10px;',
       '"></div>',
 
-      /* ── Footer (fixed) ── */
-      '<div id="_msr-footer" style="',
+      /* ── FOOTER (fixed) ── */
+      '<div style="',
         'flex-shrink:0;',
         'padding:12px 16px calc(env(safe-area-inset-bottom,0px) + 12px);',
-        'background:linear-gradient(0deg,rgba(4,7,18,1) 70%,rgba(4,7,18,0));',
+        'background:'+_ftBg+';',
+        'border-top:1px solid '+_divider+';',
         'position:relative;z-index:2;',
-        'touch-action:none;',
       '">',
         '<button id="_msr-save-all" style="',
-          'width:100%;padding:16px;border-radius:16px;',
-          'background:linear-gradient(135deg,rgba(0,229,255,0.16),rgba(0,180,255,0.08));',
-          'border:1px solid rgba(0,229,255,0.32);',
-          'color:var(--cyan);',
+          'width:100%;padding:16px;border-radius:18px;',
+          (_lt
+            ? 'background:linear-gradient(135deg,#4F46E5,#7C3AED);border:none;color:#fff;box-shadow:0 8px 28px rgba(79,70,229,0.30);'
+            : 'background:linear-gradient(135deg,rgba(0,229,255,0.18),rgba(0,180,255,0.10));border:1px solid rgba(0,229,255,0.35);color:#00E5FF;box-shadow:0 6px 24px rgba(0,229,255,0.14);'),
           'font-family:\'Syne\',sans-serif;font-size:15px;font-weight:900;',
           'cursor:pointer;opacity:0.35;pointer-events:none;',
-          'box-shadow:0 6px 24px rgba(0,229,255,0.12),0 1px 0 rgba(255,255,255,0.06) inset;',
           'transition:all .25s cubic-bezier(0.34,1.56,0.64,1);',
-        '">שומר...</button>',
+          'letter-spacing:.02em;',
+        '">ממתין לסריקה...</button>',
       '</div>'
     ].join('');
 
@@ -11093,109 +11015,88 @@ window.exportUserData = function() {
     var titleEl   = document.getElementById('_msr-title');
     var subEl     = document.getElementById('_msr-sub');
 
-    /* ── גלילה תקינה: נעל body עם position:fixed, גלילה ב-list בלבד ── */
-    var _savedBodyTop = document.body.style.top;
-    var _savedBodyPos = document.body.style.position;
-    var _savedBodyW   = document.body.style.width;
-    var _savedScrollY = window.scrollY || 0;
-    document.body.style.top      = '-' + _savedScrollY + 'px';
+    /* lock body scroll */
+    var _savedBodyOverflow = document.body.style.overflow;
+    var _savedBodyPosition = document.body.style.position;
+    document.body.style.overflow = 'hidden';
     document.body.style.position = 'fixed';
     document.body.style.width    = '100%';
 
-    /* שחזר body בסגירה */
+    /* ── CSS-only scroll management (no JS touchmove blocker) ──
+       The sheet is position:fixed full-screen.
+       Header + footer have touch-action:none so they don't scroll.
+       listEl has overflow-y:scroll + touch-action:pan-y.
+       This is the only reliable way on Android WebView. ── */
+    var headerEl = sheet.querySelector('div');
+    var footerEl = sheet.lastElementChild;
+    if(headerEl){ headerEl.style.touchAction = 'none'; }
+    if(footerEl){ footerEl.style.touchAction = 'none'; }
+    listEl.style.touchAction     = 'pan-y';
+    listEl.style.overscrollBehaviorY = 'contain';
+    listEl.style.webkitOverflowScrolling = 'touch';
+
     var _origClose = function(){
-      document.body.style.position = _savedBodyPos;
-      document.body.style.top      = _savedBodyTop;
-      document.body.style.width    = _savedBodyW;
-      window.scrollTo(0, _savedScrollY);
+      document.body.style.overflow = _savedBodyOverflow;
+      document.body.style.position = _savedBodyPosition;
+      document.body.style.width    = '';
       sheet.style.transform = 'translateY(100%)';
       setTimeout(function(){ if(sheet.parentNode) sheet.remove(); }, 420);
     };
 
-    /* animate in */
-    requestAnimationFrame(function(){
-      sheet.style.transform = 'translateY(0)';
-    });
-
+    requestAnimationFrame(function(){ sheet.style.transform = 'translateY(0)'; });
     function closeSheet(){ _origClose(); }
     document.getElementById('_msr-close').onclick = closeSheet;
 
-    /* ── helpers ── */
+    /* ── build category select options ── */
     function buildCatSelect(itemObj){
       var cats = itemObj.editType === 'income' ? incCats : expCats;
-      var opts = '<option value="">— ללא קטגוריה —</option>' +
+      return '<option value="">— ללא קטגוריה —</option>' +
         cats.map(function(c){
-          var sel = c.name === itemObj.editCat ? 'selected' : '';
-          return '<option value="' + escHtml(c.name) + '" ' + sel + '>' + escHtml(c.name) + '</option>';
+          return '<option value="'+escHtml(c.name)+'"'+(c.name===itemObj.editCat?' selected':'')+'>'+escHtml(c.name)+'</option>';
         }).join('');
-      return opts;
     }
 
-    var _lt = document.body.classList.contains('theme-light');
-
-    function colorOf(type){ return type==='income'
-      ? (_lt ? '#059669' : '#00E676')
-      : (_lt ? '#E11D48' : '#FF6080'); }
-    function bgOf(type)   { return type==='income'
-      ? (_lt ? 'rgba(5,150,105,0.09)' : 'rgba(0,230,118,0.10)')
-      : (_lt ? 'rgba(225,29,72,0.08)' : 'rgba(255,23,68,0.10)'); }
-    function bdrOf(type)  { return type==='income'
-      ? (_lt ? 'rgba(5,150,105,0.28)' : 'rgba(0,230,118,0.28)')
-      : (_lt ? 'rgba(225,29,72,0.25)' : 'rgba(255,23,68,0.28)'); }
-    function symOf(type)  { return type==='income' ? '+' : '−'; }
-
-    var _cardBg  = _lt ? 'rgba(255,255,255,0.82)' : 'rgba(255,255,255,0.03)';
-    var _cardTxt = _lt ? '#11132D' : '#fff';
-    var _subTxt  = _lt ? 'rgba(17,19,45,0.50)' : 'rgba(255,255,255,0.35)';
-    var _inpBg   = _lt ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.05)';
-    var _inpBdr  = _lt ? 'rgba(160,150,220,0.28)' : 'rgba(255,255,255,0.11)';
-    var _inpCol  = _lt ? '#11132D' : '#fff';
-    var _selBg   = _lt ? 'rgba(255,255,255,0.88)' : 'rgba(255,255,255,0.05)';
-    var _rowBdr  = _lt ? 'rgba(79,70,229,0.10)' : 'rgba(255,255,255,0.05)';
-    var _shimmer = _lt ? 'rgba(79,70,229,0.30)' : 'rgba(0,229,255,0.40)';
-    var _removeBg= _lt ? 'rgba(225,29,72,0.07)' : 'rgba(255,80,80,0.08)';
-    var _removeCol=_lt ? '#E11D48' : 'rgba(255,120,120,0.65)';
-    var _fieldDivider=_lt?'rgba(79,70,229,0.08)':'rgba(255,255,255,0.04)';
-
-    /* scanning spinner card */
+    /* ── SCANNING CARD ── */
     function renderScanningCard(it){
       var div = document.getElementById('_msr-item-'+it.idx);
-      div.style.cssText='border-radius:20px;overflow:visible;border:1px solid '+_rowBdr+';background:'+_cardBg+';position:relative;';
+      div.style.cssText=[
+        'border-radius:18px;overflow:hidden;',
+        'border:1px solid '+_rowBdr+';',
+        'background:'+_cardBg+';',
+        'position:relative;',
+      ].join('');
       div.innerHTML=
-        '<div style="border-radius:20px;overflow:hidden;">'+
-        '<div style="height:2px;background:linear-gradient(90deg,transparent,'+_shimmer+',transparent);animation:shimmerH 1.8s linear infinite;background-size:200% 100%;"></div>'+
-        '<div style="display:flex;align-items:center;gap:14px;padding:16px;">'+
-          '<div style="width:44px;height:44px;flex-shrink:0;border-radius:14px;background:'+_rowBdr+';display:flex;align-items:center;justify-content:center;">'+
-            '<div style="width:20px;height:20px;border-radius:50%;border:2.5px solid '+_shimmer+';border-top-color:transparent;animation:spin 0.8s linear infinite;"></div>'+
+        '<div style="height:2.5px;background:linear-gradient(90deg,transparent,'+_shimmer+',transparent);animation:shimmerH 1.6s linear infinite;background-size:300% 100%;border-radius:2px;"></div>'+
+        '<div style="display:flex;align-items:center;gap:14px;padding:18px 16px;">'+
+          '<div style="width:48px;height:48px;flex-shrink:0;border-radius:15px;background:'+bgOf('expense')+';border:1.5px solid '+bdrOf('expense')+';display:flex;align-items:center;justify-content:center;">'+
+            '<div style="width:22px;height:22px;border-radius:50%;border:2.5px solid '+_shimmer+';border-top-color:transparent;animation:spin 0.85s linear infinite;"></div>'+
           '</div>'+
           '<div style="flex:1;min-width:0;">'+
-            '<div style="font-size:13px;font-weight:700;color:'+_cardTxt+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+escHtml(it.file.name)+'</div>'+
-            '<div style="font-size:11px;color:'+_subTxt+';margin-top:3px;">🤖 סורק...</div>'+
+            '<div style="font-family:\'Syne\',sans-serif;font-size:13px;font-weight:800;color:'+_cardTxt+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+escHtml(it.file.name)+'</div>'+
+            '<div style="font-size:11px;color:'+_subTxt+';margin-top:4px;display:flex;align-items:center;gap:5px;">'+
+              '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+_accent+';animation:softPulse 1.2s ease-in-out infinite;"></span>'+
+              'AI סורק...'+
+            '</div>'+
           '</div>'+
-        '</div>'+
         '</div>';
     }
 
-    /* error card */
+    /* ── ERROR CARD ── */
     function renderErrorCard(it){
       var div = document.getElementById('_msr-item-'+it.idx);
-      var errCol = _lt ? '#E11D48' : '#FF6080';
-      var errBg  = _lt ? 'rgba(225,29,72,0.06)' : 'rgba(255,23,68,0.06)';
-      div.style.cssText='border-radius:20px;overflow:visible;border:1px solid '+(_lt?'rgba(225,29,72,0.22)':'rgba(255,80,80,0.20)')+';background:'+errBg+';position:relative;';
+      div.style.cssText='border-radius:18px;overflow:hidden;border:1px solid '+(_lt?'rgba(225,29,72,0.25)':'rgba(255,80,80,0.22)')+';background:'+(_lt?'rgba(225,29,72,0.06)':'rgba(255,23,68,0.06)')+';position:relative;';
       div.innerHTML=
-        '<div style="border-radius:20px;overflow:hidden;">'+
-        '<div style="display:flex;align-items:center;gap:12px;padding:16px;">'+
-          '<div style="width:40px;height:40px;flex-shrink:0;border-radius:13px;background:rgba(255,80,80,0.10);border:1px solid rgba(255,80,80,0.20);display:flex;align-items:center;justify-content:center;font-size:18px;">⚠️</div>'+
+        '<div style="display:flex;align-items:center;gap:14px;padding:18px 16px;">'+
+          '<div style="width:48px;height:48px;flex-shrink:0;border-radius:15px;background:rgba(255,80,80,0.12);border:1.5px solid rgba(255,80,80,0.25);display:flex;align-items:center;justify-content:center;font-size:20px;">⚠️</div>'+
           '<div style="flex:1;min-width:0;">'+
-            '<div style="font-size:13px;font-weight:700;color:'+errCol+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+escHtml(it.file.name)+'</div>'+
-            '<div style="font-size:11px;color:'+_subTxt+';margin-top:2px;">לא ניתן לזהות</div>'+
+            '<div style="font-family:\'Syne\',sans-serif;font-size:13px;font-weight:800;color:'+(_lt?'#E11D48':'#FF6080')+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">לא ניתן לזהות</div>'+
+            '<div style="font-size:11px;color:'+_subTxt+';margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+escHtml(it.file.name)+'</div>'+
           '</div>'+
-          '<button onclick="window._msrRemove('+it.idx+')" style="width:30px;height:30px;border-radius:9px;border:none;background:'+_removeBg+';color:'+_removeCol+';cursor:pointer;font-size:14px;flex-shrink:0;">✕</button>'+
-        '</div>'+
+          '<button onclick="window._msrRemove('+it.idx+')" style="width:32px;height:32px;border-radius:10px;border:1px solid '+_removeBg+';background:'+_removeBg+';color:'+_removeCol+';cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✕</button>'+
         '</div>';
     }
 
-    /* ── main edit card ── */
+    /* ── RESULT CARD — collapsed (summary only) ── */
     function renderCard(it){
       var div = document.getElementById('_msr-item-' + it.idx);
       if(it.status==='scanning'){ renderScanningCard(it); return; }
@@ -11206,194 +11107,214 @@ window.exportUserData = function() {
       var bdr = bdrOf(it.editType);
       var sym = symOf(it.editType);
       var i   = it.idx;
-      var isOpen = it._expanded !== false;
+      var isOpen = it._expanded === true;
 
-      /* card shadow */
       var cardShadow = _lt
-        ? 'inset 0 2px 0 rgba(255,255,255,0.95),0 8px 28px rgba(79,70,229,0.10),0 2px 8px rgba(79,70,229,0.06)'
-        : '0 4px 20px rgba(0,0,0,0.25)';
+        ? 'inset 0 2px 0 rgba(255,255,255,0.96),0 6px 24px rgba(79,70,229,0.10)'
+        : '0 4px 18px rgba(0,0,0,0.22)';
 
       div.style.cssText=[
-        'border-radius:20px;overflow:visible;',
+        'border-radius:18px;',
+        'overflow:visible;',
         'border:1px solid '+bdr+';',
         'background:'+_cardBg+';',
         'box-shadow:'+cardShadow+';',
         'position:relative;',
-        'transition:box-shadow .25s cubic-bezier(0.34,1.56,0.64,1),transform .2s cubic-bezier(0.34,1.56,0.64,1);',
+        'flex-shrink:0;',
+        'transition:box-shadow .22s,transform .18s;',
       ].join('');
 
-      /* event options */
       var evOpts='<option value="">— ללא אירוע —</option>'+(window._evList||[]).map(function(ev){
-        return '<option value="'+ev.id+'">'+(ev.emoji||'🎊')+' '+ev.name+'</option>';
+        return '<option value="'+ev.id+'"'+(ev.id===it.editEventId?' selected':'')+'>'+
+          (ev.emoji||'🎊')+' '+escHtml(ev.name)+'</option>';
       }).join('');
 
-      /* file type icon */
       var ext = (it.file.name.split('.').pop()||'').toLowerCase();
-      var fileIcon = ext==='pdf' ? '📄' : ext==='jpg'||ext==='jpeg'||ext==='png'||ext==='webp' ? '🖼️' : '📎';
+      var fileIcon = ext==='pdf' ? '📄' : (ext==='jpg'||ext==='jpeg'||ext==='png'||ext==='webp') ? '🖼️' : '📎';
 
-      /* amount display */
       var amtDisplay = it.editAmount
         ? sym+' ₪'+Number(it.editAmount).toLocaleString('he-IL')
         : '₪ —';
 
-      div.innerHTML=[
-        /* inner wrapper — clips visuals without hiding panel expansion */
-        '<div style="border-radius:20px;overflow:hidden;">',
-        /* shimmer line */
-        '<div style="height:2px;background:linear-gradient(90deg,transparent,'+col+'66,transparent);"></div>',
-
-        /* ── HEADER ROW — always visible ── */
-        '<div onclick="window._msrToggle('+i+')" style="display:flex;align-items:center;gap:12px;padding:14px 14px 14px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;">',
-
-          /* file icon + type badge */
+      /* ── collapsed summary row ── */
+      var summaryRow = [
+        '<div style="display:flex;align-items:center;gap:12px;padding:16px 14px;cursor:default;">',
+          /* icon */
           '<div style="position:relative;flex-shrink:0;">',
-            '<div style="width:46px;height:46px;border-radius:15px;background:'+bg+';border:1.5px solid '+bdr+';display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 14px '+col+'28;">'+fileIcon+'</div>',
-            '<div style="position:absolute;bottom:-3px;right:-3px;width:18px;height:18px;border-radius:6px;background:'+col+';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;border:2px solid '+(_lt?'rgba(255,255,255,0.9)':'rgba(10,8,24,1)')+';">'+sym+'</div>',
+            '<div style="width:48px;height:48px;border-radius:16px;background:'+bg+';border:1.5px solid '+bdr+';display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 14px '+col+'22;">'+fileIcon+'</div>',
+            '<div style="position:absolute;bottom:-3px;right:-3px;width:18px;height:18px;border-radius:7px;background:'+col+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;border:2px solid '+(_lt?'#fff':'#04070E')+';">'+sym+'</div>',
           '</div>',
-
-          /* info */
+          /* amount + category */
           '<div style="flex:1;min-width:0;">',
-            /* amount — big and clear */
-            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:20px;font-weight:900;color:'+col+';line-height:1.1;letter-spacing:-.5px;" id="_msr-amt-display-'+i+'">'+amtDisplay+'</div>',
-            /* file name */
-            '<div style="font-size:10.5px;color:'+_subTxt+';margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;">'+escHtml(it.file.name.length>38?it.file.name.slice(0,35)+'...':it.file.name)+'</div>',
-            /* category badge if set */
-            (it.editCat?'<div style="display:inline-flex;align-items:center;gap:4px;margin-top:5px;padding:2px 8px;border-radius:20px;background:'+bg+';border:1px solid '+bdr+';font-size:10px;font-weight:800;color:'+col+';">'+it.editCat+'</div>':''),
+            '<div id="_msr-amt-display-'+i+'" style="font-family:\'JetBrains Mono\',monospace;font-size:20px;font-weight:900;color:'+col+';line-height:1.1;letter-spacing:-.5px;">'+amtDisplay+'</div>',
+            '<div style="font-size:11px;color:'+_subTxt+';margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;">'+
+              (it.editCat
+                ? '<span style="display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;background:'+bg+';border:1px solid '+bdr+';font-size:10px;font-weight:800;color:'+col+';">🏷 '+escHtml(it.editCat)+'</span>'
+                : '<span style="opacity:0.55;">ללא קטגוריה</span>'
+              )+
+            '</div>',
           '</div>',
-
-          /* right side: chevron + remove */
-          '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">',
-            '<button onclick="event.stopPropagation();window._msrRemove('+i+')" style="width:30px;height:30px;border-radius:10px;border:1px solid '+(_lt?'rgba(225,29,72,0.18)':'rgba(255,80,80,0.15)')+';background:'+_removeBg+';color:'+_removeCol+';cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;touch-action:manipulation;flex-shrink:0;">✕</button>',
-            '<div id="_msr-chev-'+i+'" style="width:28px;height:28px;border-radius:8px;background:'+(_lt?'rgba(79,70,229,0.07)':'rgba(255,255,255,0.05)')+';display:flex;align-items:center;justify-content:center;color:'+(_lt?'rgba(79,70,229,0.5)':'rgba(255,255,255,0.3)')+';font-size:11px;transition:transform .22s;">'+( isOpen?'▲':'▼' )+'</div>',
+          /* action buttons */
+          '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">',
+            /* edit */
+            '<button onclick="event.stopPropagation();window._msrToggle('+i+')" style="',
+              'height:34px;padding:0 12px;border-radius:10px;',
+              'border:1px solid '+_editBdr+';background:'+_editBg+';color:'+_editCol+';',
+              'font-family:\'Syne\',sans-serif;font-size:12px;font-weight:800;cursor:pointer;',
+              'display:flex;align-items:center;gap:5px;',
+              'touch-action:manipulation;-webkit-tap-highlight-color:transparent;',
+              'transition:all .15s;',
+            '">',
+              '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">',
+                '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>',
+                '<path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>',
+              '</svg>',
+              (isOpen ? 'סגור' : 'ערוך'),
+            '</button>',
+            /* remove */
+            '<button onclick="event.stopPropagation();window._msrRemove('+i+')" style="',
+              'width:34px;height:34px;border-radius:10px;',
+              'border:1px solid '+(_lt?'rgba(225,29,72,0.18)':'rgba(255,80,80,0.15)')+';',
+              'background:'+_removeBg+';color:'+_removeCol+';',
+              'cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;',
+              'touch-action:manipulation;-webkit-tap-highlight-color:transparent;',
+            '">✕</button>',
           '</div>',
+        '</div>',
+      ].join('');
 
-        '</div>', /* end header row */
-
-        /* ── COLLAPSIBLE FIELDS ── */
+      /* ── expanded edit panel ── */
+      var editPanel = [
         '<div id="_msr-fields-'+i+'" style="',
-          'padding:0 14px 14px;',
-          'border-top:1px solid '+_fieldDivider+';',
-          'display:'+(isOpen?'flex':'none')+';',
-          'flex-direction:column;gap:10px;',
+          'display:'+(isOpen?'flex':'none')+';flex-direction:column;gap:10px;',
+          'padding:0 14px 16px;',
+          'border-top:1px solid '+_divider+';',
           'padding-top:14px;',
         '">',
 
-          /* ── TYPE TOGGLE ── */
+          /* type toggle */
           '<div style="display:flex;gap:8px;">',
             '<button id="_msr-t-exp-'+i+'" onclick="window._msrSetType('+i+',\'expense\')" style="',
-              'flex:1;padding:10px 0;border-radius:13px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;',
-              'font-family:\'Syne\',sans-serif;font-size:13px;font-weight:800;transition:all .2s cubic-bezier(0.34,1.56,0.64,1);',
+              'flex:1;padding:11px 0;border-radius:14px;cursor:pointer;',
+              'font-family:\'Syne\',sans-serif;font-size:13px;font-weight:800;',
+              'touch-action:manipulation;-webkit-tap-highlight-color:transparent;',
+              'transition:all .18s cubic-bezier(0.34,1.56,0.64,1);',
               (it.editType==='expense'
-                ? (_lt
-                    ? 'background:linear-gradient(135deg,#E11D48,#F43F5E);border:none;color:#fff;box-shadow:0 6px 20px rgba(225,29,72,0.28);'
-                    : 'background:rgba(255,23,68,0.16);border:1.5px solid rgba(255,23,68,0.50);color:#FF6080;box-shadow:0 4px 14px rgba(255,23,68,0.18);')
-                : (_lt
-                    ? 'background:rgba(17,19,45,0.05);border:1px solid rgba(17,19,45,0.10);color:rgba(17,19,45,0.40);'
-                    : 'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);color:rgba(255,255,255,0.28);')),
+                ? (_lt?'background:linear-gradient(135deg,#E11D48,#F43F5E);border:none;color:#fff;box-shadow:0 6px 20px rgba(225,29,72,0.28);'
+                      :'background:rgba(255,23,68,0.16);border:1.5px solid rgba(255,23,68,0.50);color:#FF6080;box-shadow:0 4px 14px rgba(255,23,68,0.18);')
+                : (_lt?'background:rgba(17,19,45,0.06);border:1px solid rgba(17,19,45,0.10);color:rgba(17,19,45,0.38);'
+                      :'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);color:rgba(255,255,255,0.28);')),
             '">− הוצאה</button>',
             '<button id="_msr-t-inc-'+i+'" onclick="window._msrSetType('+i+',\'income\')" style="',
-              'flex:1;padding:10px 0;border-radius:13px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;',
-              'font-family:\'Syne\',sans-serif;font-size:13px;font-weight:800;transition:all .2s cubic-bezier(0.34,1.56,0.64,1);',
+              'flex:1;padding:11px 0;border-radius:14px;cursor:pointer;',
+              'font-family:\'Syne\',sans-serif;font-size:13px;font-weight:800;',
+              'touch-action:manipulation;-webkit-tap-highlight-color:transparent;',
+              'transition:all .18s cubic-bezier(0.34,1.56,0.64,1);',
               (it.editType==='income'
-                ? (_lt
-                    ? 'background:linear-gradient(135deg,#059669,#10B981);border:none;color:#fff;box-shadow:0 6px 20px rgba(5,150,105,0.26);'
-                    : 'background:rgba(0,230,118,0.16);border:1.5px solid rgba(0,230,118,0.50);color:#00E676;box-shadow:0 4px 14px rgba(0,230,118,0.18);')
-                : (_lt
-                    ? 'background:rgba(17,19,45,0.05);border:1px solid rgba(17,19,45,0.10);color:rgba(17,19,45,0.40);'
-                    : 'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);color:rgba(255,255,255,0.28);')),
+                ? (_lt?'background:linear-gradient(135deg,#059669,#10B981);border:none;color:#fff;box-shadow:0 6px 20px rgba(5,150,105,0.26);'
+                      :'background:rgba(0,230,118,0.16);border:1.5px solid rgba(0,230,118,0.50);color:#00E676;box-shadow:0 4px 14px rgba(0,230,118,0.18);')
+                : (_lt?'background:rgba(17,19,45,0.06);border:1px solid rgba(17,19,45,0.10);color:rgba(17,19,45,0.38);'
+                      :'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);color:rgba(255,255,255,0.28);')),
             '">+ הכנסה</button>',
           '</div>',
 
-          /* ── AMOUNT ── */
+          /* amount */
           '<div style="position:relative;">',
-            '<span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:15px;font-weight:800;color:'+col+';pointer-events:none;">₪</span>',
+            '<span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:16px;font-weight:900;color:'+col+';pointer-events:none;">₪</span>',
             '<input id="_msr-inp-amt-'+i+'" type="number" inputmode="decimal" value="'+escHtml(String(it.editAmount||''))+'" placeholder="סכום" oninput="window._msrSetAmt('+i+',this.value)" style="',
-              'width:100%;box-sizing:border-box;padding:13px 40px 13px 14px;',
-              'border-radius:13px;background:'+_inpBg+';border:1.5px solid '+bdr+';',
-              'color:'+col+';font-family:JetBrains Mono,monospace;font-size:18px;font-weight:900;',
+              'width:100%;box-sizing:border-box;padding:14px 44px 14px 14px;',
+              'border-radius:14px;background:'+_inpBg+';border:1.5px solid '+bdr+';',
+              'color:'+col+';font-family:JetBrains Mono,monospace;font-size:20px;font-weight:900;',
               'outline:none;-webkit-appearance:none;text-align:right;',
-              'box-shadow:inset 0 1px 0 rgba(255,255,255,0.9);',
             '" />',
           '</div>',
 
-          /* ── DESCRIPTION ── */
+          /* description */
           '<input id="_msr-inp-desc-'+i+'" type="text" value="'+escHtml(it.editDesc||'')+'" placeholder="תיאור (אופציונלי)" oninput="window._msrSetDesc('+i+',this.value)" style="',
-            'width:100%;box-sizing:border-box;padding:12px 14px;',
-            'border-radius:13px;background:'+_inpBg+';border:1px solid '+_inpBdr+';',
+            'width:100%;box-sizing:border-box;padding:13px 14px;',
+            'border-radius:14px;background:'+_inpBg+';border:1px solid '+_inpBdr+';',
             'color:'+_inpCol+';font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;',
             'outline:none;',
-            'box-shadow:inset 0 1px 0 rgba(255,255,255,0.9);',
           '" />',
 
-          /* ── CATEGORY ── */
-          '<div style="position:relative;">',
-            '<select id="_msr-sel-cat-'+i+'" onchange="window._msrSetCat('+i+',this.value)" style="',
-              'width:100%;box-sizing:border-box;padding:12px 14px 12px 36px;',
-              'border-radius:13px;background:'+_selBg+';border:1px solid '+_inpBdr+';',
-              'color:'+_inpCol+';font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;',
-              'appearance:none;-webkit-appearance:none;outline:none;cursor:pointer;',
-            '">'+buildCatSelect(it)+'</select>',
-            '<span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:11px;color:'+_subTxt+';">▾</span>',
+          /* category select + add new category button */
+          '<div>',
+            '<div style="font-family:\'Syne\',sans-serif;font-size:10px;font-weight:800;color:'+_subTxt+';letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">קטגוריה</div>',
+            '<div style="display:flex;gap:7px;align-items:stretch;">',
+              '<div style="flex:1;position:relative;">',
+                '<select id="_msr-sel-cat-'+i+'" onchange="window._msrSetCat('+i+',this.value)" style="',
+                  'width:100%;box-sizing:border-box;padding:12px 14px 12px 34px;',
+                  'border-radius:14px;background:'+_selBg+';border:1.5px solid '+_inpBdr+';',
+                  'color:'+_inpCol+';font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;',
+                  'appearance:none;-webkit-appearance:none;outline:none;cursor:pointer;',
+                '">'+buildCatSelect(it)+'</select>',
+                '<span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:12px;color:'+_subTxt+';">▾</span>',
+              '</div>',
+              /* ── כפתור הוספת קטגוריה חדשה ── */
+              '<button onclick="window._msrAddCat('+i+')" title="הוסף קטגוריה חדשה" style="',
+                'flex-shrink:0;width:46px;border-radius:14px;',
+                'border:1.5px solid '+_newCatBdr+';background:'+_newCatBg+';color:'+_newCatCol+';',
+                'cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;',
+                'touch-action:manipulation;-webkit-tap-highlight-color:transparent;',
+                'transition:all .15s;',
+                'font-weight:900;line-height:1;',
+              '">+</button>',
+            '</div>',
           '</div>',
 
-          /* ── EVENT ── */
+          /* event select (if events exist) */
           ((window._evList && window._evList.length)?
-            '<div style="position:relative;">'+
-              '<select id="_msr-sel-ev-'+i+'" onchange="window._msrSetEv('+i+',this.value)" style="'+
-                'width:100%;box-sizing:border-box;padding:12px 14px 12px 36px;'+
-                'border-radius:13px;background:'+(_lt?'rgba(79,70,229,0.06)':'rgba(168,85,247,0.07)')+';'+
-                'border:1px solid '+(_lt?'rgba(79,70,229,0.20)':'rgba(168,85,247,0.22)')+';'+
-                'color:'+_inpCol+';font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;'+
-                'appearance:none;-webkit-appearance:none;outline:none;cursor:pointer;'+
-              '">'+evOpts+'</select>'+
-              '<span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:11px;color:'+(_lt?'rgba(79,70,229,0.5)':'rgba(168,85,247,0.6)')+';">🎊</span>'+
+            '<div>'+
+              '<div style="font-family:\'Syne\',sans-serif;font-size:10px;font-weight:800;color:'+_subTxt+';letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">אירוע</div>'+
+              '<div style="position:relative;">'+
+                '<select id="_msr-sel-ev-'+i+'" onchange="window._msrSetEv('+i+',this.value)" style="'+
+                  'width:100%;box-sizing:border-box;padding:12px 14px 12px 34px;'+
+                  'border-radius:14px;background:'+(_lt?'rgba(124,58,237,0.07)':'rgba(168,85,247,0.07)')+';'+
+                  'border:1.5px solid '+(_lt?'rgba(124,58,237,0.22)':'rgba(168,85,247,0.22)')+';'+
+                  'color:'+_inpCol+';font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;'+
+                  'appearance:none;-webkit-appearance:none;outline:none;cursor:pointer;'+
+                '">'+evOpts+'</select>'+
+                '<span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:13px;">🎊</span>'+
+              '</div>'+
             '</div>'
           : ''),
 
-        '</div>', /* end fields */
-
-        '</div>', /* end inner wrapper */
+        '</div>', /* end edit panel */
       ].join('');
+
+      /* shimmer top border */
+      var shimmerLine = '<div style="height:2px;background:linear-gradient(90deg,transparent,'+col+'55,transparent);border-radius:18px 18px 0 0;"></div>';
+
+      var inner = '<div style="border-radius:18px;overflow:hidden;">' + shimmerLine + summaryRow + editPanel + '</div>';
+      div.innerHTML = inner;
     }
 
-    /* ── מציג placeholder סורק ── */
+    /* ── placeholder while scanning ── */
     function renderPlaceholder(it){
       var div = document.getElementById('_msr-item-' + it.idx);
-      div.style.borderColor = 'rgba(255,255,255,0.08)';
+      div.style.borderColor = _rowBdr;
       div.innerHTML = [
-        '<div style="display:flex;align-items:center;gap:12px;padding:14px;">',
-          '<div style="width:36px;height:36px;flex-shrink:0;border-radius:11px;background:rgba(0,229,255,0.07);border:1px solid rgba(0,229,255,0.16);display:flex;align-items:center;justify-content:center;">',
-            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(0,229,255,0.70)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin360 1s linear infinite;"><path d="M12 2a10 10 0 0 1 10 10"/></svg>',
-          "</div>",
+        '<div style="display:flex;align-items:center;gap:12px;padding:16px;">',
+          '<div style="width:48px;height:48px;flex-shrink:0;border-radius:15px;background:'+_rowBdr+';border:1px solid '+_rowBdr+';display:flex;align-items:center;justify-content:center;">',
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="'+_accent+'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin360 1s linear infinite;opacity:0.7;"><path d="M12 2a10 10 0 0 1 10 10"/></svg>',
+          '</div>',
           '<div style="flex:1;min-width:0;">',
-            '<div style="font-family:\'Syne\',sans-serif;font-size:12px;font-weight:700;color:rgba(255,255,255,0.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(it.file.name.length>32?it.file.name.slice(0,29)+'...':it.file.name) + "</div>",
-            '<div style="font-size:10px;color:rgba(255,255,255,0.22);margin-top:3px;">AI סורק...</div>',
-          "</div>",
+            '<div style="font-family:\'Syne\',sans-serif;font-size:12px;font-weight:700;color:'+_cardTxt+';opacity:.55;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(it.file.name.length>34?it.file.name.slice(0,31)+'...':it.file.name) + '</div>',
+            '<div style="font-size:10px;color:'+_subTxt+';margin-top:4px;">AI סורק...</div>',
+          '</div>',
         '</div>'
       ].join('');
     }
 
-    /* ── מציג שגיאה ── */
+    /* ── מציג שגיאה (legacy single-file flow) ── */
     function renderError(it){
-      var div = document.getElementById('_msr-item-' + it.idx);
-      div.style.cssText = 'border-radius:14px;overflow:hidden;border:1px solid rgba(255,80,80,0.22);background:rgba(255,23,68,0.04);';
-      div.innerHTML = [
-        '<div style="display:flex;align-items:center;gap:12px;padding:14px;">',
-          '<div style="width:36px;height:36px;flex-shrink:0;border-radius:11px;background:rgba(255,23,68,0.10);border:1px solid rgba(255,23,68,0.25);display:flex;align-items:center;justify-content:center;color:#FF6080;font-size:16px;">!</div>',
-          '<div style="flex:1;min-width:0;">',
-            '<div style="font-family:\'Syne\',sans-serif;font-size:12px;font-weight:800;color:#FF6080;">שגיאת סריקה</div>',
-            '<div style="font-size:10px;color:rgba(255,255,255,0.28);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(it.file.name.length>32?it.file.name.slice(0,29)+'...':it.file.name) + "</div>",
-          "</div>",
-        '</div>'
-      ].join('');
+      renderErrorCard(it);
     }
 
     /* ── עדכון כפתור שמור הכל ── */
     function refreshSaveBtn(){
       var done    = items.filter(function(it){ return it.status === 'done'; });
-      var removed = items.filter(function(it){ return it.status === 'removed'; });
       var scanning= items.filter(function(it){ return it.status === 'scanning'; });
-      var active  = done.filter(function(it){ return it.status === 'done'; }); /* not removed */
       if(scanning.length > 0){
         titleEl.textContent = 'סורק ' + scanning.length + ' מתוך ' + files.length + '...';
         subEl.textContent   = done.length + ' הושלמו';
@@ -11402,12 +11323,12 @@ window.exportUserData = function() {
         saveAllEl.textContent = 'ממתין לסריקה...';
       } else {
         var cnt = items.filter(function(it){ return it.status==='done'; }).length;
-        titleEl.textContent = cnt + ' סריקות הושלמו';
-        subEl.textContent   = 'ערוך ושמור כל אחד בנפרד או שמור הכל';
+        titleEl.textContent = cnt + ' סריקות הושלמו ✓';
+        subEl.textContent   = cnt > 0 ? 'לחץ ערוך לפרטים · שמור הכל בכפתור למטה' : 'אין פריטים לשמירה';
         if(cnt > 0){
           saveAllEl.style.opacity = '1';
           saveAllEl.style.pointerEvents = '';
-          saveAllEl.textContent = '✓ שמור את כולם (' + cnt + ')';
+          saveAllEl.textContent = '✓ שמור הכל (' + cnt + ')';
         } else {
           saveAllEl.style.opacity = '0.35';
           saveAllEl.style.pointerEvents = 'none';
@@ -11465,10 +11386,38 @@ window.exportUserData = function() {
       var it = items[idx];
       if(!it || it.status !== 'done') return;
       it._expanded = !it._expanded;
+
+      /* toggle fields panel — no full re-render */
       var fields = document.getElementById('_msr-fields-'+idx);
-      var chev   = document.getElementById('_msr-chev-'+idx);
       if(fields) fields.style.display = it._expanded ? 'flex' : 'none';
-      if(chev)   chev.textContent      = it._expanded ? '▲' : '▼';
+
+      /* update edit button text only */
+      var editBtns = document.querySelectorAll('#_msr-item-'+idx+' button');
+      for(var b=0;b<editBtns.length;b++){
+        if(editBtns[b].getAttribute('onclick') && editBtns[b].getAttribute('onclick').indexOf('_msrToggle') !== -1){
+          var svgHtml = editBtns[b].querySelector('svg') ? editBtns[b].querySelector('svg').outerHTML : '';
+          editBtns[b].innerHTML = svgHtml + (it._expanded ? 'סגור' : 'ערוך');
+          break;
+        }
+      }
+
+      /* scroll the opened card into view smoothly */
+      if(it._expanded){
+        var cardEl = document.getElementById('_msr-item-'+idx);
+        var listEl2 = document.getElementById('_msr-list');
+        if(cardEl && listEl2){
+          setTimeout(function(){
+            var cardTop    = cardEl.offsetTop;
+            var listScroll = listEl2.scrollTop;
+            var listHeight = listEl2.clientHeight;
+            var cardHeight = cardEl.offsetHeight;
+            /* if card bottom is below visible area — scroll it into view */
+            if(cardTop + cardHeight > listScroll + listHeight){
+              listEl2.scrollTo({ top: cardTop - 12, behavior: 'smooth' });
+            }
+          }, 60);
+        }
+      }
     };
     window._msrSetType = function(idx, type){
       var it = items[idx];
@@ -11477,7 +11426,40 @@ window.exportUserData = function() {
       var cats3 = type === 'income' ? incCats : expCats;
       var stillValid = cats3.find(function(c){ return c.name === it.editCat; });
       if(!stillValid) it.editCat = '';
-      renderCard(it);
+
+      /* update category select options without full re-render */
+      var sel = document.getElementById('_msr-sel-cat-'+idx);
+      if(sel) sel.innerHTML = buildCatSelect(it);
+
+      /* update amount input border color */
+      var amtInp = document.getElementById('_msr-inp-amt-'+idx);
+      if(amtInp) amtInp.style.borderColor = bdrOf(type);
+
+      /* update amount display color */
+      var amtDisp = document.getElementById('_msr-amt-display-'+idx);
+      if(amtDisp) amtDisp.style.color = colorOf(type);
+
+      /* update type toggle button styles */
+      var expBtn = document.getElementById('_msr-t-exp-'+idx);
+      var incBtn = document.getElementById('_msr-t-inc-'+idx);
+      if(expBtn && incBtn){
+        var _ltN = document.body.classList.contains('theme-light');
+        if(type === 'expense'){
+          expBtn.style.cssText = expBtn.style.cssText.replace(/background:[^;]+/,'background:'+(_ltN?'linear-gradient(135deg,#E11D48,#F43F5E)':'rgba(255,23,68,0.16)'));
+          expBtn.style.color = _ltN ? '#fff' : '#FF6080';
+          expBtn.style.border = _ltN ? 'none' : '1.5px solid rgba(255,23,68,0.50)';
+          incBtn.style.background = _ltN ? 'rgba(17,19,45,0.06)' : 'rgba(255,255,255,0.04)';
+          incBtn.style.color = _ltN ? 'rgba(17,19,45,0.38)' : 'rgba(255,255,255,0.28)';
+          incBtn.style.border = _ltN ? '1px solid rgba(17,19,45,0.10)' : '1px solid rgba(255,255,255,0.09)';
+        } else {
+          incBtn.style.cssText = incBtn.style.cssText.replace(/background:[^;]+/,'background:'+(_ltN?'linear-gradient(135deg,#059669,#10B981)':'rgba(0,230,118,0.16)'));
+          incBtn.style.color = _ltN ? '#fff' : '#00E676';
+          incBtn.style.border = _ltN ? 'none' : '1.5px solid rgba(0,230,118,0.50)';
+          expBtn.style.background = _ltN ? 'rgba(17,19,45,0.06)' : 'rgba(255,255,255,0.04)';
+          expBtn.style.color = _ltN ? 'rgba(17,19,45,0.38)' : 'rgba(255,255,255,0.28)';
+          expBtn.style.border = _ltN ? '1px solid rgba(17,19,45,0.10)' : '1px solid rgba(255,255,255,0.09)';
+        }
+      }
     };
     window._msrSetAmt  = function(idx, val){
       var it = items[idx];
@@ -11489,8 +11471,116 @@ window.exportUserData = function() {
       if(disp) disp.textContent = sym + ' ₪' + (val ? Number(val).toLocaleString('he-IL') : '—');
     };
     window._msrSetDesc = function(idx, val){ var it=items[idx]; if(!it) return; it.editDesc=val; };
-    window._msrSetCat  = function(idx, val){ var it=items[idx]; if(!it) return; it.editCat=val; };
+    window._msrSetCat  = function(idx, val){
+      var it = items[idx];
+      if(!it) return;
+      it.editCat = val;
+      /* update category badge in summary row without re-render */
+      var col = colorOf(it.editType);
+      var bg  = bgOf(it.editType);
+      var bdr = bdrOf(it.editType);
+      var summaryDiv = document.querySelector('#_msr-item-'+idx+' [id^="_msr-amt-display-"]');
+      if(summaryDiv){
+        var badgeEl = summaryDiv.parentNode.querySelector('div:last-child');
+        if(badgeEl){
+          badgeEl.innerHTML = val
+            ? '<span style="display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;background:'+bg+';border:1px solid '+bdr+';font-size:10px;font-weight:800;color:'+col+';">🏷 '+escHtml(val)+'</span>'
+            : '<span style="opacity:0.55;">ללא קטגוריה</span>';
+        }
+      }
+    };
     window._msrSetEv   = function(idx, val){ var it=items[idx]; if(!it) return; it.editEventId=val||null; };
+
+    /* ── הוספת קטגוריה חדשה ישירות מהסריקה ── */
+    window._msrAddCat  = function(idx){
+      var it = items[idx];
+      if(!it) return;
+      var _ltInner = document.body.classList.contains('theme-light');
+      /* הצג mini-input inline */
+      var selEl = document.getElementById('_msr-sel-cat-'+idx);
+      if(!selEl) return;
+      var wrap = selEl.parentNode.parentNode; /* the label+row div */
+
+      /* אם כבר פתוח — סגור */
+      var existing = document.getElementById('_msr-new-cat-inp-'+idx);
+      if(existing){ existing.remove(); return; }
+
+      var newRow = document.createElement('div');
+      newRow.id = '_msr-new-cat-inp-'+idx;
+      newRow.style.cssText = 'display:flex;gap:7px;align-items:center;margin-top:6px;animation:cardStaggerIn .2s ease both;';
+
+      var _inpBgN = _ltInner ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.07)';
+      var _inpBdrN= _ltInner ? 'rgba(16,185,129,0.35)' : 'rgba(0,230,118,0.35)';
+      var _inpColN= _ltInner ? '#11132D' : '#fff';
+      var _newCol = _ltInner ? '#059669' : '#00E676';
+
+      newRow.innerHTML =
+        '<input id="_msr-new-cat-val-'+idx+'" type="text" placeholder="שם קטגוריה חדשה..." style="'+
+          'flex:1;padding:11px 13px;border-radius:13px;'+
+          'background:'+_inpBgN+';border:1.5px solid '+_inpBdrN+';'+
+          'color:'+_inpColN+';font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;'+
+          'outline:none;text-align:right;'+
+        '" />'+
+        '<button onclick="window._msrSaveNewCat('+idx+')" style="'+
+          'height:44px;padding:0 14px;border-radius:13px;'+
+          'background:'+(_ltInner?'linear-gradient(135deg,#059669,#10B981)':'rgba(0,230,118,0.16)')+';'+
+          'border:1.5px solid '+(_ltInner?'transparent':'rgba(0,230,118,0.40)')+';'+
+          'color:'+(_ltInner?'#fff':_newCol)+';'+
+          'font-family:\'Syne\',sans-serif;font-size:13px;font-weight:900;'+
+          'cursor:pointer;flex-shrink:0;'+
+          'touch-action:manipulation;-webkit-tap-highlight-color:transparent;'+
+        '">+ הוסף</button>'+
+        '<button onclick="document.getElementById(\'_msr-new-cat-inp-'+idx+'\').remove()" style="'+
+          'width:40px;height:44px;border-radius:13px;'+
+          'background:'+(_ltInner?'rgba(17,19,45,0.06)':'rgba(255,255,255,0.05)')+';'+
+          'border:1px solid '+(_ltInner?'rgba(17,19,45,0.10)':'rgba(255,255,255,0.09)')+';'+
+          'color:'+(_ltInner?'rgba(17,19,45,0.38)':'rgba(255,255,255,0.32)')+';'+
+          'cursor:pointer;font-size:14px;flex-shrink:0;'+
+        '">✕</button>';
+
+      wrap.appendChild(newRow);
+      setTimeout(function(){
+        var inp = document.getElementById('_msr-new-cat-val-'+idx);
+        if(inp) inp.focus();
+      }, 80);
+    };
+
+    window._msrSaveNewCat = function(idx){
+      var it = items[idx];
+      if(!it) return;
+      var inp = document.getElementById('_msr-new-cat-val-'+idx);
+      if(!inp) return;
+      var name = inp.value.trim();
+      if(!name){ inp.style.borderColor='rgba(255,80,80,0.7)'; inp.focus(); return; }
+
+      var type = it.editType || 'expense';
+      var uid = window.auth && window.auth.currentUser && window.auth.currentUser.uid;
+      if(!uid || !window.db){ window.toast&&window.toast('לא מחובר','error'); return; }
+
+      var newCat = { name: name, type: type, budget: 0,
+                     createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+
+      window.db.collection('users').doc(uid).collection('categories').add(newCat)
+        .then(function(ref){
+          /* עדכן מערכי קטגוריות מקומיים */
+          var newObj = Object.assign({ id: ref.id }, newCat);
+          if(!window._appUserCategories) window._appUserCategories = [];
+          window._appUserCategories.push(newObj);
+          _allCats = window._appUserCategories;
+          expCats  = _allCats.filter(function(c){ return c.type==='expense'; });
+          incCats  = _allCats.filter(function(c){ return c.type==='income';  });
+
+          it.editCat = name;
+          var newRow = document.getElementById('_msr-new-cat-inp-'+idx);
+          if(newRow) newRow.remove();
+          /* update select options and category badge without full re-render */
+          var sel2 = document.getElementById('_msr-sel-cat-'+idx);
+          if(sel2) sel2.innerHTML = buildCatSelect(it);
+          window._msrSetCat(idx, name);
+          window.toast&&window.toast('קטגוריה "'+name+'" נוספה ✓','success');
+        })
+        .catch(function(e){ window.toast&&window.toast('שגיאה: '+e.message,'error'); });
+    };
     window._msrRemove  = function(idx){
       var it  = items[idx]; if(!it) return;
       it.status = 'removed';
