@@ -335,10 +335,10 @@ body.theme-light #cycle-display { color: var(--lt-blue) !important; font-weight:
    BOTTOM NAV
 ════════════════════════════════════════ */
 body.theme-light #nav {
-  background: rgba(255,255,255,0.96) !important;
+  background: rgba(255,255,255,1) !important;
   border-top: 1px solid rgba(0,0,0,.06) !important;
   border-left: none !important; border-right: none !important; border-bottom: none !important;
-  backdrop-filter: blur(20px) !important; -webkit-backdrop-filter: blur(20px) !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
   box-shadow: 0 -1px 0 rgba(0,0,0,.05), 0 -4px 20px rgba(0,0,0,.04) !important;
 }
 body.theme-light .nav-btn { color: #94A3B8 !important; }
@@ -555,12 +555,12 @@ body.theme-light ._scan-confirm-sheet {
   color: var(--lt-text) !important;
 }
 body.theme-light [id*="overlay"]:not([id*="sheet"]) {
-  background: rgba(15,23,42,.38) !important;
-  backdrop-filter: blur(4px) !important;
+  background: rgba(15,23,42,.55) !important;
+  backdrop-filter: none !important;
 }
 body.theme-light #ev-overlay {
-  background: rgba(15,23,42,.35) !important;
-  backdrop-filter: blur(4px) !important;
+  background: rgba(15,23,42,.52) !important;
+  backdrop-filter: none !important;
 }
 
 /* modal handle bar */
