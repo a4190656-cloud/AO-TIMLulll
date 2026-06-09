@@ -8607,45 +8607,125 @@ window.deletePhoneIdx = function(i) {
       document.body.classList.toggle('theme-light', t === 'light');
       _updateUI(t);
       if(t === 'light'){
-        /* Flutter WebView: force kill all filters/compositing on every ancestor */
+        /* ── Step 1: kill compositing on root elements ── */
         [document.documentElement, document.body].forEach(function(el){
-          el.style.filter          = 'none';
-          el.style.webkitFilter    = 'none';
-          el.style.backdropFilter  = 'none';
+          el.style.filter               = 'none';
+          el.style.webkitFilter         = 'none';
+          el.style.backdropFilter       = 'none';
           el.style.webkitBackdropFilter = 'none';
-          el.style.willChange      = 'auto';
-          el.style.transform       = 'none';
-          el.style.opacity         = '1';
-          el.style.mixBlendMode    = 'normal';
+          el.style.willChange           = 'auto';
+          el.style.transform            = 'none';
+          el.style.opacity              = '1';
+          el.style.mixBlendMode         = 'normal';
+          el.style.background           = '#F2F3F7';
         });
-        /* also kill on #app */
         var app = document.getElementById('app');
         if(app){
-          app.style.filter         = 'none';
-          app.style.webkitFilter   = 'none';
-          app.style.backdropFilter = 'none';
-          app.style.willChange     = 'auto';
-          app.style.transform      = 'none';
-          app.style.opacity        = '1';
+          app.style.filter              = 'none';
+          app.style.webkitFilter        = 'none';
+          app.style.backdropFilter      = 'none';
+          app.style.willChange          = 'auto';
+          app.style.transform           = 'none';
+          app.style.opacity             = '1';
+          app.style.background          = '#F2F3F7';
         }
+        /* ── Step 2: Samsung WebView deep override — walk every element ── */
+        var LIGHT_BG   = '#FFFFFF';
+        var LIGHT_BODY = '#F2F3F7';
+        var CARD_CLASSES = ['card','hero-card','action-btn-income','action-btn-expense',
+          'stat-pill','mini-card','kpi-card','tx-row','fixed-item','cat-card',
+          'ev-card','scan-doc-btn','setting-row','settings-item','inp-card',
+          'section-card','chart-hero','ch-kpi','cycle-total-card','bug-contact-card'];
+        document.querySelectorAll('*').forEach(function(el){
+          /* kill all filters/backdrop on every element */
+          el.style.backdropFilter       = 'none';
+          el.style.webkitBackdropFilter = 'none';
+          el.style.filter               = 'none';
+          el.style.webkitFilter         = 'none';
+          /* force white on card-like elements */
+          var cls = (el.className || '').toString();
+          var isCard = CARD_CLASSES.some(function(c){ return cls.indexOf(c) !== -1; });
+          if(isCard){
+            el.style.background    = LIGHT_BG;
+            el.style.borderColor   = 'rgba(0,0,0,0.06)';
+            el.style.boxShadow     = '0 1px 3px rgba(0,0,0,0.06),0 2px 8px rgba(0,0,0,0.04)';
+            el.style.color         = '#0D1B2A';
+          }
+          /* force body-bg on view wrappers */
+          if(el.id && el.id.indexOf('view-') === 0){
+            el.style.background = LIGHT_BODY;
+          }
+        });
+        /* ── Step 3: specific element overrides ── */
+        var hero = document.getElementById('hero-balance-card');
+        if(hero){
+          hero.style.background = 'linear-gradient(135deg,#2952D9 0%,#3B6EF8 45%,#5B8BFF 100%)';
+          hero.style.boxShadow  = '0 8px 32px rgba(59,110,248,0.35),0 2px 8px rgba(59,110,248,0.20)';
+          hero.style.border     = 'none';
+          hero.querySelectorAll('*').forEach(function(c){ c.style.color='#FFFFFF'; });
+        }
+        var expBtn = document.getElementById('btn-add-expense');
+        if(expBtn){
+          expBtn.style.background  = 'linear-gradient(160deg,#FEF0F2 0%,#FDEAED 100%)';
+          expBtn.style.border      = '1.5px solid rgba(224,50,80,0.14)';
+          expBtn.style.boxShadow   = '0 2px 8px rgba(0,0,0,0.06)';
+        }
+        var incBtn = document.getElementById('btn-add-income');
+        if(incBtn){
+          incBtn.style.background  = 'linear-gradient(160deg,#EDFBF3 0%,#E5F9EE 100%)';
+          incBtn.style.border      = '1.5px solid rgba(18,163,90,0.14)';
+          incBtn.style.boxShadow   = '0 2px 8px rgba(0,0,0,0.06)';
+        }
+        var nav = document.getElementById('nav');
+        if(nav){
+          nav.style.background = 'rgba(255,255,255,0.99)';
+          nav.style.borderTop  = '1px solid rgba(0,0,0,0.05)';
+          nav.style.boxShadow  = '0 -1px 0 rgba(0,0,0,0.04)';
+        }
+        /* ── Step 4: force repaint Samsung ── */
+        document.body.style.display = 'none';
+        void document.body.offsetHeight;
+        document.body.style.display = '';
+        /* second repaint after 80ms to catch deferred renders */
+        setTimeout(function(){
+          document.body.style.display = 'none';
+          void document.body.offsetHeight;
+          document.body.style.display = '';
+        }, 80);
       } else {
-        /* restore dark mode */
+        /* restore dark mode — clear all inline overrides */
+        document.querySelectorAll('*').forEach(function(el){
+          el.style.backdropFilter       = '';
+          el.style.webkitBackdropFilter = '';
+          el.style.filter               = '';
+          el.style.webkitFilter         = '';
+          el.style.background           = '';
+          el.style.borderColor          = '';
+          el.style.boxShadow            = '';
+          el.style.color                = '';
+          el.style.border               = '';
+        });
         [document.documentElement, document.body].forEach(function(el){
-          el.style.filter = '';
-          el.style.webkitFilter = '';
+          el.style.filter      = '';
+          el.style.webkitFilter= '';
           el.style.backdropFilter = '';
-          el.style.willChange = '';
-          el.style.transform = '';
-          el.style.opacity = '';
+          el.style.willChange  = '';
+          el.style.transform   = '';
+          el.style.opacity     = '';
+          el.style.background  = '';
         });
         var app2 = document.getElementById('app');
         if(app2){
-          app2.style.filter = '';
-          app2.style.backdropFilter = '';
-          app2.style.willChange = '';
-          app2.style.transform = '';
-          app2.style.opacity = '';
+          app2.style.filter        = '';
+          app2.style.backdropFilter= '';
+          app2.style.willChange    = '';
+          app2.style.transform     = '';
+          app2.style.opacity       = '';
+          app2.style.background    = '';
         }
+        document.body.style.display = 'none';
+        void document.body.offsetHeight;
+        document.body.style.display = '';
       }
       /* force repaint on Samsung WebView */
       document.body.style.display = 'none';
@@ -8657,7 +8737,7 @@ window.deletePhoneIdx = function(i) {
     var saved = localStorage.getItem('_ao_theme') || 'dark';
     document.body.classList.toggle('theme-light', saved === 'light');
     _updateUI(saved);
-    /* if light mode on load, kill all filters immediately */
+    /* if light mode on load, apply full deep override after DOM ready */
     if(saved === 'light'){
       [document.documentElement, document.body].forEach(function(el){
         el.style.filter = 'none';
@@ -8667,7 +8747,11 @@ window.deletePhoneIdx = function(i) {
         el.style.willChange = 'auto';
         el.style.transform = 'none';
         el.style.opacity = '1';
+        el.style.background = '#F2F3F7';
       });
+      /* re-apply full JS override after app renders (catches deferred elements) */
+      setTimeout(function(){ window._setTheme && window._setTheme('light'); }, 500);
+      setTimeout(function(){ window._setTheme && window._setTheme('light'); }, 1500);
     }
   })();
 
@@ -10276,16 +10360,25 @@ window.resetProfilePic = function() {
 
   window.checkCyclePrompt = function() {
     if (!uid) return;
-    if (_cyclePromptShown) return; /* כבר הוצג בsession זה */
+    if (_cyclePromptShown) return; /* מניעת הצגה כפולה בsession */
+
+    /* ── בדיקה: האם היום הוא יום האיפוס (±1 יום גרייס) ── */
+    var now      = new Date();
+    var today    = now.getDate();
+    var rd       = resetDay || 1;
+    var isResetDay = (today === rd || today === rd + 1);
+    /* אם יום האיפוס הוא סוף חודש (28-31) — גרייס גם לתחילת חודש הבא */
+    if (rd >= 28 && today <= 2) isResetDay = true;
+    if (!isResetDay) return; /* לא יום האיפוס — לא מציג */
 
     var s = cycleStart();
-    var cycleKey = s.getFullYear() + '-' + (s.getMonth() + 1);
+    /* cycleKey = year-month-resetDay — ייחודי למחזור מדויק */
+    var cycleKey = s.getFullYear() + '-' + (s.getMonth() + 1) + '-' + rd;
 
-    /* מפתח ייחודי ל-localStorage לפי uid + מחזור — מניעת הצגה כפולה על אותו מכשיר */
+    /* מפתח localStorage ייחודי לפי uid + מחזור */
     var localKey = 'ao_cycle_seen_' + uid + '_' + cycleKey;
-    if (localStorage.getItem(localKey)) return; /* כבר הוצג במכשיר זה */
+    if (localStorage.getItem(localKey)) return;
 
-    /* וידוא שהנתונים כבר נטענו מ-Firestore */
     if (!fixedIncomes || !fixedExpenses) return;
     var fiTotal = fixedIncomes.reduce(function(a,i){ return a+Number(i.amount||0); }, 0);
     var feTotal = fixedExpenses.reduce(function(a,i){ return a+Number(i.amount||0); }, 0);
@@ -10294,10 +10387,10 @@ window.resetProfilePic = function() {
     db.collection('users').doc(uid).get().then(function(doc) {
       if (!doc.exists) return;
       var data = doc.data();
-      if (data.lastCycleSeen === cycleKey) return; /* כבר נשמר ב-Firestore — לא מציג */
+      if (data.lastCycleSeen === cycleKey) return; /* Firestore — כבר נראה */
 
       _cyclePromptShown = true;
-      localStorage.setItem(localKey, '1'); /* שמור מקומית — מונע הצגה כפולה ב-tab נוסף */
+      localStorage.setItem(localKey, '1');
 
       /* חישוב סכומים */
       var fiEl = $('cycle-fi-total');
@@ -10305,14 +10398,9 @@ window.resetProfilePic = function() {
       if (fiEl) fiEl.textContent = fmt(fiTotal);
       if (feEl) feEl.textContent = fmt(feTotal);
 
-      /* דו-חודשי — bimonthly */
+      /* ── דו-חודשי — מוצג תמיד אם יש פריטים ── */
       var bimonthlyItems = typeof bimonthlyExpenses !== 'undefined' ? bimonthlyExpenses : [];
-      var now = new Date();
-      var isEvenMonth = (now.getMonth() % 2 === 0); /* חודש זוגי = חודש של דו-חודשי */
-      var bmTotal = 0;
-      if (isEvenMonth) {
-        bmTotal = bimonthlyItems.reduce(function(a,i){ return a+Number(i.amount||0); }, 0);
-      }
+      var bmTotal = bimonthlyItems.reduce(function(a,i){ return a+Number(i.amount||0); }, 0);
       var bmRow = document.getElementById('cycle-bimonthly-row');
       var bmEl  = document.getElementById('cycle-bm-total');
       if (bmRow && bmEl) {
