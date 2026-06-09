@@ -225,10 +225,10 @@
 /* ─── Design tokens ──────────────────────────────────────────────────────── */
 body.theme-light {
   /* ── Canvas ── */
-  --lt-bg:      #F0F2F5;
+  --lt-bg:      #F5F5F7;
   --lt-surf:    #FFFFFF;
-  --lt-surf-2:  #F7F8FA;
-  --lt-border:  rgba(0,0,0,0.07);
+  --lt-surf-2:  #F9F9FB;
+  --lt-border:  rgba(0,0,0,0.08);
 
   /* ── Brand ── */
   --lt-blue:    #2563EB;
@@ -265,7 +265,7 @@ body.theme-light {
 /* ── Background: clean gray, no gradients ── */
 body.theme-light::before { display:none !important; content:none !important; opacity:0 !important; visibility:hidden !important; }
 body.theme-light::after  { display:none !important; content:none !important; opacity:0 !important; visibility:hidden !important; }
-body.theme-light { background: #F0F2F5 !important; }
+body.theme-light { background: #F5F5F7 !important; }
 
 /* ── Flutter WebView fix: force GPU composite off ── */
 body.theme-light,
@@ -443,10 +443,20 @@ body.theme-light .action-btn-income .action-btn-icon-wrap {
 ════════════════════════════════════════ */
 body.theme-light .scan-doc-btn {
   background: var(--lt-surf) !important;
-  border: 1px solid var(--lt-border) !important;
+  border: 1.5px solid rgba(37,99,235,0.18) !important;
   box-shadow: var(--lt-sh-md) !important;
 }
+body.theme-light .scan-doc-btn::before { display: none !important; }
+body.theme-light .scan-doc-btn-inner { background: transparent !important; }
+body.theme-light .scan-doc-icon-wrap {
+  background: rgba(37,99,235,0.08) !important;
+  border-color: rgba(37,99,235,0.18) !important;
+  box-shadow: none !important;
+}
+body.theme-light .scan-doc-pulse { border-color: rgba(37,99,235,0.25) !important; }
 body.theme-light .scan-doc-title { color: var(--lt-text) !important; }
+body.theme-light .scan-doc-sub { color: var(--lt-text2) !important; }
+body.theme-light .scan-doc-arrow { color: rgba(37,99,235,0.5) !important; }
 
 /* ════════════════════════════════════════
    TRANSACTION ROWS
@@ -739,6 +749,42 @@ body.theme-light #pwa-ios-overlay   { background: var(--lt-surf) !important; bac
 body.theme-light .scan-doc-result,
 body.theme-light [class*="scan-doc"] { background: var(--lt-surf) !important; border: 1px solid var(--lt-border) !important; box-shadow: var(--lt-sh-sm) !important; }
 body.theme-light #scan-manual-amount { background: #FFFBEB !important; border-color: rgba(217,119,6,.35) !important; color: var(--lt-text) !important; }
+
+/* ── בפיתוח badge inline ── */
+body.theme-light [style*="rgba(255,160,0"][style*="border-radius:6px"] {
+  background: rgba(234,88,12,0.08) !important;
+  border-color: rgba(234,88,12,0.22) !important;
+  color: #C2410C !important;
+}
+
+/* ── currency / phone sheet (JS-created) ── */
+body.theme-light [id="_cur-sheet"] {
+  background: rgba(15,23,42,0.52) !important;
+}
+body.theme-light [id="_cur-inner"] {
+  background: var(--lt-surf) !important;
+  border-color: var(--lt-border) !important;
+}
+
+/* ── scan sheet inner ── */
+body.theme-light [id="_scan-sheet"],
+body.theme-light [id="_msr-sheet"] {
+  background: rgba(15,23,42,0.52) !important;
+}
+body.theme-light [id="_msr-header"],
+body.theme-light [id="_msr-footer"] {
+  background: var(--lt-surf) !important;
+}
+
+/* ── global: any fixed/absolute with dark rgba bg ── */
+body.theme-light [style*="background:rgba(4,"],
+body.theme-light [style*="background:rgba(5,"],
+body.theme-light [style*="background:rgba(6,"],
+body.theme-light [style*="background:rgba(8,"],
+body.theme-light [style*="background:rgba(10,"],
+body.theme-light [style*="background:rgba(14,"] {
+  background: var(--lt-surf) !important;
+}
 
 /* ── bug bubble ── */
 body.theme-light #beta-bubble {
@@ -2018,6 +2064,22 @@ body.theme-light .ch-chip-label { color: var(--lt-text2) !important; }
       background: rgba(0,0,0,0.85) !important;
       backdrop-filter: blur(20px) !important;
     }
+    body.theme-light #phone-modal-overlay {
+      background: rgba(15,23,42,0.55) !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+    body.theme-light #phone-modal-overlay > div {
+      background: var(--lt-surf) !important;
+      border: 1px solid var(--lt-border) !important;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18) !important;
+    }
+    body.theme-light #phone-modal-overlay input {
+      background: var(--lt-surf-2) !important;
+      color: var(--lt-text) !important;
+      border-color: rgba(0,0,0,0.12) !important;
+    }
+    body.theme-light #btn-skip-phone-modal { color: var(--lt-text2) !important; }
 
     /* ── INPUT FIELDS PREMIUM ── */
     .inp:focus {
