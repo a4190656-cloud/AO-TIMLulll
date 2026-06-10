@@ -15,12 +15,12 @@
 (function(){
   var t=localStorage.getItem('_ao_theme');
   if(t==='light'){
-    document.documentElement.style.background='#F0F2F5';
+    document.documentElement.style.background='#F7F8FA';
     document.documentElement.classList.add('theme-light-pre');
     function applyLight(){
       if(document.body){
         document.body.classList.add('theme-light');
-        document.body.style.background='#F0F2F5';
+        document.body.style.background='#F7F8FA';
       }
     }
     if(document.body) applyLight();
@@ -2130,8 +2130,8 @@ body.theme-light {
   ══════════════════════════════════════ */
 
   /* Canvas */
-  --lt-bg:        #F2F3F7;
-  --lt-bg-2:      #ECEEF4;
+  --lt-bg:        #F7F8FA;
+  --lt-bg-2:      #F0F1F5;
   --lt-surf:      #FFFFFF;
   --lt-surf-2:    #F8F9FC;
   --lt-surf-3:    #F0F2F8;
@@ -2161,7 +2161,7 @@ body.theme-light {
   --lt-sh-blue: 0 4px 20px rgba(59,110,248,0.30), 0 1px 4px rgba(59,110,248,0.18);
 
   /* Remap globals */
-  --bg:    #F2F3F7;
+  --bg:    #F7F8FA;
   --card:  #FFFFFF;
   --text:  #0D1B2A;
   --muted: #9AA5B4;
@@ -2169,27 +2169,26 @@ body.theme-light {
   --green: #12A35A;
   --red:   #E03250;
 
-  background: #F2F3F7 !important;
+  background: #F7F8FA !important;
   color: #0D1B2A !important;
 }
 
-/* ══ Background — subtle gradient mesh ══ */
+/* ══ Background — hide dark mesh ══ */
 body.theme-light::before {
-  display: block !important;
-  content: '' !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  position: fixed !important; inset: 0 !important; z-index: 0 !important;
-  pointer-events: none !important;
-  background:
-    radial-gradient(ellipse 70% 50% at 15% 5%,  rgba(59,110,248,0.055) 0%, transparent 100%),
-    radial-gradient(ellipse 60% 45% at 90% 80%,  rgba(18,163,90,0.040) 0%, transparent 100%),
-    radial-gradient(ellipse 50% 40% at 55% 45%,  rgba(59,110,248,0.025) 0%, transparent 100%) !important;
-  filter: none !important;
-  -webkit-filter: none !important;
+  display: none !important;
+  content: none !important;
 }
 body.theme-light::after { display:none !important; content:none !important; opacity:0 !important; visibility:hidden !important; }
-body.theme-light { background: #F2F3F7 !important; }
+body.theme-light { background: #F7F8FA !important; }
+body.theme-light #app {
+  background: #F7F8FA !important;
+}
+body.theme-light #view-dashboard,
+body.theme-light #view-settings,
+body.theme-light #view-categories,
+body.theme-light #view-charts {
+  background: #F7F8FA !important;
+}
 
 /* ══ Flutter WebView / Samsung anti-blur ══ */
 body.theme-light,
@@ -2245,7 +2244,7 @@ body.theme-light *:not(input):not(textarea):not(select):not(button):not(canvas):
    TOP STATUS BAR
 ══════════════════════════════════════ */
 body.theme-light #top-status-bar {
-  background: #F2F3F7 !important;
+  background: #F7F8FA !important;
   border-bottom: 1px solid rgba(0,0,0,0.04) !important;
   backdrop-filter: none !important;
   box-shadow: none !important;
@@ -2330,8 +2329,8 @@ body.theme-light [class*="card"],
 body.theme-light .inp-card,
 body.theme-light .section-card {
   background: #FFFFFF !important;
-  border: 1px solid rgba(0,0,0,0.04) !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04) !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04) !important;
   backdrop-filter: none !important;
 }
 body.theme-light .card:active,
@@ -5647,8 +5646,8 @@ body.theme-light ::-webkit-scrollbar-thumb { background: rgba(0,0,0,.12) !import
 .ch-rate-fill::after { content:''; position:absolute; inset:0; border-radius:99px; background:linear-gradient(90deg,transparent 20%,rgba(255,255,255,.25) 50%,transparent 80%); }
 
 /* ── donut ── */
-#ch-donut-wrap { position:relative; width:200px; height:200px; margin:0 auto 12px; }
-#ch-donut-canvas { display:block; width:200px; height:200px; cursor:pointer; touch-action:manipulation; }
+#ch-donut-wrap { position:relative; width:260px; height:260px; margin:0 auto 12px; }
+#ch-donut-canvas { display:block; width:260px; height:260px; cursor:pointer; touch-action:manipulation; }
 #ch-donut-center {
   position:absolute; inset:0; display:flex; flex-direction:column;
   align-items:center; justify-content:center; pointer-events:none;
@@ -7968,6 +7967,14 @@ window.deletePhoneIdx = function(i) {
       ctx.clearRect(0,0,200,200);
       var cx=100,cy=100,r=78,lw=20;
 
+      /* ── expand canvas to fit labels ── */
+      var canvasSize = 260;
+      canvas.width  = canvasSize*dpr; canvas.height = canvasSize*dpr;
+      canvas.style.width = canvasSize+'px'; canvas.style.height = canvasSize+'px';
+      ctx.scale(dpr,dpr);
+      ctx.clearRect(0,0,canvasSize,canvasSize);
+      var cx=canvasSize/2, cy=canvasSize/2, r=72, lw=18;
+
       if(!expEntries.length){
         ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
         ctx.strokeStyle='rgba(255,255,255,.07)'; ctx.lineWidth=lw; ctx.stroke();
@@ -7975,7 +7982,8 @@ window.deletePhoneIdx = function(i) {
         /* bg ring */
         ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
         ctx.strokeStyle='rgba(255,255,255,.05)'; ctx.lineWidth=lw; ctx.stroke();
-        /* arcs */
+
+        /* ── pass 1: draw arcs ── */
         var ang = -Math.PI/2, gap=0.03;
         expEntries.forEach(function(item,idx){
           var pct = item.amt/donutTotal;
@@ -7983,11 +7991,107 @@ window.deletePhoneIdx = function(i) {
           if(sweep<=0) return;
           var col = CHART_COLORS[idx%CHART_COLORS.length];
           ctx.save();
-          ctx.shadowColor=col; ctx.shadowBlur=14;
+          ctx.shadowColor=col; ctx.shadowBlur=12;
           ctx.beginPath(); ctx.arc(cx,cy,r,ang+gap/2,ang+gap/2+sweep);
           ctx.strokeStyle=col; ctx.lineWidth=lw; ctx.lineCap='round'; ctx.stroke();
           ctx.restore();
           ang += pct*Math.PI*2;
+        });
+
+        /* ── pass 2: draw label lines + chips ── */
+        var ang2 = -Math.PI/2;
+        expEntries.forEach(function(item,idx){
+          var pct = item.amt/donutTotal;
+          if(pct < 0.04){ ang2 += pct*Math.PI*2; return; } /* skip tiny slices */
+          var col   = CHART_COLORS[idx%CHART_COLORS.length];
+          var mid   = ang2 + pct*Math.PI;          /* midpoint angle */
+          var cos   = Math.cos(mid), sin2 = Math.sin(mid);
+
+          /* point on ring edge */
+          var p1x = cx + (r+lw/2+2)*cos;
+          var p1y = cy + (r+lw/2+2)*sin2;
+
+          /* elbow point */
+          var elbowR = r + lw/2 + 16;
+          var p2x = cx + elbowR*cos;
+          var p2y = cy + elbowR*sin2;
+
+          /* end point — pull further left/right */
+          var side  = (cos >= 0) ? 1 : -1;
+          var p3x   = p2x + side*22;
+          var p3y   = p2y;
+
+          /* label text */
+          var name = item.name.length > 8 ? item.name.slice(0,7)+'…' : item.name;
+          var pctTxt = Math.round(pct*100)+'%';
+
+          /* line */
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(p1x, p1y);
+          ctx.lineTo(p2x, p2y);
+          ctx.lineTo(p3x, p3y);
+          ctx.strokeStyle = col;
+          ctx.lineWidth   = 1.5;
+          ctx.globalAlpha = 0.75;
+          ctx.stroke();
+
+          /* dot at ring */
+          ctx.beginPath();
+          ctx.arc(p1x, p1y, 2.5, 0, Math.PI*2);
+          ctx.fillStyle  = col;
+          ctx.globalAlpha = 1;
+          ctx.fill();
+          ctx.restore();
+
+          /* chip background */
+          var chipW = 52, chipH = 22, chipR = 7;
+          var chipX = (side >= 0) ? p3x : p3x - chipW;
+          var chipY = p3y - chipH/2;
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.roundRect
+            ? ctx.roundRect(chipX, chipY, chipW, chipH, chipR)
+            : (function(){
+                ctx.moveTo(chipX+chipR, chipY);
+                ctx.lineTo(chipX+chipW-chipR, chipY);
+                ctx.quadraticCurveTo(chipX+chipW, chipY, chipX+chipW, chipY+chipR);
+                ctx.lineTo(chipX+chipW, chipY+chipH-chipR);
+                ctx.quadraticCurveTo(chipX+chipW, chipY+chipH, chipX+chipW-chipR, chipY+chipH);
+                ctx.lineTo(chipX+chipR, chipY+chipH);
+                ctx.quadraticCurveTo(chipX, chipY+chipH, chipX, chipY+chipH-chipR);
+                ctx.lineTo(chipX, chipY+chipR);
+                ctx.quadraticCurveTo(chipX, chipY, chipX+chipR, chipY);
+              })();
+          ctx.closePath();
+          /* chip fill — slight tint of segment color */
+          ctx.fillStyle = col;
+          ctx.globalAlpha = 0.13;
+          ctx.fill();
+          ctx.strokeStyle = col;
+          ctx.lineWidth   = 1;
+          ctx.globalAlpha = 0.45;
+          ctx.stroke();
+          ctx.restore();
+
+          /* chip text — name */
+          ctx.save();
+          ctx.font = 'bold 7.5px Syne,sans-serif';
+          ctx.fillStyle  = col;
+          ctx.globalAlpha = 1;
+          ctx.textAlign  = (side >= 0) ? 'left' : 'right';
+          ctx.textBaseline = 'middle';
+          var textX = (side >= 0) ? chipX+5 : chipX+chipW-5;
+          ctx.fillText(name, textX, p3y - 4);
+          /* chip text — pct */
+          ctx.font = '800 8px JetBrains Mono,monospace';
+          ctx.fillStyle = '#fff';
+          ctx.globalAlpha = 0.9;
+          ctx.fillText(pctTxt, textX, p3y + 5);
+          ctx.restore();
+
+          ang2 += pct*Math.PI*2;
         });
       }
 
@@ -8597,7 +8701,7 @@ window.deletePhoneIdx = function(i) {
       }
       document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){
         if(!m.getAttribute('media')){
-          m.content = t === 'light' ? '#F0F2F5' : '#04070E';
+          m.content = t === 'light' ? '#F7F8FA' : '#04070E';
         }
       });
     }
@@ -8617,7 +8721,7 @@ window.deletePhoneIdx = function(i) {
           el.style.transform            = 'none';
           el.style.opacity              = '1';
           el.style.mixBlendMode         = 'normal';
-          el.style.background           = '#F2F3F7';
+          el.style.background           = '#F7F8FA';
         });
         var app = document.getElementById('app');
         if(app){
@@ -8627,11 +8731,11 @@ window.deletePhoneIdx = function(i) {
           app.style.willChange          = 'auto';
           app.style.transform           = 'none';
           app.style.opacity             = '1';
-          app.style.background          = '#F2F3F7';
+          app.style.background          = '#F7F8FA';
         }
         /* ── Step 2: Samsung WebView deep override — walk every element ── */
         var LIGHT_BG   = '#FFFFFF';
-        var LIGHT_BODY = '#F2F3F7';
+        var LIGHT_BODY = '#F7F8FA';
         var CARD_CLASSES = ['card','hero-card','action-btn-income','action-btn-expense',
           'stat-pill','mini-card','kpi-card','tx-row','fixed-item','cat-card',
           'ev-card','scan-doc-btn','setting-row','settings-item','inp-card',
@@ -8747,7 +8851,7 @@ window.deletePhoneIdx = function(i) {
         el.style.willChange = 'auto';
         el.style.transform = 'none';
         el.style.opacity = '1';
-        el.style.background = '#F2F3F7';
+        el.style.background = '#F7F8FA';
       });
       /* re-apply full JS override after app renders (catches deferred elements) */
       setTimeout(function(){ window._setTheme && window._setTheme('light'); }, 500);
@@ -10362,17 +10466,13 @@ window.resetProfilePic = function() {
     if (!uid) return;
     if (_cyclePromptShown) return; /* מניעת הצגה כפולה בsession */
 
-    /* ── בדיקה: האם היום הוא יום האיפוס (±1 יום גרייס) ── */
-    var now      = new Date();
-    var today    = now.getDate();
-    var rd       = resetDay || 1;
-    var isResetDay = (today === rd || today === rd + 1);
-    /* אם יום האיפוס הוא סוף חודש (28-31) — גרייס גם לתחילת חודש הבא */
-    if (rd >= 28 && today <= 2) isResetDay = true;
-    if (!isResetDay) return; /* לא יום האיפוס — לא מציג */
+    /* ── בדיקה: האם הגענו לפחות ליום האיפוס של המחזור הנוכחי ── */
+    var s  = cycleStart(); /* תחילת המחזור הנוכחי */
+    var now = new Date();
+    if (now < s) return; /* עדיין לפני יום האיפוס — לא מציג */
 
-    var s = cycleStart();
-    /* cycleKey = year-month-resetDay — ייחודי למחזור מדויק */
+    /* cycleKey = year-month-resetDay — ייחודי למחזור */
+    var rd = resetDay || 1;
     var cycleKey = s.getFullYear() + '-' + (s.getMonth() + 1) + '-' + rd;
 
     /* מפתח localStorage ייחודי לפי uid + מחזור */
