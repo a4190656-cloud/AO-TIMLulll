@@ -2291,10 +2291,11 @@ body.theme-light #hero-balance-card::before {
   content: '' !important;
   display: block !important;
   position: absolute !important;
-  top: -40% !important; right: -10% !important;
-  width: 55% !important; padding-bottom: 55% !important;
+  top: -60px !important; right: -30px !important;
+  width: 180px !important; height: 180px !important;
+  padding-bottom: 0 !important;
   border-radius: 50% !important;
-  background: radial-gradient(circle, rgba(184,147,74,0.18) 0%, transparent 70%) !important;
+  background: radial-gradient(circle, rgba(184,147,74,0.14) 0%, transparent 70%) !important;
   pointer-events: none !important; z-index: 0 !important;
   filter: none !important;
 }
@@ -2536,6 +2537,26 @@ body.theme-light .bug-modal-close  { background: #F4F4F5 !important; border: 0.5
 /* ════════════════════════
    CATEGORIES
 ════════════════════════ */
+body.theme-light .cat-tile,
+body.theme-light [class*="cat-tile"],
+body.theme-light .sblock,
+body.theme-light [class*="sblock"] {
+  background: #FFFFFF !important;
+  border: 0.5px solid rgba(0,0,0,0.07) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04) !important;
+  backdrop-filter: none !important;
+}
+body.theme-light .cat-tile * { color: #0A0A0F !important; }
+body.theme-light .cat-tile-name  { color: #0A0A0F !important; font-weight: 800 !important; }
+body.theme-light .cat-tile-spent { color: #D93050 !important; font-weight: 700 !important; }
+body.theme-light .cat-tile-income-spent { color: #0D9E5A !important; font-weight: 700 !important; }
+body.theme-light .cat-tile-sub   { color: #8A8A9A !important; }
+body.theme-light .cat-tile-edit  { color: #8A8A9A !important; background: rgba(0,0,0,0.04) !important; }
+body.theme-light .cat-tile-del   { color: #D93050 !important; background: rgba(217,48,80,0.06) !important; border-color: rgba(217,48,80,0.14) !important; }
+body.theme-light .cat-tile-bar-bg { background: rgba(0,0,0,0.06) !important; }
+body.theme-light .cat-tile-icon-dot { opacity: 0.5 !important; }
+
 body.theme-light .cat-card,
 body.theme-light [class*="cat-card"] {
   background: #FFFFFF !important;
@@ -8737,14 +8758,18 @@ window.deletePhoneIdx = function(i) {
           el.style.webkitBackdropFilter = 'none';
           el.style.filter               = 'none';
           el.style.webkitFilter         = 'none';
-          /* force white on card-like elements */
+          /* force white on card-like elements via class — preserves CSS animations */
           var cls = (el.className || '').toString();
           var isCard = CARD_CLASSES.some(function(c){ return cls.indexOf(c) !== -1; });
           if(isCard){
             el.style.background    = LIGHT_BG;
             el.style.borderColor   = 'rgba(0,0,0,0.06)';
             el.style.boxShadow     = '0 1px 3px rgba(0,0,0,0.06),0 2px 8px rgba(0,0,0,0.04)';
-            el.style.color         = '#0D1B2A';
+            el.style.color         = '#0A0A0F';
+            /* reset animation so it replays on theme switch */
+            el.style.animation     = 'none';
+            el.offsetHeight; /* force reflow */
+            el.style.animation     = '';
           }
           /* force body-bg on view wrappers */
           if(el.id && el.id.indexOf('view-') === 0){
@@ -8799,6 +8824,7 @@ window.deletePhoneIdx = function(i) {
           el.style.boxShadow            = '';
           el.style.color                = '';
           el.style.border               = '';
+          el.style.animation            = '';
         });
         [document.documentElement, document.body].forEach(function(el){
           el.style.filter      = '';
