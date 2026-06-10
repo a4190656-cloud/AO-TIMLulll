@@ -15,12 +15,12 @@
 (function(){
   var t=localStorage.getItem('_ao_theme');
   if(t==='light'){
-    document.documentElement.style.background='#FAFAFA';
+    document.documentElement.style.background='#FFFFFF';
     document.documentElement.classList.add('theme-light-pre');
     function applyLight(){
       if(document.body){
         document.body.classList.add('theme-light');
-        document.body.style.background='#FAFAFA';
+        document.body.style.background='#FFFFFF';
       }
     }
     if(document.body) applyLight();
@@ -2129,8 +2129,8 @@
 /* ── Cyber-Zen tokens ── */
 body.theme-light {
   --cz-white:      #FFFFFF;
-  --cz-off:        #FAFAFA;
-  --cz-off2:       #F4F4F5;
+  --cz-off:        #F5F5F7;
+  --cz-off2:       #F2F2F4;
   --cz-off3:       #EFEFEF;
   --cz-stroke:     rgba(0,0,0,0.07);
   --cz-stroke2:    rgba(0,0,0,0.04);
@@ -2153,7 +2153,7 @@ body.theme-light {
   --cz-spring:     cubic-bezier(0.34, 1.56, 0.64, 1);
   --cz-fluid:      cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
-  background: #FAFAFA !important;
+  background: #FFFFFF !important;
   color: #0A0A0F !important;
   font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif !important;
 }
@@ -2163,7 +2163,7 @@ body.theme-light #app,
 body.theme-light #view-dashboard,
 body.theme-light #view-settings,
 body.theme-light #view-categories,
-body.theme-light #view-charts { background: #FAFAFA !important; }
+body.theme-light #view-charts { background: #FFFFFF !important; }
 
 body.theme-light::before { display:none !important; content:none !important; }
 body.theme-light::after  { display:none !important; content:none !important; }
@@ -2286,6 +2286,9 @@ body.theme-light #hero-balance-card {
   box-shadow: 0 2px 0 rgba(0,0,0,0.08), 0 12px 40px rgba(10,10,15,0.18) !important;
   overflow: hidden !important;
   position: relative !important;
+  padding: 22px 20px 20px !important;
+  min-height: unset !important;
+  height: auto !important;
 }
 body.theme-light #hero-balance-card::before {
   content: '' !important;
@@ -2306,7 +2309,14 @@ body.theme-light #hero-balance-val {
   letter-spacing: -0.04em !important;
   color: #FFFFFF !important;
 }
-body.theme-light #hero-balance-card .hero-orb { opacity: 0 !important; }
+body.theme-light #hero-balance-card .hero-orb,
+body.theme-light #hero-orb-main,
+body.theme-light #hero-orb-2 {
+  display: none !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+}
 
 /* ════════════════════════
    STAT MINI-CARDS — Bento
@@ -8713,7 +8723,7 @@ window.deletePhoneIdx = function(i) {
       }
       document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){
         if(!m.getAttribute('media')){
-          m.content = t === 'light' ? '#FAFAFA' : '#04070E';
+          m.content = t === 'light' ? '#FFFFFF' : '#04070E';
         }
       });
     }
@@ -8733,8 +8743,10 @@ window.deletePhoneIdx = function(i) {
           el.style.transform            = 'none';
           el.style.opacity              = '1';
           el.style.mixBlendMode         = 'normal';
-          el.style.background           = '#F7F8FA';
+          el.style.background           = '#FFFFFF';
         });
+        document.body.style.background = '#FFFFFF';
+        document.documentElement.style.background = '#FFFFFF';
         var app = document.getElementById('app');
         if(app){
           app.style.filter              = 'none';
@@ -8743,11 +8755,11 @@ window.deletePhoneIdx = function(i) {
           app.style.willChange          = 'auto';
           app.style.transform           = 'none';
           app.style.opacity             = '1';
-          app.style.background          = '#F7F8FA';
+          app.style.background          = '#FFFFFF';
         }
         /* ── Step 2: Samsung WebView deep override — walk every element ── */
         var LIGHT_BG   = '#FFFFFF';
-        var LIGHT_BODY = '#FAFAFA';
+        var LIGHT_BODY = '#FFFFFF';
         var CARD_CLASSES = ['card','hero-card','action-btn-income','action-btn-expense',
           'stat-pill','mini-card','kpi-card','tx-row','fixed-item','cat-card',
           'ev-card','scan-doc-btn','setting-row','settings-item','inp-card',
@@ -8779,10 +8791,18 @@ window.deletePhoneIdx = function(i) {
         /* ── Step 3: specific element overrides ── */
         var hero = document.getElementById('hero-balance-card');
         if(hero){
-          hero.style.background = 'linear-gradient(135deg,#2952D9 0%,#3B6EF8 45%,#5B8BFF 100%)';
-          hero.style.boxShadow  = '0 8px 32px rgba(59,110,248,0.35),0 2px 8px rgba(59,110,248,0.20)';
+          hero.style.background = '#0A0A0F';
+          hero.style.boxShadow  = '0 2px 0 rgba(0,0,0,0.08),0 12px 40px rgba(10,10,15,0.18)';
           hero.style.border     = 'none';
-          hero.querySelectorAll('*').forEach(function(c){ c.style.color='#FFFFFF'; });
+          hero.style.padding    = '22px 20px 20px';
+          hero.querySelectorAll('*').forEach(function(ch){
+            ch.style.color = '#FFFFFF';
+          });
+          /* hide orbs so they don't inflate card */
+          ['hero-orb-main','hero-orb-2'].forEach(function(id){
+            var orb = document.getElementById(id);
+            if(orb){ orb.style.display='none'; orb.style.width='0'; orb.style.height='0'; }
+          });
         }
         var expBtn = document.getElementById('btn-add-expense');
         if(expBtn){
