@@ -7,7 +7,7 @@
   <title>AO Budget — ניהול תקציב חכם</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#04070E" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#F0F2F5" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#04070E" id="theme-color-main">
   <meta name="color-scheme" content="dark">
   <meta name="description" content="ניהול תקציב אישי חכם עם סנכרון בין מכשירים, קטגוריות, ובוט וואטסאפ.">
@@ -15,12 +15,21 @@
 (function(){
   var t=localStorage.getItem('_ao_theme');
   if(t==='light'){
+    /* עדכן theme-color מיידית — לפני כל render */
+    document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){
+      m.setAttribute('content','#FFFFFF');
+    });
     document.documentElement.style.background='#FFFFFF';
+    document.documentElement.style.backgroundColor='#FFFFFF';
     document.documentElement.classList.add('theme-light-pre');
     function applyLight(){
       if(document.body){
         document.body.classList.add('theme-light');
         document.body.style.background='#FFFFFF';
+        document.body.style.backgroundColor='#FFFFFF';
+        document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){
+          m.setAttribute('content','#FFFFFF');
+        });
       }
     }
     if(document.body) applyLight();
@@ -8722,9 +8731,7 @@ window.deletePhoneIdx = function(i) {
         if(lc) lc.style.display = 'none';
       }
       document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){
-        if(!m.getAttribute('media')){
-          m.content = t === 'light' ? '#FFFFFF' : '#04070E';
-        }
+        m.setAttribute('content', t === 'light' ? '#FFFFFF' : '#04070E');
       });
     }
 
