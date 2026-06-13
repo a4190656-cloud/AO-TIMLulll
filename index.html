@@ -2136,6 +2136,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
 
 /* ── Cyber-Zen tokens ── */
+html.theme-light-pre {
+  background: #FFFFFF !important;
+}
 body.theme-light {
   --cz-white:      #FFFFFF;
   --cz-off:        #F5F5F7;
@@ -2174,8 +2177,27 @@ body.theme-light #view-settings,
 body.theme-light #view-categories,
 body.theme-light #view-charts { background: #FFFFFF !important; }
 
-body.theme-light::before { display:none !important; content:none !important; }
-body.theme-light::after  { display:none !important; content:none !important; }
+body.theme-light::before {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+body.theme-light::after {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+/* Also kill any pseudo-elements on html */
+html.theme-light-pre::before,
+html.theme-light-pre::after {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+}
 
 /* ── Kill ALL filters / blur ── */
 body.theme-light,
@@ -2692,6 +2714,9 @@ body.theme-light .card:nth-child(n+6),body.theme-light .tx-row:nth-child(n+6){ a
 ════════════════════════ */
 body.theme-light *:not(input):not(textarea):not(select):not(button):not(canvas) {
   color: #0A0A0F;
+}
+body.theme-light #security-loader-overlay {
+  background: #FFFFFF !important;
 }
 body.theme-light .del-btn { color: #D93050 !important; }
 body.theme-light hr, body.theme-light .divider { border-color: rgba(0,0,0,0.05) !important; }
