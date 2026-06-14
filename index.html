@@ -19,9 +19,20 @@
     document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){
       m.setAttribute('content','#FFFFFF');
     });
-    document.documentElement.style.background='#FFFFFF';
-    document.documentElement.style.backgroundColor='#FFFFFF';
-    document.documentElement.classList.add('theme-light-pre');
+    /* עדכן CSS variables על :root מיידית */
+    var r = document.documentElement;
+    r.style.setProperty('--bg',          '#FFFFFF');
+    r.style.setProperty('--card',        '#FFFFFF');
+    r.style.setProperty('--card-solid',  '#FFFFFF');
+    r.style.setProperty('--oled',        '#FFFFFF');
+    r.style.setProperty('--text',        '#0A0A0F');
+    r.style.setProperty('--muted',       'rgba(10,10,15,0.45)');
+    r.style.setProperty('--border',      'rgba(0,0,0,0.07)');
+    r.style.setProperty('--glass',       'rgba(255,255,255,0.9)');
+    r.style.setProperty('--glass-border','rgba(0,0,0,0.08)');
+    r.style.background='#FFFFFF';
+    r.style.backgroundColor='#FFFFFF';
+    r.classList.add('theme-light-pre');
     function applyLight(){
       if(document.body){
         document.body.classList.add('theme-light');
