@@ -2746,6 +2746,16 @@ body.theme-light hr, body.theme-light .divider { border-color: rgba(0,0,0,0.05) 
 body.theme-light ::-webkit-scrollbar-track { background: transparent !important; }
 body.theme-light ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.10) !important; border-radius:99px !important; }
 
+/* ══ ABSOLUTE FINAL — wins over everything ══ */
+body.theme-light { background: #FFFFFF !important; background-color: #FFFFFF !important; }
+body.theme-light #app { background: #FFFFFF !important; background-color: #FFFFFF !important; }
+body.theme-light #view-dashboard,
+body.theme-light #view-settings,
+body.theme-light #view-categories,
+body.theme-light #view-charts { background: #FFFFFF !important; background-color: #FFFFFF !important; }
+body.theme-light::before,
+body.theme-light::after { display:none !important; content:none !important; background:none !important; opacity:0 !important; }
+
 /* ════════════════════════
    INLINE DARK OVERRIDE
 ════════════════════════ */
@@ -8822,7 +8832,21 @@ window.deletePhoneIdx = function(i) {
           app.style.transform           = 'none';
           app.style.opacity             = '1';
           app.style.background          = '#FFFFFF';
+          app.style.backgroundColor     = '#FFFFFF';
+          app.style.setProperty('background','#FFFFFF','important');
+          app.style.setProperty('background-color','#FFFFFF','important');
         }
+        document.body.style.setProperty('background','#FFFFFF','important');
+        document.body.style.setProperty('background-color','#FFFFFF','important');
+        document.documentElement.style.setProperty('background','#FFFFFF','important');
+        document.documentElement.style.setProperty('background-color','#FFFFFF','important');
+        /* kill body::before/after via JS */
+        ['before','after'].forEach(function(p){
+          try {
+            var sheet = document.styleSheets[0];
+            sheet.insertRule('body.theme-light::'+p+'{display:none!important;background:none!important;content:none!important}', sheet.cssRules.length);
+          } catch(e){}
+        });
         /* ── Step 2: force white on EVERYTHING ── */
         var LIGHT_BG   = '#FFFFFF';
         var LIGHT_BODY = '#FFFFFF';
