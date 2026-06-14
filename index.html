@@ -8823,34 +8823,50 @@ window.deletePhoneIdx = function(i) {
           app.style.opacity             = '1';
           app.style.background          = '#FFFFFF';
         }
-        /* ── Step 2: Samsung WebView deep override — walk every element ── */
+        /* ── Step 2: force white on EVERYTHING ── */
         var LIGHT_BG   = '#FFFFFF';
         var LIGHT_BODY = '#FFFFFF';
+        var DARK_BG_PATTERNS = [
+          'rgba(13,', 'rgba(8,', 'rgba(4,', 'rgba(6,', 'rgba(10,', 'rgba(14,',
+          '#04', '#06', '#08', '#0a', '#0d', '#0e', '#0f',
+          'var(--bg)', 'var(--card)', 'var(--oled)', 'var(--glass)'
+        ];
         var CARD_CLASSES = ['card','hero-card','action-btn-income','action-btn-expense',
-          'stat-pill','mini-card','kpi-card','tx-row','fixed-item','cat-card',
-          'ev-card','scan-doc-btn','setting-row','settings-item','inp-card',
+          'stat-pill','mini-card','kpi-card','tx-row','fixed-item','cat-card','cat-tile',
+          'sblock','ev-card','scan-doc-btn','setting-row','settings-item','inp-card',
           'section-card','chart-hero','ch-kpi','cycle-total-card','bug-contact-card'];
         document.querySelectorAll('*').forEach(function(el){
-          /* kill all filters/backdrop on every element */
+          /* kill all filters */
           el.style.backdropFilter       = 'none';
           el.style.webkitBackdropFilter = 'none';
           el.style.filter               = 'none';
           el.style.webkitFilter         = 'none';
-          /* force white on card-like elements via class — preserves CSS animations */
+          /* check computed background — if dark, force white */
+          var computed = window.getComputedStyle(el).backgroundColor;
+          /* dark = rgb values all low (r<50, g<50, b<50) or semi-transparent dark */
+          var m = computed.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+          if(m){
+            var r2=+m[1], g2=+m[2], b2=+m[3];
+            var isDark = (r2<60 && g2<60 && b2<80);
+            if(isDark && el.id !== 'beta-bubble' && el.id !== 'bug-modal-overlay' &&
+               !el.closest('#hero-balance-card') && el.tagName !== 'CANVAS'){
+              el.style.background = '#FFFFFF';
+            }
+          }
+          /* force white on card-like elements */
           var cls = (el.className || '').toString();
           var isCard = CARD_CLASSES.some(function(c){ return cls.indexOf(c) !== -1; });
           if(isCard){
-            el.style.background    = LIGHT_BG;
-            el.style.borderColor   = 'rgba(0,0,0,0.06)';
-            el.style.boxShadow     = '0 1px 3px rgba(0,0,0,0.06),0 2px 8px rgba(0,0,0,0.04)';
-            el.style.color         = '#0A0A0F';
-            /* reset animation so it replays on theme switch */
-            el.style.animation     = 'none';
-            el.offsetHeight; /* force reflow */
-            el.style.animation     = '';
+            el.style.background  = LIGHT_BG;
+            el.style.borderColor = 'rgba(0,0,0,0.06)';
+            el.style.boxShadow   = '0 1px 3px rgba(0,0,0,0.06),0 2px 8px rgba(0,0,0,0.04)';
+            el.style.color       = '#0A0A0F';
+            el.style.animation   = 'none';
+            el.offsetHeight;
+            el.style.animation   = '';
           }
-          /* force body-bg on view wrappers */
-          if(el.id && el.id.indexOf('view-') === 0){
+          /* force white on view wrappers */
+          if(el.id && (el.id.indexOf('view-') === 0 || el.id === 'app')){
             el.style.background = LIGHT_BODY;
           }
         });
