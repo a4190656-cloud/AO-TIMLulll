@@ -2140,6 +2140,18 @@ html.theme-light-pre {
   background: #FFFFFF !important;
 }
 body.theme-light {
+  /* ── Override dark CSS variables to white ── */
+  --bg:          #FFFFFF !important;
+  --card:        #FFFFFF !important;
+  --card-solid:  #FFFFFF !important;
+  --border:      rgba(0,0,0,0.07) !important;
+  --border-glow: rgba(0,201,177,0.18) !important;
+  --text:        #0A0A0F !important;
+  --muted:       rgba(10,10,15,0.45) !important;
+  --glass:       rgba(255,255,255,0.80) !important;
+  --glass-border:rgba(0,0,0,0.08) !important;
+  --oled:        #FFFFFF !important;
+
   --cz-white:      #FFFFFF;
   --cz-off:        #F5F5F7;
   --cz-off2:       #F2F2F4;
@@ -8779,6 +8791,17 @@ window.deletePhoneIdx = function(i) {
         });
         document.body.style.background = '#FFFFFF';
         document.documentElement.style.background = '#FFFFFF';
+        /* Override CSS variables directly on :root */
+        var root = document.documentElement;
+        root.style.setProperty('--bg',          '#FFFFFF');
+        root.style.setProperty('--card',        '#FFFFFF');
+        root.style.setProperty('--card-solid',  '#FFFFFF');
+        root.style.setProperty('--border',      'rgba(0,0,0,0.07)');
+        root.style.setProperty('--text',        '#0A0A0F');
+        root.style.setProperty('--muted',       'rgba(10,10,15,0.45)');
+        root.style.setProperty('--oled',        '#FFFFFF');
+        root.style.setProperty('--glass',       'rgba(255,255,255,0.80)');
+        root.style.setProperty('--glass-border','rgba(0,0,0,0.08)');
         var app = document.getElementById('app');
         if(app){
           app.style.filter              = 'none';
@@ -8887,6 +8910,17 @@ window.deletePhoneIdx = function(i) {
           el.style.opacity     = '';
           el.style.background  = '';
         });
+        /* Restore dark CSS variables */
+        var root2 = document.documentElement;
+        root2.style.removeProperty('--bg');
+        root2.style.removeProperty('--card');
+        root2.style.removeProperty('--card-solid');
+        root2.style.removeProperty('--border');
+        root2.style.removeProperty('--text');
+        root2.style.removeProperty('--muted');
+        root2.style.removeProperty('--oled');
+        root2.style.removeProperty('--glass');
+        root2.style.removeProperty('--glass-border');
         var app2 = document.getElementById('app');
         if(app2){
           app2.style.filter        = '';
