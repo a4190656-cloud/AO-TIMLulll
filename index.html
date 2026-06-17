@@ -2795,6 +2795,7 @@ body.theme-light .a11y-statement-link { background: rgba(59,110,248,0.07) !impor
 body.theme-light .a11y-st-section { color: #3B6EF8 !important; }
 body.theme-light .a11y-st-text { color: rgba(10,10,15,0.65) !important; }
 body.theme-light .a11y-st-contact { background: rgba(59,110,248,0.06) !important; border-color: rgba(59,110,248,0.16) !important; color: rgba(10,10,15,0.7) !important; }
+body.theme-light #btn-a11y-inline { color: rgba(59,110,248,0.65) !important; }
 body.theme-light .ch-donut-scroll-hint { color: rgba(10,10,15,0.35) !important; }
 body.theme-light .a11y-st-close { background: #F8F9FC !important; border-color: rgba(0,0,0,0.08) !important; color: #0A0A0F !important; }
 
@@ -4294,9 +4295,10 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
   ════════════════════════════════════════ -->
   <style>
     /* ── כפתור נגישות — קומפקטי, למעלה ליד כפתורי הניווט ── */
+    /* ── כפתור נגישות צף — מוצג רק במסכי login/setname/loading (אין בהם header) ── */
     #a11y-fab {
       position: fixed;
-      top: calc(env(safe-area-inset-top,0px) + 60px); left: 78px;
+      top: calc(env(safe-area-inset-top,0px) + 16px); left: 16px;
       z-index: 8800;
       width: 36px; height: 36px;
       border-radius: 50%;
@@ -4304,11 +4306,13 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(0,229,255,0.22);
       box-shadow: 0 2px 10px rgba(0,0,0,0.24);
-      display: flex; align-items: center; justify-content: center;
+      display: none;
+      align-items: center; justify-content: center;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
       transition: transform 0.18s var(--spring), box-shadow 0.18s;
     }
+    #a11y-fab.show-on-auth-screen { display: flex; }
     #a11y-fab:active { transform: scale(0.88); }
     #a11y-fab svg { width: 18px; height: 18px; color: #00E5FF; opacity: 0.85; }
 
@@ -4710,19 +4714,23 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
     /* sync once more after load in case body wasn't ready */
     setTimeout(_syncToggleUI, 300);
 
-    /* וידוא: כפתור הנגישות מוצג גם במסכי login/setname/loading */
-    function _ensureFabVisible(){
+    /* ── הצגת כפתור הנגישות הצף רק במסכי login/setname/loading ── */
+    var AUTH_SCREENS = ['screen-login', 'screen-setname', 'screen-loading'];
+    function _syncFabVisibility(){
       var fab = document.getElementById('a11y-fab');
-      if(fab){
-        fab.style.display = 'flex';
-        fab.style.visibility = 'visible';
-        fab.style.opacity = '1';
-      }
+      if(!fab) return;
+      var onAuthScreen = AUTH_SCREENS.some(function(id){
+        var el = document.getElementById(id);
+        return el && !el.classList.contains('hidden') && el.style.display !== 'none';
+      });
+      fab.classList.toggle('show-on-auth-screen', onAuthScreen);
     }
-    _ensureFabVisible();
-    document.addEventListener('DOMContentLoaded', _ensureFabVisible);
-    setTimeout(_ensureFabVisible, 300);
-    setTimeout(_ensureFabVisible, 1000);
+    _syncFabVisibility();
+    document.addEventListener('DOMContentLoaded', _syncFabVisibility);
+    setTimeout(_syncFabVisibility, 300);
+    setTimeout(_syncFabVisibility, 1000);
+    /* בדיקה חוזרת — מסכים מתחלפים דינמית ב-JS אחר, נבדוק כל חצי שניה */
+    setInterval(_syncFabVisibility, 500);
   })();
   </script>
   <!-- / נגישות -->
@@ -5086,6 +5094,14 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
         </button>
         <button id="btn-signout" class="card press modern-hover" style="padding:9px;border:none;cursor:pointer;color:rgba(255,255,255,0.45)">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+        <button id="btn-a11y-inline" onclick="window.openA11yPanel()" aria-label="נגישות" class="card press modern-hover" style="padding:9px;border:none;cursor:pointer;color:rgba(0,229,255,0.65);display:flex;align-items:center;justify-content:center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="4.5" r="1.8" fill="currentColor"/>
+            <path d="M4 8.5C4 8.5 7.5 7 12 7C16.5 7 20 8.5 20 8.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M12 7V13M12 13L9 21M12 13L15 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 11.5L4 13M16 11.5L20 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
         </button>
       </div>
     </div>
