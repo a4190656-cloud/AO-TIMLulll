@@ -4293,24 +4293,24 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
        ✦ נגישות — תפריט + הצהרת נגישות ✦
   ════════════════════════════════════════ -->
   <style>
-    /* ── כפתור נגישות צף ── */
+    /* ── כפתור נגישות — קומפקטי, למעלה ליד כפתורי הניווט ── */
     #a11y-fab {
       position: fixed;
-      bottom: 88px; right: 16px;
-      z-index: 8888;
-      width: 50px; height: 50px;
+      top: calc(env(safe-area-inset-top,0px) + 60px); left: 78px;
+      z-index: 8800;
+      width: 36px; height: 36px;
       border-radius: 50%;
-      background: linear-gradient(145deg, rgba(14,20,42,0.96), rgba(8,12,24,0.98));
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(0,229,255,0.28);
-      box-shadow: 0 4px 18px rgba(0,0,0,0.30), 0 0 0 0 rgba(0,229,255,0.4);
+      background: rgba(14,20,42,0.85);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(0,229,255,0.22);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.24);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
       transition: transform 0.18s var(--spring), box-shadow 0.18s;
     }
-    #a11y-fab:active { transform: scale(0.90); }
-    #a11y-fab svg { width: 25px; height: 25px; color: #00E5FF; }
+    #a11y-fab:active { transform: scale(0.88); }
+    #a11y-fab svg { width: 18px; height: 18px; color: #00E5FF; opacity: 0.85; }
 
     /* ── פאנל נגישות ── */
     #a11y-panel-overlay {
@@ -4356,7 +4356,7 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
     .a11y-title { font-family:'Syne',sans-serif; font-size: 17px; font-weight: 900; color: #fff; }
     .a11y-subtitle { font-size: 11.5px; color: rgba(255,255,255,0.45); margin-top: 2px; font-weight: 600; }
 
-    .a11y-body { padding: 14px 18px 18px; }
+    .a11y-body { padding: 14px 18px calc(env(safe-area-inset-bottom,0px) + 24px); }
 
     .a11y-row {
       display: flex; align-items: center; justify-content: space-between;
@@ -4599,7 +4599,7 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
       <div class="a11y-st-text">אנו ב-AO Budget מאמינים כי לכל אדם מגיעה הזכות לחיות בשוויון ובכבוד, וכי שירות נגיש הוא חלק בלתי נפרד מכך. האפליקציה פותחה ותוחזק במטרה לאפשר שימוש נוח ונגיש למשתמשים עם מוגבלויות, בהתאם לתקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות), תשע"ג-2013.</div>
 
       <div class="a11y-st-section">התאמות הנגישות שבוצעו</div>
-      <div class="a11y-st-text">האפליקציה כוללת תפריט נגישות המאפשר הגדלת טקסט, הפעלת מצב ניגודיות גבוהה, הדגשת קישורים ופעולות, עצירת אנימציות ותנועה, ומצב גווני אפור. הממשק נבנה עם תמיכה בכיווניות RTL מלאה, תוויות aria לאלמנטים אינטראקטיביים, וסדר ניווט הגיוני באמצעות מקלדת.</div>
+      <div class="a11y-st-text">האפליקציה כוללת תפריט נגישות הנגיש מכל מסך — כולל מסך ההתחברות — ומאפשר הגדלת טקסט, הפעלת מצב ניגודיות גבוהה, הדגשת קישורים ופעולות, עצירת אנימציות ותנועה, ומצב גווני אפור. הממשק נבנה עם תמיכה בכיווניות RTL מלאה, תוויות aria לאלמנטים אינטראקטיביים, וסדר ניווט הגיוני באמצעות מקלדת.</div>
 
       <div class="a11y-st-section">רמת הנגישות</div>
       <div class="a11y-st-text">האפליקציה פועלת להתאמה לתקן WCAG 2.1 ברמה AA, ככל שהדבר ישים לאופי השירות הדיגיטלי הניתן.</div>
@@ -4620,9 +4620,13 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
   (function(){
     window.openA11yPanel = function(){
       document.getElementById('a11y-panel-overlay').classList.add('open');
+      var nav = document.getElementById('nav');
+      if (nav) nav.classList.remove('visible');
     };
     window.closeA11yPanel = function(){
       document.getElementById('a11y-panel-overlay').classList.remove('open');
+      var nav = document.getElementById('nav');
+      if (nav) nav.classList.add('visible');
     };
     window.openA11yStatement = function(){
       window.closeA11yPanel();
@@ -4705,6 +4709,20 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
     document.addEventListener('DOMContentLoaded', _syncToggleUI);
     /* sync once more after load in case body wasn't ready */
     setTimeout(_syncToggleUI, 300);
+
+    /* וידוא: כפתור הנגישות מוצג גם במסכי login/setname/loading */
+    function _ensureFabVisible(){
+      var fab = document.getElementById('a11y-fab');
+      if(fab){
+        fab.style.display = 'flex';
+        fab.style.visibility = 'visible';
+        fab.style.opacity = '1';
+      }
+    }
+    _ensureFabVisible();
+    document.addEventListener('DOMContentLoaded', _ensureFabVisible);
+    setTimeout(_ensureFabVisible, 300);
+    setTimeout(_ensureFabVisible, 1000);
   })();
   </script>
   <!-- / נגישות -->
