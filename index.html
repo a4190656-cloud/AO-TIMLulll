@@ -4105,20 +4105,21 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
     }
 
     .bug-contact-icon {
-      width: 42px; height: 42px; flex-shrink: 0;
-      border-radius: 13px;
+      width: 46px; height: 46px; flex-shrink: 0;
+      border-radius: 14px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
+      position: relative;
     }
+    .bug-contact-icon svg { width: 24px; height: 24px; display:block; }
     .email-card .bug-contact-icon {
-      background: linear-gradient(135deg, rgba(0,229,255,0.20), rgba(0,180,255,0.10));
-      border: 1px solid rgba(0,229,255,0.30);
-      box-shadow: 0 0 16px rgba(0,229,255,0.18);
+      background: linear-gradient(145deg, rgba(0,229,255,0.22), rgba(0,140,255,0.10));
+      border: 1px solid rgba(0,229,255,0.32);
+      box-shadow: 0 0 18px rgba(0,229,255,0.20), inset 0 1px 0 rgba(255,255,255,0.10);
     }
     .wa-card .bug-contact-icon {
-      background: linear-gradient(135deg, rgba(37,211,102,0.22), rgba(18,140,60,0.10));
-      border: 1px solid rgba(37,211,102,0.30);
-      box-shadow: 0 0 16px rgba(37,211,102,0.18);
+      background: linear-gradient(145deg, rgba(37,211,102,0.24), rgba(18,140,60,0.10));
+      border: 1px solid rgba(37,211,102,0.32);
+      box-shadow: 0 0 18px rgba(37,211,102,0.20), inset 0 1px 0 rgba(255,255,255,0.10);
     }
 
     .bug-contact-texts { flex: 1; }
@@ -4174,26 +4175,43 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
         <p class="bug-modal-desc">אנחנו עובדים קשה לשפר את האפליקציה. אם נתקלתם בבאג, התנהגות מוזרה, או כל בעיה — שלחו לנו ונחזור אליכם.</p>
 
 <a class="bug-contact-card email-card" href="mailto:a4190656@gmail.com?subject=דיווח%20תקלה%20-%20AO%20Budget&body=שלום%2C%0Aנתקלתי%20בתקלה%20הבאה%3A%0A%0A" target="_blank">
-          <div class="bug-contact-icon">📧</div>
+          <div class="bug-contact-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="4" width="20" height="16" rx="3" stroke="#00C2FF" stroke-width="1.7"/>
+              <path d="M3 6.5L10.6 12.1C11.45 12.72 12.55 12.72 13.4 12.1L21 6.5" stroke="#00C2FF" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
         <div class="bug-contact-texts">
-            <div class="bug-contact-label">אימייל</div>
-            <div class="bug-contact-value">a4190656@gmail.com</div>
+            <div class="bug-contact-label">תמיכה במייל</div>
+            <div class="bug-contact-value">שלחו לנו הודעה</div>
           </div>
           <svg class="bug-contact-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         </a>
 
         <a class="bug-contact-card wa-card" href="https://wa.me/972534190656?text=שלום%2C%20נתקלתי%20בתקלה%20ב-AO%20Budget%3A%0A" target="_blank">
-          <div class="bug-contact-icon">💬</div>
+          <div class="bug-contact-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.07L2 22l5.07-1.33A9.93 9.93 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2z" fill="#25D366"/>
+              <path d="M17.47 14.38c-.27-.14-1.61-.79-1.86-.88-.25-.09-.43-.14-.62.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.13-.42-2.15-1.33-.79-.71-1.33-1.58-1.48-1.85-.16-.27-.02-.42.13-.56.14-.14.32-.36.48-.54.16-.18.21-.31.32-.52.11-.21.05-.39-.03-.54-.09-.14-.62-1.49-.85-2.04-.18-.43-.37-.37-.51-.38-.13-.01-.29-.01-.45-.01-.16 0-.41.06-.63.31-.21.25-.83.81-.83 1.97 0 1.16.85 2.28 .97 2.44.11.16 1.61 2.46 3.9 3.35 2.29.89 2.29.59 2.7.55.41-.04 1.34-.55 1.53-1.08.18-.54.18-1 .13-1.08-.05-.09-.18-.14-.36-.23z" fill="#fff"/>
+            </svg>
+          </div>
           <div class="bug-contact-texts">
-            <div class="bug-contact-label">WhatsApp</div>
-            <div class="bug-contact-value">053-4190656</div>
+            <div class="bug-contact-label">תמיכה בוואטסאפ</div>
+            <div class="bug-contact-value">דברו איתנו</div>
           </div>
           <svg class="bug-contact-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         </a>
 
-        <!-- קבוצת וואטסאפ עדכונים -->
-        <a class="bug-contact-card" href="https://chat.whatsapp.com/L37t6hiY3R9JQ5b9LsyOgy?s=cl&p=a&mlu=3" target="_blank" style="border-color:rgba(37,211,102,0.28);background:linear-gradient(135deg,rgba(37,211,102,0.08),rgba(18,140,126,0.06));">
-          <div class="bug-contact-icon" style="font-size:20px;">📢</div>
+        <!-- קבוצת וואטסאפ עדכונים — פתיחה ישירה לאפליקציה -->
+        <a class="bug-contact-card" id="wa-group-link" href="https://chat.whatsapp.com/L37t6hiY3R9JQ5b9LsyOgy?s=cl&p=a&mlu=3" onclick="return _openWaGroup(event)" style="border-color:rgba(37,211,102,0.28);background:linear-gradient(135deg,rgba(37,211,102,0.08),rgba(18,140,126,0.06));">
+          <div class="bug-contact-icon" style="background:linear-gradient(145deg,rgba(37,211,102,0.24),rgba(18,140,60,0.10));border:1px solid rgba(37,211,102,0.32);box-shadow:0 0 18px rgba(37,211,102,0.20),inset 0 1px 0 rgba(255,255,255,0.10);">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17 20.5H7a4 4 0 01-4-4V8a4 4 0 014-4h10a4 4 0 014 4v8.5a4 4 0 01-4 4z" stroke="#25D366" stroke-width="1.7"/>
+              <circle cx="8.5" cy="11.5" r="1.3" fill="#25D366"/>
+              <circle cx="12" cy="11.5" r="1.3" fill="#25D366"/>
+              <circle cx="15.5" cy="11.5" r="1.3" fill="#25D366"/>
+            </svg>
+          </div>
           <div class="bug-contact-texts">
             <div class="bug-contact-label" style="color:rgba(37,211,102,0.7);">קבוצת עדכונים</div>
             <div class="bug-contact-value" style="color:#25D366;font-size:13px;">הצטרפו לקבוצת הוואטסאפ שלנו</div>
@@ -4201,8 +4219,27 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
           <svg class="bug-contact-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         </a>
 
+        <script>
+        function _openWaGroup(e){
+          e.preventDefault();
+          var inviteCode = 'L37t6hiY3R9JQ5b9LsyOgy';
+          var appUrl = 'whatsapp://chat?code=' + inviteCode;
+          var webUrl = 'https://chat.whatsapp.com/' + inviteCode + '?s=cl&p=a&mlu=3';
+          var fallbackTimer = setTimeout(function(){
+            window.open(webUrl, '_blank');
+          }, 900);
+          window.addEventListener('blur', function clearFallback(){
+            clearTimeout(fallbackTimer);
+            window.removeEventListener('blur', clearFallback);
+          }, { once:true });
+          window.location.href = appUrl;
+          return false;
+        }
+        </script>
+
         <button class="bug-modal-close" onclick="closeBugModal()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+
           סגירה
         </button>
       </div>
@@ -6441,7 +6478,7 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
               </div>
             </button>
 
-            <button id="theme-btn-light" onclick="window._setTheme('light')"
+            <button id="theme-btn-light" onclick="window.toast && window.toast('🚧 מצב בהיר נמצא בפיתוח — יהיה זמין בקרוב!','info',3500)"
               style="position:relative;border-radius:18px;border:2px solid rgba(255,255,255,0.08);background:linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));padding:14px 10px 13px;cursor:pointer;overflow:hidden;transition:all .28s cubic-bezier(.34,1.56,.64,1);">
               <!-- mini preview light -->
               <div style="width:100%;height:48px;border-radius:11px;background:#EBF0FA;border:1px solid rgba(0,82,224,0.12);margin-bottom:11px;position:relative;overflow:hidden;padding:7px 8px;display:flex;flex-direction:column;justify-content:flex-end;gap:3px;">
