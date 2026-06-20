@@ -3934,21 +3934,31 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
     var pos = 0;
     var speed = 0.45; // px per frame — מהיר מספיק לקרוא, איטי מספיק להנות
     var halfW = 0;
+    var _tickerPaused = false;
+
+    /* בידוד GPU — מונע layout recalculation מהתפשט לשאר הדף */
+    inner.style.willChange = 'transform';
+    inner.style.contain = 'layout style';
 
     function getHalfW(){
-      // חצי מהרוחב הכולל = נקודת האיפוס החלקה
       halfW = inner.scrollWidth / 2;
     }
 
     var raf;
     function tick(){
-      pos += speed;
-      if(pos >= halfW) pos -= halfW; // reset חלק — חוזר לאותו מקום בדיוק
-      inner.style.transform = 'translateX(-' + pos.toFixed(2) + 'px)';
+      if(!_tickerPaused){
+        pos += speed;
+        if(pos >= halfW) pos -= halfW;
+        inner.style.transform = 'translateX(-' + pos.toFixed(2) + 'px)';
+      }
       raf = requestAnimationFrame(tick);
     }
 
-    // מתחיל אחרי render ראשון
+    /* עצור כשהחלון מוסתר — חוסך סוללה ומונע רעידות */
+    document.addEventListener('visibilitychange', function(){
+      _tickerPaused = document.hidden;
+    });
+
     requestAnimationFrame(function(){
       getHalfW();
       tick();
@@ -4732,12 +4742,37 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
       });
       fab.classList.toggle('show-on-auth-screen', onAuthScreen);
     }
+    window._syncFabVisibility = _syncFabVisibility;
     _syncFabVisibility();
     document.addEventListener('DOMContentLoaded', _syncFabVisibility);
     setTimeout(_syncFabVisibility, 300);
     setTimeout(_syncFabVisibility, 1000);
-    /* בדיקה חוזרת — מסכים מתחלפים דינמית ב-JS אחר, נבדוק כל חצי שניה */
-    setInterval(_syncFabVisibility, 500);
+
+    /* בדיקה חכמה — MutationObserver במקום setInterval שגורם לרעידות */
+    if(window.MutationObserver){
+      var _fabObserver = new MutationObserver(function(mutations){
+        var relevant = mutations.some(function(m){
+          return m.type === 'attributes' &&
+            (m.attributeName === 'class' || m.attributeName === 'style') &&
+            AUTH_SCREENS.includes(m.target.id);
+        });
+        if(relevant) _syncFabVisibility();
+      });
+      AUTH_SCREENS.forEach(function(id){
+        var el = document.getElementById(id);
+        if(el) _fabObserver.observe(el, { attributes: true });
+      });
+      /* observe כשהelement נוצר אם עדיין לא קיים */
+      document.addEventListener('DOMContentLoaded', function(){
+        AUTH_SCREENS.forEach(function(id){
+          var el = document.getElementById(id);
+          if(el && !el._a11yObserved){
+            _fabObserver.observe(el, { attributes: true });
+            el._a11yObserved = true;
+          }
+        });
+      });
+    }
   })();
   </script>
   <!-- / נגישות -->
@@ -5277,6 +5312,11 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
       }
 
       function tick(){
+        /* אל תצייר אם light mode — אין particles בbהיר */
+        if(document.body.classList.contains('theme-light')){
+          if(raf){ cancelAnimationFrame(raf); raf=null; }
+          return;
+        }
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         // spawn
         if(particles.length < 18 && Math.random() < 0.35) particles.push(mkParticle());
@@ -7924,6 +7964,8 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
         nav.classList.remove('visible');
       }
     }
+    // עדכן כפתור נגישות צף
+    if(window._syncFabVisibility) window._syncFabVisibility();
   }
 
   function parseDate(d) {
