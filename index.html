@@ -3345,28 +3345,32 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
   <div id="login-inner">
 
     <!-- ── הירו לוגו + כפתור שפה ── -->
-    <div id="login-hero" style="position:relative;">
+    <div id="login-hero">
 
-      <!-- כפתור שפה — פינה שמאל עליונה -->
-      <button id="login-lang-btn" onclick="document.getElementById('login-lang-picker').classList.add('open')" aria-label="שינוי שפה" style="position:absolute;top:0;left:0;">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.7"/>
-          <path d="M12 2.5C12 2.5 8 7 8 12s4 9.5 4 9.5M12 2.5C12 2.5 16 7 16 12s-4 9.5-4 9.5" stroke="currentColor" stroke-width="1.7"/>
-          <path d="M2.5 12h19M3.5 7.5h17M3.5 16.5h17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-        </svg>
-        <span id="login-lang-name">עברית</span>
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
+      <!-- wrapper: לוגו + כפתור שפה זה לצד זה -->
+      <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:4px;">
 
-      <div class="login-logo-ring">
-        <img class="login-logo-img" src="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/refs/heads/main/icon-512.png" alt="AO Budget">
+        <div class="login-logo-ring" style="margin:0;flex-shrink:0;">
+          <img class="login-logo-img" src="https://raw.githubusercontent.com/a4190656-cloud/AO-TIMLulll/refs/heads/main/icon-512.png" alt="AO Budget">
+        </div>
+
+        <!-- כפתור שפה — מימין ללוגו -->
+        <button id="login-lang-btn" onclick="document.getElementById('login-lang-picker').classList.add('open')" aria-label="שינוי שפה">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M12 2.5C12 2.5 8 7 8 12s4 9.5 4 9.5M12 2.5C12 2.5 16 7 16 12s-4 9.5-4 9.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M2.5 12h19M3.5 7.5h17M3.5 16.5h17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span id="login-lang-name">עברית</span>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+
       </div>
+
       <h1 class="login-title">AO Budget</h1>
-      <p class="login-subtitle">ניהול תקציב חכם · פשוט · בטוח</p>
+      <p class="login-subtitle" data-i18n="login_subtitle">ניהול תקציב חכם · פשוט · בטוח</p>
     </div>
 
-    <!-- ── כרטיס טופס ── -->
-    <div id="login-card">
 
       <!-- שם (נסתר ברישום בלבד) -->
       <div id="login-name-wrap" class="hidden" style="margin-bottom:10px">
@@ -3374,32 +3378,32 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
           <div class="login-inp-icon">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </div>
-          <input id="login-name" class="inp" type="text" placeholder="השם המלא שלך" autocomplete="name">
+          <input id="login-name" class="inp" type="text" placeholder="השם המלא שלך" data-i18n-ph="login_ph_name" autocomplete="name">
         </div>
       </div>
 
       <!-- גוגל — ראשון! -->
       <button id="btn-google-login" class="btn-google" style="margin-bottom:0">
         <svg width="19" height="19" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-        כניסה עם גוגל
+        <span data-i18n="login_google">כניסה עם גוגל</span>
       </button>
 
       <!-- מפריד -->
       <div class="login-divider">
         <div class="login-divider-line"></div>
-        <span class="login-divider-text">או עם אימייל</span>
+        <span class="login-divider-text" data-i18n="login_or_email">או עם אימייל</span>
         <div class="login-divider-line"></div>
       </div>
 
       <!-- section label -->
-      <div class="login-section-label">כניסה עם מייל וסיסמה</div>
+      <div class="login-section-label" data-i18n="login_with_email">כניסה עם מייל וסיסמה</div>
 
       <!-- אימייל -->
       <div class="login-inp-wrap">
         <div class="login-inp-icon">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         </div>
-        <input id="login-email" class="inp" type="email" placeholder="כתובת אימייל" autocomplete="email">
+        <input id="login-email" class="inp" type="email" placeholder="כתובת אימייל" data-i18n-ph="login_ph_email" autocomplete="email">
       </div>
 
       <!-- סיסמה -->
@@ -3407,7 +3411,7 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
         <div class="login-inp-icon" style="right:42px">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </div>
-        <input id="login-pass" class="inp" type="password" placeholder="סיסמה" autocomplete="new-password" data-lpignore="true" data-form-type="other" style="padding-right:56px!important">
+        <input id="login-pass" class="inp" type="password" placeholder="סיסמה" data-i18n-ph="login_ph_pass" autocomplete="new-password" data-lpignore="true" data-form-type="other" style="padding-right:56px!important">
         <button type="button" class="pass-eye" id="btn-pass-eye" aria-label="הצג/הסתר סיסמה">
           <svg id="eye-icon-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           <svg id="eye-icon-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -3416,20 +3420,20 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
 
       <!-- שכחת סיסמה -->
       <div style="text-align:left;margin-top:6px;margin-bottom:0">
-        <button id="btn-forgot-pass" type="button">שכחת סיסמה?</button>
+        <button id="btn-forgot-pass" type="button" data-i18n="login_forgot">שכחת סיסמה?</button>
       </div>
 
       <!-- שגיאה -->
       <div id="login-err" class="err hidden" style="margin-top:8px;line-height:1.5;"></div>
 
       <!-- כניסה -->
-      <button id="btn-email-auth" class="btn btn-cyan" style="margin-top:14px">כניסה לחשבון</button>
+      <button id="btn-email-auth" class="btn btn-cyan" style="margin-top:14px" data-i18n="login_signin">כניסה לחשבון</button>
 
       <!-- CTA הרשמה -->
       <button id="btn-toggle-mode" type="button">
         <div class="cta-texts">
-          <span class="cta-sub">עוד אין לך חשבון?</span>
-          <span class="cta-main">לפתיחת חשבון — לחצו כאן!</span>
+          <span class="cta-sub" data-i18n="login_no_account">עוד אין לך חשבון?</span>
+          <span class="cta-main" data-i18n="login_create_account">לפתיחת חשבון — לחצו כאן!</span>
         </div>
         <div class="cta-icon-box">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -3706,21 +3710,23 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
   <!-- ✦ בורר שפה — מסך כניסה ✦ -->
   <style>
     #login-lang-btn {
-      display: flex; align-items: center; gap: 6px;
-      padding: 7px 12px;
+      display: flex; align-items: center; gap: 5px;
+      padding: 8px 13px;
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(0,229,255,0.20);
       border-radius: 999px;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
-      transition: transform 0.18s var(--spring), background 0.18s;
+      transition: transform 0.18s var(--spring), background 0.18s, box-shadow 0.18s;
       color: rgba(255,255,255,0.65);
       font-family: 'Syne', sans-serif;
       font-size: 12px; font-weight: 700;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.03em;
       white-space: nowrap;
+      box-shadow: 0 2px 12px rgba(0,229,255,0.08), inset 0 1px 0 rgba(255,255,255,0.06);
+      align-self: center;
     }
-    #login-lang-btn:active { transform: scale(0.92); background: rgba(0,229,255,0.10); }
+    #login-lang-btn:active { transform: scale(0.91); background: rgba(0,229,255,0.10); }
     #login-lang-btn svg { flex-shrink: 0; }
     #login-lang-name { color: #00E5FF; }
 
@@ -10134,16 +10140,17 @@ window.deletePhoneIdx = function(i) {
     isRegMode=!isRegMode;
     var mainSpan = $('btn-toggle-mode').querySelector('.cta-main');
     var subSpan  = $('btn-toggle-mode').querySelector('.cta-sub');
+    var s = (window._i18n_current) || (window._i18n && window._i18n['he']) || {};
     if(isRegMode){
       show('login-name-wrap');
-      $('btn-email-auth').textContent='צור חשבון';
-      if(mainSpan) mainSpan.textContent='חזרה לכניסה';
-      if(subSpan)  subSpan.textContent='כבר יש לך חשבון?';
+      $('btn-email-auth').textContent = s.login_signup || 'צור חשבון';
+      if(mainSpan) mainSpan.textContent = s.login_back_signin  || 'חזרה לכניסה';
+      if(subSpan)  subSpan.textContent  = s.login_have_account || 'כבר יש לך חשבון?';
     } else {
       hide('login-name-wrap');
-      $('btn-email-auth').textContent='כניסה לחשבון';
-      if(mainSpan) mainSpan.textContent='לפתיחת חשבון — לחצו כאן!';
-      if(subSpan)  subSpan.textContent='עוד אין לך חשבון?';
+      $('btn-email-auth').textContent = s.login_signin || 'כניסה לחשבון';
+      if(mainSpan) mainSpan.textContent = s.login_create_account || 'לפתיחת חשבון — לחצו כאן!';
+      if(subSpan)  subSpan.textContent  = s.login_no_account     || 'עוד אין לך חשבון?';
     }
     hide('login-err');
   };
@@ -13325,6 +13332,20 @@ window._i18n = {
     edit_fixed_exp:  'עריכת הוצאה קבועה',
     toast_income:    'הכנסה נרשמה ✓',
     toast_expense:   'הוצאה נרשמה ✓',
+    login_subtitle: 'ניהול תקציב חכם · פשוט · בטוח',
+    login_google: 'כניסה עם גוגל',
+    login_or_email: 'או עם אימייל',
+    login_with_email: 'כניסה עם מייל וסיסמה',
+    login_forgot: 'שכחת סיסמה?',
+    login_signin: 'כניסה לחשבון',
+    login_signup: 'צור חשבון',
+    login_no_account: 'עוד אין לך חשבון?',
+    login_create_account: 'לפתיחת חשבון — לחצו כאן!',
+    login_have_account: 'כבר יש לך חשבון?',
+    login_back_signin: 'חזרה לכניסה',
+    login_ph_name: 'השם המלא שלך',
+    login_ph_email: 'כתובת אימייל',
+    login_ph_pass: 'סיסמה',
   },
   en: {
     dir: 'ltr', lang: 'en',
@@ -13367,6 +13388,20 @@ window._i18n = {
     edit_fixed_exp:  'Edit Fixed Expense',
     toast_income:    'Income saved ✓',
     toast_expense:   'Expense saved ✓',
+    login_subtitle: 'Smart · Simple · Secure Budget',
+    login_google: 'Sign in with Google',
+    login_or_email: 'or with email',
+    login_with_email: 'Sign in with Email & Password',
+    login_forgot: 'Forgot password?',
+    login_signin: 'Sign In',
+    login_signup: 'Create Account',
+    login_no_account: "Don't have an account?",
+    login_create_account: 'Create an account — click here!',
+    login_have_account: 'Already have an account?',
+    login_back_signin: 'Back to Sign In',
+    login_ph_name: 'Your full name',
+    login_ph_email: 'Email address',
+    login_ph_pass: 'Password',
   },
   ar: {
     dir: 'rtl', lang: 'ar',
@@ -13409,6 +13444,20 @@ window._i18n = {
     edit_fixed_exp:  'تعديل المصروف الثابت',
     toast_income:    'تم حفظ الدخل ✓',
     toast_expense:   'تم حفظ المصروف ✓',
+    login_subtitle: 'إدارة ميزانية ذكية · بسيطة · آمنة',
+    login_google: 'تسجيل الدخول بجوجل',
+    login_or_email: 'أو بالبريد الإلكتروني',
+    login_with_email: 'تسجيل الدخول بالبريد وكلمة المرور',
+    login_forgot: 'نسيت كلمة المرور؟',
+    login_signin: 'تسجيل الدخول',
+    login_signup: 'إنشاء حساب',
+    login_no_account: 'ليس لديك حساب؟',
+    login_create_account: 'إنشاء حساب — اضغط هنا!',
+    login_have_account: 'لديك حساب بالفعل؟',
+    login_back_signin: 'العودة لتسجيل الدخول',
+    login_ph_name: 'اسمك الكامل',
+    login_ph_email: 'البريد الإلكتروني',
+    login_ph_pass: 'كلمة المرور',
   },
   fr: {
     dir: 'ltr', lang: 'fr',
@@ -13451,6 +13500,20 @@ window._i18n = {
     edit_fixed_exp:  'Modifier dépense fixe',
     toast_income:    'Revenu enregistré ✓',
     toast_expense:   'Dépense enregistrée ✓',
+    login_subtitle: 'Budget Intelligent · Simple · Sécurisé',
+    login_google: 'Se connecter avec Google',
+    login_or_email: 'ou avec email',
+    login_with_email: 'Connexion par email et mot de passe',
+    login_forgot: 'Mot de passe oublié ?',
+    login_signin: 'Se connecter',
+    login_signup: 'Créer un compte',
+    login_no_account: 'Pas encore de compte ?',
+    login_create_account: 'Créer un compte — cliquez ici !',
+    login_have_account: 'Déjà un compte ?',
+    login_back_signin: 'Retour à la connexion',
+    login_ph_name: 'Votre nom complet',
+    login_ph_email: 'Adresse email',
+    login_ph_pass: 'Mot de passe',
   },
   de: {
     dir: 'ltr', lang: 'de',
@@ -13493,6 +13556,20 @@ window._i18n = {
     edit_fixed_exp:  'Fixausgabe bearbeiten',
     toast_income:    'Einnahme gespeichert ✓',
     toast_expense:   'Ausgabe gespeichert ✓',
+    login_subtitle: 'Klug · Einfach · Sicher budgetieren',
+    login_google: 'Mit Google anmelden',
+    login_or_email: 'oder mit E-Mail',
+    login_with_email: 'Mit E-Mail und Passwort anmelden',
+    login_forgot: 'Passwort vergessen?',
+    login_signin: 'Anmelden',
+    login_signup: 'Konto erstellen',
+    login_no_account: 'Noch kein Konto?',
+    login_create_account: 'Konto erstellen — hier klicken!',
+    login_have_account: 'Schon ein Konto?',
+    login_back_signin: 'Zurück zur Anmeldung',
+    login_ph_name: 'Ihr vollständiger Name',
+    login_ph_email: 'E-Mail-Adresse',
+    login_ph_pass: 'Passwort',
   },
   es: {
     dir: 'ltr', lang: 'es',
@@ -13535,6 +13612,20 @@ window._i18n = {
     edit_fixed_exp:  'Editar gasto fijo',
     toast_income:    'Ingreso guardado ✓',
     toast_expense:   'Gasto guardado ✓',
+    login_subtitle: 'Presupuesto Inteligente · Simple · Seguro',
+    login_google: 'Iniciar sesión con Google',
+    login_or_email: 'o con correo electrónico',
+    login_with_email: 'Iniciar sesión con correo y contraseña',
+    login_forgot: '¿Olvidaste tu contraseña?',
+    login_signin: 'Iniciar sesión',
+    login_signup: 'Crear cuenta',
+    login_no_account: '¿No tienes cuenta?',
+    login_create_account: 'Crear una cuenta — ¡haz clic aquí!',
+    login_have_account: '¿Ya tienes cuenta?',
+    login_back_signin: 'Volver a iniciar sesión',
+    login_ph_name: 'Tu nombre completo',
+    login_ph_email: 'Correo electrónico',
+    login_ph_pass: 'Contraseña',
   },
   ru: {
     dir: 'ltr', lang: 'ru',
@@ -13577,6 +13668,20 @@ window._i18n = {
     edit_fixed_exp:  'Редактировать постоянный расход',
     toast_income:    'Доход сохранён ✓',
     toast_expense:   'Расход сохранён ✓',
+    login_subtitle: 'Умный · Простой · Безопасный бюджет',
+    login_google: 'Войти через Google',
+    login_or_email: 'или по email',
+    login_with_email: 'Вход по email и паролю',
+    login_forgot: 'Забыли пароль?',
+    login_signin: 'Войти',
+    login_signup: 'Создать аккаунт',
+    login_no_account: 'Нет аккаунта?',
+    login_create_account: 'Создать аккаунт — нажмите здесь!',
+    login_have_account: 'Уже есть аккаунт?',
+    login_back_signin: 'Назад к входу',
+    login_ph_name: 'Ваше полное имя',
+    login_ph_email: 'Электронная почта',
+    login_ph_pass: 'Пароль',
   },
 };
 
@@ -13612,6 +13717,12 @@ window._applyLang = function(langCode){
     if(strings[key] !== undefined) el.textContent = strings[key];
   });
 
+  /* placeholders עם data-i18n-ph */
+  document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+    var key = el.getAttribute('data-i18n-ph');
+    if(strings[key] !== undefined) el.placeholder = strings[key];
+  });
+
   /* עדכון כותרת modal הוספה דינמית */
   window._i18n_current = strings;
 
@@ -13620,6 +13731,30 @@ window._applyLang = function(langCode){
   if(descInp) descInp.placeholder = strings.modal_desc || '';
   var amtInp  = document.getElementById('tx-amount');
   if(amtInp)  amtInp.placeholder  = strings.modal_amount || '';
+
+  /* ── כפתור מצב login/signup — מעדכן textContent שמשתנה ב-JS ── */
+  var isRegMode = document.getElementById('login-name-wrap') &&
+                  !document.getElementById('login-name-wrap').classList.contains('hidden');
+  var authBtn = document.getElementById('btn-email-auth');
+  if(authBtn) authBtn.textContent = isRegMode ? (strings.login_signup||'') : (strings.login_signin||'');
+
+  /* הכפתור "חזרה לכניסה" / "פתח חשבון" */
+  var ctaSub  = document.querySelector('#btn-toggle-mode .cta-sub');
+  var ctaMain = document.querySelector('#btn-toggle-mode .cta-main');
+  if(isRegMode){
+    if(ctaSub)  ctaSub.textContent  = strings.login_have_account   || '';
+    if(ctaMain) ctaMain.textContent = strings.login_back_signin    || '';
+  } else {
+    if(ctaSub)  ctaSub.textContent  = strings.login_no_account     || '';
+    if(ctaMain) ctaMain.textContent = strings.login_create_account || '';
+  }
+
+  /* עדכון כפתור שם שפה ב-login */
+  var loginLangName = document.getElementById('login-lang-name');
+  if(loginLangName){
+    var names = {he:'עברית',en:'English',ar:'العربية',fr:'Français',de:'Deutsch',es:'Español',ru:'Русский'};
+    loginLangName.textContent = names[langCode] || langCode;
+  }
 };
 
 /* ── שאל האם לשנות שפה — מוצג אחרי בחירת מטבע ── */
