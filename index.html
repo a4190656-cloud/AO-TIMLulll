@@ -11267,7 +11267,7 @@ window.resetProfilePic = function() {
       if (feEl) feEl.textContent = fmt(feTotal);
 
       /* ── דו-חודשי — מוצג תמיד אם יש פריטים ── */
-      var bimonthlyItems = typeof bimonthlyExpenses !== 'undefined' ? bimonthlyExpenses : [];
+      var bimonthlyItems = (window._appBimonthly && window._appBimonthly()) || [];
       var bmTotal = bimonthlyItems.reduce(function(a,i){ return a+Number(i.amount||0); }, 0);
       var bmRow = document.getElementById('cycle-bimonthly-row');
       var bmEl  = document.getElementById('cycle-bm-total');
