@@ -3938,7 +3938,13 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
 
     function getHalfW(){
       // חצי מהרוחב הכולל = נקודת האיפוס החלקה
+      var oldHalfW = halfW;
       halfW = inner.scrollWidth / 2;
+      /* אם הרוחב השתנה (למשל עקב zoom של נגישות שמשנה font-size),
+         נשמור על המיקום היחסי כדי שהטיקר לא "יקפוץ" בפתאומיות */
+      if(oldHalfW > 0 && halfW > 0 && oldHalfW !== halfW){
+        pos = (pos / oldHalfW) * halfW;
+      }
     }
 
     var raf;
@@ -4301,13 +4307,13 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
   <style>
     /* ── כפתור נגישות — קומפקטי, למעלה ליד כפתורי הניווט ── */
     /* ── כפתור נגישות צף — מוצג רק במסכי login/setname/loading (אין בהם header) ── */
-    /* ── כפתור נגישות — צורת גלולה, נצמד לקצה השמאלי, באמצע גובה המסך ── */
+    /* ── כפתור נגישות — צורת גלולה, נצמד לקצה השמאלי, מול "משתנות" ── */
     #a11y-fab {
       position: fixed;
-      top: 58%; margin-top: -42px; left: 0;
+      top: 40%; margin-top: -26px; left: 0;
       z-index: 8800;
-      width: 34px; height: 84px;
-      border-radius: 0 22px 22px 0;
+      width: 24px; height: 52px;
+      border-radius: 0 16px 16px 0;
       background: rgba(14,20,42,0.85);
       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(0,229,255,0.22);
@@ -4321,7 +4327,7 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
       transform-origin: left center;
     }
     #a11y-fab:active { transform: scale(0.9); }
-    #a11y-fab svg { width: 19px; height: 19px; color: #00E5FF; opacity: 0.85; }
+    #a11y-fab svg { width: 14px; height: 14px; color: #00E5FF; opacity: 0.85; }
 
     /* ── פאנל נגישות ── */
     #a11y-panel-overlay {
@@ -4504,6 +4510,22 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
       border-radius: 14px; color: #fff; font-weight: 800; font-size: 13px;
       cursor: pointer;
     }
+
+    /* ── כפתור X לסגירה מהירה — פינת החלון ── */
+    .a11y-x-close {
+      position: absolute; top: 14px; left: 14px;
+      width: 30px; height: 30px; border-radius: 50%;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+      flex-shrink: 0;
+    }
+    .a11y-x-close:active { transform: scale(0.9); }
+    .a11y-x-close svg { width: 15px; height: 15px; color: rgba(255,255,255,0.75); }
+    #a11y-panel { position: relative; }
+    #a11y-statement { position: relative; }
+    body.theme-light .a11y-x-close { background: #F8F9FC !important; border-color: rgba(0,0,0,0.08) !important; }
+    body.theme-light .a11y-x-close svg { color: #0A0A0F !important; }
   </style>
 
   <!-- ✦ כפתור נגישות צף ✦ -->
@@ -4520,6 +4542,9 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
   <div id="a11y-panel-overlay" onclick="if(event.target===this)window.closeA11yPanel()">
     <div id="a11y-panel">
       <div class="a11y-handle"></div>
+      <button class="a11y-x-close" onclick="window.closeA11yPanel()" aria-label="סגירה">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      </button>
       <div class="a11y-header">
         <div class="a11y-header-icon">
           <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="4.5" r="1.8" fill="currentColor"/><path d="M4 8.5C4 8.5 7.5 7 12 7C16.5 7 20 8.5 20 8.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 7V13M12 13L9 21M12 13L15 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -4610,6 +4635,9 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
   <!-- ✦ הצהרת נגישות — מודאל ✦ -->
   <div id="a11y-statement-overlay" onclick="if(event.target===this)window.closeA11yStatement()">
     <div id="a11y-statement">
+      <button class="a11y-x-close" onclick="window.closeA11yStatement()" aria-label="סגירה">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      </button>
       <div class="a11y-st-title">הצהרת נגישות</div>
       <div class="a11y-st-date">עדכון אחרון: יוני 2026</div>
 
