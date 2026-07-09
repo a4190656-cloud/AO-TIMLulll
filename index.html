@@ -4304,7 +4304,7 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
       position: fixed;
       top: calc(env(safe-area-inset-top,0px) + 16px); left: 16px;
       z-index: 8800;
-      width: 36px; height: 36px;
+      width: 26px; height: 26px;
       border-radius: 50%;
       background: rgba(14,20,42,0.85);
       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
@@ -4318,7 +4318,7 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
     }
     #a11y-fab.show-on-auth-screen { display: flex; }
     #a11y-fab:active { transform: scale(0.88); }
-    #a11y-fab svg { width: 18px; height: 18px; color: #00E5FF; opacity: 0.85; }
+    #a11y-fab svg { width: 13px; height: 13px; color: #00E5FF; opacity: 0.85; }
 
     /* ── פאנל נגישות ── */
     #a11y-panel-overlay {
@@ -4455,9 +4455,12 @@ body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
     }
 
     /* ── הגדלת טקסט ── */
-    body[data-a11y-font="1"] { font-size: 106% !important; }
-    body[data-a11y-font="2"] { font-size: 114% !important; }
-    body[data-a11y-font="3"] { font-size: 124% !important; }
+    /* משתמשים ב-zoom ולא ב-font-size%, כי כל גדלי הפונט באפליקציה קבועים ב-px
+       ולכן font-size על ה-body לא היה משפיע על אלמנטים ילדים (אין ירושה יחסית).
+       zoom מגדיל את כל התצוגה (כולל px) ונתמך היטב ב-Chromium/Flutter WebView. */
+    body[data-a11y-font="1"] { zoom: 1.06 !important; }
+    body[data-a11y-font="2"] { zoom: 1.14 !important; }
+    body[data-a11y-font="3"] { zoom: 1.24 !important; }
 
     /* ── מצב גווני אפור ── */
     body.a11y-grayscale { filter: grayscale(1) !important; }
