@@ -3010,6 +3010,134 @@ body.theme-light .tx-row {
 }
 body.theme-light #hero-balance-card.rise { animation: floatUp 0.6s var(--lt-spring,ease) forwards, aoHeroBreathe 6s ease-in-out 0.6s infinite !important; }
 
+/* ══════════════════════════════════════════════════════════════════
+   ✦✦✦  AO LIGHT MODE 2026 — שכבה 2: מודלים / קטגוריה-ווזארד / תרשימים / הגדרות  ✦✦✦
+════════════════════════════════════════════════════════════════════ */
+
+/* ── רשת ביטחון: כל משטח "זכוכית לבנה" שנועד לרקע כהה — הופך למשטח כהה-עדין קריא ── */
+body.theme-light [style*="background:rgba(255,255,255,0.0"],
+body.theme-light [style*="background: rgba(255,255,255,0.0"] { background: rgba(15,23,42,0.045) !important; }
+body.theme-light [style*="border:1px solid rgba(255,255,255,0."],
+body.theme-light [style*="border: 1px solid rgba(255,255,255,0."] { border-color: rgba(15,23,42,0.12) !important; }
+body.theme-light [style*="border-color:rgba(255,255,255,0."] { border-color: rgba(15,23,42,0.12) !important; }
+
+/* ── שדות קלט גלובליים (מודל הכנסה/הוצאה, טפסים) ── */
+body.theme-light .inp {
+  background: #F7F8FA !important;
+  border: 1px solid rgba(15,23,42,0.09) !important;
+  color: #0A0A0F !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+body.theme-light .inp:focus {
+  border-color: rgba(0,201,177,0.45) !important;
+  background: #FFFFFF !important;
+  box-shadow: 0 0 0 3px rgba(0,201,177,0.10) !important;
+}
+body.theme-light .inp::placeholder { color: rgba(15,23,42,0.30) !important; }
+body.theme-light select.inp option { background: #FFFFFF !important; color: #0A0A0F !important; }
+body.theme-light .pass-eye { color: rgba(15,23,42,0.35) !important; }
+body.theme-light .pass-eye:hover { color: #00C9B1 !important; }
+
+/* ── כותרת/ידית מודל ── */
+body.theme-light .modal-handle { background: rgba(15,23,42,0.14) !important; }
+body.theme-light #modal-title,
+body.theme-light [id$="-title"] { color: #0A0A0F !important; }
+
+/* ══════════════════════════════════
+   ✦ CATEGORY WIZARD — קטגוריה חדשה ✦
+══════════════════════════════════ */
+body.theme-light #cat-wizard-container {
+  background: #FFFFFF !important;
+  border: 0.5px solid rgba(15,23,42,0.07) !important;
+  box-shadow: 0 4px 24px rgba(15,23,42,0.07) !important;
+}
+body.theme-light #cat-wizard-container::before {
+  background: linear-gradient(90deg,transparent,rgba(0,201,177,0.45),transparent) !important;
+}
+body.theme-light .cwiz-label { color: rgba(15,23,42,0.32) !important; }
+body.theme-light .cwiz-badge {
+  color: #00998A !important; background: rgba(0,201,177,0.09) !important;
+  border-color: rgba(0,201,177,0.22) !important;
+}
+body.theme-light .cwiz-type-expense {
+  background: linear-gradient(150deg, #FFF5F6, #FFFFFF) !important;
+  border: 1px solid rgba(217,48,80,0.18) !important;
+  box-shadow: 0 4px 18px rgba(217,48,80,0.08), inset 0 -3px 0 rgba(217,48,80,0.12) !important;
+}
+body.theme-light .cwiz-type-expense:hover { box-shadow: 0 8px 24px rgba(217,48,80,0.14), inset 0 -3px 0 rgba(217,48,80,0.14) !important; }
+body.theme-light .cwiz-type-income {
+  background: linear-gradient(150deg, #F2FBF6, #FFFFFF) !important;
+  border: 1px solid rgba(13,158,90,0.18) !important;
+  box-shadow: 0 4px 18px rgba(13,158,90,0.08), inset 0 -3px 0 rgba(13,158,90,0.12) !important;
+}
+body.theme-light .cwiz-type-income:hover { box-shadow: 0 8px 24px rgba(13,158,90,0.14), inset 0 -3px 0 rgba(13,158,90,0.14) !important; }
+body.theme-light .cwiz-type-expense .cwiz-type-icon { background: rgba(217,48,80,0.09) !important; border-color: rgba(217,48,80,0.20) !important; box-shadow: none !important; }
+body.theme-light .cwiz-type-income  .cwiz-type-icon { background: rgba(13,158,90,0.09) !important; border-color: rgba(13,158,90,0.20) !important; box-shadow: none !important; }
+body.theme-light .cwiz-type-expense .cwiz-type-text,
+body.theme-light .cwiz-type-expense .cwiz-type-sub { color: #D93050 !important; }
+body.theme-light .cwiz-type-income .cwiz-type-text,
+body.theme-light .cwiz-type-income .cwiz-type-sub { color: #0D9E5A !important; }
+body.theme-light .cwiz-back-btn { background: #F4F4F5 !important; border-color: rgba(15,23,42,0.08) !important; color: #3D3D4E !important; }
+body.theme-light .cwiz-back-btn:hover { background: #ECECEE !important; color: #0A0A0F !important; }
+body.theme-light #cat-wiz-title { color: #0A0A0F !important; }
+body.theme-light .cwiz-field-label { color: rgba(15,23,42,0.42) !important; }
+body.theme-light .cwiz-inp,
+body.theme-light .cwiz-budget-inp-wrap input {
+  background: #F7F8FA !important; border: 1px solid rgba(15,23,42,0.09) !important;
+  color: #0A0A0F !important;
+}
+body.theme-light .cwiz-inp:focus,
+body.theme-light .cwiz-budget-inp-wrap input:focus {
+  border-color: rgba(0,201,177,0.45) !important; background: #FFFFFF !important;
+  box-shadow: 0 0 0 3px rgba(0,201,177,0.10) !important;
+}
+body.theme-light .cwiz-inp::placeholder,
+body.theme-light .cwiz-budget-inp-wrap input::placeholder { color: rgba(15,23,42,0.28) !important; }
+body.theme-light .cwiz-budget-card { background: #FAFBFC !important; border-color: rgba(15,23,42,0.07) !important; }
+body.theme-light .cwiz-budget-head { background: #F4F6F8 !important; border-color: rgba(15,23,42,0.06) !important; }
+body.theme-light .cwiz-budget-icon { background: rgba(0,201,177,0.09) !important; border-color: rgba(0,201,177,0.22) !important; }
+body.theme-light .cwiz-budget-title { color: rgba(15,23,42,0.85) !important; }
+body.theme-light .cwiz-budget-sub { color: rgba(15,23,42,0.35) !important; }
+body.theme-light .cwiz-budget-sym { color: #00998A !important; }
+body.theme-light .cwiz-budget-hint { color: rgba(15,23,42,0.32) !important; }
+body.theme-light .cwiz-save-expense {
+  background: linear-gradient(135deg, rgba(217,48,80,0.13), rgba(217,48,80,0.06)) !important;
+  border: 1px solid rgba(217,48,80,0.28) !important; color: #D93050 !important;
+  box-shadow: 0 4px 16px rgba(217,48,80,0.10) !important;
+}
+body.theme-light .cwiz-save-income {
+  background: linear-gradient(135deg, rgba(13,158,90,0.13), rgba(13,158,90,0.06)) !important;
+  border: 1px solid rgba(13,158,90,0.26) !important; color: #0D9E5A !important;
+  box-shadow: 0 4px 16px rgba(13,158,90,0.09) !important;
+}
+body.theme-light #btn-toggle-add-wiz {
+  background: rgba(0,201,177,0.09) !important; border-color: rgba(0,201,177,0.22) !important; color: #00998A !important;
+}
+
+/* ══════════════════════════════════
+   ✦ תרשימים — הרחבת שכבת הגרדיאנט ✦
+══════════════════════════════════ */
+body.theme-light .chart-hero,
+body.theme-light .ch-kpi {
+  transition: transform 0.24s var(--lt-spring,ease), box-shadow 0.24s ease !important;
+}
+body.theme-light .insight-chip {
+  background: linear-gradient(135deg, rgba(0,201,177,0.09), rgba(59,110,248,0.06)) !important;
+  border-color: rgba(0,201,177,0.20) !important;
+}
+
+/* ══════════════════════════════════
+   ✦ הגדרות — פוליש עדין ✦
+══════════════════════════════════ */
+body.theme-light .setting-row:active,
+body.theme-light [class*="setting-row"]:active { background: #FAFBFC !important; }
+body.theme-light .fixed-item {
+  transition: transform 0.22s var(--lt-spring,ease), box-shadow 0.22s ease !important;
+}
+body.theme-light .fixed-item:active { transform: scale(0.98) !important; }
+
+
   </style>
  
 </head>
@@ -7192,7 +7320,7 @@ body.theme-light #hero-balance-card.rise { animation: floatUp 0.6s var(--lt-spri
               </div>
             </button>
 
-            <button id="theme-btn-light" onclick="window.toast && window.toast('🚧 מצב בהיר נמצא בפיתוח — יהיה זמין בקרוב!','info',3500)"
+            <button id="theme-btn-light" onclick="window._setTheme && window._setTheme('light')"
               style="position:relative;border-radius:18px;border:2px solid rgba(255,255,255,0.08);background:linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));padding:14px 10px 13px;cursor:pointer;overflow:hidden;transition:all .28s cubic-bezier(.34,1.56,.64,1);">
               <!-- mini preview light -->
               <div style="width:100%;height:48px;border-radius:11px;background:#EBF0FA;border:1px solid rgba(0,82,224,0.12);margin-bottom:11px;position:relative;overflow:hidden;padding:7px 8px;display:flex;flex-direction:column;justify-content:flex-end;gap:3px;">
