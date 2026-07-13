@@ -2824,7 +2824,191 @@ body.theme-light [style*="color:#FF1744"],
 body.theme-light [style*="color:#FF4D70"] { color: #D93050 !important; }
 body.theme-light [style*="color:#00E5FF"] { color: #00C9B1 !important; }
 
+/* ══════════════════════════════════════════════════════════════════
+   ✦✦✦  AO LIGHT MODE 2026 — REDESIGN LAYER  ✦✦✦
+   הכל מתחת נטען אחרי כל חוקי theme-light הקודמים כדי לגבור עליהם.
+   מטרה: מסך הדשבורד ברמת גימור זהה (ואף גבוהה) מהמצב הכהה —
+   גרדיאנטים רכים, אנימציות spring, ועומק ויזואלי אמיתי.
+════════════════════════════════════════════════════════════════════ */
 
+@media (prefers-reduced-motion: no-preference){
+  body.theme-light{ --lt-spring: cubic-bezier(0.34,1.56,0.64,1); }
+}
+@media (prefers-reduced-motion: reduce){
+  body.theme-light{ --lt-spring: ease; }
+}
+
+/* ── רקע עמוד: מש-גרדיאנט רך (במקום לבן שטוח) ── */
+body.theme-light {
+  background:
+    radial-gradient(circle at 10% 6%,  rgba(0,201,177,0.15) 0%, transparent 40%),
+    radial-gradient(circle at 92% 16%, rgba(59,110,248,0.13) 0%, transparent 46%),
+    radial-gradient(circle at 20% 96%, rgba(184,147,74,0.07) 0%, transparent 38%),
+    #F6F8FB !important;
+  background-color: #F6F8FB !important;
+  background-attachment: fixed, fixed, fixed, fixed !important;
+}
+body.theme-light #app,
+body.theme-light #view-dashboard,
+body.theme-light #view-settings,
+body.theme-light #view-categories,
+body.theme-light #view-charts { background: transparent !important; background-color: transparent !important; }
+
+/* ── סטטוס בר עליון: פילס עדין ── */
+body.theme-light #top-status-bar {
+  background: rgba(255,255,255,0.72) !important;
+  backdrop-filter: blur(18px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
+  border-bottom: 0.5px solid rgba(15,23,42,0.06) !important;
+}
+body.theme-light .tsb-badge {
+  background: rgba(0,201,177,0.09) !important;
+  border-radius: 99px !important;
+  padding: 3px 9px !important;
+}
+body.theme-light .tsb-badge-dot {
+  animation: aoLtPulseDot 1.8s var(--lt-spring, ease) infinite !important;
+}
+@keyframes aoLtPulseDot { 0%,100%{ box-shadow:0 0 0 0 rgba(0,201,177,0.45);} 50%{ box-shadow:0 0 0 5px rgba(0,201,177,0);} }
+
+/* ── כרטיסי כפתור עגולים בהדר (מטבע/רענון/יציאה) ── */
+body.theme-light #btn-currency,
+body.theme-light #btn-reset,
+body.theme-light #btn-signout,
+body.theme-light .header-icon-btn {
+  background: #FFFFFF !important;
+  box-shadow: 0 1px 2px rgba(15,23,42,0.05), 0 3px 10px rgba(15,23,42,0.06) !important;
+  transition: transform 0.22s var(--lt-spring,ease), box-shadow 0.22s ease !important;
+}
+body.theme-light #btn-currency:active,
+body.theme-light #btn-reset:active,
+body.theme-light #btn-signout:active { transform: scale(0.88) rotate(-4deg) !important; }
+
+/* ══════════════════════════════════
+   ✦ HERO BALANCE CARD — גרדיאנט חתימה ✦
+   (מראה ה"כדור" הירוק-כחול מהתמונה, בגרסת כרטיס)
+══════════════════════════════════ */
+body.theme-light #hero-balance-card {
+  background: linear-gradient(135deg, #00C9B1 0%, #12B4D6 45%, #3B6EF8 100%) !important;
+  border: none !important;
+  border-radius: 28px !important;
+  box-shadow:
+    0 16px 40px rgba(11,150,180,0.28),
+    0 4px 14px rgba(59,110,248,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.35) !important;
+  padding: 26px 20px 22px !important;
+  animation: aoHeroBreathe 6s ease-in-out infinite !important;
+}
+@keyframes aoHeroBreathe {
+  0%,100% { box-shadow: 0 16px 40px rgba(11,150,180,0.28), 0 4px 14px rgba(59,110,248,0.18), inset 0 1px 0 rgba(255,255,255,0.35); }
+  50%     { box-shadow: 0 20px 52px rgba(11,150,180,0.36), 0 6px 18px rgba(59,110,248,0.24), inset 0 1px 0 rgba(255,255,255,0.45); }
+}
+body.theme-light #hero-balance-card::before {
+  background: linear-gradient(90deg,transparent 5%,rgba(255,255,255,0.85) 50%,transparent 95%) !important;
+}
+body.theme-light #hero-scanline { display: none !important; }
+body.theme-light #hero-orb-main,
+body.theme-light #hero-balance-card .hero-orb,
+body.theme-light #hero-balance-card #hero-orb-main {
+  display: block !important; opacity: 0.55 !important;
+  width: 230px !important; height: 230px !important;
+  background: radial-gradient(circle, rgba(255,255,255,0.38) 0%, transparent 70%) !important;
+}
+body.theme-light #hero-balance-card #hero-particles { display: none !important; }
+body.theme-light #hero-balance-card .hero-label-2026 { color: rgba(255,255,255,0.78) !important; }
+body.theme-light #hero-balance-card .hero-label-2026::before,
+body.theme-light #hero-balance-card .hero-label-2026::after { background: linear-gradient(90deg,transparent,rgba(255,255,255,0.55)) !important; }
+body.theme-light #hero-balance-card #balance-display,
+body.theme-light #hero-balance-card #balance-display.bal-pos,
+body.theme-light #hero-balance-card #balance-display.bal-neg {
+  color: #FFFFFF !important;
+  text-shadow: 0 2px 16px rgba(6,50,60,0.18) !important;
+}
+body.theme-light #hero-balance-card .hero-divider {
+  background: linear-gradient(90deg,transparent,rgba(255,255,255,0.75),transparent) !important;
+  opacity: 0.7 !important;
+}
+body.theme-light #hero-balance-card .hero-ring-wrap svg circle:first-child { stroke: rgba(255,255,255,0.30) !important; }
+body.theme-light #hero-balance-card #budget-percent {
+  background: rgba(255,255,255,0.20) !important;
+  border-color: rgba(255,255,255,0.55) !important;
+  color: #FFFFFF !important;
+  text-shadow: none !important;
+  box-shadow: inset 0 1px 4px rgba(255,255,255,0.35) !important;
+}
+
+/* ══════════════════════════════════
+   ✦ סטטיסטיקות מיני (הכנסות/קבועות/משתנות) ✦
+══════════════════════════════════ */
+body.theme-light .card[style*="rgba(0,230,118"] {
+  background: linear-gradient(180deg, rgba(13,158,90,0.06), #FFFFFF 60%) !important;
+  border-top: 2px solid rgba(13,158,90,0.35) !important;
+}
+body.theme-light .card[style*="rgba(255,23,68"] {
+  background: linear-gradient(180deg, rgba(217,48,80,0.055), #FFFFFF 60%) !important;
+  border-top: 2px solid rgba(217,48,80,0.28) !important;
+}
+
+/* ══════════════════════════════════
+   ✦ כפתורי פעולה — הכנסה/הוצאה ✦
+══════════════════════════════════ */
+body.theme-light .action-btn-income .action-btn-icon-wrap {
+  background: linear-gradient(135deg, rgba(13,158,90,0.18), rgba(0,201,177,0.10)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.7) !important;
+}
+body.theme-light .action-btn-expense .action-btn-icon-wrap {
+  background: linear-gradient(135deg, rgba(217,48,80,0.18), rgba(255,138,101,0.10)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.7) !important;
+}
+body.theme-light .action-btn-income:active,
+body.theme-light .action-btn-expense:active {
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 2px 10px rgba(0,0,0,0.07) !important;
+}
+body.theme-light .scan-doc-icon-wrap { background: linear-gradient(135deg, rgba(0,201,177,0.16), rgba(59,110,248,0.08)) !important; }
+
+/* ══════════════════════════════════
+   ✦ ניווט תחתון — פילס צף ✦
+══════════════════════════════════ */
+body.theme-light #nav {
+  box-shadow: 0 10px 34px rgba(15,23,42,0.10), 0 2px 8px rgba(15,23,42,0.06) !important;
+  border: 0.5px solid rgba(15,23,42,0.05) !important;
+}
+body.theme-light .nav-btn { transition: background 0.28s var(--lt-spring,ease), color 0.28s ease, transform 0.28s var(--lt-spring,ease) !important; }
+body.theme-light .nav-btn.active {
+  background: linear-gradient(135deg, rgba(0,201,177,0.16), rgba(59,110,248,0.13)) !important;
+  color: #049284 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 3px 10px rgba(0,201,177,0.18) !important;
+  transform: translateY(-2px) !important;
+}
+body.theme-light .nav-btn:active { transform: scale(0.90) !important; }
+
+/* ══════════════════════════════════
+   ✦ כרטיסי קטגוריה — hover/press lift ✦
+══════════════════════════════════ */
+body.theme-light .cat-tile,
+body.theme-light [class*="cat-tile"],
+body.theme-light .cat-card,
+body.theme-light .card,
+body.theme-light [class*="card"] {
+  transition: transform 0.24s var(--lt-spring,ease), box-shadow 0.24s ease !important;
+}
+body.theme-light .cat-tile:active,
+body.theme-light [class*="cat-tile"]:active { transform: scale(0.96) !important; }
+body.theme-light .cat-budget-bar-bg { background: rgba(15,23,42,0.06) !important; }
+body.theme-light .cat-budget-bar-fill { border-radius: 99px !important; }
+
+/* ══════════════════════════════════
+   ✦ אנימציות כניסה — spring bounce ✦
+══════════════════════════════════ */
+body.theme-light .rise,
+body.theme-light .card,
+body.theme-light [class*="card"],
+body.theme-light .cat-tile,
+body.theme-light [class*="cat-tile"],
+body.theme-light .tx-row {
+  animation-timing-function: var(--lt-spring, cubic-bezier(0.34,1.56,0.64,1)) !important;
+}
+body.theme-light #hero-balance-card.rise { animation: floatUp 0.6s var(--lt-spring,ease) forwards, aoHeroBreathe 6s ease-in-out 0.6s infinite !important; }
 
   </style>
  
