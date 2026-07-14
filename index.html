@@ -9,7 +9,8 @@
   <meta name="theme-color" content="#04070E" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#04070E" id="theme-color-main">
-  <meta name="color-scheme" content="dark">
+  <meta name="color-scheme" content="dark light">
+  <script>document.documentElement.style.colorScheme = (localStorage.getItem('_ao_theme')==='light') ? 'light' : 'dark';</script>
   <meta name="description" content="ניהול תקציב אישי חכם עם סנכרון בין מכשירים, קטגוריות, ובוט וואטסאפ.">
 <script>
 (function(){
@@ -159,7 +160,7 @@
     }
 
     /* ── PREMIUM: Smooth scroll ── */
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; color-scheme: dark; }
 
     /* ── PREMIUM: Better text rendering ── */
     body {
@@ -2151,6 +2152,7 @@ html.theme-light-pre {
   background: #FFFFFF !important;
 }
 body.theme-light {
+  color-scheme: light !important;
   /* ── Override dark CSS variables to white ── */
   --bg:          #FFFFFF !important;
   --card:        #FFFFFF !important;
@@ -9676,6 +9678,7 @@ window.deletePhoneIdx = function(i) {
     window._setTheme = function(t){
       localStorage.setItem('_ao_theme', t);
       document.body.classList.toggle('theme-light', t === 'light');
+      document.documentElement.style.colorScheme = t;
       _updateUI(t);
     };
 
@@ -9684,6 +9687,7 @@ window.deletePhoneIdx = function(i) {
        תהיה התנגשות בין JS גורף לבין השכבות שנבנו לו במיוחד. */
     var saved = localStorage.getItem('_ao_theme') || 'dark';
     document.body.classList.toggle('theme-light', saved === 'light');
+    document.documentElement.style.colorScheme = saved;
     _updateUI(saved);
   })();
 
