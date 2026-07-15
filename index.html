@@ -2571,10 +2571,15 @@ body.theme-light #cycle-modal-sheet {
   color: #0A0A0F !important;
   border-radius: 28px 28px 0 0 !important;
 }
-body.theme-light [id*="overlay"]:not([id*="sheet"]) {
+body.theme-light [id*="overlay"]:not([id*="sheet"]):not(#ev-detail-overlay) {
   background: rgba(10,10,15,0.48) !important;
   backdrop-filter: none !important;
 }
+/* ev-detail-overlay hides itself via a fully-transparent background (not opacity:0)
+   toggling to dark only when .open is added — must NOT get the blanket dark background above,
+   or it renders as a permanent dark veil over the entire app on every screen. */
+body.theme-light #ev-detail-overlay { background: rgba(0,0,0,0) !important; }
+body.theme-light #ev-detail-overlay.open { background: rgba(10,10,15,0.55) !important; backdrop-filter: none !important; }
 body.theme-light #ev-overlay { background: rgba(10,10,15,0.45) !important; backdrop-filter:none !important; }
 body.theme-light #phone-modal-overlay { background: rgba(10,10,15,0.48) !important; backdrop-filter:none !important; }
 body.theme-light #phone-modal-overlay > div { background: #FFFFFF !important; border: 0.5px solid rgba(0,0,0,0.08) !important; box-shadow: 0 8px 40px rgba(0,0,0,0.14) !important; }
