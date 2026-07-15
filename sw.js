@@ -1,50 +1,54 @@
-const CACHE_NAME = 'ao-budget-v2'; // ⚠️ הועלה מ-v1 ל-v2 — זה מה שמכריח מחיקה של כל מטמון ישן
-const ASSETS = [
-  '/AO-TIMLulll/',
-  '/AO-TIMLulll/index.html',
-  '/AO-TIMLulll/manifest.json'
+// 1. שם המטמון ומספר הגרסה. 
+// בכל פעם שתשנה את ה-v2 ל-v3, הדפדפן יתעדכן וימחק את הלוגואים הישנים!
+const CACHE_NAME = 'ao-digital-cache-v2';
+
+// 2. רשימת הקבצים שיוצגו גם ללא חיבור לאינטרנט (Offline)
+const ASSETS_TO_CACHE = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/privacy.html',
+  '/icon-192.png',
+  '/icon-512.png'
 ];
 
-// התקנה ושמירה בזיכרון מטמון
+// שלב ההתקנה (Install) - שמירת הקבצים החדשים במטמון
 self.addEventListener('install', (event) => {
-  self.skipWaiting(); // מפעיל את הגרסה החדשה מיד, בלי לחכות שכל הטאבים ייסגרו
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        console.log('[Service Worker] שומר קבצים במטמון החדש');
+        return cache.addAll(ASSETS_TO_CACHE);
+      })
+      .then(() => self.skipWaiting()) // מאלץ את ה-SW החדש להיכנס לפעולה מייד
   );
 });
 
-// הפעלה וניקוי גרסאות ישנות
+// שלב ההפעלה (Activate) - ניקוי כל ה-Cache הישן והשבור מהמכשיר
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key)));
-    }).then(() => self.clients.claim()) // משתלט מיד על כל הטאבים הפתוחים
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cache) => {
+          if (cache !== CACHE_NAME) {
+            console.log('[Service Worker] מוחק מטמון ישן ושבור:', cache);
+            return caches.delete(cache);
+          }
+        })
+      );
+    }).then(() => self.clients.claim()) // לוקח שליטה על הדפים פתוחים מייד ומעדכן אותם
   );
 });
 
-// טיפול בבקשות (Fetch)
-// HTML/ניווט — Network-First: תמיד מנסה קודם רשת (הגרסה העדכנית ביותר),
-// ורק אם אין אינטרנט נופל חזרה למטמון. זה מה שמונע את הבעיה של "גרסה תקועה".
-// שאר הקבצים (אייקונים וכו') — Cache-First כרגיל, לביצועים מהירים.
+// שלב בקשת הקבצים (Fetch) - החזרת הקובץ מהמטמון, ואם הוא לא שם - משיכה מהרשת
 self.addEventListener('fetch', (event) => {
-  const req = event.request;
-  const isHTML = req.mode === 'navigate' ||
-    (req.method === 'GET' && (req.headers.get('accept') || '').includes('text/html'));
-
-  if (isHTML) {
-    event.respondWith(
-      fetch(req)
-        .then((res) => {
-          const resClone = res.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone));
-          return res;
-        })
-        .catch(() => caches.match(req))
-    );
-    return;
-  }
-
   event.respondWith(
-    caches.match(req).then((response) => response || fetch(req))
+    caches.match(event.request)
+      .then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        return fetch(event.request);
+      })
   );
 });
