@@ -506,6 +506,7 @@
     @keyframes floatUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
     .rise { animation:floatUp .5s cubic-bezier(.16,1,.3,1) forwards; opacity:0; }
     .d1{animation-delay:.07s} .d2{animation-delay:.14s} .d3{animation-delay:.22s}
+    .d4{animation-delay:.30s} .d5{animation-delay:.38s} .d6{animation-delay:.46s}
     @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
     .slide-up { animation:slideUp .36s cubic-bezier(.16,1,.3,1) forwards; }
     @keyframes numPop { from{opacity:0;transform:scale(.88)} to{opacity:1;transform:scale(1)} }
@@ -2359,6 +2360,14 @@ body.theme-light #hero-balance-card::before {
   filter: none !important;
 }
 body.theme-light #hero-balance-card * { color: rgba(255,255,255,0.92) !important; position: relative; z-index: 1; }
+body.theme-light #hero-balance-card .hero-orb,
+body.theme-light #hero-orb-main,
+body.theme-light #hero-orb-2,
+body.theme-light #hero-particles,
+body.theme-light #hero-scanline {
+  position: absolute !important;
+  z-index: 0 !important;
+}
 body.theme-light #hero-lbl { color: rgba(255,255,255,0.45) !important; font-weight: 400 !important; letter-spacing: 0.08em !important; font-size: 11px !important; text-transform: uppercase !important; }
 body.theme-light #hero-balance-val {
   font-weight: 300 !important;
@@ -2627,6 +2636,24 @@ body.theme-light .cat-tile-edit  { color: #8A8A9A !important; background: rgba(0
 body.theme-light .cat-tile-del   { color: #D93050 !important; background: rgba(217,48,80,0.06) !important; border-color: rgba(217,48,80,0.14) !important; }
 body.theme-light .cat-tile-bar-bg { background: rgba(0,0,0,0.06) !important; }
 body.theme-light .cat-tile-icon-dot { opacity: 0.5 !important; }
+body.theme-light .cat-tile-cta-btn {
+  background: rgba(0,201,177,0.08) !important;
+  border-top: 1px solid rgba(0,201,177,0.18) !important;
+  color: #00998A !important;
+}
+body.theme-light .cat-tile-cta-btn:hover { background: rgba(0,201,177,0.16) !important; color: #00786D !important; }
+body.theme-light .cat-tile:hover { transform: translateY(-3px) !important; box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 10px 24px rgba(0,0,0,0.08) !important; }
+body.theme-light .cat-tile:active { transform: scale(0.97) !important; }
+body.theme-light .cat-tile.over-budget { animation: catTileOverLight 2.5s ease-in-out infinite, floatUp .5s cubic-bezier(.16,1,.3,1) forwards !important; }
+body.theme-light .cat-tile.near-budget { animation: catTileNearLight 3s ease-in-out infinite, floatUp .5s cubic-bezier(.16,1,.3,1) forwards !important; }
+@keyframes catTileOverLight {
+  0%,100% { box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04), 0 0 0 1px rgba(217,48,80,0.10); }
+  50%     { box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 4px 20px rgba(217,48,80,0.16), 0 0 0 1.5px rgba(217,48,80,0.30); }
+}
+@keyframes catTileNearLight {
+  0%,100% { box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04), 0 0 0 1px rgba(184,147,74,0.08); }
+  50%     { box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 4px 18px rgba(184,147,74,0.14), 0 0 0 1.5px rgba(184,147,74,0.24); }
+}
 
 body.theme-light .cat-card,
 body.theme-light [class*="cat-card"] {
@@ -9459,7 +9486,7 @@ window.deletePhoneIdx = function(i) {
       if (banner2) { banner2.innerHTML = ''; banner2.classList.add('hidden'); }
     }
 
-    function tileHtml(cat){
+    function tileHtml(cat, idx){
       var isInc=cat.type==='income';
       var col    = isInc ? 'var(--green)' : 'var(--red)';
       var colBg  = isInc ? 'rgba(0,230,118,0.07)' : 'rgba(255,23,68,0.07)';
@@ -9514,7 +9541,7 @@ window.deletePhoneIdx = function(i) {
       } else {
         budgetHtml = '<div class="cat-tile-bar" style="background:'+colBar+';opacity:0.45;"></div>';
       }
-      var tileClass = 'cat-tile'+(overBudget?' over-budget':nearBudget?' near-budget':'');
+      var tileClass = 'cat-tile rise d'+((idx%6)+1)+(overBudget?' over-budget':nearBudget?' near-budget':'');
       var glowStyle = (budget>0&&!isInc) ? (overBudget ?
         'box-shadow:0 0 0 1.5px rgba(255,31,78,0.45),0 0 28px rgba(255,31,78,0.18),0 8px 32px rgba(0,0,0,0.5);' :
         nearBudget ?
@@ -9527,7 +9554,7 @@ window.deletePhoneIdx = function(i) {
         '<div class="cat-tile-count">'+count+' תנועות במחזור</div>'+
         budgetHtml+
         (isInc && !goalReached && budget<=0 ? '<div style="text-align:center;margin-top:8px;font-size:10px;font-weight:700;color:rgba(0,230,118,0.35);letter-spacing:0.02em;">לחצו להוספת תנועה</div>' : '')+
-        '<button onclick="event.stopPropagation();openBudgetModal(\''+cat.id+'\')" style="position:absolute;bottom:0;left:0;right:0;height:38px;background:rgba(0,229,255,0.06);border:none;border-top:1px solid rgba(0,229,255,0.13);border-radius:0 0 18px 18px;color:rgba(0,229,255,0.60);font-family:\'Syne\',sans-serif;font-size:11px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;z-index:3;transition:all .18s;width:100%;" onmouseover="this.style.background=\'rgba(0,229,255,0.14)\';this.style.color=\'#00E5FF\'" onmouseout="this.style.background=\'rgba(0,229,255,0.06)\';this.style.color=\'rgba(0,229,255,0.60)\'">'+
+        '<button class="cat-tile-cta-btn" onclick="event.stopPropagation();openBudgetModal(\''+cat.id+'\')" style="position:absolute;bottom:0;left:0;right:0;height:38px;background:rgba(0,229,255,0.06);border:none;border-top:1px solid rgba(0,229,255,0.13);border-radius:0 0 18px 18px;color:rgba(0,229,255,0.60);font-family:\'Syne\',sans-serif;font-size:11px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;z-index:3;transition:all .18s;width:100%;" onmouseover="this.style.background=\'rgba(0,229,255,0.14)\';this.style.color=\'#00E5FF\'" onmouseout="this.style.background=\'rgba(0,229,255,0.06)\';this.style.color=\'rgba(0,229,255,0.60)\'">'+
         '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"/></svg>'+(isInc?'יעד הכנסה':'עריכת תקרה')+'</button></div>';
     }
 
