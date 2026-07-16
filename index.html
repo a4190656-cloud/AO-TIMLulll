@@ -9606,7 +9606,7 @@ window.deletePhoneIdx = function(i) {
     return Math.round(n).toString();
   }
 
-  function renderCategoriesList2(){
+  function renderCategoriesList2Impl(){
     var el=$('cat-list2');
     if(!el) return;
     if(!userCategories||!userCategories.length){
@@ -9765,6 +9765,32 @@ window.deletePhoneIdx = function(i) {
         setTimeout(function(){ showGoalToast(cat.name, tot3, cat.budget); }, 700);
       }
     });
+  }
+
+  var _catRender2Timer = null, _catRender2Last = 0, _catRender2Pending = false;
+  function renderCategoriesList2(){
+    /* דה-בונס "leading edge": Firestore מפעיל את ה-listener פעמיים ברצף (מטמון מקומי,
+       ואז אישור שרת), וגם switchView קורא לפונקציה בנפרד. בלי דה-בונס זה יוצר שני
+       renders רצופים — כל אחד מאפס ומרנפש את הכרטיסים מחדש — מה שנראה כ"קפיצה ונעלם".
+       הקריאה הראשונה מתבצעת מיד (בלי עיכוב מורגש), וקריאות נוספות בתוך חלון קצר
+       מתקבצות לרינדור אחד בסוף החלון. */
+    var now = Date.now();
+    if (now - _catRender2Last > 120) {
+      _catRender2Last = now;
+      renderCategoriesList2Impl();
+      if (_catRender2Timer) clearTimeout(_catRender2Timer);
+      return;
+    }
+    _catRender2Pending = true;
+    if (_catRender2Timer) clearTimeout(_catRender2Timer);
+    _catRender2Timer = setTimeout(function(){
+      _catRender2Timer = null;
+      if (_catRender2Pending) {
+        _catRender2Pending = false;
+        _catRender2Last = Date.now();
+        renderCategoriesList2Impl();
+      }
+    }, 150);
   }
 
   function reloadModalCategorySelect(selectedName){
