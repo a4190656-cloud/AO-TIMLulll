@@ -2700,8 +2700,10 @@ body.theme-light .fixed-item-btn.edit { background: rgba(0,201,177,0.08) !import
 body.theme-light .fixed-item-btn.edit:hover { background: rgba(0,201,177,0.16) !important; }
 body.theme-light .fixed-item-btn.del  { background: rgba(217,48,80,0.08) !important; color: #D93050 !important; }
 body.theme-light .fixed-item-btn.del:hover  { background: rgba(217,48,80,0.16) !important; }
-body.theme-light .cat-tile.over-budget { animation: catTileOverLight 2.5s ease-in-out infinite, floatUp .5s cubic-bezier(.16,1,.3,1) forwards !important; }
-body.theme-light .cat-tile.near-budget { animation: catTileNearLight 3s ease-in-out infinite, floatUp .5s cubic-bezier(.16,1,.3,1) forwards !important; }
+body.theme-light .cat-tile.over-budget { animation: catTileOverLight 2.5s ease-in-out infinite !important; }
+body.theme-light .cat-tile.near-budget { animation: catTileNearLight 3s ease-in-out infinite !important; }
+body.theme-light .cat-tile.over-budget.rise { animation: catTileOverLight 2.5s ease-in-out infinite, floatUp .5s cubic-bezier(.16,1,.3,1) forwards !important; }
+body.theme-light .cat-tile.near-budget.rise { animation: catTileNearLight 3s ease-in-out infinite, floatUp .5s cubic-bezier(.16,1,.3,1) forwards !important; }
 @keyframes catTileOverLight {
   0%,100% { box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04), 0 0 0 1px rgba(217,48,80,0.10); }
   50%     { box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 4px 20px rgba(217,48,80,0.16), 0 0 0 1.5px rgba(217,48,80,0.30); }
@@ -8631,6 +8633,7 @@ body.theme-light .fixed-item:active { transform: scale(0.98) !important; }
       show('view-dashboard'); $('nav-dashboard').classList.add('active');
     } else if (v === 'categories'){
       show('view-categories'); $('nav-categories').classList.add('active');
+      _catViewJustOpened = true;
       renderCategoriesList2();
     } else if (v === 'charts'){
       show('view-charts');
@@ -9713,7 +9716,7 @@ window.deletePhoneIdx = function(i) {
       } else {
         budgetHtml = '<div class="cat-tile-bar" style="background:'+colBar+';opacity:0.45;"></div>';
       }
-      var tileClass = 'cat-tile rise d'+((idx%6)+1)+(overBudget?' over-budget':nearBudget?' near-budget':'');
+      var tileClass = 'cat-tile'+(_catViewJustOpened ? ' rise d'+((idx%6)+1) : '')+(overBudget?' over-budget':nearBudget?' near-budget':'');
       var glowStyle = (budget>0&&!isInc) ? (overBudget ?
         'box-shadow:0 0 0 1.5px rgba(255,31,78,0.45),0 0 28px rgba(255,31,78,0.18),0 8px 32px rgba(0,0,0,0.5);' :
         nearBudget ?
@@ -9734,6 +9737,7 @@ window.deletePhoneIdx = function(i) {
     if(expCats.length){ html+='<div class="cat-section-label">הוצאות</div><div class="cat-tiles-grid">'+expCats.map(tileHtml).join('')+'</div>'; }
     if(incCats.length){ html+='<div class="cat-section-label">הכנסות</div><div class="cat-tiles-grid">'+incCats.map(tileHtml).join('')+'</div>'; }
     el.innerHTML=html;
+    _catViewJustOpened = false;
 
     if (!window._budgetAlerted) window._budgetAlerted = {};
     // הוצאות — alert חריגה
@@ -9767,6 +9771,7 @@ window.deletePhoneIdx = function(i) {
     });
   }
 
+  var _catViewJustOpened = true;
   var _catRender2Timer = null, _catRender2Last = 0, _catRender2FirstPending = 0;
   function renderCategoriesList2(){
     /* דה-בונס עם "max-wait": מונע הבהוב מרינדור כפול (Firestore יורה פעמיים ברצף),
