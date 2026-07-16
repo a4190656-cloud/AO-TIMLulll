@@ -9767,30 +9767,29 @@ window.deletePhoneIdx = function(i) {
     });
   }
 
-  var _catRender2Timer = null, _catRender2Last = 0, _catRender2Pending = false;
+  var _catRender2Timer = null, _catRender2Last = 0, _catRender2FirstPending = 0;
   function renderCategoriesList2(){
-    /* דה-בונס "leading edge": Firestore מפעיל את ה-listener פעמיים ברצף (מטמון מקומי,
-       ואז אישור שרת), וגם switchView קורא לפונקציה בנפרד. בלי דה-בונס זה יוצר שני
-       renders רצופים — כל אחד מאפס ומרנפש את הכרטיסים מחדש — מה שנראה כ"קפיצה ונעלם".
-       הקריאה הראשונה מתבצעת מיד (בלי עיכוב מורגש), וקריאות נוספות בתוך חלון קצר
-       מתקבצות לרינדור אחד בסוף החלון. */
+    /* דה-בונס עם "max-wait": מונע הבהוב מרינדור כפול (Firestore יורה פעמיים ברצף),
+       אבל מבטיח שאם עדכונים ממשיכים להגיע ברצף, עדיין יהיה רינדור בפועל תוך זמן חסום —
+       כדי שהרשימה לעולם לא תישאר "תקועה" ריקה. */
     var now = Date.now();
     if (now - _catRender2Last > 120) {
       _catRender2Last = now;
+      _catRender2FirstPending = 0;
       renderCategoriesList2Impl();
-      if (_catRender2Timer) clearTimeout(_catRender2Timer);
+      if (_catRender2Timer) { clearTimeout(_catRender2Timer); _catRender2Timer = null; }
       return;
     }
-    _catRender2Pending = true;
+    if (!_catRender2FirstPending) _catRender2FirstPending = now;
+    var waited = now - _catRender2FirstPending;
     if (_catRender2Timer) clearTimeout(_catRender2Timer);
+    var delay = Math.min(150, Math.max(0, 250 - waited));
     _catRender2Timer = setTimeout(function(){
       _catRender2Timer = null;
-      if (_catRender2Pending) {
-        _catRender2Pending = false;
-        _catRender2Last = Date.now();
-        renderCategoriesList2Impl();
-      }
-    }, 150);
+      _catRender2FirstPending = 0;
+      _catRender2Last = Date.now();
+      renderCategoriesList2Impl();
+    }, delay);
   }
 
   function reloadModalCategorySelect(selectedName){
