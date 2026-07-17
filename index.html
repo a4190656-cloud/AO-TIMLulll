@@ -2208,6 +2208,11 @@ body.theme-light {
   --au-glow-green:  0 10px 32px -6px rgba(15,157,88,0.34), 0 2px 10px rgba(15,157,88,0.14);
   --au-glow-red:    0 10px 32px -6px rgba(217,48,78,0.32), 0 2px 10px rgba(217,48,78,0.13);
   --au-glow-gold:   0 10px 30px -6px rgba(184,147,74,0.30), 0 2px 10px rgba(184,147,74,0.13);
+
+  /* דריסת המשתנים הגלובליים --green/--red עצמם: הגוונים המקוריים (#00E676/#FF1744)
+     נבחרו לניגודיות מול רקע כהה כמעט-שחור. על משטח לבן הם דהויים מדי לטקסט קטן. */
+  --green: #0F9D58;
+  --red:   #D9304E;
   --au-spring: cubic-bezier(0.34,1.56,0.64,1);
   --au-ease:   cubic-bezier(0.25,0.46,0.45,0.94);
 
@@ -2606,8 +2611,8 @@ body.theme-light .fixed-block-expense::before { background: linear-gradient(90de
 body.theme-light .fixed-block-income::before  { background: linear-gradient(90deg,transparent,rgba(18,183,106,0.5),transparent) !important; }
 body.theme-light .fixed-block-expense .fixed-block-header { border-bottom-color: rgba(225,52,79,0.12) !important; }
 body.theme-light .fixed-block-income  .fixed-block-header { border-bottom-color: rgba(18,183,106,0.12) !important; }
-body.theme-light .fixed-block-expense .fixed-block-icon { background: var(--au-red-lt) !important; border-color: rgba(225,52,79,0.22) !important; box-shadow:none !important; }
-body.theme-light .fixed-block-income  .fixed-block-icon { background: var(--au-green-lt) !important; border-color: rgba(18,183,106,0.22) !important; box-shadow:none !important; }
+body.theme-light .fixed-block-expense .fixed-block-icon { background: var(--au-red-lt) !important; border: none !important; box-shadow: var(--au-glow-red) !important; }
+body.theme-light .fixed-block-income  .fixed-block-icon { background: var(--au-green-lt) !important; border: none !important; box-shadow: var(--au-glow-green) !important; }
 body.theme-light .fixed-block-expense .fixed-block-title { color: var(--au-red) !important; }
 body.theme-light .fixed-block-income  .fixed-block-title { color: var(--au-green) !important; }
 body.theme-light .fixed-block-sub { color: var(--au-ink3) !important; }
@@ -3019,6 +3024,65 @@ body.theme-light .phone-action-btn.edit { background: var(--au-teal-lt) !importa
 body.theme-light .phone-action-btn.edit:hover { background: rgba(0,201,177,0.18) !important; }
 body.theme-light .phone-action-btn.del  { background: var(--au-red-lt) !important; color: var(--au-red) !important; }
 body.theme-light .phone-action-btn.del:hover  { background: rgba(225,52,79,0.16) !important; }
+
+/* ════════════════════════════════════════════
+   תיקון: הכיתות האמיתיות שמשמשות את renderCategoriesList2()
+   (cat-tile-* ולא cat-name/cat-budget/cat-spent שאינן בשימוש בפועל)
+════════════════════════════════════════════ */
+body.theme-light .cat-section-label { color: var(--au-ink4) !important; font-size:11px !important; font-weight:700 !important; letter-spacing:0.06em !important; }
+body.theme-light .cat-tile-name  { color: var(--au-ink) !important; font-weight:800 !important; letter-spacing:-0.01em !important; }
+body.theme-light .cat-tile-amount{ font-weight:800 !important; }
+body.theme-light .cat-tile-count { color: var(--au-ink4) !important; opacity:1 !important; }
+body.theme-light .cat-tile-bar   { opacity:0.55 !important; }
+body.theme-light .cat-tile-cta-btn {
+  background: var(--au-teal-lt) !important;
+  border-top: none !important;
+  box-shadow: 0 -4px 16px -4px rgba(0,201,177,0.20) !important;
+  color: #00887A !important;
+}
+body.theme-light .cat-budget-track { border-color: var(--au-stroke) !important; }
+body.theme-light .cat-budget-label { color: var(--au-ink4) !important; }
+body.theme-light .cat-budget-remain{ color: var(--au-ink2) !important; }
+
+/* כפתור מחיקת קטגוריה (✕) — נבנה ב-JS עם style inline בלבד, ללא class */
+body.theme-light .cat-tile [style*="rgba(255,23,68,0.10)"] {
+  background: var(--au-red-lt) !important;
+  border-color: rgba(225,52,79,0.22) !important;
+  color: var(--au-red) !important;
+}
+/* אחוז/יעד בתוך cat-budget-track — span עם style inline לבן, ללא class */
+body.theme-light .cat-budget-track span[style*="rgba(255,255,255,0.35)"] { color: rgba(16,18,34,0.45) !important; }
+body.theme-light .cat-budget-track span[style*="rgba(0,230,118,0.5)"]   { color: #0F9D58 !important; }
+body.theme-light .cat-tile [style*="rgba(0,230,118,0.35)"] { color: #0F9D58 !important; }
+
+/* ── באנר התראות תקציב (חריגה/התקרבות) ── */
+body.theme-light .budget-alert-item {
+  background: #FFFFFF !important;
+  border: none !important;
+  border-radius: var(--au-r-sm) !important;
+  box-shadow: var(--au-sh-sm) !important;
+}
+body.theme-light .budget-alert-item.alert-over { border-right: 3px solid var(--au-red) !important; }
+body.theme-light .budget-alert-item.alert-near { border-right: 3px solid var(--au-gold) !important; }
+body.theme-light .budget-alert-name[style*="color:#FF6080"] { color: var(--au-red) !important; }
+body.theme-light .budget-alert-name[style*="color:#FFB300"] { color: var(--au-gold) !important; }
+body.theme-light .budget-alert-detail { color: var(--au-ink3) !important; }
+body.theme-light .budget-alert-remain.over { background: var(--au-red-lt) !important; color: var(--au-red) !important; }
+body.theme-light .budget-alert-remain.near { background: var(--au-gold-lt) !important; color: var(--au-gold) !important; }
+body.theme-light .budget-alert-item button[style*="color:rgba(255,100,128"] { color: rgba(225,52,79,0.6) !important; }
+body.theme-light .budget-alert-item button[style*="color:rgba(255,179,0"]  { color: rgba(184,147,74,0.7) !important; }
+
+/* ════════════════════════════════════════════
+   תרשים המגמה (SVG פנימי דרך innerHTML) — צבעי טקסט/קווים
+   שנקבעו כ-rgba(255,255,255,..) עבור רקע כהה
+════════════════════════════════════════════ */
+body.theme-light .trend-svg-wrap svg line[stroke="rgba(255,255,255,0.05)"] { stroke: rgba(16,18,34,0.09) !important; }
+body.theme-light .trend-svg-wrap svg line[stroke="rgba(255,255,255,0.14)"] { stroke: rgba(16,18,34,0.20) !important; }
+body.theme-light .trend-svg-wrap svg text[fill="rgba(255,255,255,0.7)"]  { fill: var(--au-ink) !important; }
+body.theme-light .trend-svg-wrap svg text[fill="rgba(255,255,255,0.32)"] { fill: var(--au-ink4) !important; }
+body.theme-light .trend-svg-wrap svg text[fill="#00E5FF"] { fill: #00887A !important; }
+body.theme-light .trend-svg-wrap svg text[fill="#FF6080"] { fill: var(--au-red) !important; }
+body.theme-light .trend-svg-wrap svg rect[fill="rgba(0,229,255,0.04)"] { fill: rgba(0,201,177,0.06) !important; }
 
 /* ══ סיום — משתנה הזמן היחיד שנטען אחרון כדי לגבור על שכבות קודמות שחיות בתוך תגי style אחרים בקובץ ══ */
 body.theme-light { background-color: var(--bg) !important; }
@@ -6365,6 +6429,28 @@ body.theme-light { background-color: var(--bg) !important; }
         body.theme-light #ev-detail-emoji-wrap { box-shadow: 0 8px 24px rgba(168,85,247,0.14) !important; }
         body.theme-light .ev-cancel-btn { background: #F4F4F5 !important; border-color: rgba(0,0,0,0.08) !important; color: #6B6B78 !important; }
         body.theme-light .ev-cancel-btn:active { background: #ECECEE !important; }
+        /* ── תוספות שאבדו והוחזרו: אלמנטים חיוורים מדי על רקע לבן/לבנדר ── */
+        body.theme-light .ev-bar-bg { background: rgba(15,23,42,0.08) !important; }
+        body.theme-light .ev-edit-btn { color: #9333EA !important; }
+        body.theme-light .ev-del-btn  { color: #D9304E !important; }
+        body.theme-light .ev-status-open { color: #7C3AED !important; }
+        body.theme-light .ev-status-over { color: #D9304E !important; }
+        body.theme-light .ev-stat-in  .ev-stat-label { color: #0F9D58 !important; }
+        body.theme-light .ev-stat-out .ev-stat-label { color: #D9304E !important; }
+        body.theme-light .ev-stat-net .ev-stat-label { color: #7C3AED !important; }
+        body.theme-light .ev-stat-out .ev-stat-val { color: #D9304E !important; }
+        body.theme-light .ev-balance-row { border-top-color: rgba(0,0,0,0.06) !important; }
+        body.theme-light .ev-sheet-handle { background: rgba(15,23,42,0.14) !important; }
+        body.theme-light .ev-sheet-title  { color: #111827 !important; }
+        body.theme-light .ev-field-label  { color: rgba(10,10,15,0.40) !important; }
+        body.theme-light .ev-emoji-opt { background: rgba(255,255,255,0.75) !important; border-color: rgba(0,0,0,0.08) !important; }
+        body.theme-light .ev-cal-btn {
+          background: rgba(255,255,255,0.6) !important;
+          border-color: rgba(0,0,0,0.08) !important;
+          color: rgba(10,10,15,0.45) !important;
+        }
+        body.theme-light .ev-cal-btn.active { color: #7C3AED !important; }
+        body.theme-light .tx-ev-tag { color: #7C3AED !important; }
       </style>
 
       <div class="ev-section-label">
@@ -8845,14 +8931,17 @@ window.deletePhoneIdx = function(i) {
       ctx.setTransform(dpr,0,0,dpr,0,0);
       ctx.clearRect(0,0,canvasSize,canvasSize);
       var cx=canvasSize/2, cy=canvasSize/2, r=72, lw=18;
+      var _ltDonut = document.body.classList.contains('theme-light');
+      var _ringEmptyCol = _ltDonut ? 'rgba(16,18,34,.08)' : 'rgba(255,255,255,.07)';
+      var _ringBgCol     = _ltDonut ? 'rgba(16,18,34,.06)' : 'rgba(255,255,255,.05)';
 
       if(!expEntries.length){
         ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
-        ctx.strokeStyle='rgba(255,255,255,.07)'; ctx.lineWidth=lw; ctx.stroke();
+        ctx.strokeStyle=_ringEmptyCol; ctx.lineWidth=lw; ctx.stroke();
       } else {
         /* bg ring */
         ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
-        ctx.strokeStyle='rgba(255,255,255,.05)'; ctx.lineWidth=lw; ctx.stroke();
+        ctx.strokeStyle=_ringBgCol; ctx.lineWidth=lw; ctx.stroke();
 
         /* ── pass 1: draw arcs ── */
         var ang = -Math.PI/2, gap=0.03;
@@ -8957,8 +9046,8 @@ window.deletePhoneIdx = function(i) {
           ctx.fillText(name, textX, p3y - 4);
           /* chip text — pct */
           ctx.font = '800 8px JetBrains Mono,monospace';
-          ctx.fillStyle = '#fff';
-          ctx.globalAlpha = 0.9;
+          ctx.fillStyle = _ltDonut ? '#10121B' : '#fff';
+          ctx.globalAlpha = _ltDonut ? 0.75 : 0.9;
           ctx.fillText(pctTxt, textX, p3y + 5);
           ctx.restore();
 
