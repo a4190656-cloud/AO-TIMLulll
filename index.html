@@ -2572,17 +2572,20 @@ body.theme-light #beta-bubble { background:#FFFFFF !important; border: 0.5px sol
 ════════════════════════════════════════════ */
 body.theme-light #wa-bot-card {
   background: linear-gradient(160deg, #FFFFFF, #F5FBF8) !important;
-  border: 0.5px solid rgba(37,211,102,0.22) !important;
-  box-shadow: var(--au-sh-md), 0 4px 20px rgba(37,211,102,0.06) !important;
+  border: none !important;
+  box-shadow: var(--au-sh-md), 0 0 50px rgba(37,211,102,0.10) !important;
 }
 body.theme-light #wa-bot-card::before { background: linear-gradient(90deg,transparent,rgba(37,211,102,0.5),transparent) !important; }
 body.theme-light .wa-bot-header { border-bottom-color: rgba(37,211,102,0.14) !important; }
 body.theme-light .wa-bot-title { color: var(--au-ink) !important; }
 body.theme-light .wa-bot-sub   { color: var(--au-ink3) !important; }
-body.theme-light .wa-bot-live  { background: rgba(37,211,102,0.09) !important; border-color: rgba(37,211,102,0.28) !important; color:#128C4E !important; }
-body.theme-light .wa-btn-phone { background: rgba(37,211,102,0.08) !important; border-color: rgba(37,211,102,0.24) !important; color:#128C4E !important; }
+body.theme-light .wa-bot-live  { background: rgba(37,211,102,0.09) !important; border: none !important; box-shadow: 0 4px 14px -3px rgba(37,211,102,0.30) !important; color:#128C4E !important; }
+body.theme-light .wa-btn-phone { background: rgba(37,211,102,0.08) !important; border: none !important; box-shadow: 0 4px 16px -3px rgba(37,211,102,0.24) !important; color:#128C4E !important; }
 body.theme-light .wa-btn-phone:hover { background: rgba(37,211,102,0.16) !important; }
-body.theme-light .wa-cmd-chip { background: var(--au-teal-lt) !important; border: 0.5px solid rgba(0,201,177,0.16) !important; color: var(--au-ink2) !important; border-radius:8px !important; }
+body.theme-light .wa-bot-logo { box-shadow: var(--au-glow-green), inset 0 1px 0 rgba(255,255,255,0.3) !important; }
+body.theme-light .wa-btn-chat { box-shadow: 0 14px 34px -8px rgba(37,211,102,0.55), 0 4px 14px rgba(37,211,102,0.20), inset 0 1px 0 rgba(255,255,255,0.25) !important; }
+body.theme-light .wa-btn-chat:hover { box-shadow: 0 18px 42px -8px rgba(37,211,102,0.60), inset 0 1px 0 rgba(255,255,255,0.25) !important; }
+body.theme-light .wa-cmd-chip { background: var(--au-teal-lt) !important; border: 0.5px solid rgba(0,201,177,0.14) !important; color: var(--au-ink2) !important; border-radius:14px !important; }
 body.theme-light .wa-cmd-chip span { color: var(--au-teal) !important; font-weight:700 !important; }
 body.theme-light .sync-free-badge { background: var(--au-teal-lt) !important; border: 0.5px solid rgba(0,201,177,0.14) !important; color: var(--au-ink2) !important; }
 
@@ -2898,6 +2901,124 @@ body.theme-light #_scan-source-sheet [style*="background:rgba(0,229,255,0.12)"] 
 body.theme-light #_scan-source-sheet [style*="background:rgba(255,255,255,0.04)"] { background: rgba(16,18,34,0.035) !important; border-color: rgba(16,18,34,0.09) !important; }
 body.theme-light #_scan-source-sheet [style*="background:rgba(255,255,255,0.07)"] { background: rgba(16,18,34,0.06) !important; border-color: rgba(16,18,34,0.12) !important; }
 body.theme-light #_scan-source-sheet svg[stroke="rgba(255,255,255,0.75)"] { stroke: rgba(16,18,34,0.65) !important; }
+
+/* ════════════════════════════════════════════
+   אזור אישי / הגדרות — sblock, כרטיס משתמש, מספרי וואטסאפ
+   (המערכת הזו לא קיבלה מעולם עיצוב למצב בהיר — כל הסעיף חדש)
+════════════════════════════════════════════ */
+body.theme-light .sblock {
+  background: #FFFFFF !important;
+  border: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: var(--au-sh-md) !important;
+}
+body.theme-light .sblock:hover { box-shadow: var(--au-sh-lg) !important; transform: translateY(-1px) !important; }
+body.theme-light .sblock-head {
+  border-bottom-color: var(--au-stroke2) !important;
+  background: transparent !important;
+  color: var(--au-ink) !important;
+}
+body.theme-light .settings-section-title {
+  color: rgba(16,18,34,0.38) !important;
+}
+body.theme-light .settings-section-title::before { background: var(--au-teal) !important; box-shadow: 0 0 8px rgba(0,201,177,0.5) !important; }
+body.theme-light .settings-section-title::after  { background: linear-gradient(90deg, rgba(16,18,34,0.12), transparent) !important; }
+body.theme-light .fixed-row:hover { background: var(--lt-surf-2) !important; }
+
+/* כרטיס משתמש */
+body.theme-light #settings-user-card {
+  background: linear-gradient(150deg, rgba(0,201,177,0.07) 0%, rgba(62,123,250,0.04) 55%, #FFFFFF 100%) !important;
+  border: none !important;
+  box-shadow: var(--au-sh-md), 0 0 40px rgba(0,201,177,0.08) !important;
+}
+body.theme-light #settings-user-card::before { background: linear-gradient(90deg, transparent 5%, rgba(0,201,177,0.5) 40%, rgba(62,123,250,0.6) 60%, transparent 95%) !important; }
+body.theme-light #settings-user-card::after   { background: radial-gradient(ellipse at 20% 0%, rgba(0,201,177,0.06) 0%, transparent 55%) !important; }
+body.theme-light .user-card-avatar { border-color: rgba(0,201,177,0.35) !important; box-shadow: var(--au-glow-teal) !important; }
+body.theme-light .user-card-badge {
+  background: var(--au-teal-lt) !important; border: none !important;
+  box-shadow: 0 4px 14px -3px rgba(0,201,177,0.28) !important; color: #00887A !important;
+}
+body.theme-light #settings-user-card *:not(button):not(.user-card-badge) { color: var(--au-ink) !important; }
+body.theme-light #settings-user-card [style*="color:rgba(255,255,255,0.4"],
+body.theme-light #settings-user-card [style*="color:rgba(255,255,255,0.5"],
+body.theme-light #settings-user-card [style*="color:rgba(255,255,255,0.3"] { color: var(--au-ink3) !important; }
+
+/* מתג הפעלה/כיבוי (toggle) */
+body.theme-light .ao-switch-track { background: rgba(16,18,34,0.12) !important; border-color: rgba(16,18,34,0.10) !important; }
+body.theme-light .ao-switch input:checked + .ao-switch-track {
+  background: linear-gradient(135deg, var(--au-teal), var(--au-blue)) !important;
+  box-shadow: 0 0 14px rgba(0,201,177,0.35), inset 0 1px 0 rgba(255,255,255,0.4) !important;
+  border-color: transparent !important;
+}
+body.theme-light .ao-switch-track::after { box-shadow: 0 2px 6px rgba(16,24,40,0.25) !important; }
+
+/* כפתורי גוסט/סכנה */
+body.theme-light .btn-ghost {
+  background: #FFFFFF !important; border: 0.5px solid var(--au-stroke) !important;
+  color: var(--au-ink) !important; box-shadow: var(--au-sh-sm) !important;
+}
+body.theme-light .btn-ghost:hover { background: var(--lt-surf-2) !important; }
+body.theme-light .btn-danger-ghost {
+  background: var(--au-red-lt) !important; border: none !important;
+  color: var(--au-red) !important; box-shadow: 0 4px 14px -3px rgba(217,48,78,0.22) !important;
+}
+body.theme-light .btn-danger-ghost:hover { background: rgba(225,52,79,0.14) !important; }
+body.theme-light .btn-red { box-shadow: var(--au-glow-red), inset 0 1px 0 rgba(255,255,255,0.3) !important; }
+
+/* גיליון עריכה (שינוי שם וכו') */
+body.theme-light .edit-sheet-handle { background: rgba(16,18,34,0.14) !important; }
+body.theme-light .edit-sheet-title  { color: var(--au-ink) !important; }
+body.theme-light .edit-sheet-inp {
+  background: var(--lt-surf-2) !important; border: 1px solid var(--lt-border) !important; color: var(--au-ink) !important;
+}
+body.theme-light .edit-sheet-inp:focus { border-color: rgba(0,201,177,0.45) !important; box-shadow: 0 0 0 3px var(--au-teal-lt) !important; }
+body.theme-light .edit-sheet-save { background: linear-gradient(135deg,#00C9B1,#3E7BFA) !important; color:#fff !important; box-shadow: 0 6px 22px -4px rgba(0,201,177,0.40) !important; }
+body.theme-light .edit-sheet-cancel { background: var(--lt-surf-2) !important; border-color: var(--au-stroke) !important; color: var(--au-ink3) !important; }
+body.theme-light .edit-sheet-cancel:hover { background: #ECECF2 !important; }
+
+/* ── כרטיס מספרי וואטסאפ מחוברים (הסגנון של התמונה המצורפת) ── */
+body.theme-light #phones-card-2026 {
+  background: linear-gradient(160deg, #FFFFFF, #F4FBF7) !important;
+  border: none !important;
+  box-shadow: var(--au-sh-md), 0 0 44px rgba(37,211,102,0.08) !important;
+}
+body.theme-light #phones-card-2026::before { background: linear-gradient(90deg, transparent, rgba(37,211,102,0.5), transparent) !important; }
+body.theme-light .phones-card-header { border-bottom-color: rgba(37,211,102,0.12) !important; }
+body.theme-light .phones-header-icon {
+  background: linear-gradient(135deg, rgba(37,211,102,0.16), rgba(18,140,60,0.07)) !important;
+  border: none !important;
+  box-shadow: 0 8px 26px -6px rgba(37,211,102,0.38) !important;
+}
+body.theme-light .phones-header-title { color: var(--au-ink) !important; }
+body.theme-light .phones-header-sub   { color: var(--au-ink3) !important; }
+body.theme-light .phones-header-badge { background: rgba(37,211,102,0.10) !important; border: none !important; box-shadow: 0 4px 14px -3px rgba(37,211,102,0.30) !important; color:#128C4E !important; }
+body.theme-light .phone-item-2026 { background: rgba(37,211,102,0.045) !important; border-color: rgba(37,211,102,0.16) !important; }
+body.theme-light .phone-item-2026::before { background: linear-gradient(90deg, transparent, rgba(37,211,102,0.30), transparent) !important; }
+body.theme-light .phone-wa-icon { background: linear-gradient(135deg, rgba(37,211,102,0.16), rgba(18,140,60,0.08)) !important; border: none !important; box-shadow: 0 6px 18px -5px rgba(37,211,102,0.35) !important; }
+body.theme-light .phone-number-text { color: #0F8A4E !important; }
+body.theme-light .phone-empty-state { border-color: rgba(37,211,102,0.22) !important; }
+body.theme-light .phone-empty-title { color: var(--au-ink2) !important; }
+body.theme-light .phone-empty-sub   { color: var(--au-ink4) !important; }
+body.theme-light #settings-new-phone-input {
+  background: #FFFFFF !important; border: 1px solid rgba(37,211,102,0.22) !important; color: var(--au-ink) !important;
+}
+body.theme-light #settings-new-phone-input::placeholder { color: var(--au-ink4) !important; }
+body.theme-light #settings-new-phone-input:focus { border-color: rgba(37,211,102,0.45) !important; box-shadow: 0 0 0 3px rgba(37,211,102,0.10) !important; }
+body.theme-light .phones-input-icon { color: rgba(37,211,102,0.55) !important; }
+body.theme-light .btn-add-phone-2026 {
+  background: linear-gradient(135deg, #22C55E, #16A34A) !important;
+  border: none !important; color:#fff !important;
+  box-shadow: var(--au-glow-green), inset 0 1px 0 rgba(255,255,255,0.3) !important;
+}
+body.theme-light .btn-add-phone-2026:hover { box-shadow: 0 12px 32px -6px rgba(15,157,88,0.45), inset 0 1px 0 rgba(255,255,255,0.3) !important; }
+body.theme-light .phones-bot-info { background: rgba(37,211,102,0.04) !important; border-top-color: rgba(37,211,102,0.10) !important; }
+body.theme-light .phones-bot-info-text { color: var(--au-ink3) !important; }
+body.theme-light .phones-bot-info-text strong { color: #0F8A4E !important; }
+body.theme-light .phone-action-btn.edit { background: var(--au-teal-lt) !important; color:#00887A !important; }
+body.theme-light .phone-action-btn.edit:hover { background: rgba(0,201,177,0.18) !important; }
+body.theme-light .phone-action-btn.del  { background: var(--au-red-lt) !important; color: var(--au-red) !important; }
+body.theme-light .phone-action-btn.del:hover  { background: rgba(225,52,79,0.16) !important; }
 
 /* ══ סיום — משתנה הזמן היחיד שנטען אחרון כדי לגבור על שכבות קודמות שחיות בתוך תגי style אחרים בקובץ ══ */
 body.theme-light { background-color: var(--bg) !important; }
