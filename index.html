@@ -825,11 +825,18 @@
     .modern-hover { transition:all 0.3s cubic-bezier(0.25,0.8,0.25,1); }
     @media (hover: hover) and (pointer: fine) {
       .modern-hover:hover { transform:translateY(-2px); box-shadow:0 12px 32px rgba(0,0,0,0.5); z-index:10; }
+      /* שורות תנועה מכילות כפתורי עריכה/מחיקה - הזזת המיקום ב-hover גורמת ללחיצות לפספס
+         (המיקום הוויזואלי זז ממש ברגע שהעכבר/מגע נוגע בכפתור), אז מנטרלים אותה כאן */
+      .tx-row.modern-hover:hover { transform:none; box-shadow:none; z-index:auto; }
     }
     @media (hover: none), (pointer: coarse) {
       /* במגע: בלי הזזת מיקום (זה מה שגרם ללחיצות ערוך/מחק לפספס) — רק משוב עדין */
       .modern-hover:active { background: rgba(255,255,255,0.03); }
     }
+    /* הגנה נוספת: גם אם מכשיר מגע מדווח בטעות pointer:fine/hover:hover
+       (קורה במכשירים היברידיים/מסכי מגע במחשב), לא מזיזים שורת תנועה במקום */
+    .tx-row.modern-hover { transform:none !important; }
+    .tx-row.modern-hover:hover { transform:none !important; box-shadow:none !important; z-index:auto !important; }
     ::-webkit-scrollbar { display:none; }
     .link-btn {
       background:none; border:none; color:var(--muted); font-family:'Syne',sans-serif;
