@@ -823,7 +823,13 @@
     .mono  { font-family:'JetBrains Mono',monospace; }
     .press:active { transform:scale(0.96); }
     .modern-hover { transition:all 0.3s cubic-bezier(0.25,0.8,0.25,1); }
-    .modern-hover:hover { transform:translateY(-2px); box-shadow:0 12px 32px rgba(0,0,0,0.5); z-index:10; }
+    @media (hover: hover) and (pointer: fine) {
+      .modern-hover:hover { transform:translateY(-2px); box-shadow:0 12px 32px rgba(0,0,0,0.5); z-index:10; }
+    }
+    @media (hover: none), (pointer: coarse) {
+      /* במגע: בלי הזזת מיקום (זה מה שגרם ללחיצות ערוך/מחק לפספס) — רק משוב עדין */
+      .modern-hover:active { background: rgba(255,255,255,0.03); }
+    }
     ::-webkit-scrollbar { display:none; }
     .link-btn {
       background:none; border:none; color:var(--muted); font-family:'Syne',sans-serif;
@@ -3242,6 +3248,132 @@ body.theme-light .trend-svg-wrap svg text[fill="rgba(255,255,255,0.32)"] { fill:
 body.theme-light .trend-svg-wrap svg text[fill="#00E5FF"] { fill: #00887A !important; }
 body.theme-light .trend-svg-wrap svg text[fill="#FF6080"] { fill: var(--au-red) !important; }
 body.theme-light .trend-svg-wrap svg rect[fill="rgba(0,229,255,0.04)"] { fill: rgba(0,201,177,0.06) !important; }
+
+/* ════════════════════════════════════════════
+   מסך התחברות / הרשמה / קביעת שם — Aurora Glass
+   (המסכים האלה נטענים לפני #app ומעולם לא קיבלו עיצוב בהיר)
+════════════════════════════════════════════ */
+body.theme-light #login-particles,
+body.theme-light #screen-setname::before { display: none !important; }
+
+body.theme-light .login-title,
+body.theme-light .setname-welcome {
+  background: linear-gradient(135deg, var(--au-ink) 0%, rgba(16,18,34,0.72) 100%) !important;
+  -webkit-background-clip: text !important; background-clip: text !important;
+}
+body.theme-light .login-subtitle,
+body.theme-light .setname-sub { color: var(--au-ink3) !important; }
+
+body.theme-light .login-logo-img,
+body.theme-light .setname-logo-inner {
+  box-shadow: var(--au-sh-lg), 0 0 0 1px rgba(0,201,177,0.15) !important;
+}
+
+body.theme-light #login-card,
+body.theme-light .setname-card {
+  background: #FFFFFF !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: var(--au-sh-lg), 0 0 50px rgba(0,201,177,0.06) !important;
+}
+body.theme-light #login-card::before,
+body.theme-light .setname-card::before { background: linear-gradient(90deg, transparent, rgba(0,201,177,0.55), rgba(62,123,250,0.35), transparent) !important; }
+body.theme-light #login-card::after { display: none !important; }
+
+body.theme-light .login-section-label { color: #00887A !important; }
+body.theme-light .login-section-label::before { background: var(--au-teal) !important; box-shadow: 0 0 6px rgba(0,201,177,0.5) !important; }
+body.theme-light .login-section-label::after { background: linear-gradient(90deg, rgba(16,18,34,0.14), transparent) !important; }
+
+body.theme-light .login-inp-icon { color: rgba(0,201,177,0.45) !important; }
+body.theme-light .login-inp-wrap:focus-within .login-inp-icon { color: #00887A !important; }
+
+body.theme-light .inp-2026 {
+  background: var(--lt-surf-2) !important;
+  border: 1px solid var(--lt-border) !important;
+  color: var(--au-ink) !important;
+}
+body.theme-light .inp-2026:focus {
+  border-color: rgba(0,201,177,0.45) !important;
+  background: #FFFFFF !important;
+  box-shadow: 0 0 0 3px var(--au-teal-lt) !important;
+}
+body.theme-light .inp-2026::placeholder { color: var(--au-ink4) !important; }
+
+body.theme-light #btn-toggle-mode {
+  background: linear-gradient(135deg, rgba(0,201,177,0.07) 0%, rgba(62,123,250,0.04) 100%) !important;
+  border: none !important;
+  box-shadow: 0 4px 18px -4px rgba(0,201,177,0.20) !important;
+}
+body.theme-light #btn-toggle-mode:hover {
+  background: linear-gradient(135deg, rgba(0,201,177,0.12) 0%, rgba(62,123,250,0.07) 100%) !important;
+  box-shadow: 0 8px 24px -4px rgba(0,201,177,0.28) !important;
+}
+body.theme-light #btn-toggle-mode::after { background: linear-gradient(90deg, transparent, rgba(0,201,177,0.45), transparent) !important; }
+body.theme-light .cta-sub { color: var(--au-ink3) !important; }
+body.theme-light .cta-main {
+  background: linear-gradient(120deg, #00887A, #0EA5A0, #3E7BFA) !important;
+  -webkit-background-clip: text !important; background-clip: text !important;
+}
+body.theme-light .cta-icon-box { background: var(--au-teal-lt) !important; border: none !important; color: #00887A !important; }
+body.theme-light #btn-toggle-mode:hover .cta-icon-box { background: rgba(0,201,177,0.20) !important; }
+
+body.theme-light .login-divider-line { background: linear-gradient(90deg, transparent, rgba(16,18,34,0.12), transparent) !important; }
+body.theme-light .login-divider-text { color: var(--au-ink4) !important; }
+
+body.theme-light #google-warning-badge {
+  background: var(--au-gold-lt) !important;
+  border: none !important;
+  box-shadow: 0 4px 18px -4px rgba(184,147,74,0.22) !important;
+}
+body.theme-light #google-warning-badge::before { background: linear-gradient(90deg, transparent, rgba(184,147,74,0.5), transparent) !important; }
+body.theme-light .gwb-icon { background: rgba(184,147,74,0.14) !important; border: none !important; box-shadow: var(--au-glow-gold) !important; }
+body.theme-light .gwb-title { color: var(--au-gold) !important; }
+body.theme-light .gwb-body  { color: var(--au-ink3) !important; }
+body.theme-light .gwb-body strong { color: var(--au-gold) !important; }
+
+body.theme-light #btn-google-login { box-shadow: var(--au-sh-sm) !important; }
+body.theme-light #btn-forgot-pass { color: #00887A !important; }
+body.theme-light #btn-forgot-pass:hover { color: var(--au-teal) !important; }
+
+/* ── בועת אזהרת ספאם (תחתית מסך הכניסה) ── */
+body.theme-light .spam-card-2026 {
+  background: linear-gradient(160deg, #FFFFFF 0%, #FFFCF5 100%) !important;
+  border: none !important;
+  box-shadow: var(--au-sh-md), 0 0 40px rgba(184,147,74,0.08) !important;
+}
+body.theme-light .spam-card-2026::before { background: linear-gradient(90deg, transparent, rgba(184,147,74,0.5), transparent) !important; }
+body.theme-light .spam-card-header { border-bottom-color: rgba(184,147,74,0.14) !important; }
+body.theme-light .spam-icon-box { background: var(--au-gold-lt) !important; border: none !important; box-shadow: var(--au-glow-gold) !important; }
+body.theme-light .spam-tag-row { background: rgba(184,147,74,0.10) !important; border: none !important; color: var(--au-gold) !important; }
+body.theme-light .spam-headline { color: var(--au-ink) !important; }
+body.theme-light .spam-tip-row:first-child { background: var(--au-gold-lt) !important; border: none !important; }
+body.theme-light .spam-tip-row:last-child { background: var(--lt-surf-2) !important; border: none !important; }
+body.theme-light .spam-tip-text { color: var(--au-ink3) !important; }
+body.theme-light .spam-tip-text strong { color: var(--au-gold) !important; }
+body.theme-light .spam-tip-text em { color: var(--au-ink2) !important; }
+
+/* ── כרטיס סנכרון (מסך קביעת שם) ── */
+body.theme-light .sync-card {
+  background: linear-gradient(135deg, rgba(124,92,252,0.06) 0%, rgba(62,123,250,0.04) 100%) !important;
+  border: none !important;
+  box-shadow: var(--au-sh-md), 0 0 40px rgba(124,92,252,0.06) !important;
+}
+body.theme-light .sync-card::before { background: linear-gradient(90deg, transparent, rgba(124,92,252,0.5), rgba(0,201,177,0.35), transparent) !important; }
+body.theme-light .sync-icon-box { background: var(--au-violet-lt) !important; border: none !important; box-shadow: var(--au-glow-violet) !important; }
+body.theme-light .sync-tag { background: var(--au-violet-lt) !important; border: none !important; color: #7C3AED !important; }
+body.theme-light .sync-headline { color: var(--au-ink) !important; }
+body.theme-light .sync-feature-text { color: var(--au-ink3) !important; }
+body.theme-light .sync-feature-text strong { color: #7C3AED !important; }
+body.theme-light .sync-devices-row { border-top-color: var(--au-stroke2) !important; }
+body.theme-light .sync-device { background: var(--lt-surf-2) !important; border: none !important; color: var(--au-ink3) !important; }
+body.theme-light .sync-device-arrow { color: rgba(124,92,252,0.55) !important; }
+body.theme-light .sync-free-badge { background: var(--au-teal-lt) !important; border: none !important; color: #00887A !important; }
+
+body.theme-light #btn-loading-manual { background: var(--lt-surf-2) !important; border: 1px solid var(--au-stroke) !important; color: var(--au-ink3) !important; }
+
+@media (hover: none), (pointer: coarse) {
+  body.theme-light .modern-hover:active { background: rgba(16,18,34,0.035) !important; }
+}
 
 /* ══ סיום — משתנה הזמן היחיד שנטען אחרון כדי לגבור על שכבות קודמות שחיות בתוך תגי style אחרים בקובץ ══ */
 body.theme-light { background-color: var(--bg) !important; }
@@ -8147,6 +8279,26 @@ body.theme-light { background-color: var(--bg) !important; }
 <script>
 (function() {
   'use strict';
+
+  /* ── רשת ביטחון ל-.rise: אם אנימציית הכניסה (opacity:0 → 1) לא הופעלה מסיבה כלשהי
+     (מרוץ תזמון, המצב הוסתר ברגע ההוספה, quirk של ה-WebView וכו'), האלמנט לא יישאר
+     בלתי-נראה לצמיתות תוך שהוא עדיין לחיץ — מסירים את .rise אחרי חלון הזמן הסביר לאנימציה. */
+  (function riseVisibilitySafetyNet(){
+    function sweepRise(){
+      document.querySelectorAll('.rise').forEach(function(el){
+        if (el.dataset._riseTimer) return; // כבר מתוזמן
+        el.dataset._riseTimer = '1';
+        setTimeout(function(){
+          el.classList.remove('rise');
+          el.style.opacity = '';
+          delete el.dataset._riseTimer;
+        }, 650);
+      });
+    }
+    var mo = new MutationObserver(sweepRise);
+    mo.observe(document.documentElement, { childList: true, subtree: true });
+    sweepRise();
+  })();
 
   /* ── Firebase init ── */
   const FB_CFG = {
