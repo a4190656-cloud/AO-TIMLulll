@@ -2475,6 +2475,10 @@ body.theme-light .card:active,
 body.theme-light .cat-tile:active { transform: scale(0.97) !important; }
 body.theme-light .card:hover,
 body.theme-light .cat-tile:hover { box-shadow: var(--au-sh-lg) !important; }
+/* #tx-list הוא הכרטיס עם כפתורי עריכה/מחיקה בפועל — אנימציית ההתכווצות
+   הזאת מזיזה את הכפתורים ממש בזמן שהאצבע/עכבר לחוצים, ולכן הלחיצה מפספסת.
+   מנטרלים את זה ספציפית בשבילו בלבד. */
+#tx-list.card:active, #tx-list.card { transform: none !important; }
 
 /* ── שורת פריט קבוע (הכנסה/הוצאה קבועה, דו-חודשי) — כרטיסון אחד שלם, לא תיבות נפרדות לכל שדה ── */
 body.theme-light .fixed-item-row {
