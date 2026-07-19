@@ -2901,26 +2901,26 @@ body.theme-light #scan-limit-badge { background: var(--au-teal-lt) !important; c
 body.theme-light [style*="rgba(255,160,0"][style*="border-radius:6px"] { background: var(--au-gold-lt) !important; border-color: rgba(184,147,74,0.24) !important; color: var(--au-gold) !important; }
 
 /* ════════════════════════════════════════════
-   אנימציית כניסה מדורגת
+   אנימציית כניסה — הוסרה מרשימות שמתעדכנות בתדירות גבוהה
+   (tx-row / cat-tile / cat-card / ev-card / fixed-item-row): סנכרון חי מ-Firestore
+   מרנדר אותן מחדש לעיתים קרובות, ואנימציה עם animation-delay + fill-mode:both
+   הייתה משאירה את השורה ב-translateY(12px) opacity:0 עד 220ms אחרי כל רענון —
+   בדיוק בחלון הזה לחיצה על עריכה/מחיקה הייתה "מפספסת" את הכפתור.
+   האנימציה נשארת רק על .card (כרטיסים סטטיים שלא מתרעננים בתדירות).
 ════════════════════════════════════════════ */
-body.theme-light .card,
-body.theme-light .tx-row,
-body.theme-light .cat-card,
-body.theme-light .cat-tile,
-body.theme-light .ev-card,
-body.theme-light .fixed-item-row {
+body.theme-light .card {
   animation: auCardIn 0.45s var(--au-spring) both !important;
 }
 @keyframes auCardIn {
   from { opacity:0; transform: translateY(12px) scale(0.97); }
   to   { opacity:1; transform: translateY(0)    scale(1); }
 }
-body.theme-light .card:nth-child(1),  body.theme-light .tx-row:nth-child(1)  { animation-delay:0.00s !important; }
-body.theme-light .card:nth-child(2),  body.theme-light .tx-row:nth-child(2)  { animation-delay:0.05s !important; }
-body.theme-light .card:nth-child(3),  body.theme-light .tx-row:nth-child(3)  { animation-delay:0.10s !important; }
-body.theme-light .card:nth-child(4),  body.theme-light .tx-row:nth-child(4)  { animation-delay:0.14s !important; }
-body.theme-light .card:nth-child(5),  body.theme-light .tx-row:nth-child(5)  { animation-delay:0.18s !important; }
-body.theme-light .card:nth-child(n+6),body.theme-light .tx-row:nth-child(n+6){ animation-delay:0.22s !important; }
+body.theme-light .card:nth-child(1) { animation-delay:0.00s !important; }
+body.theme-light .card:nth-child(2) { animation-delay:0.05s !important; }
+body.theme-light .card:nth-child(3) { animation-delay:0.10s !important; }
+body.theme-light .card:nth-child(4) { animation-delay:0.14s !important; }
+body.theme-light .card:nth-child(5) { animation-delay:0.18s !important; }
+body.theme-light .card:nth-child(n+6) { animation-delay:0.22s !important; }
 
 /* ════════════════════════════════════════════
    נגישות — מצב בהיר
@@ -3374,6 +3374,28 @@ body.theme-light #btn-loading-manual { background: var(--lt-surf-2) !important; 
 @media (hover: none), (pointer: coarse) {
   body.theme-light .modern-hover:active { background: rgba(16,18,34,0.035) !important; }
 }
+
+/* ── בועת עזרה צפה בוואטסאפ (מסכי כניסה/הרשמה) ── */
+body.theme-light .wa-help-bubble {
+  background: #FFFFFF !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: var(--au-sh-lg), 0 0 40px rgba(37,211,102,0.14) !important;
+}
+body.theme-light .wa-help-bubble:hover {
+  box-shadow: var(--au-sh-lg), 0 0 54px rgba(37,211,102,0.20) !important;
+}
+body.theme-light .wa-help-title { color: var(--au-ink) !important; }
+body.theme-light .wa-help-sub   { color: #128C4E !important; }
+body.theme-light .wa-help-arrow { color: rgba(37,211,102,0.65) !important; }
+body.theme-light .wa-close-btn {
+  background: #FFFFFF !important;
+  border: 0.5px solid var(--au-stroke) !important;
+  color: var(--au-ink3) !important;
+  box-shadow: var(--au-sh-sm) !important;
+}
+body.theme-light .wa-close-btn:hover { background: var(--au-red) !important; color:#fff !important; }
+body.theme-light .wa-help-bubble.minimized { background: rgba(255,255,255,0.85) !important; }
 
 /* ══ סיום — משתנה הזמן היחיד שנטען אחרון כדי לגבור על שכבות קודמות שחיות בתוך תגי style אחרים בקובץ ══ */
 body.theme-light { background-color: var(--bg) !important; }
