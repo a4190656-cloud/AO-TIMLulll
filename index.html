@@ -8914,8 +8914,38 @@ body.theme-light { background-color: var(--bg) !important; }
     if(fiBadge) fiBadge.textContent=fmt(fixedIncomes.reduce(function(a,i){ return a+Number(i.amount||0); },0));
   }
 
-  /* ── Render TX ── */
+  /* ── Render TX ──
+     הרשימה מתעדכנת בכל פעם שמגיע עדכון מ-Firestore (גם עדכון שקט/מטא-דאטה).
+     אם זה קורה בדיוק כשהאצבע על המסך ולוחצת על עריכה/מחיקה, כל ה-innerHTML
+     של השורות מוחלף באמצע הנגיעה — האלמנט שהאצבע נגעה בו נעלם מה-DOM
+     והדפדפן לא מצליח לירות את אירוע ה-click. זו הסיבה שהלחיצה "מפספסת"
+     ונדרש ללחוץ שוב (בדרך כלל קצת מתחת, אחרי שהרשימה כבר התייצבה).
+     הפתרון: כל עוד יש נגיעה פעילה על רשימת התנועות, לא נוגעים ב-DOM שלה —
+     רק מסמנים שיש רינדור ממתין, ומבצעים אותו בפועל ברגע שהאצבע עוזבת. */
+  var _txRenderPending = false;
+  var _txListTouchActive = false;
   function renderTx(){
+    if(_txListTouchActive){ _txRenderPending = true; return; }
+    _renderTxNow();
+  }
+  (function(){
+    var listEl = document.getElementById('tx-list');
+    if(!listEl) return;
+    var onDown = function(){ _txListTouchActive = true; };
+    var onUp = function(){
+      _txListTouchActive = false;
+      // השהיה קצרה כדי לתת לאירוע ה-click להיורות קודם על האלמנט הקיים
+      setTimeout(function(){
+        if(_txRenderPending){ _txRenderPending = false; _renderTxNow(); }
+      }, 350);
+    };
+    listEl.addEventListener('touchstart', onDown, { passive:true });
+    listEl.addEventListener('touchend', onUp, { passive:true });
+    listEl.addEventListener('touchcancel', onUp, { passive:true });
+    listEl.addEventListener('mousedown', onDown);
+    listEl.addEventListener('mouseup', onUp);
+  })();
+  function _renderTxNow(){
     var s=cycleStart(), all=[];
     incomes.forEach(function(i){ if(parseDate(i.date)>=s) all.push(Object.assign({},i,{_t:'income'})); });
     expenses.forEach(function(i){ if(parseDate(i.date)>=s) all.push(Object.assign({},i,{_t:'expense'})); });
