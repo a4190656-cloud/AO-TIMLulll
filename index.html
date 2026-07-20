@@ -13270,14 +13270,29 @@ window.exportUserData = function() {
         await new Promise(function(res){ setTimeout(res, attempt * 2000); });
       }
       try {
-        var resp = await fetch(WORKER_URL, {
-          method: 'POST',
-          headers: Object.assign(
-            { 'Content-Type': 'application/json' },
-            _idToken ? { 'Authorization': 'Bearer ' + _idToken } : {}
-          ),
-          body: JSON.stringify({ imageBase64: b64, mimeType: mime, categories: cats })
-        });
+        var _headers = Object.assign(
+          { 'Content-Type': 'application/json' },
+          _idToken ? { 'Authorization': 'Bearer ' + _idToken } : {}
+        );
+        var _body = JSON.stringify({ imageBase64: b64, mimeType: mime, categories: cats });
+        var resp;
+        try {
+          resp = await fetch(WORKER_URL, { method:'POST', headers:_headers, body:_body });
+        } catch(networkErr){
+          /* אם השליחה עם כותרת ה-Authorization נכשלת ברמת הרשת (למשל כי
+             ה-Worker עדיין לא מוגדר לאפשר את הכותרת הזו ב-CORS), ננסה
+             שוב מיד בלי הכותרת — כך הסריקה ממשיכה לעבוד כרגיל עד
+             שהתיקון בצד ה-Worker יעלה, ואז תתחיל להישלח אוטומטית. */
+          if(_idToken){
+            resp = await fetch(WORKER_URL, {
+              method:'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body:_body
+            });
+          } else {
+            throw networkErr;
+          }
+        }
 
         if(!resp.ok){
           var errText = await resp.text().catch(function(){ return ''; });
