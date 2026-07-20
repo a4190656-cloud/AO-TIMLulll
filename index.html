@@ -12077,23 +12077,61 @@ window.exportUserData = function() {
   function attachHandlers(){
     if(!bindScanElements()) return;
 
-  /* ── מגבלת 7 סריקות ביום ── */
+  /* ── מגבלת 7 סריקות ביום ──
+     שינוי חשוב: המונה עבר מ-localStorage (שהיה תלוי-מכשיר/דפדפן בלבד,
+     ולכן לא היה מגבלה אמיתית — רענון או מכשיר אחר עם אותו חשבון היה מאפס אותו)
+     לשדה בענן על מסמך המשתמש ב-Firestore. כך המגבלה נאכפת לפי חשבון,
+     בכל מכשיר ובכל דפדפן, ולא ניתן לעקוף אותה ברענון. */
   var DAILY_LIMIT = 7;
+  var _scanCache = { date:null, count:0 };
+  var _scanCacheLoaded = false;
+  var _scanCacheLoading = null;
+
+  function _today(){ return new Date().toISOString().slice(0,10); }
+
+  function _scanUserRef(){
+    var uid = window.auth && window.auth.currentUser && window.auth.currentUser.uid;
+    if(!uid || !window.db) return null;
+    return window.db.collection('users').doc(uid);
+  }
+
+  /* טוען את מונה הסריקות מהענן פעם אחת (ומחדש אם השתנה יום) */
+  function loadScanUsage(){
+    if(_scanCacheLoading) return _scanCacheLoading;
+    var ref = _scanUserRef();
+    if(!ref){
+      // עדיין לא מחובר — נשתמש בברירת מחדל 0 ונטען שוב כשנוכל
+      return Promise.resolve();
+    }
+    _scanCacheLoading = ref.get().then(function(snap){
+      var usage = (snap.exists && snap.data().scanUsage) || null;
+      if(usage && usage.date === _today()){
+        _scanCache.date  = usage.date;
+        _scanCache.count = usage.count || 0;
+      } else {
+        _scanCache.date  = _today();
+        _scanCache.count = 0;
+      }
+      _scanCacheLoaded = true;
+      updateLimitBadge();
+    }).catch(function(){ /* אם הקריאה נכשלת, נשאר עם 0 מקומי כברירת מחדל בטוחה */ });
+    return _scanCacheLoading;
+  }
 
   function getScanCount(){
-    var today = new Date().toISOString().slice(0,10);
-    var data  = JSON.parse(localStorage.getItem('_scan_daily') || '{}');
-    if(data.date !== today) return 0;
-    return data.count || 0;
+    if(_scanCache.date !== _today()) return 0;
+    return _scanCache.count || 0;
   }
 
   function addScanCount(n){
-    var today = new Date().toISOString().slice(0,10);
-    var data  = JSON.parse(localStorage.getItem('_scan_daily') || '{}');
-    if(data.date !== today) data = { date: today, count: 0 };
-    data.count = (data.count || 0) + (n || 1);
-    localStorage.setItem('_scan_daily', JSON.stringify(data));
+    var today = _today();
+    if(_scanCache.date !== today){ _scanCache.date = today; _scanCache.count = 0; }
+    _scanCache.count = (_scanCache.count || 0) + (n || 1);
     updateLimitBadge();
+    var ref = _scanUserRef();
+    if(ref){
+      ref.set({ scanUsage: { date: today, count: _scanCache.count } }, { merge:true }).catch(function(){});
+    }
   }
 
   function updateLimitBadge(){
@@ -12110,24 +12148,28 @@ window.exportUserData = function() {
     }
   }
   updateLimitBadge();
+  loadScanUsage();
 
   /* ── פותח sheet בחירה: מצלמה או קבצים ── */
   scanBtn.onclick = function() {
-    var used = getScanCount();
-    if(used >= DAILY_LIMIT){
-      toast('הגעת למגבלת 7 הסריקות היומית. נסה שוב מחר!', 'error');
-      return;
-    }
-    if(resultEl){ resultEl.className = 'scan-doc-result hidden'; resultEl.innerHTML = ''; }
+    var doCheck = function(){
+      var used = getScanCount();
+      if(used >= DAILY_LIMIT){
+        toast('הגעת למגבלת 7 הסריקות היומית. נסה שוב מחר!', 'error');
+        return;
+      }
+      if(resultEl){ resultEl.className = 'scan-doc-result hidden'; resultEl.innerHTML = ''; }
 
-    /* על מובייל — הצג sheet בחירה. על דסקטופ — פתח קבצים ישירות */
-    var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if(isMobile){
-      _showScanSourceSheet();
-    } else {
-      fileInput.removeAttribute('capture');
-      fileInput.click();
-    }
+      /* על מובייל — הצג sheet בחירה. על דסקטופ — פתח קבצים ישירות */
+      var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if(isMobile){
+        _showScanSourceSheet();
+      } else {
+        fileInput.removeAttribute('capture');
+        fileInput.click();
+      }
+    };
+    if(_scanCacheLoaded){ doCheck(); } else { loadScanUsage().then(doCheck); }
   };
 
   /* ── Sheet בחירת מקור ── */
@@ -13210,6 +13252,17 @@ window.exportUserData = function() {
     var catsArr = _cats.map(function(c){ return c.name + ' (' + (c.type==='income'?'הכנסה':'הוצאה') + ')'; });
     var cats = catsArr.join(', ');
 
+    /* טוקן זיהוי של המשתמש המחובר — נשלח ל-Worker כדי שיוכל לוודא
+       שהקריאה מגיעה ממשתמש אמיתי ומחובר, ולא מכל גורם שמצא את הכתובת.
+       חשוב: ה-Worker בצד השרת חייב גם הוא לאמת את הטוקן הזה (שינוי נפרד
+       שצריך לבצע בקוד ה-Worker עצמו ב-Cloudflare) — בלי זה השליחה כאן
+       היא רק חצי מהתיקון. */
+    var _idToken = null;
+    try {
+      var _u = firebase.auth().currentUser;
+      if(_u) _idToken = await _u.getIdToken();
+    } catch(e){}
+
     var lastErr;
     for(var attempt = 0; attempt < 3; attempt++){
       if(attempt > 0){
@@ -13219,7 +13272,10 @@ window.exportUserData = function() {
       try {
         var resp = await fetch(WORKER_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: Object.assign(
+            { 'Content-Type': 'application/json' },
+            _idToken ? { 'Authorization': 'Bearer ' + _idToken } : {}
+          ),
           body: JSON.stringify({ imageBase64: b64, mimeType: mime, categories: cats })
         });
 
