@@ -13305,7 +13305,7 @@ window.exportUserData = function() {
             lastErr = new Error('שרת הסריקה לא זמין — ממתין ומנסה שוב...');
             continue; // retry
           }
-          throw new Error('שגיאת שרת ' + status + (errText ? ': ' + errText.substring(0,60) : ''));
+          throw new Error('שגיאת שרת ' + status + (errText ? ': ' + errText.substring(0,400) : ''));
         }
 
         var data = await resp.json();
