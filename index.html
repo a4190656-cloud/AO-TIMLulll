@@ -4093,12 +4093,10 @@ body.theme-light { background-color: var(--bg) !important; }
         display:flex; align-items:flex-start; gap:10px;
       ">
         <div style="position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,0.25),transparent);"></div>
-        <div style="width:26px;height:26px;flex-shrink:0;margin-top:1px;border-radius:8px;background:rgba(0,229,255,0.07);border:1px solid rgba(0,229,255,0.18);display:flex;align-items:center;justify-content:center;">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(0,229,255,0.65)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        </div>
-        <p style="margin:0;flex:1;font-size:10px;font-weight:600;color:rgba(255,255,255,0.30);line-height:1.7;letter-spacing:0.01em;">
-          הרשמה, כניסה או שימוש באפליקציה מהווים הסכמה מלאה ל<a href="https://a4190656-cloud.github.io/AO-TIMLulll/privacy.html" target="_blank" style="color:rgba(0,229,255,0.60);font-weight:800;text-decoration:none;border-bottom:1px solid rgba(0,229,255,0.22);padding-bottom:1px;transition:color .15s,border-color .15s;" onmouseover="this.style.color='#00E5FF';this.style.borderColor='rgba(0,229,255,0.50)'" onmouseout="this.style.color='rgba(0,229,255,0.60)';this.style.borderColor='rgba(0,229,255,0.22)'">תנאי השימוש ומדיניות הפרטיות</a> של <bdi>MNTA+</bdi>, לרבות איסוף ועיבוד מידע כמפורט בהם.
-        </p>
+        <input type="checkbox" id="login-terms-check" style="width:18px;height:18px;flex-shrink:0;margin-top:1px;accent-color:#00E5FF;cursor:pointer;">
+        <label for="login-terms-check" style="margin:0;flex:1;font-size:12px;font-weight:600;color:rgba(255,255,255,0.55);line-height:1.7;letter-spacing:0.01em;cursor:pointer;">
+          קראתי ואני מאשר/ת את <a href="https://a4190656-cloud.github.io/AO-TIMLulll/privacy.html" target="_blank" style="color:rgba(0,229,255,0.60);font-weight:800;text-decoration:none;border-bottom:1px solid rgba(0,229,255,0.22);padding-bottom:1px;transition:color .15s,border-color .15s;" onmouseover="this.style.color='#00E5FF';this.style.borderColor='rgba(0,229,255,0.50)'" onmouseout="this.style.color='rgba(0,229,255,0.60)';this.style.borderColor='rgba(0,229,255,0.22)'">תנאי השימוש ומדיניות הפרטיות</a> של <bdi>MNTA+</bdi>, לרבות איסוף ועיבוד מידע כמפורט בהם.
+        </label>
       </div>
 
     </div><!-- /login-card -->
@@ -10485,6 +10483,10 @@ window.deletePhoneIdx = function(i) {
 
   // 2. הפעולה של לחיצה על הכפתור
   $('btn-google-login').onclick = function(){
+    if(!$('login-terms-check').checked){
+      showLoginErr('יש לאשר את תנאי השימוש ומדיניות הפרטיות כדי להמשיך');
+      return;
+    }
     var btn = this;
     btn.disabled = true;
     btn.style.opacity = '0.6';
@@ -10638,6 +10640,11 @@ window.deletePhoneIdx = function(i) {
   var email = $('login-email').value.trim();
   var pass  = $('login-pass').value;
   if(!email || !pass) return;
+
+  if(!$('login-terms-check').checked){
+    showLoginErr('יש לאשר את תנאי השימוש ומדיניות הפרטיות כדי להמשיך');
+    return;
+  }
 
   const securitySteps = [
     { h: "מאמת פרוטוקולי אבטחה...", e: "Verifying Security Protocols" },
