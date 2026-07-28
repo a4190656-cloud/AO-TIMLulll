@@ -8389,10 +8389,21 @@ body.theme-light { background-color: var(--bg) !important; }
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-functions-compat.js"></script>
 
 <script>
 (function() {
   'use strict';
+
+  /* Audit fix: escaping גלובלי לכל קלט משתמש שמוזרק ל-innerHTML, כדי למנוע Stored XSS */
+  window.escHtml = function(str){
+    return String(str==null?'':str)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#39;');
+  };
 
   /* ── רשת ביטחון ל-.rise: אם אנימציית הכניסה (opacity:0 → 1) לא הופעלה מסיבה כלשהי
      (מרוץ תזמון, המצב הוסתר ברגע ההוספה, quirk של ה-WebView וכו'), האלמנט לא יישאר
@@ -8707,7 +8718,7 @@ body.theme-light { background-color: var(--bg) !important; }
     el.className = 'toast toast-' + type;
     el.innerHTML =
       '<span class="toast-icon">' + icons[type] + '</span>' +
-      '<span class="toast-msg">' + msg + '</span>' +
+      '<span class="toast-msg">' + escHtml(msg) + '</span>' +
       '<button onclick="this.parentElement.classList.add(\'out\');setTimeout(function(){if(this.parentElement&&this.parentElement.parentNode)this.parentElement.parentNode.removeChild(this.parentElement);}.bind(this),300);" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.35);font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0;transition:color .14s;margin-right:auto;" onmouseover="this.style.color=\'rgba(255,255,255,0.8)\'" onmouseout="this.style.color=\'rgba(255,255,255,0.35)\'">✕</button>';
     container.appendChild(el);
     var timer = setTimeout(function() {
@@ -8753,7 +8764,7 @@ body.theme-light { background-color: var(--bg) !important; }
     var opts = '<option value="">ללא קטגוריה</option>';
     userCategories.forEach(function(c) {
       if (c.type === item._t) {
-        opts += '<option value="' + c.name + '"' + (item.category === c.name ? ' selected' : '') + '>' + c.name + '</option>';
+        opts += '<option value="' + escHtml(c.name) + '"' + (item.category === c.name ? ' selected' : '') + '>' + escHtml(c.name) + '</option>';
       }
     });
     $('edit-modal-category').innerHTML = opts;
@@ -9046,6 +9057,12 @@ body.theme-light { background-color: var(--bg) !important; }
         window.delItem(delBtn.getAttribute('data-del-col'), delBtn.getAttribute('data-del-id'));
         return;
       }
+      var evBtn = e.target.closest('[data-ev-open]');
+      if(evBtn){
+        e.stopPropagation();
+        window.openEvDetail(evBtn.getAttribute('data-ev-open'));
+        return;
+      }
     });
   })();
   function _renderTxNow(){
@@ -9069,14 +9086,14 @@ body.theme-light { background-color: var(--bg) !important; }
     if(!all.length){ el.innerHTML='<div style="padding:30px;text-align:center;color:var(--muted);font-size:13px">' + (q ? 'לא נמצאו תנועות התואמות לחיפוש' : 'אין תנועות במחזור הנוכחי') + '</div>'; return; }
     el.innerHTML=all.map(function(item,idx){
       var isInc=item._t==='income', notLast=idx<all.length-1;
-      var catHtml=item.category?'<span class="cat-tag">'+item.category+'</span>':'';
+      var catHtml=item.category?'<span class="cat-tag">'+escHtml(item.category)+'</span>':'';
       var waHtml = item.source === 'WhatsApp' ? '<span class="wa-tag"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> וואטסאפ</span>' : '';
       /* event tag */
       var evTag = '';
       if(item.eventId && window._evList){
         var ev = window._evList.find(function(e){ return e.id===item.eventId; });
-        if(ev) evTag = '<span class="tx-ev-tag" onclick="event.stopPropagation();openEvDetail(\''+ev.id+'\')">'+
-          (ev.emoji||'🎊')+' '+ev.name+'</span>';
+        if(ev) evTag = '<span class="tx-ev-tag" data-ev-open="'+escHtml(ev.id)+'">'+
+          escHtml(ev.emoji||'🎊')+' '+escHtml(ev.name)+'</span>';
       }
       var itemJson = JSON.stringify(item).replace(/'/g,"&#39;").replace(/"/g,"&quot;");
       _txItemsById[item.id] = item;
@@ -9087,7 +9104,7 @@ body.theme-light { background-color: var(--bg) !important; }
           ?'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>'
           :'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF6080" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>')+
         '</div>'+
-        '<div><p style="font-weight:600;font-size:13px;line-height:1.3;display:flex;align-items:center;flex-wrap:wrap;gap:4px;">'+catHtml+(item.description||'')+waHtml+'</p>'+
+        '<div><p style="font-weight:600;font-size:13px;line-height:1.3;display:flex;align-items:center;flex-wrap:wrap;gap:4px;">'+catHtml+escHtml(item.description||'')+waHtml+'</p>'+
         '<p class="mono" style="font-size:10px;color:var(--muted);margin-top:2px">'+
         parseDate(item.date).toLocaleDateString('he-IL',{day:'numeric',month:'long'})+
         ' · '+parseDate(item.date).toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})+
@@ -9112,28 +9129,37 @@ body.theme-light { background-color: var(--bg) !important; }
     $('cat-list').innerHTML=userCategories.map(function(item){
       var typeStr=item.type==='income'?'הכנסה':'הוצאה';
       var typeCol=item.type==='income'?'var(--green)':'var(--red)';
-      return '<div class="fixed-row modern-hover"><span style="font-size:13px;font-weight:600">'+item.name+' <span style="font-size:10px;color:'+typeCol+';opacity:0.8">('+typeStr+')</span></span>'+
-        '<button onclick="delItem(\'categories\',\''+item.id+'\')" class="del-btn">✕</button></div>';
+      return '<div class="fixed-row modern-hover"><span style="font-size:13px;font-weight:600">'+escHtml(item.name)+' <span style="font-size:10px;color:'+typeCol+';opacity:0.8">('+typeStr+')</span></span>'+
+        '<button data-del-cat="'+escHtml(item.id)+'" class="del-btn">✕</button></div>';
     }).join('');
+    (function(){
+      var catListEl = $('cat-list');
+      if(catListEl && !catListEl._delegated){
+        catListEl._delegated = true;
+        catListEl.addEventListener('click', function(e){
+          var b = e.target.closest('[data-del-cat]');
+          if(b) window.delItem('categories', b.getAttribute('data-del-cat'));
+        });
+      }
+    })();
   }
 
   function renderFixedLists(){
     function makeFixedItem(item, col, type) {
       var isExp = type === 'expense';
       var emoji = isExp ? '💳' : '💰';
-      var amtColor = isExp ? 'rgba(255,100,128,0.85)' : 'rgba(0,220,110,0.85)';
       var cls = isExp ? 'fixed-item-expense' : 'fixed-item-income';
       return '<div class="fixed-item-row ' + cls + '">' +
         '<span class="fixed-item-icon">' + emoji + '</span>' +
         '<div class="fixed-item-info">' +
-          '<div class="fixed-item-name">' + (item.name || '—') + '</div>' +
+          '<div class="fixed-item-name">' + escHtml(item.name || '—') + '</div>' +
           '<div class="fixed-item-amount">₪' + fmt(item.amount) + ' / חודש</div>' +
         '</div>' +
         '<div class="fixed-item-actions">' +
-          '<button class="fixed-item-btn edit" onclick="openFixedEdit(\'' + col + '\',\'' + item.id + '\',\'' + (item.name||'').replace(/'/g,"\\'") + '\',' + item.amount + ')" title="ערוך">' +
+          '<button class="fixed-item-btn edit" data-fixed-edit-col="'+escHtml(col)+'" data-fixed-edit-id="'+escHtml(item.id)+'" data-fixed-edit-name="'+escHtml(item.name||'')+'" data-fixed-edit-amount="'+item.amount+'" title="ערוך">' +
             '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"/></svg>' +
           '</button>' +
-          '<button class="fixed-item-btn del" onclick="delItem(\'' + col + '\',\'' + item.id + '\')" title="מחק">' +
+          '<button class="fixed-item-btn del" data-fixed-del-col="'+escHtml(col)+'" data-fixed-del-id="'+escHtml(item.id)+'" title="מחק">' +
             '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>' +
           '</button>' +
         '</div>' +
@@ -9147,6 +9173,29 @@ body.theme-light { background-color: var(--bg) !important; }
     if(fiEl) fiEl.innerHTML = fixedIncomes.length
       ? fixedIncomes.map(function(item){ return makeFixedItem(item,'fixed_incomes','income'); }).join('')
       : '<div class="fixed-empty-row">אין הכנסות קבועות — הוסיפו את הראשונה</div>';
+
+    ['fe-list','fi-list'].forEach(function(id){
+      var el = $(id);
+      if(el && !el._delegated){
+        el._delegated = true;
+        el.addEventListener('click', function(e){
+          var editBtn = e.target.closest('[data-fixed-edit-id]');
+          if(editBtn){
+            window.openFixedEdit(
+              editBtn.getAttribute('data-fixed-edit-col'),
+              editBtn.getAttribute('data-fixed-edit-id'),
+              editBtn.getAttribute('data-fixed-edit-name'),
+              parseFloat(editBtn.getAttribute('data-fixed-edit-amount'))
+            );
+            return;
+          }
+          var delBtn = e.target.closest('[data-fixed-del-id]');
+          if(delBtn){
+            window.delItem(delBtn.getAttribute('data-fixed-del-col'), delBtn.getAttribute('data-fixed-del-id'));
+          }
+        });
+      }
+    });
   }
 
   /* ── עריכת פריט קבוע ── */
@@ -9251,14 +9300,10 @@ body.theme-light { background-color: var(--bg) !important; }
     }
     showPhoneMsg('מוודא שהמספר פנוי...', 'loading');
 
-    // בדיקה: האם המספר רשום אצל משתמש אחר (לא אצלנו)
-    db.collection('users').where('phones', 'array-contains', fmtP).get()
-      .then(function(qs) {
-        var takenByOther = false;
-        qs.forEach(function(doc) {
-          if(doc.id !== uid) takenByOther = true;
-        });
-        if(takenByOther) {
+    // בדיקה מול Cloud Function מאובטחת — לא חושפת מסמכי משתמשים אחרים
+    firebase.functions().httpsCallable('checkPhoneAvailable')({ phone: fmtP })
+      .then(function(res) {
+        if(res.data && res.data.taken) {
           showPhoneMsg('✗ המספר רשום בחשבון אחר במערכת', 'err');
           toast('המספר הזה כבר רשום בחשבון אחר!', 'error');
           return;
@@ -9268,12 +9313,9 @@ body.theme-light { background-color: var(--bg) !important; }
         updatePhonesInDB(newArr);
         input.value = '';
       })
-      .catch(function() {
-        // אם הבדיקה נכשלת — פשוט שומרים בלי בדיקה
-        var newArr = (userPhones || []).slice();
-        newArr.push(fmtP);
-        updatePhonesInDB(newArr);
-        input.value = '';
+      .catch(function(err) {
+        // הבדיקה נכשלה — לא שומרים בלי בדיקה (תיקון לוגי: קודם זה שמר בכל מקרה)
+        showPhoneMsg('✗ שגיאה באימות המספר, נסו שוב', 'err');
       });
   };
 
@@ -9354,7 +9396,7 @@ window.deletePhoneIdx = function(i) {
       html += '<div class="budget-alert-item alert-over" id="' + _oid + '" style="cursor:pointer;">' +
         '<span class="budget-alert-icon" onclick="switchView(\'categories\')">🚨</span>' +
         '<div class="budget-alert-body" onclick="switchView(\'categories\')">' +
-          '<div class="budget-alert-name" style="color:#FF6080;">' + item.cat.name + '</div>' +
+          '<div class="budget-alert-name" style="color:#FF6080;">' + escHtml(item.cat.name) + '</div>' +
           '<div class="budget-alert-detail">חרגת ב-' + fmt(item.total - item.cat.budget) + ' מתוך ' + fmt(item.cat.budget) + '</div>' +
         '</div>' +
         '<span class="budget-alert-remain over" onclick="switchView(\'categories\')">חריגה!</span>' +
@@ -9366,7 +9408,7 @@ window.deletePhoneIdx = function(i) {
       html += '<div class="budget-alert-item alert-near" id="' + _nid + '" style="cursor:pointer;">' +
         '<span class="budget-alert-icon" onclick="switchView(\'categories\')">⚠️</span>' +
         '<div class="budget-alert-body" onclick="switchView(\'categories\')">' +
-          '<div class="budget-alert-name" style="color:#FFB300;">' + item.cat.name + '</div>' +
+          '<div class="budget-alert-name" style="color:#FFB300;">' + escHtml(item.cat.name) + '</div>' +
           '<div class="budget-alert-detail">נותר ' + fmt(item.remain) + ' מתוך ' + fmt(item.cat.budget) + '</div>' +
         '</div>' +
         '<span class="budget-alert-remain near" onclick="switchView(\'categories\')">' + fmt(item.remain) + '</span>' +
@@ -9612,7 +9654,7 @@ window.deletePhoneIdx = function(i) {
       var avgExp=donutTotal/expEntries.length;
       var aboveAvg=expEntries.filter(function(e){return e.amt>avgExp;}).length;
       chipsEl.innerHTML=[
-        '<div class="ch-chip"><span class="ch-chip-icon">🏆</span><span class="ch-chip-label">הגדולה</span><span class="ch-chip-val" style="color:'+CHART_COLORS[0]+';">'+top.name+'</span></div>',
+        '<div class="ch-chip"><span class="ch-chip-icon">🏆</span><span class="ch-chip-label">הגדולה</span><span class="ch-chip-val" style="color:'+CHART_COLORS[0]+';">'+escHtml(top.name)+'</span></div>',
         '<div class="ch-chip"><span class="ch-chip-icon">📊</span><span class="ch-chip-label">ממוצע</span><span class="ch-chip-val" style="color:#00E5FF;">'+fmt(Math.round(avgExp))+'</span></div>',
         '<div class="ch-chip"><span class="ch-chip-icon">⚡</span><span class="ch-chip-label">מעל ממוצע</span><span class="ch-chip-val" style="color:#FF9800;">'+aboveAvg+' קטגוריות</span></div>',
       ].join('');
@@ -9680,7 +9722,7 @@ window.deletePhoneIdx = function(i) {
           var barCol=over?'#FF1744':pct>80?'#FF9800':'#00E676';
           return '<div class="ch-bud-item">'+
             '<div class="ch-bud-name">'+
-              '<span style="color:rgba(255,255,255,.85);">'+cat.name+'</span>'+
+              '<span style="color:rgba(255,255,255,.85);">'+escHtml(cat.name)+'</span>'+
               (over?'<span class="ch-over-badge">חריגה +'+fmt(spent-budget)+'</span>':'<span style="font-size:10px;color:rgba(255,255,255,.3);">נותר: '+fmt(budget-spent)+'</span>')+
             '</div>'+
             '<div class="ch-bud-track"><div class="ch-bud-fill" style="width:0%;background:linear-gradient(90deg,'+barCol+','+barCol+'bb);" data-w="'+pct.toFixed(1)+'"></div></div>'+
@@ -9698,14 +9740,14 @@ window.deletePhoneIdx = function(i) {
       cycleExps.forEach(function(i){ var k=i.category||''; if(k) expByCat3[k]=(expByCat3[k]||0)+Number(i.amount||0); });
       budCats.forEach(function(cat){
         var budget=Number(cat.budget||0), spent=expByCat3[cat.name]||0;
-        if(spent>budget) alerts.push({icon:'🚨',color:'#FF6080',msg:'חריגה ב<strong>'+cat.name+'</strong>: '+fmt(spent)+' מתוך '+fmt(budget)});
-        else if(spent/budget>0.8) alerts.push({icon:'⚠️',color:'#FF9800',msg:'קרוב לתקרה ב<strong>'+cat.name+'</strong>: '+Math.round(spent/budget*100)+'%'});
+        if(spent>budget) alerts.push({icon:'🚨',color:'#FF6080',msg:'חריגה ב<strong>'+escHtml(cat.name)+'</strong>: '+fmt(spent)+' מתוך '+fmt(budget)});
+        else if(spent/budget>0.8) alerts.push({icon:'⚠️',color:'#FF9800',msg:'קרוב לתקרה ב<strong>'+escHtml(cat.name)+'</strong>: '+Math.round(spent/budget*100)+'%'});
       });
     }
     /* שיעור חיסכון נמוך */
     if(totalInc>0 && saveRate<10) alerts.push({icon:'💡',color:'#FFD600',msg:'שיעור חיסכון נמוך: <strong>'+Math.round(saveRate)+'%</strong> — כדאי לצמצם הוצאות'});
     /* קטגוריה דומיננטית */
-    if(expEntries.length && donutTotal>0 && expEntries[0].amt/donutTotal>0.5) alerts.push({icon:'📌',color:'#AB47BC',msg:'<strong>'+expEntries[0].name+'</strong> מהווה '+Math.round(expEntries[0].amt/donutTotal*100)+'% מסך ההוצאות'});
+    if(expEntries.length && donutTotal>0 && expEntries[0].amt/donutTotal>0.5) alerts.push({icon:'📌',color:'#AB47BC',msg:'<strong>'+escHtml(expEntries[0].name)+'</strong> מהווה '+Math.round(expEntries[0].amt/donutTotal*100)+'% מסך ההוצאות'});
     /* חודש טוב */
     if(saveRate>=30) alerts.push({icon:'🎉',color:'#00E676',msg:'חודש מעולה! חסכת <strong>'+Math.round(saveRate)+'%</strong> מההכנסות'});
 
@@ -9940,7 +9982,7 @@ window.deletePhoneIdx = function(i) {
           var _id = 'alert-over-' + item.cat.id;
           alertsHtml += '<div class="budget-alert-item alert-over" id="' + _id + '">' +
             '<span class="budget-alert-icon">🚨</span>' +
-            '<div class="budget-alert-body"><div class="budget-alert-name" style="color:#FF6080;">' + item.cat.name + ' — חרגת מהתקרה!</div>' +
+            '<div class="budget-alert-body"><div class="budget-alert-name" style="color:#FF6080;">' + escHtml(item.cat.name) + ' — חרגת מהתקרה!</div>' +
             '<div class="budget-alert-detail">הוצאת ' + fmt(item.total) + ' מתוך ' + fmt(item.cat.budget) + '</div></div>' +
             '<span class="budget-alert-remain over">+' + fmt(item.total - item.cat.budget) + '</span>' +
             '<button onclick="var el=document.getElementById(\'' + _id + '\');if(el){el.style.opacity=\'0\';el.style.transform=\'scale(0.9)\';el.style.transition=\'all .2s\';setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},200);}" style="background:none;border:none;cursor:pointer;color:rgba(255,100,128,0.6);font-size:16px;line-height:1;padding:3px 5px;flex-shrink:0;transition:color .14s;margin-right:-4px;" title="סגור">✕</button></div>';
@@ -9949,7 +9991,7 @@ window.deletePhoneIdx = function(i) {
           var _id2 = 'alert-near-' + item.cat.id;
           alertsHtml += '<div class="budget-alert-item alert-near" id="' + _id2 + '">' +
             '<span class="budget-alert-icon">⚠️</span>' +
-            '<div class="budget-alert-body"><div class="budget-alert-name" style="color:#FFB300;">' + item.cat.name + ' — מתקרב לתקרה</div>' +
+            '<div class="budget-alert-body"><div class="budget-alert-name" style="color:#FFB300;">' + escHtml(item.cat.name) + ' — מתקרב לתקרה</div>' +
             '<div class="budget-alert-detail">הוצאת ' + fmt(item.total) + ' מתוך ' + fmt(item.cat.budget) + '</div></div>' +
             '<span class="budget-alert-remain near">נותר ' + fmt(item.remain) + '</span>' +
             '<button onclick="var el=document.getElementById(\'' + _id2 + '\');if(el){el.style.opacity=\'0\';el.style.transform=\'scale(0.9)\';el.style.transition=\'all .2s\';setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},200);}" style="background:none;border:none;cursor:pointer;color:rgba(255,179,0,0.6);font-size:16px;line-height:1;padding:3px 5px;flex-shrink:0;transition:color .14s;margin-right:-4px;" title="סגור">✕</button></div>';
@@ -10025,14 +10067,14 @@ window.deletePhoneIdx = function(i) {
         nearBudget ?
         'box-shadow:0 0 0 1.5px rgba(255,160,0,0.35),0 0 22px rgba(255,160,0,0.14),0 8px 32px rgba(0,0,0,0.5);' :
         'box-shadow:0 4px 24px rgba(0,0,0,0.4);') : 'box-shadow:0 4px 24px rgba(0,0,0,0.4);';
-      return '<div class="'+tileClass+'" style="position:relative;border:1px solid '+colBdr+';background:linear-gradient(145deg,'+colBg+',rgba(4,7,18,0.96));'+glowStyle+'padding-bottom:'+(budget>0&&isInc?'48':'38')+'px;" onclick="openModalWithCat(\''+cat.type+'\',\''+cat.name+'\')">'+
-        '<button onclick="event.stopPropagation();delItem(\'categories\',\''+cat.id+'\')" aria-label="מחק" style="position:absolute;top:8px;left:8px;width:26px;height:26px;background:rgba(255,23,68,0.10);border:1px solid rgba(255,23,68,0.20);border-radius:8px;color:rgba(255,80,100,0.55);font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:3;padding:0;transition:all .15s;" onmouseover="this.style.background=\'rgba(255,23,68,0.22)\';this.style.color=\'#FF6080\'" onmouseout="this.style.background=\'rgba(255,23,68,0.10)\';this.style.color=\'rgba(255,80,100,0.55)\'">✕</button>'+
-        '<div class="cat-tile-name" style="padding-right:0;">'+cat.name+'</div>'+
+      return '<div class="'+tileClass+'" data-cat-open-type="'+escHtml(cat.type)+'" data-cat-open-name="'+escHtml(cat.name)+'" style="position:relative;border:1px solid '+colBdr+';background:linear-gradient(145deg,'+colBg+',rgba(4,7,18,0.96));'+glowStyle+'padding-bottom:'+(budget>0&&isInc?'48':'38')+'px;">'+
+        '<button data-cat-del-id="'+escHtml(cat.id)+'" aria-label="מחק" style="position:absolute;top:8px;left:8px;width:26px;height:26px;background:rgba(255,23,68,0.10);border:1px solid rgba(255,23,68,0.20);border-radius:8px;color:rgba(255,80,100,0.55);font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:3;padding:0;transition:all .15s;" onmouseover="this.style.background=\'rgba(255,23,68,0.22)\';this.style.color=\'#FF6080\'" onmouseout="this.style.background=\'rgba(255,23,68,0.10)\';this.style.color=\'rgba(255,80,100,0.55)\'">✕</button>'+
+        '<div class="cat-tile-name" style="padding-right:0;">'+escHtml(cat.name)+'</div>'+
         '<div class="cat-tile-amount" style="color:'+col+';">'+(isInc?'+':'')+fmt(total)+'</div>'+
         '<div class="cat-tile-count">'+count+' תנועות במחזור</div>'+
         budgetHtml+
         (isInc && !goalReached && budget<=0 ? '<div style="text-align:center;margin-top:8px;font-size:10px;font-weight:700;color:rgba(0,230,118,0.35);letter-spacing:0.02em;">לחצו להוספת תנועה</div>' : '')+
-        '<button class="cat-tile-cta-btn" onclick="event.stopPropagation();openBudgetModal(\''+cat.id+'\')" style="position:absolute;bottom:0;left:0;right:0;height:38px;background:rgba(0,229,255,0.06);border:none;border-top:1px solid rgba(0,229,255,0.13);border-radius:0 0 18px 18px;color:rgba(0,229,255,0.60);font-family:\'Syne\',sans-serif;font-size:11px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;z-index:3;transition:all .18s;width:100%;" onmouseover="this.style.background=\'rgba(0,229,255,0.14)\';this.style.color=\'#00E5FF\'" onmouseout="this.style.background=\'rgba(0,229,255,0.06)\';this.style.color=\'rgba(0,229,255,0.60)\'">'+
+        '<button class="cat-tile-cta-btn" data-cat-budget-id="'+escHtml(cat.id)+'" style="position:absolute;bottom:0;left:0;right:0;height:38px;background:rgba(0,229,255,0.06);border:none;border-top:1px solid rgba(0,229,255,0.13);border-radius:0 0 18px 18px;color:rgba(0,229,255,0.60);font-family:\'Syne\',sans-serif;font-size:11px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;z-index:3;transition:all .18s;width:100%;" onmouseover="this.style.background=\'rgba(0,229,255,0.14)\';this.style.color=\'#00E5FF\'" onmouseout="this.style.background=\'rgba(0,229,255,0.06)\';this.style.color=\'rgba(0,229,255,0.60)\'">'+
         '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"/></svg>'+(isInc?'יעד הכנסה':'עריכת תקרה')+'</button></div>';
     }
 
@@ -10049,6 +10091,17 @@ window.deletePhoneIdx = function(i) {
       if(expCats.length){ html+='<div class="cat-section-label">הוצאות</div><div class="cat-tiles-grid">'+expTiles+'</div>'; }
       if(incCats.length){ html+='<div class="cat-section-label">הכנסות</div><div class="cat-tiles-grid">'+incTiles+'</div>'; }
       el.innerHTML=html;
+      if(!el._delegated){
+        el._delegated = true;
+        el.addEventListener('click', function(e){
+          var delBtn = e.target.closest('[data-cat-del-id]');
+          if(delBtn){ e.stopPropagation(); window.delItem('categories', delBtn.getAttribute('data-cat-del-id')); return; }
+          var budBtn = e.target.closest('[data-cat-budget-id]');
+          if(budBtn){ e.stopPropagation(); window.openBudgetModal(budBtn.getAttribute('data-cat-budget-id')); return; }
+          var tile = e.target.closest('[data-cat-open-name]');
+          if(tile){ window.openModalWithCat(tile.getAttribute('data-cat-open-type'), tile.getAttribute('data-cat-open-name')); }
+        });
+      }
     } catch(e) {
       console.error('[renderCategoriesList2] tile grid assembly failed — keeping previous content instead of blanking:', e);
       return;
@@ -10119,7 +10172,7 @@ window.deletePhoneIdx = function(i) {
       userCategories.forEach(function(c){
         if(c.type===modalType){
           var sel=selectedName&&c.name===selectedName?' selected':'';
-          opts+='<option value="'+c.name+'"'+sel+'>'+c.name+'</option>';
+          opts+='<option value="'+escHtml(c.name)+'"'+sel+'>'+escHtml(c.name)+'</option>';
         }
       });
     }
@@ -11434,19 +11487,38 @@ window.deletePhoneIdx = function(i) {
       return '<div class="fixed-item-row" style="border-right:3px solid rgba(171,71,188,0.50);">' +
         '<span class="fixed-item-icon">' + emoji + '</span>' +
         '<div class="fixed-item-info">' +
-          '<div class="fixed-item-name">' + (item.name||'—') + '</div>' +
+          '<div class="fixed-item-name">' + escHtml(item.name||'—') + '</div>' +
           '<div class="fixed-item-amount" style="color:' + col + ';">₪' + fmt(item.amount) + ' / 6 פעמים בשנה</div>' +
         '</div>' +
         '<div class="fixed-item-actions">' +
-          '<button class="fixed-item-btn edit" onclick="openBimEdit(\'' + item.id + '\',\'' + (item.name||'').replace(/\'/g,"\\'") + '\',' + item.amount + ',\'' + (item.itemType||'expense') + '\')" title="ערוך">' +
+          '<button class="fixed-item-btn edit" data-bim-edit-id="'+escHtml(item.id)+'" data-bim-edit-name="'+escHtml(item.name||'')+'" data-bim-edit-amount="'+item.amount+'" data-bim-edit-type="'+escHtml(item.itemType||'expense')+'" title="ערוך">' +
             '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"/></svg>' +
           '</button>' +
-          '<button class="fixed-item-btn del" onclick="delItem(\'bimonthly_items\',\'' + item.id + '\')" title="מחק">' +
+          '<button class="fixed-item-btn del" data-bim-del-id="'+escHtml(item.id)+'" title="מחק">' +
             '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>' +
           '</button>' +
         '</div>' +
       '</div>';
     }).join('');
+    if(el && !el._delegated){
+      el._delegated = true;
+      el.addEventListener('click', function(e){
+        var editBtn = e.target.closest('[data-bim-edit-id]');
+        if(editBtn){
+          window.openBimEdit(
+            editBtn.getAttribute('data-bim-edit-id'),
+            editBtn.getAttribute('data-bim-edit-name'),
+            parseFloat(editBtn.getAttribute('data-bim-edit-amount')),
+            editBtn.getAttribute('data-bim-edit-type')
+          );
+          return;
+        }
+        var delBtn = e.target.closest('[data-bim-del-id]');
+        if(delBtn){
+          window.delItem('bimonthly_items', delBtn.getAttribute('data-bim-del-id'));
+        }
+      });
+    }
   }
 
   $('btn-add-bim').onclick = function() {
@@ -11632,7 +11704,7 @@ window.deletePhoneIdx = function(i) {
             '</div>'+
             '<div style="font-family:\'Syne\',sans-serif;font-size:12px;font-weight:700;'+
               'color:rgba(255,255,255,0.55);margin-top:2px;">'+
-              catName + ' — ' + fmt(achieved) + ' מתוך יעד ' + fmt(goal)+
+              escHtml(catName) + ' — ' + fmt(achieved) + ' מתוך יעד ' + fmt(goal)+
             '</div>'+
           '</div>'+
           '<button onclick="(function(){var e=document.getElementById(\'goal-toast-banner\');if(e){e.style.animation=\'goalSlideOut 0.3s ease forwards\';setTimeout(function(){if(e.parentNode)e.parentNode.removeChild(e);},300);}})()" '+
@@ -11688,10 +11760,10 @@ window.deletePhoneIdx = function(i) {
     btn.textContent = 'בודק זמינות...';
     btn.disabled = true;
 
-    // בדיקת ייחודיות ושמירה
-    db.collection('users').where('phones', 'array-contains', fmtP).get()
-      .then(function(querySnapshot) {
-          if (!querySnapshot.empty) {
+    // בדיקת ייחודיות ושמירה — דרך Cloud Function מאובטחת
+    firebase.functions().httpsCallable('checkPhoneAvailable')({ phone: fmtP })
+      .then(function(res) {
+          if (res.data && res.data.taken) {
               toast('המספר הזה כבר רשום בחשבון אחר במערכת!', 'error');
               btn.textContent = originalText;
               btn.disabled = false;
@@ -13635,7 +13707,7 @@ window.exportUserData = function() {
           '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>' +
         '</svg>' +
       '</div>' +
-      '<div class="result-body">' + msg + '</div>';
+      '<div class="result-body">' + escHtml(msg) + '</div>';
     resultEl.classList.remove('hidden');
   }
 
@@ -14277,7 +14349,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     document.getElementById('ev-detail-name').textContent = ev.name||'';
     var dateRow = document.getElementById('ev-detail-date-row');
     dateRow.innerHTML = ev.date
-      ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> '+ev.date
+      ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> '+escHtml(ev.date)
       : 'ללא תאריך';
 
     var cdEl = document.getElementById('ev-detail-countdown');
@@ -14336,8 +14408,8 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
           return [
             "<div class=\"ev-det-tx-item\">",
               "<div class=\"ev-det-tx-left\">",
-                "<span class=\"ev-det-tx-desc\">"+(t.description||t.category||'—')+'</span>',
-                '<span class="ev-det-tx-meta">'+(t.category?'<span style="background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:6px;">'+t.category+'</span> · ':'')+dStr+'</span>',
+                "<span class=\"ev-det-tx-desc\">"+escHtml(t.description||t.category||'—')+'</span>',
+                '<span class="ev-det-tx-meta">'+(t.category?'<span style="background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:6px;">'+escHtml(t.category)+'</span> · ':'')+dStr+'</span>',
               "</div>",
               '<span class="ev-det-tx-amt" style="color:'+(isInc?'#00E676':'#FF6080')+';">',
                 (isInc?'+':'−')+fmt2(t.amount),
