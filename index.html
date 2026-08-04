@@ -7716,6 +7716,34 @@ body.theme-light { background-color: var(--bg) !important; }
 
         <div id="phone-action-msg"></div>
 
+        <div id="phone-taken-help" class="hidden" style="
+          margin-top:10px;
+          padding:14px 16px;
+          background:rgba(255,50,80,0.06);
+          border:1px solid rgba(255,50,80,0.20);
+          border-radius:14px;
+          display:flex;
+          flex-direction:column;
+          gap:12px;
+        ">
+          <p style="margin:0;font-size:12.5px;font-weight:600;line-height:1.7;color:rgba(255,255,255,0.75);">
+            מספר הטלפון הזה כבר מקושר לחשבון אחר במערכת.<br>
+            אם המספר שייך לך וברצונך לשחרר אותו, לחצו על הכפתור למטה כדי לשלוח הודעת "ניתוק" לבוט הוואטסאפ שלנו. לאחר מכן תוכלו להזין את המספר מחדש.
+          </p>
+          <button id="phone-taken-whatsapp-btn" type="button" style="
+            display:flex;align-items:center;justify-content:center;gap:8px;
+            background:linear-gradient(135deg,rgba(37,211,102,0.18),rgba(18,140,60,0.12));
+            border:1px solid rgba(37,211,102,0.35);
+            color:#25D366;
+            font-family:'Syne',sans-serif;font-weight:800;font-size:12.5px;
+            padding:11px 16px;border-radius:12px;cursor:pointer;
+            transition:all .15s;
+          " onmouseover="this.style.background='linear-gradient(135deg,rgba(37,211,102,0.28),rgba(18,140,60,0.20))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(37,211,102,0.18),rgba(18,140,60,0.12))'">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            שלח הודעת "ניתוק" בוואטסאפ
+          </button>
+        </div>
+
         <div class="phones-bot-info">
           <span class="phones-bot-info-icon">💡</span>
           <div class="phones-bot-info-text">
@@ -8235,6 +8263,33 @@ body.theme-light { background-color: var(--bg) !important; }
     <h3 style="font-size:20px; font-weight:800; margin-bottom:8px; color:#25D366;">התחברות לבוט וואטסאפ</h3>
     <p style="color:var(--muted); font-size:13px; line-height:1.5; margin-bottom:20px;">הזן את מספר הטלפון שלך כדי שנוכל לזהות אותך בוואטסאפ. תוכל להוסיף מספרים נוספים תמיד מההגדרות.</p>
     <input id="modal-phone-input" class="inp" type="tel" placeholder="050-1234567" style="margin-bottom:14px; text-align:center; direction:ltr; font-size:16px; letter-spacing:1px; border-color:rgba(37,211,102,0.3);">
+    <div id="phone-modal-taken-help" class="hidden" style="
+      margin-bottom:14px;
+      padding:14px 16px;
+      background:rgba(255,50,80,0.06);
+      border:1px solid rgba(255,50,80,0.20);
+      border-radius:14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      text-align:right;
+    ">
+      <p style="margin:0;font-size:12.5px;font-weight:600;line-height:1.7;color:rgba(255,255,255,0.75);">
+        מספר הטלפון הזה כבר מקושר לחשבון אחר במערכת.<br>
+        אם המספר שייך לך וברצונך לשחרר אותו, לחצו על הכפתור למטה כדי לשלוח הודעת "ניתוק" לבוט הוואטסאפ שלנו. לאחר מכן תוכלו להזין את המספר מחדש.
+      </p>
+      <button id="phone-modal-taken-whatsapp-btn" type="button" style="
+        display:flex;align-items:center;justify-content:center;gap:8px;
+        background:linear-gradient(135deg,rgba(37,211,102,0.18),rgba(18,140,60,0.12));
+        border:1px solid rgba(37,211,102,0.35);
+        color:#25D366;
+        font-family:'Syne',sans-serif;font-weight:800;font-size:12.5px;
+        padding:11px 16px;border-radius:12px;cursor:pointer;
+      ">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        שלח הודעת "ניתוק" בוואטסאפ
+      </button>
+    </div>
     <button id="btn-save-phone-modal" class="btn modern-hover" style="background:linear-gradient(135deg, #25D366, #128C7E); color:#fff; box-shadow:0 4px 16px rgba(37,211,102,0.3); margin-bottom:12px;">שמור מספר טלפון</button>
     <button id="btn-skip-phone-modal" class="modern-hover" style="background:none; border:none; color:rgba(255,255,255,0.4); font-family:'Syne',sans-serif; font-size:13px; font-weight:700; cursor:pointer; padding:8px;">דלג לעת עתה</button>
   </div>
@@ -9270,6 +9325,28 @@ body.theme-light { background-color: var(--bg) !important; }
     if(type === 'ok') setTimeout(function(){ el.classList.remove('show'); }, 3000);
   }
 
+  /* מספר הבוט (WhatsApp) — 055-925-4440 בפורמט בינלאומי ללא + */
+  var WA_BOT_NUMBER = '972559254440';
+  var WA_DISCONNECT_URL = 'https://wa.me/' + WA_BOT_NUMBER + '?text=' + encodeURIComponent('ניתוק');
+
+  function showPhoneTakenHelp(){
+    var help = $('phone-taken-help');
+    if(help) help.classList.remove('hidden');
+  }
+  function hidePhoneTakenHelp(){
+    var help = $('phone-taken-help');
+    if(help) help.classList.add('hidden');
+  }
+  (function(){
+    var waBtn = $('phone-taken-whatsapp-btn');
+    if(waBtn && !waBtn._wired){
+      waBtn._wired = true;
+      waBtn.addEventListener('click', function(){
+        window.open(WA_DISCONNECT_URL, '_blank');
+      });
+    }
+  })();
+
   window.updatePhonesInDB = function(newPhones) {
     showPhoneMsg('שומר...', 'loading');
     var updateData = { phones: newPhones };
@@ -9292,6 +9369,7 @@ body.theme-light { background-color: var(--bg) !important; }
     var p = input.value.trim();
     if(!p) return;
     var fmtP = window.formatPhone(p);
+    hidePhoneTakenHelp();
     if(userPhones && userPhones.includes(fmtP)) {
       showPhoneMsg('המספר הזה כבר ברשימה שלך', 'err');
       return;
@@ -9303,7 +9381,7 @@ body.theme-light { background-color: var(--bg) !important; }
       .then(function(res) {
         if(res.data && res.data.taken) {
           showPhoneMsg('✗ המספר רשום בחשבון אחר במערכת', 'err');
-          toast('המספר הזה כבר רשום בחשבון אחר!', 'error');
+          showPhoneTakenHelp();
           return;
         }
         var newArr = (userPhones || []).slice();
@@ -11753,8 +11831,20 @@ window.deletePhoneIdx = function(i) {
     db.collection('users').doc(uid).set({phonePrompted: true}, {merge:true});
   };
 
+  (function(){
+    var waBtn2 = $('phone-modal-taken-whatsapp-btn');
+    if(waBtn2 && !waBtn2._wired){
+      waBtn2._wired = true;
+      waBtn2.addEventListener('click', function(){
+        window.open(WA_DISCONNECT_URL, '_blank');
+      });
+    }
+  })();
+
   $('btn-save-phone-modal').onclick = function() {
     var p = $('modal-phone-input').value;
+    var takenHelp2 = $('phone-modal-taken-help');
+    if(takenHelp2) takenHelp2.classList.add('hidden');
     if(!p) {
       db.collection('users').doc(uid).set({phonePrompted: true}, {merge:true});
       hide('phone-modal-overlay');
@@ -11771,7 +11861,7 @@ window.deletePhoneIdx = function(i) {
     firebase.functions().httpsCallable('checkPhoneAvailable')({ phone: fmtP })
       .then(function(res) {
           if (res.data && res.data.taken) {
-              toast('המספר הזה כבר רשום בחשבון אחר במערכת!', 'error');
+              if(takenHelp2) takenHelp2.classList.remove('hidden');
               btn.textContent = originalText;
               btn.disabled = false;
               return;
