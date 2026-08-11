@@ -4997,10 +4997,10 @@ body.theme-light { background-color: var(--bg) !important; }
     /* ── כפתור נגישות — צורת גלולה, נצמד לקצה השמאלי, מול "משתנות" ── */
     #a11y-fab {
       position: fixed;
-      top: 40%; margin-top: -26px; left: 0;
+      top: 40%; margin-top: -22px; left: 0;
       z-index: 8800;
-      width: 24px; height: 52px;
-      border-radius: 0 16px 16px 0;
+      width: 44px; height: 44px;
+      border-radius: 0 18px 18px 0;
       background: rgba(14,20,42,0.85);
       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(0,229,255,0.22);
@@ -5014,7 +5014,7 @@ body.theme-light { background-color: var(--bg) !important; }
       transform-origin: left center;
     }
     #a11y-fab:active { transform: scale(0.9); }
-    #a11y-fab svg { width: 14px; height: 14px; color: #00E5FF; opacity: 0.85; }
+    #a11y-fab svg { width: 26px; height: 26px; color: #00E5FF; opacity: 0.9; }
 
     /* ── פאנל נגישות ── */
     #a11y-panel-overlay {
@@ -5216,10 +5216,12 @@ body.theme-light { background-color: var(--bg) !important; }
   <!-- ✦ כפתור נגישות צף ✦ -->
   <button id="a11y-fab" onclick="window.openA11yPanel()" aria-label="תפריט נגישות">
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="12" cy="4.5" r="1.8" fill="currentColor"/>
-      <path d="M4 8.5C4 8.5 7.5 7 12 7C16.5 7 20 8.5 20 8.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-      <path d="M12 7V13M12 13L9 21M12 13L15 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M8 11.5L4 13M16 11.5L20 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <circle cx="9" cy="4" r="1.5" fill="currentColor"/>
+      <path d="M9 6V10H14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M9 10L6.5 15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      <path d="M14 10L16.5 17H18.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="9" cy="16" r="5" stroke="currentColor" stroke-width="1.6"/>
+      <circle cx="18.5" cy="19" r="1.2" fill="currentColor"/>
     </svg>
   </button>
 
