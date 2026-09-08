@@ -7849,6 +7849,30 @@ body.theme-light { background-color: var(--bg) !important; }
         <div class="sblock-body" style="padding:16px 18px 20px;">
           <input id="reset-day-input" type="hidden" value="1">
 
+          <!-- מתג הפעלה/כיבוי איפוס חודשי -->
+          <div style="
+            display:flex; align-items:center; justify-content:space-between; gap:12px;
+            background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);
+            border-radius:14px; padding:12px 14px; margin-bottom:14px;
+          ">
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:13px;font-weight:800;color:#fff;margin-bottom:2px;">איפוס חודשי אוטומטי</div>
+              <div id="reset-mode-label" style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);line-height:1.4;">מתאפס אוטומטית כל חודש ביום שנבחר</div>
+            </div>
+            <button id="reset-enabled-switch" onclick="window._setResetEnabled(!(this.classList.contains('active')))" class="active" style="
+              flex-shrink:0; width:46px; height:26px; border-radius:20px; border:none; cursor:pointer;
+              background:rgba(255,255,255,0.12); position:relative; transition:background 0.25s ease; padding:0;
+            ">
+              <span style="
+                position:absolute; top:3px; right:3px; width:20px; height:20px; border-radius:50%;
+                background:#fff; transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1), background 0.25s ease;
+                box-shadow:0 1px 3px rgba(0,0,0,0.3);
+              "></span>
+            </button>
+          </div>
+
+          <div id="reset-day-dim-wrap" style="transition:opacity 0.25s ease;">
+
           <!-- תצוגת יום נוכחי -->
           <div id="reset-day-current-wrap" style="
             display:flex; align-items:center; justify-content:space-between;
@@ -7903,10 +7927,15 @@ body.theme-light { background-color: var(--bg) !important; }
             <span id="btn-save-rd-text">בחרו יום לשמירה</span>
           </button>
 
+          </div><!-- /reset-day-dim-wrap -->
+
         </div>
       </div>
 
       <style>
+        /* ── מתג הפעלה/כיבוי איפוס חודשי ── */
+        #reset-enabled-switch.active { background: linear-gradient(135deg,#00E5FF,#00BFFF) !important; }
+        #reset-enabled-switch.active span { transform: translateX(-20px); background:#04141C; }
         /* ── Reset Day Grid Buttons ── */
         .rd-btn {
           aspect-ratio:1;
@@ -8537,6 +8566,7 @@ body.theme-light { background-color: var(--bg) !important; }
 
   /* ── State ── */
   var uid = null, resetDay = 1, displayName = '';
+  var resetEnabled = true; /* true = איפוס חודשי (ברירת מחדל), false = מצטבר לכל הזמן */
   var incomes = [], expenses = [], fixedExpenses = [], fixedIncomes = [], userCategories = [];
   var userPhones = []; // מערך מספרי טלפון לחשבון
   var modalType = 'income', isRegMode = false, unsubs = [];
@@ -8983,6 +9013,7 @@ body.theme-light { background-color: var(--bg) !important; }
 
   /* ── Cycle calc ── */
   function cycleStart(){
+    if (resetEnabled === false) return new Date(0); /* מצב מצטבר — הכל מאז ומתמיד */
     var now = new Date();
     var s = new Date(now.getFullYear(), now.getMonth(), resetDay||1);
     if (now.getDate() < (resetDay||1)) s.setMonth(s.getMonth()-1);
@@ -9539,7 +9570,7 @@ window.deletePhoneIdx = function(i) {
     var now = new Date();
     var mnths = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
     var cyEl = document.getElementById('charts-cycle-label');
-    if(cyEl) cyEl.textContent = mnths[s.getMonth()]+' '+s.getFullYear();
+    if(cyEl) cyEl.textContent = (resetEnabled === false) ? 'כל הזמן' : (mnths[s.getMonth()]+' '+s.getFullYear());
 
     /* ── collect data ── */
     var cycleIncs = incomes.filter(function(i){ return parseDate(i.date)>=s; });
@@ -10293,6 +10324,7 @@ window.deletePhoneIdx = function(i) {
       if(!doc.exists) return;
       var d = doc.data();
       if(d.resetDay){ resetDay=d.resetDay; var ri=$('reset-day-input'); if(ri) ri.value=resetDay; if(typeof window._initResetDayPicker==='function') window._initResetDayPicker(resetDay); }
+      resetEnabled = (d.resetEnabled === false) ? false : true; _applyResetEnabledUI();
       if(d.displayName){
         displayName=d.displayName;
         var hn=$('header-name'); if(hn) setHeaderName('שלום, '+displayName.split(' ').slice(0,2).join(' ')+'!');
@@ -10429,6 +10461,7 @@ window.deletePhoneIdx = function(i) {
       var si=$('settings-name-input'); if(si) si.value=displayName;
       var sun=$('settings-user-name'); if(sun) sun.textContent=displayName;
       var ri=$('reset-day-input'); if(ri) ri.value=resetDay; if(typeof window._initResetDayPicker==='function') window._initResetDayPicker(resetDay);
+      if(typeof window._applyResetEnabledUI==='function') window._applyResetEnabledUI();
       startListeners();
       if(window._initScan){ window._initScan(); }
     }).catch(function(){
@@ -11117,6 +11150,27 @@ window.deletePhoneIdx = function(i) {
       .then(function(){ if(callback) callback(); })
       .catch(function(){ toast('שגיאה בשמירת יום האיפוס', 'error'); });
   };
+
+  /* ── הפעלה/כיבוי מצב איפוס חודשי (מצטבר לעומת חודשי) ── */
+  window._setResetEnabled = function(val){
+    resetEnabled = !!val;
+    _applyResetEnabledUI();
+    renderAll();
+    if(uid){
+      db.collection('users').doc(uid).set({resetEnabled: resetEnabled}, {merge:true})
+        .catch(function(){ toast('שגיאה בשמירת ההגדרה', 'error'); });
+    }
+  };
+  function _applyResetEnabledUI(){
+    var sw = $('reset-enabled-switch');
+    if(sw) sw.classList.toggle('active', resetEnabled !== false);
+    var dimWrap = $('reset-day-dim-wrap');
+    if(dimWrap) dimWrap.style.opacity = (resetEnabled === false) ? '0.35' : '1';
+    if(dimWrap) dimWrap.style.pointerEvents = (resetEnabled === false) ? 'none' : 'auto';
+    var modeLabel = $('reset-mode-label');
+    if(modeLabel) modeLabel.textContent = (resetEnabled === false) ? 'מצב מצטבר — כל ההכנסות מול כל ההוצאות, ללא איפוס' : 'מתאפס אוטומטית כל חודש ביום שנבחר';
+  }
+  window._applyResetEnabledUI = _applyResetEnabledUI;
 
   /* ── Reset day (legacy input — kept for compatibility) ── */
   var _rdInput = $('reset-day-input');
@@ -12047,6 +12101,7 @@ window.resetProfilePic = function() {
 
   window.checkCyclePrompt = function() {
     if (!uid) return;
+    if (resetEnabled === false) return; /* מצב מצטבר — אין איפוס חודשי, אין פופ-אפ */
     if (_cyclePromptShown) return; /* מניעת הצגה כפולה בsession */
 
     /* ── בדיקה: האם הגענו לפחות ליום האיפוס של המחזור הנוכחי ── */
