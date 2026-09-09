@@ -7780,11 +7780,15 @@ body.theme-light { background-color: var(--bg) !important; }
       <div class="settings-section-title" style="margin-top:6px;">הגדרות כלליות</div>
 
       <!-- THEME TOGGLE -->
-      <div class="sblock modern-hover">
-        <div class="sblock-head">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-          ערכת עיצוב
+      <div class="sblock modern-hover" style="border-color:rgba(0,229,255,0.15);">
+        <div class="sblock-body" style="padding:14px 16px;">
+          <button onclick="window.replayTour && window.replayTour()" class="btn btn-ghost" style="font-size:13px;padding:11px;display:flex;align-items:center;justify-content:center;gap:8px;border-color:rgba(0,229,255,0.3);color:var(--cyan);width:100%;">
+            🧭 הצג את סיור ההיכרות שוב
+          </button>
         </div>
+      </div>
+
+      <div class="sblock modern-hover" id="theme-card">
         <div class="sblock-body" style="padding:12px 14px 16px;">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
 
@@ -8134,7 +8138,7 @@ body.theme-light { background-color: var(--bg) !important; }
       </div>
 
       <div class="settings-section-title" style="margin-top:6px;">חשבון</div>
-<div class="sblock modern-hover">
+<div class="sblock modern-hover" id="export-data-card">
   <div class="sblock-head">
     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
     גיבוי ושקיפות נתונים
@@ -14033,7 +14037,212 @@ window.exportUserData = function() {
         }, 200);
       }, 350);
     }
+    /* מתחילים את הסיור המלא באפליקציה — פעם ראשונה בלבד */
+    setTimeout(function(){ if(typeof window.startTour === 'function') window.startTour(); }, goToSettings ? 1600 : 700);
   };
+</script>
+
+<!-- ✦ PRODUCT TOUR 2026 — סיור היכרות מלא באפליקציה ✦ -->
+<style>
+  #tour-overlay {
+    position:fixed; inset:0; z-index:9995;
+    opacity:0; pointer-events:none;
+    transition:opacity .25s ease;
+  }
+  #tour-overlay.open { opacity:1; pointer-events:all; }
+
+  #tour-spotlight {
+    position:fixed; z-index:9996;
+    border-radius:18px;
+    box-shadow:0 0 0 9999px rgba(2,6,14,0.82);
+    border:1.5px solid rgba(0,229,255,0.55);
+    transition:top .35s cubic-bezier(0.34,1.05,0.64,1), left .35s cubic-bezier(0.34,1.05,0.64,1),
+               width .35s cubic-bezier(0.34,1.05,0.64,1), height .35s cubic-bezier(0.34,1.05,0.64,1);
+    pointer-events:none;
+  }
+  #tour-spotlight::after {
+    content:''; position:absolute; inset:-1.5px; border-radius:inherit;
+    box-shadow:0 0 22px rgba(0,229,255,0.45);
+    animation:tourPulse 1.8s ease-in-out infinite;
+  }
+  @keyframes tourPulse { 0%,100%{opacity:0.55;} 50%{opacity:1;} }
+
+  #tour-tooltip {
+    position:fixed; z-index:9997;
+    width:320px; max-width:calc(100vw - 32px);
+    background:linear-gradient(160deg,rgba(8,14,34,0.99),rgba(3,7,18,0.99));
+    border:1px solid rgba(0,229,255,0.20);
+    border-radius:20px;
+    padding:18px 18px 16px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.65);
+    transition:top .35s cubic-bezier(0.34,1.05,0.64,1), left .35s cubic-bezier(0.34,1.05,0.64,1);
+  }
+  #tour-tooltip::before {
+    content:''; position:absolute; top:0; left:8%; right:8%; height:1px;
+    background:linear-gradient(90deg,transparent,rgba(0,229,255,0.55),transparent);
+  }
+  #tour-tip-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  #tour-tip-progress {
+    font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:800;
+    color:rgba(0,229,255,0.75); background:rgba(0,229,255,0.08);
+    border:1px solid rgba(0,229,255,0.20); border-radius:20px; padding:3px 10px;
+  }
+  #tour-btn-skip {
+    background:none; border:none; color:rgba(255,255,255,0.35);
+    font-family:'Syne',sans-serif; font-size:12px; font-weight:700; cursor:pointer; padding:2px 4px;
+  }
+  #tour-btn-skip:hover { color:rgba(255,255,255,0.65); }
+  #tour-tip-title { font-size:16px; font-weight:900; color:#fff; margin-bottom:6px; letter-spacing:-0.2px; }
+  #tour-tip-text { font-size:12.5px; font-weight:600; color:rgba(255,255,255,0.55); line-height:1.6; margin-bottom:16px; }
+  #tour-tip-actions { display:flex; align-items:center; gap:8px; }
+  #tour-btn-prev {
+    flex-shrink:0; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.10);
+    color:rgba(255,255,255,0.55); border-radius:12px; padding:11px 14px;
+    font-family:'Syne',sans-serif; font-size:12px; font-weight:800; cursor:pointer; transition:all .18s;
+  }
+  #tour-btn-prev:hover { background:rgba(255,255,255,0.09); color:#fff; }
+  #tour-btn-next {
+    flex:1; background:linear-gradient(135deg,#00E5FF,#00BFFF); color:#020C14; border:none;
+    border-radius:12px; padding:11px 14px; font-family:'Syne',sans-serif; font-size:13px; font-weight:900;
+    cursor:pointer; box-shadow:0 6px 20px rgba(0,229,255,0.28); transition:transform .18s;
+  }
+  #tour-btn-next:active { transform:scale(0.97); }
+</style>
+
+<div id="tour-overlay">
+  <div id="tour-spotlight"></div>
+  <div id="tour-tooltip">
+    <div id="tour-tip-head">
+      <span id="tour-tip-progress">1 / 1</span>
+      <button id="tour-btn-skip" onclick="window._tourSkip()">דלג על הסיור ✕</button>
+    </div>
+    <div id="tour-tip-title"></div>
+    <div id="tour-tip-text"></div>
+    <div id="tour-tip-actions">
+      <button id="tour-btn-prev" onclick="window._tourPrev()">→ הקודם</button>
+      <button id="tour-btn-next" onclick="window._tourNext()">הבא ←</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ── מפת הסיור: כל אופציה במערכת, בסדר הגיוני ── */
+  var TOUR_STEPS = [
+    { view:'dashboard',  sel:'#hero-balance-card',   title:'היתרה הפנויה שלך',       text:'כאן תמיד תראו כמה כסף נשאר לכם להוציא — כל ההכנסות פחות כל ההוצאות, מחושב בזמן אמת.' },
+    { view:'dashboard',  sel:'#btn-add-income',       title:'הוספת הכנסה',           text:'לחצו כאן בכל פעם שמתקבל תשלום — משכורת, מתנה, החזר וכו׳ — וזה יתווסף מיד ליתרה שלכם.' },
+    { view:'dashboard',  sel:'#btn-add-expense',      title:'הוספת הוצאה',           text:'כל קנייה או תשלום שיצא מהכיס נרשם כאן, עם קטגוריה, סכום ותאריך משלו.' },
+    { view:'dashboard',  sel:'#btn-scan-doc',         title:'סריקת קבלה חכמה (AI)',   text:'צלמו קבלה או חשבונית — הבינה המלאכותית תזהה אוטומטית סכום, בית עסק וקטגוריה, בלי להקליד כלום.' },
+    { view:'dashboard',  sel:'#tx-search-wrap',       title:'חיפוש תנועות',          text:'מחפשים תנועה ספציפית? הקלידו כאן שם, סכום או תאריך ותמצאו אותה מיד.' },
+    { view:'dashboard',  sel:'#tx-list',              title:'רשימת התנועות',         text:'כל ההכנסות וההוצאות שלכם לפי סדר כרונולוגי. לחיצה על שורה מאפשרת לערוך או למחוק.' },
+    { view:'dashboard',  sel:'#wa-bot-card',          title:'בוט הוואטסאפ',          text:'אפשר לדווח על הוצאה ישירות מוואטסאפ — פשוט שולחים הודעה לבוט וזה נכנס אוטומטית למערכת.' },
+    { view:'dashboard',  sel:'#nav-categories',       title:'מסך הקטגוריות',         text:'בלשונית הזו תנהלו תקציבים לפי קטגוריה, ותוכלו להוסיף אירועים ותאריכים חשובים.' },
+    { view:'categories', sel:'#btn-toggle-add-wiz',   title:'קטגוריה חדשה',          text:'כאן יוצרים קטגוריית תקציב חדשה (למשל "אוכל" או "תחבורה") וקובעים לה תקרה חודשית אם רוצים.' },
+    { view:'categories', sel:'#cat-list2',            title:'רשימת הקטגוריות',       text:'כל הקטגוריות שלכם עם התקדמות התקציב מוצגות כאן — קל לראות מייד איפה חורגים.' },
+    { view:'categories', sel:'#btn-add-event',        title:'אירועים ותאריכים',      text:'הוסיפו אירועים חשובים (חתונה, חג, יום הולדת) עם תקציב משלהם, ותקבלו תזכורות מראש.' },
+    { view:'categories', sel:'#nav-charts',           title:'מסך הדוחות',            text:'כאן תראו גרפים וניתוח חכם של ההכנסות וההוצאות שלכם לאורך זמן.' },
+    { view:'charts',     sel:'#ch-kpi-strip',         title:'סיכום המחזור',          text:'הכנסות, הוצאות ויתרה של המחזור הנוכחי — הכל במבט אחד.' },
+    { view:'charts',     sel:'#ch-donut-wrap',        title:'פילוח הוצאות',          text:'גרף העוגה מראה לאן הולך הכסף שלכם, קטגוריה אחר קטגוריה.' },
+    { view:'charts',     sel:'#nav-settings',         title:'מסך ההגדרות',           text:'ומכאן שולטים על כל הכלים — הגדרות אישיות, איפוס, עיצוב וגיבוי הנתונים.' },
+    { view:'settings',   sel:'#settings-fixed-section', title:'תשלומים קבועים',      text:'הגדירו הכנסות והוצאות קבועות (שכר, שכירות, ביטוח) כדי שהיתרה תחושב בדיוק מירבי מההתחלה.' },
+    { view:'settings',   sel:'#reset-day-card',       title:'יום איפוס ומצב מצטבר',  text:'בחרו באיזה יום בחודש מתחיל המחזור הכספי שלכם — או כבו את האיפוס לגמרי כדי לראות הכל מצטבר מאז ומתמיד.' },
+    { view:'settings',   sel:'#theme-card',           title:'ערכת עיצוב',           text:'אפשר לעבור בין מצב כהה למצב בהיר, לפי מה שנוח לכם לעיניים.' },
+    { view:'settings',   sel:'#export-data-card',     title:'ייצוא נתונים',          text:'בכל רגע אפשר להוריד קובץ CSV עם כל התנועות שלכם ולפתוח אותו באקסל.' },
+    { view:'settings',   sel:'#phones-card-2026',     title:'מספרי טלפון לבוט',      text:'הוסיפו כאן את מספר הוואטסאפ שלכם כדי לדווח על הוצאות ישירות מהצ׳אט, בלי לפתוח את האפליקציה.' }
+  ];
+
+  var tourIndex = 0, tourActiveView = null;
+
+  function $t(id){ return document.getElementById(id); }
+
+  function tourFinish(){
+    var ov = $t('tour-overlay'); if(ov) ov.classList.remove('open');
+    localStorage.setItem('tour-done','1');
+    if(typeof uid !== 'undefined' && uid && typeof db !== 'undefined'){
+      db.collection('users').doc(uid).set({tourDone:true}, {merge:true}).catch(function(){});
+    }
+  }
+
+  function tourPosition(el, step, i){
+    var r = el.getBoundingClientRect();
+    var pad = 8;
+    var sp = $t('tour-spotlight');
+    sp.style.top    = Math.max(4, r.top - pad) + 'px';
+    sp.style.left   = Math.max(4, r.left - pad) + 'px';
+    sp.style.width  = (r.width  + pad*2) + 'px';
+    sp.style.height = (r.height + pad*2) + 'px';
+
+    $t('tour-tip-progress').textContent = (i+1) + ' / ' + TOUR_STEPS.length;
+    $t('tour-tip-title').textContent = step.title;
+    $t('tour-tip-text').textContent  = step.text;
+    $t('tour-btn-prev').style.visibility = (i===0) ? 'hidden' : 'visible';
+    $t('tour-btn-next').textContent = (i === TOUR_STEPS.length-1) ? 'סיימתי! 🎉' : 'הבא ←';
+
+    var tip = $t('tour-tooltip');
+    var vh = window.innerHeight, vw = window.innerWidth;
+    var tipH = tip.offsetHeight || 190;
+    var spaceBelow = vh - (r.top - pad + (r.height + pad*2));
+    var top;
+    if (spaceBelow > tipH + 24) { top = (r.top - pad) + (r.height + pad*2) + 14; }
+    else { top = Math.max(16, (r.top - pad) - tipH - 14); }
+    top = Math.min(top, vh - tipH - 16);
+    tip.style.top = top + 'px';
+
+    var tipW = tip.offsetWidth || 320;
+    var left = (r.left + r.width/2) - (tipW/2);
+    left = Math.max(16, Math.min(left, vw - tipW - 16));
+    tip.style.left = left + 'px';
+  }
+
+  function tourShowStep(i){
+    var step = TOUR_STEPS[i];
+    if (!step) { tourFinish(); return; }
+    var needsSwitch = (tourActiveView !== step.view);
+    if (needsSwitch && typeof switchView === 'function') {
+      switchView(step.view);
+      tourActiveView = step.view;
+    }
+    var delay = needsSwitch ? (step.view === 'charts' ? 220 : 100) : 30;
+    setTimeout(function(){
+      var el = document.querySelector(step.sel);
+      if (!el) { tourShowStep(i+1); return; } /* אלמנט לא קיים כרגע — דלג הלאה */
+      tourIndex = i;
+      el.scrollIntoView({behavior:'smooth', block:'center'});
+      setTimeout(function(){ tourPosition(el, step, i); }, 320);
+    }, delay);
+  }
+
+  window._tourNext = function(){
+    if (tourIndex >= TOUR_STEPS.length - 1) { tourFinish(); return; }
+    tourShowStep(tourIndex + 1);
+  };
+  window._tourPrev = function(){
+    if (tourIndex <= 0) return;
+    tourShowStep(tourIndex - 1);
+  };
+  window._tourSkip = function(){ tourFinish(); };
+
+  window.startTour = function(){
+    if (localStorage.getItem('tour-done')) return;
+    tourActiveView = null;
+    var ov = $t('tour-overlay'); if (ov) ov.classList.add('open');
+    tourShowStep(0);
+  };
+  /* לצפייה חוזרת יזומה (למשל מכפתור בהגדרות) */
+  window.replayTour = function(){
+    localStorage.removeItem('tour-done');
+    window.startTour();
+  };
+
+  window.addEventListener('resize', function(){
+    var ov = $t('tour-overlay');
+    if (ov && ov.classList.contains('open')){
+      var step = TOUR_STEPS[tourIndex];
+      var el = step && document.querySelector(step.sel);
+      if (el) tourPosition(el, step, tourIndex);
+    }
+  });
+})();
 </script>
 <script>
 /* ══════════════════════════════════════════════════════════════
