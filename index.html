@@ -4951,7 +4951,7 @@ body.theme-light { background-color: var(--bg) !important; }
         </a>
 
         <!-- קבוצת וואטסאפ עדכונים — פתיחה ישירה לאפליקציה -->
-        <a class="bug-contact-card" id="wa-group-link" href="https://chat.whatsapp.com/L37t6hiY3R9JQ5b9LsyOgy?s=cl&p=a&mlu=3" onclick="return _openWaGroup(event)" style="border-color:rgba(37,211,102,0.28);background:linear-gradient(135deg,rgba(37,211,102,0.08),rgba(18,140,126,0.06));">
+        <a class="bug-contact-card" id="wa-group-link" href="https://chat.whatsapp.com/HH3H5OzPhOACL98QhmicEM" onclick="return _openWaGroup(event)" style="border-color:rgba(37,211,102,0.28);background:linear-gradient(135deg,rgba(37,211,102,0.08),rgba(18,140,126,0.06));">
           <div class="bug-contact-icon" style="background:linear-gradient(145deg,rgba(37,211,102,0.24),rgba(18,140,60,0.10));border:1px solid rgba(37,211,102,0.32);box-shadow:0 0 18px rgba(37,211,102,0.20),inset 0 1px 0 rgba(255,255,255,0.10);">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M17 20.5H7a4 4 0 01-4-4V8a4 4 0 014-4h10a4 4 0 014 4v8.5a4 4 0 01-4 4z" stroke="#25D366" stroke-width="1.7"/>
@@ -4970,9 +4970,9 @@ body.theme-light { background-color: var(--bg) !important; }
         <script>
         function _openWaGroup(e){
           e.preventDefault();
-          var inviteCode = 'L37t6hiY3R9JQ5b9LsyOgy';
+          var inviteCode = 'HH3H5OzPhOACL98QhmicEM';
           var appUrl = 'whatsapp://chat?code=' + inviteCode;
-          var webUrl = 'https://chat.whatsapp.com/' + inviteCode + '?s=cl&p=a&mlu=3';
+          var webUrl = 'https://chat.whatsapp.com/' + inviteCode;
           var fallbackTimer = setTimeout(function(){
             window.open(webUrl, '_blank');
           }, 900);
@@ -8252,8 +8252,9 @@ body.theme-light { background-color: var(--bg) !important; }
   #wa-fab {
     position:fixed; left:16px; bottom:calc(104px + env(safe-area-inset-bottom,0px));
     z-index:90; display:none; align-items:center; direction:ltr;
-    -webkit-tap-highlight-color:transparent;
+    -webkit-tap-highlight-color:transparent; pointer-events:none;
   }
+  #wa-fab-btn { pointer-events:auto; }
   #wa-fab.wa-fab-on { display:flex; animation:waFabIn .5s cubic-bezier(.34,1.56,.64,1) both; }
   @keyframes waFabIn { from{opacity:0;transform:translateY(24px) scale(.6);} to{opacity:1;transform:none;} }
   #wa-fab-btn {
@@ -8293,9 +8294,9 @@ body.theme-light { background-color: var(--bg) !important; }
     font-family:'Syne',sans-serif; font-size:12px; font-weight:800; line-height:1.45;
     box-shadow:0 10px 28px rgba(0,0,0,.45), 0 0 18px rgba(37,211,102,.18);
     opacity:0; transform:translateX(-10px) scale(.85); transform-origin:left center;
-    pointer-events:none; transition:opacity .35s ease, transform .45s cubic-bezier(.34,1.56,.64,1);
+    pointer-events:none; visibility:hidden; transition:opacity .35s ease, transform .45s cubic-bezier(.34,1.56,.64,1), visibility 0s linear .45s;
   }
-  #wa-fab-msg.show { opacity:1; transform:none; pointer-events:auto; }
+  #wa-fab-msg.show { opacity:1; transform:none; pointer-events:auto; visibility:visible; transition-delay:0s; }
   #wa-fab-msg b { color:#2BE575; }
   body.theme-light #wa-fab-msg { background:#fff; color:#1b2a3a; border-color:rgba(37,211,102,.5); box-shadow:0 10px 28px rgba(0,0,0,.14); }
   body.theme-light #wa-fab-dot { border-color:#fff; }
@@ -8316,7 +8317,39 @@ body.theme-light { background-color: var(--bg) !important; }
     '📲 שלחו <b>"פקודות"</b> ותראו מה הבוט יודע',
     '☕ "50 קפה" — וההוצאה כבר באפליקציה'
   ];
-  var i = 0, box = null, tHide = null, tNext = null;
+  var i = 0, box = null, tHide = null, tNext = null, onDash = false, raf = 0;
+  function overlayOpen(){
+    var q = document.querySelector('#bug-modal-overlay.open, #onboarding-overlay.open, #cycle-modal-overlay:not(.hidden), #phone-modal-overlay:not(.hidden)');
+    if (q) return true;
+    var kids = document.body.children;
+    for (var k = 0; k < kids.length; k++) {
+      var el = kids[k];
+      if (el.id === 'app' || el.id === 'wa-fab' || el.tagName === 'SCRIPT' || el.tagName === 'STYLE') continue;
+      var st = el.style;
+      if (st && st.position === 'fixed' && parseInt(st.zIndex || 0, 10) >= 1000 && st.display !== 'none' && st.visibility !== 'hidden' && st.opacity !== '0') return true;
+    }
+    var ak = document.getElementById('app'); ak = ak ? ak.children : [];
+    for (var j = 0; j < ak.length; j++) {
+      var e2 = ak[j]; if (e2.id === 'wa-fab' || e2.id === 'nav') continue;
+      var s2 = e2.style;
+      if (s2 && s2.position === 'fixed' && parseInt(s2.zIndex || 0, 10) >= 1000 && s2.display !== 'none' && s2.opacity !== '0') return true;
+    }
+    return false;
+  }
+  function sync(){
+    raf = 0;
+    var fab = document.getElementById('wa-fab'); if (!fab) return;
+    var want = onDash && !overlayOpen();
+    if (want !== fab.classList.contains('wa-fab-on')) {
+      fab.classList.toggle('wa-fab-on', want);
+      if (!want && box) box.classList.remove('show');
+    }
+  }
+  function schedule(){ if (!raf) raf = setTimeout(sync, 80); }
+  window._waFabSet = function(v){ onDash = (v === 'dashboard'); sync(); };
+  try {
+    new MutationObserver(schedule).observe(document.body, {childList:true, subtree:true, attributes:true, attributeFilter:['class','style']});
+  } catch(e) {}
   function cycle(){
     var fab = document.getElementById('wa-fab');
     box = box || document.getElementById('wa-fab-msg');
@@ -9089,7 +9122,7 @@ body.theme-light { background-color: var(--bg) !important; }
   /* ── Nav ── */
   window.switchView = function(v){
     window.scrollTo(0, 0);
-    var _wf = $('wa-fab'); if (_wf) _wf.classList.toggle('wa-fab-on', v === 'dashboard');
+    if (window._waFabSet) window._waFabSet(v);
     hide('view-dashboard'); hide('view-settings'); hide('view-categories'); hide('view-charts');
     ['nav-dashboard','nav-settings','nav-categories','nav-charts'].forEach(function(id){
       var el=$(id); if(el) el.classList.remove('active');
