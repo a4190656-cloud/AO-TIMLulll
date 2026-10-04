@@ -4052,6 +4052,22 @@ body.theme-light { background-color: var(--bg) !important; }
         <svg width="19" height="19" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
         כניסה עם גוגל
       </button>
+      <!-- הסכמה משפטית אלגנטית -->
+      <div style="
+        margin-top:10px;margin-bottom:4px;
+        padding:13px 15px;
+        background:linear-gradient(135deg,rgba(0,229,255,0.03) 0%,rgba(255,255,255,0.02) 100%);
+        border:1px solid rgba(0,229,255,0.10);
+        border-radius:16px;
+        position:relative; overflow:hidden;
+        display:flex; align-items:flex-start; gap:10px;
+      ">
+        <div style="position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,0.25),transparent);"></div>
+        <input type="checkbox" id="login-terms-check" style="width:18px;height:18px;flex-shrink:0;margin-top:1px;accent-color:#00E5FF;cursor:pointer;">
+        <label for="login-terms-check" style="margin:0;flex:1;font-size:12px;font-weight:600;color:rgba(255,255,255,0.55);line-height:1.7;letter-spacing:0.01em;cursor:pointer;">
+          קראתי ואני מאשר/ת את <a href="https://a4190656-cloud.github.io/AO-TIMLulll/privacy.html" target="_blank" style="color:rgba(0,229,255,0.60);font-weight:800;text-decoration:none;border-bottom:1px solid rgba(0,229,255,0.22);padding-bottom:1px;transition:color .15s,border-color .15s;" onmouseover="this.style.color='#00E5FF';this.style.borderColor='rgba(0,229,255,0.50)'" onmouseout="this.style.color='rgba(0,229,255,0.60)';this.style.borderColor='rgba(0,229,255,0.22)'">תנאי השימוש ומדיניות הפרטיות</a> של <bdi>MNTA+</bdi>, לרבות איסוף ועיבוד מידע כמפורט בהם.
+        </label>
+      </div>
 
       <!-- מפריד -->
       <div class="login-divider">
@@ -4105,22 +4121,6 @@ body.theme-light { background-color: var(--bg) !important; }
         </div>
       </button>
 
-      <!-- הסכמה משפטית אלגנטית -->
-      <div style="
-        margin-top:16px;
-        padding:13px 15px;
-        background:linear-gradient(135deg,rgba(0,229,255,0.03) 0%,rgba(255,255,255,0.02) 100%);
-        border:1px solid rgba(0,229,255,0.10);
-        border-radius:16px;
-        position:relative; overflow:hidden;
-        display:flex; align-items:flex-start; gap:10px;
-      ">
-        <div style="position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,0.25),transparent);"></div>
-        <input type="checkbox" id="login-terms-check" style="width:18px;height:18px;flex-shrink:0;margin-top:1px;accent-color:#00E5FF;cursor:pointer;">
-        <label for="login-terms-check" style="margin:0;flex:1;font-size:12px;font-weight:600;color:rgba(255,255,255,0.55);line-height:1.7;letter-spacing:0.01em;cursor:pointer;">
-          קראתי ואני מאשר/ת את <a href="https://a4190656-cloud.github.io/AO-TIMLulll/privacy.html" target="_blank" style="color:rgba(0,229,255,0.60);font-weight:800;text-decoration:none;border-bottom:1px solid rgba(0,229,255,0.22);padding-bottom:1px;transition:color .15s,border-color .15s;" onmouseover="this.style.color='#00E5FF';this.style.borderColor='rgba(0,229,255,0.50)'" onmouseout="this.style.color='rgba(0,229,255,0.60)';this.style.borderColor='rgba(0,229,255,0.22)'">תנאי השימוש ומדיניות הפרטיות</a> של <bdi>MNTA+</bdi>, לרבות איסוף ועיבוד מידע כמפורט בהם.
-        </label>
-      </div>
 
     </div><!-- /login-card -->
 
@@ -7780,13 +7780,6 @@ body.theme-light { background-color: var(--bg) !important; }
       <div class="settings-section-title" style="margin-top:6px;">הגדרות כלליות</div>
 
       <!-- THEME TOGGLE -->
-      <div class="sblock modern-hover" style="border-color:rgba(0,229,255,0.15);">
-        <div class="sblock-body" style="padding:14px 16px;">
-          <button onclick="window.replayTour && window.replayTour()" class="btn btn-ghost" style="font-size:13px;padding:11px;display:flex;align-items:center;justify-content:center;gap:8px;border-color:rgba(0,229,255,0.3);color:var(--cyan);width:100%;">
-            🧭 הצג את סיור ההיכרות שוב
-          </button>
-        </div>
-      </div>
 
       <div class="sblock modern-hover" id="theme-card">
         <div class="sblock-body" style="padding:12px 14px 16px;">
@@ -10364,11 +10357,20 @@ window.deletePhoneIdx = function(i) {
       }
     ));
 
+    /* איחוד רינדורים: כמה עדכונים באותו פריים = רינדור אחד */
+    var _snapPending=false, _snapExtras=[];
+    function _scheduleSnapRender(extra){
+      if(extra && _snapExtras.indexOf(extra)<0) _snapExtras.push(extra);
+      if(_snapPending) return; _snapPending=true;
+      (window.requestAnimationFrame||setTimeout)(function(){
+        _snapPending=false; var ex=_snapExtras; _snapExtras=[];
+        renderAll(); ex.forEach(function(f){ try{f();}catch(e){} });
+      });
+    }
     function snapCol(name, assign, extra){
       unsubs.push(uRef.collection(name).onSnapshot(function(s){
         assign(s.docs.map(function(d){ return Object.assign({id:d.id},d.data()); }));
-        renderAll(); if(extra) extra();
-        setTimeout(function(){ if(typeof window._renderEvList==='function') window._renderEvList(); },0);
+        _scheduleSnapRender(extra);
       }, function(){ /* if blocked, fallback to get() once */
         uRef.collection(name).get().then(function(s){
           assign(s.docs.map(function(d){ return Object.assign({id:d.id},d.data()); }));
@@ -14037,213 +14039,9 @@ window.exportUserData = function() {
         }, 200);
       }, 350);
     }
-    /* מתחילים את הסיור המלא באפליקציה — פעם ראשונה בלבד */
-    setTimeout(function(){ if(typeof window.startTour === 'function') window.startTour(); }, goToSettings ? 1600 : 700);
   };
 </script>
 
-<!-- ✦ PRODUCT TOUR 2026 — סיור היכרות מלא באפליקציה ✦ -->
-<style>
-  #tour-overlay {
-    position:fixed; inset:0; z-index:9995;
-    opacity:0; pointer-events:none;
-    transition:opacity .25s ease;
-  }
-  #tour-overlay.open { opacity:1; pointer-events:all; }
-
-  #tour-spotlight {
-    position:fixed; z-index:9996;
-    border-radius:18px;
-    box-shadow:0 0 0 9999px rgba(2,6,14,0.82);
-    border:1.5px solid rgba(0,229,255,0.55);
-    transition:top .35s cubic-bezier(0.34,1.05,0.64,1), left .35s cubic-bezier(0.34,1.05,0.64,1),
-               width .35s cubic-bezier(0.34,1.05,0.64,1), height .35s cubic-bezier(0.34,1.05,0.64,1);
-    pointer-events:none;
-  }
-  #tour-spotlight::after {
-    content:''; position:absolute; inset:-1.5px; border-radius:inherit;
-    box-shadow:0 0 22px rgba(0,229,255,0.45);
-    animation:tourPulse 1.8s ease-in-out infinite;
-  }
-  @keyframes tourPulse { 0%,100%{opacity:0.55;} 50%{opacity:1;} }
-
-  #tour-tooltip {
-    position:fixed; z-index:9997;
-    width:320px; max-width:calc(100vw - 32px);
-    background:linear-gradient(160deg,rgba(8,14,34,0.99),rgba(3,7,18,0.99));
-    border:1px solid rgba(0,229,255,0.20);
-    border-radius:20px;
-    padding:18px 18px 16px;
-    box-shadow:0 20px 60px rgba(0,0,0,0.65);
-    transition:top .35s cubic-bezier(0.34,1.05,0.64,1), left .35s cubic-bezier(0.34,1.05,0.64,1);
-  }
-  #tour-tooltip::before {
-    content:''; position:absolute; top:0; left:8%; right:8%; height:1px;
-    background:linear-gradient(90deg,transparent,rgba(0,229,255,0.55),transparent);
-  }
-  #tour-tip-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
-  #tour-tip-progress {
-    font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:800;
-    color:rgba(0,229,255,0.75); background:rgba(0,229,255,0.08);
-    border:1px solid rgba(0,229,255,0.20); border-radius:20px; padding:3px 10px;
-  }
-  #tour-btn-skip {
-    background:none; border:none; color:rgba(255,255,255,0.35);
-    font-family:'Syne',sans-serif; font-size:12px; font-weight:700; cursor:pointer; padding:2px 4px;
-  }
-  #tour-btn-skip:hover { color:rgba(255,255,255,0.65); }
-  #tour-tip-title { font-size:16px; font-weight:900; color:#fff; margin-bottom:6px; letter-spacing:-0.2px; }
-  #tour-tip-text { font-size:12.5px; font-weight:600; color:rgba(255,255,255,0.55); line-height:1.6; margin-bottom:16px; }
-  #tour-tip-actions { display:flex; align-items:center; gap:8px; }
-  #tour-btn-prev {
-    flex-shrink:0; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.10);
-    color:rgba(255,255,255,0.55); border-radius:12px; padding:11px 14px;
-    font-family:'Syne',sans-serif; font-size:12px; font-weight:800; cursor:pointer; transition:all .18s;
-  }
-  #tour-btn-prev:hover { background:rgba(255,255,255,0.09); color:#fff; }
-  #tour-btn-next {
-    flex:1; background:linear-gradient(135deg,#00E5FF,#00BFFF); color:#020C14; border:none;
-    border-radius:12px; padding:11px 14px; font-family:'Syne',sans-serif; font-size:13px; font-weight:900;
-    cursor:pointer; box-shadow:0 6px 20px rgba(0,229,255,0.28); transition:transform .18s;
-  }
-  #tour-btn-next:active { transform:scale(0.97); }
-</style>
-
-<div id="tour-overlay">
-  <div id="tour-spotlight"></div>
-  <div id="tour-tooltip">
-    <div id="tour-tip-head">
-      <span id="tour-tip-progress">1 / 1</span>
-      <button id="tour-btn-skip" onclick="window._tourSkip()">דלג על הסיור ✕</button>
-    </div>
-    <div id="tour-tip-title"></div>
-    <div id="tour-tip-text"></div>
-    <div id="tour-tip-actions">
-      <button id="tour-btn-prev" onclick="window._tourPrev()">→ הקודם</button>
-      <button id="tour-btn-next" onclick="window._tourNext()">הבא ←</button>
-    </div>
-  </div>
-</div>
-
-<script>
-(function(){
-  /* ── מפת הסיור: כל אופציה במערכת, בסדר הגיוני ── */
-  var TOUR_STEPS = [
-    { view:'dashboard',  sel:'#hero-balance-card',   title:'היתרה הפנויה שלך',       text:'כאן תמיד תראו כמה כסף נשאר לכם להוציא — כל ההכנסות פחות כל ההוצאות, מחושב בזמן אמת.' },
-    { view:'dashboard',  sel:'#btn-add-income',       title:'הוספת הכנסה',           text:'לחצו כאן בכל פעם שמתקבל תשלום — משכורת, מתנה, החזר וכו׳ — וזה יתווסף מיד ליתרה שלכם.' },
-    { view:'dashboard',  sel:'#btn-add-expense',      title:'הוספת הוצאה',           text:'כל קנייה או תשלום שיצא מהכיס נרשם כאן, עם קטגוריה, סכום ותאריך משלו.' },
-    { view:'dashboard',  sel:'#btn-scan-doc',         title:'סריקת קבלה חכמה (AI)',   text:'צלמו קבלה או חשבונית — הבינה המלאכותית תזהה אוטומטית סכום, בית עסק וקטגוריה, בלי להקליד כלום.' },
-    { view:'dashboard',  sel:'#tx-search-wrap',       title:'חיפוש תנועות',          text:'מחפשים תנועה ספציפית? הקלידו כאן שם, סכום או תאריך ותמצאו אותה מיד.' },
-    { view:'dashboard',  sel:'#tx-list',              title:'רשימת התנועות',         text:'כל ההכנסות וההוצאות שלכם לפי סדר כרונולוגי. לחיצה על שורה מאפשרת לערוך או למחוק.' },
-    { view:'dashboard',  sel:'#wa-bot-card',          title:'בוט הוואטסאפ',          text:'אפשר לדווח על הוצאה ישירות מוואטסאפ — פשוט שולחים הודעה לבוט וזה נכנס אוטומטית למערכת.' },
-    { view:'dashboard',  sel:'#nav-categories',       title:'מסך הקטגוריות',         text:'בלשונית הזו תנהלו תקציבים לפי קטגוריה, ותוכלו להוסיף אירועים ותאריכים חשובים.' },
-    { view:'categories', sel:'#btn-toggle-add-wiz',   title:'קטגוריה חדשה',          text:'כאן יוצרים קטגוריית תקציב חדשה (למשל "אוכל" או "תחבורה") וקובעים לה תקרה חודשית אם רוצים.' },
-    { view:'categories', sel:'#cat-list2',            title:'רשימת הקטגוריות',       text:'כל הקטגוריות שלכם עם התקדמות התקציב מוצגות כאן — קל לראות מייד איפה חורגים.' },
-    { view:'categories', sel:'#btn-add-event',        title:'אירועים ותאריכים',      text:'הוסיפו אירועים חשובים (חתונה, חג, יום הולדת) עם תקציב משלהם, ותקבלו תזכורות מראש.' },
-    { view:'categories', sel:'#nav-charts',           title:'מסך הדוחות',            text:'כאן תראו גרפים וניתוח חכם של ההכנסות וההוצאות שלכם לאורך זמן.' },
-    { view:'charts',     sel:'#ch-kpi-strip',         title:'סיכום המחזור',          text:'הכנסות, הוצאות ויתרה של המחזור הנוכחי — הכל במבט אחד.' },
-    { view:'charts',     sel:'#ch-donut-wrap',        title:'פילוח הוצאות',          text:'גרף העוגה מראה לאן הולך הכסף שלכם, קטגוריה אחר קטגוריה.' },
-    { view:'charts',     sel:'#nav-settings',         title:'מסך ההגדרות',           text:'ומכאן שולטים על כל הכלים — הגדרות אישיות, איפוס, עיצוב וגיבוי הנתונים.' },
-    { view:'settings',   sel:'#settings-fixed-section', title:'תשלומים קבועים',      text:'הגדירו הכנסות והוצאות קבועות (שכר, שכירות, ביטוח) כדי שהיתרה תחושב בדיוק מירבי מההתחלה.' },
-    { view:'settings',   sel:'#reset-day-card',       title:'יום איפוס ומצב מצטבר',  text:'בחרו באיזה יום בחודש מתחיל המחזור הכספי שלכם — או כבו את האיפוס לגמרי כדי לראות הכל מצטבר מאז ומתמיד.' },
-    { view:'settings',   sel:'#theme-card',           title:'ערכת עיצוב',           text:'אפשר לעבור בין מצב כהה למצב בהיר, לפי מה שנוח לכם לעיניים.' },
-    { view:'settings',   sel:'#export-data-card',     title:'ייצוא נתונים',          text:'בכל רגע אפשר להוריד קובץ CSV עם כל התנועות שלכם ולפתוח אותו באקסל.' },
-    { view:'settings',   sel:'#phones-card-2026',     title:'מספרי טלפון לבוט',      text:'הוסיפו כאן את מספר הוואטסאפ שלכם כדי לדווח על הוצאות ישירות מהצ׳אט, בלי לפתוח את האפליקציה.' }
-  ];
-
-  var tourIndex = 0, tourActiveView = null;
-
-  function $t(id){ return document.getElementById(id); }
-
-  function tourFinish(){
-    var ov = $t('tour-overlay'); if(ov) ov.classList.remove('open');
-    localStorage.setItem('tour-done','1');
-    if(typeof uid !== 'undefined' && uid && typeof db !== 'undefined'){
-      db.collection('users').doc(uid).set({tourDone:true}, {merge:true}).catch(function(){});
-    }
-  }
-
-  function tourPosition(el, step, i){
-    var r = el.getBoundingClientRect();
-    var pad = 8;
-    var sp = $t('tour-spotlight');
-    sp.style.top    = Math.max(4, r.top - pad) + 'px';
-    sp.style.left   = Math.max(4, r.left - pad) + 'px';
-    sp.style.width  = (r.width  + pad*2) + 'px';
-    sp.style.height = (r.height + pad*2) + 'px';
-
-    $t('tour-tip-progress').textContent = (i+1) + ' / ' + TOUR_STEPS.length;
-    $t('tour-tip-title').textContent = step.title;
-    $t('tour-tip-text').textContent  = step.text;
-    $t('tour-btn-prev').style.visibility = (i===0) ? 'hidden' : 'visible';
-    $t('tour-btn-next').textContent = (i === TOUR_STEPS.length-1) ? 'סיימתי! 🎉' : 'הבא ←';
-
-    var tip = $t('tour-tooltip');
-    var vh = window.innerHeight, vw = window.innerWidth;
-    var tipH = tip.offsetHeight || 190;
-    var spaceBelow = vh - (r.top - pad + (r.height + pad*2));
-    var top;
-    if (spaceBelow > tipH + 24) { top = (r.top - pad) + (r.height + pad*2) + 14; }
-    else { top = Math.max(16, (r.top - pad) - tipH - 14); }
-    top = Math.min(top, vh - tipH - 16);
-    tip.style.top = top + 'px';
-
-    var tipW = tip.offsetWidth || 320;
-    var left = (r.left + r.width/2) - (tipW/2);
-    left = Math.max(16, Math.min(left, vw - tipW - 16));
-    tip.style.left = left + 'px';
-  }
-
-  function tourShowStep(i){
-    var step = TOUR_STEPS[i];
-    if (!step) { tourFinish(); return; }
-    var needsSwitch = (tourActiveView !== step.view);
-    if (needsSwitch && typeof switchView === 'function') {
-      switchView(step.view);
-      tourActiveView = step.view;
-    }
-    var delay = needsSwitch ? (step.view === 'charts' ? 220 : 100) : 30;
-    setTimeout(function(){
-      var el = document.querySelector(step.sel);
-      if (!el) { tourShowStep(i+1); return; } /* אלמנט לא קיים כרגע — דלג הלאה */
-      tourIndex = i;
-      el.scrollIntoView({behavior:'smooth', block:'center'});
-      setTimeout(function(){ tourPosition(el, step, i); }, 320);
-    }, delay);
-  }
-
-  window._tourNext = function(){
-    if (tourIndex >= TOUR_STEPS.length - 1) { tourFinish(); return; }
-    tourShowStep(tourIndex + 1);
-  };
-  window._tourPrev = function(){
-    if (tourIndex <= 0) return;
-    tourShowStep(tourIndex - 1);
-  };
-  window._tourSkip = function(){ tourFinish(); };
-
-  window.startTour = function(){
-    if (localStorage.getItem('tour-done')) return;
-    tourActiveView = null;
-    var ov = $t('tour-overlay'); if (ov) ov.classList.add('open');
-    tourShowStep(0);
-  };
-  /* לצפייה חוזרת יזומה (למשל מכפתור בהגדרות) */
-  window.replayTour = function(){
-    localStorage.removeItem('tour-done');
-    window.startTour();
-  };
-
-  window.addEventListener('resize', function(){
-    var ov = $t('tour-overlay');
-    if (ov && ov.classList.contains('open')){
-      var step = TOUR_STEPS[tourIndex];
-      var el = step && document.querySelector(step.sel);
-      if (el) tourPosition(el, step, tourIndex);
-    }
-  });
-})();
-</script>
 <script>
 /* ══════════════════════════════════════════════════════════════
    MNTA+ — i18n SYSTEM
@@ -15406,9 +15204,11 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
 
   /* ── hook: renderAll — גיבוי נוסף ── */
   var _origRA=window.renderAll;
+  var _evRenderQueued=false;
   window.renderAll=function(){
     if(_origRA) _origRA.apply(this,arguments);
-    setTimeout(function(){ if(typeof window._renderEvList==='function') window._renderEvList(); },0);
+    if(_evRenderQueued) return; _evRenderQueued=true;
+    setTimeout(function(){ _evRenderQueued=false; if(typeof window._renderEvList==='function') window._renderEvList(); },0);
   };
 
   /* ── hook: auth ready ── */
@@ -15438,5 +15238,79 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     <div id="ev-detail-tx-section"></div>
   </div>
 </div>
+<!-- ✦ WHATSAPP BOT BUBBLE ✦ -->
+<style>
+  html,body{ -webkit-tap-highlight-color:transparent; }
+  button,a,.btn,[onclick]{ touch-action:manipulation; }
+  #wa-bot-bubble{
+    position:fixed; left:16px; bottom:calc(96px + env(safe-area-inset-bottom,0px)); z-index:900;
+    display:none; align-items:center; gap:8px; direction:rtl; text-decoration:none;
+    transform:translateZ(0);
+  }
+  #wa-bot-bubble.show{ display:flex; animation:waPopIn .55s cubic-bezier(.34,1.56,.64,1) both; }
+  #wa-bot-btn{
+    position:relative; width:58px; height:58px; border-radius:50%;
+    background:linear-gradient(145deg,#2BE07A,#128C7E); color:#fff;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
+    box-shadow:0 8px 24px rgba(18,140,126,.45), inset 0 1px 0 rgba(255,255,255,.35);
+    animation:waFloat 3.2s ease-in-out infinite; will-change:transform;
+  }
+  #wa-bot-btn::before,#wa-bot-btn::after{
+    content:''; position:absolute; inset:0; border-radius:50%; border:2px solid rgba(37,211,102,.55);
+    animation:waRing 2.4s ease-out infinite; pointer-events:none;
+  }
+  #wa-bot-btn::after{ animation-delay:1.2s; }
+  #wa-bot-btn svg{ width:24px; height:24px; }
+  #wa-bot-btn span{ font-size:9.5px; font-weight:800; letter-spacing:.2px; line-height:1; }
+  #wa-bot-bubble:active #wa-bot-btn{ transform:scale(.92); }
+  #wa-bot-tip{
+    max-width:200px; padding:9px 12px; border-radius:14px 14px 14px 4px;
+    background:rgba(16,22,30,.94); border:1px solid rgba(37,211,102,.35); color:#fff;
+    font-size:12px; font-weight:700; line-height:1.45; box-shadow:0 8px 22px rgba(0,0,0,.35);
+    opacity:0; transform:translateX(-8px) scale(.9); transform-origin:left center;
+    transition:opacity .3s ease, transform .35s cubic-bezier(.34,1.56,.64,1); pointer-events:none;
+  }
+  #wa-bot-tip b{ color:#25D366; }
+  #wa-bot-bubble.tip #wa-bot-tip{ opacity:1; transform:none; }
+  body.theme-light #wa-bot-tip{ background:#fff; color:#1a1a1a; }
+  @keyframes waPopIn{ from{opacity:0; transform:scale(.3) translateY(30px);} to{opacity:1; transform:none;} }
+  @keyframes waFloat{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
+  @keyframes waRing{ 0%{transform:scale(1); opacity:.8;} 100%{transform:scale(1.55); opacity:0;} }
+  @media (prefers-reduced-motion:reduce){ #wa-bot-btn,#wa-bot-btn::before,#wa-bot-btn::after{animation:none;} }
+</style>
+<a id="wa-bot-bubble" href="https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA" target="_blank" rel="noopener" aria-label="פתיחת בוט הוואטסאפ">
+  <div id="wa-bot-btn">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.79-1.47-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.08 1.75-.72 2-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35zM12.04 21.8h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88 2.64 0 5.12 1.03 6.99 2.9a9.82 9.82 0 0 1 2.89 6.99c0 5.45-4.44 9.88-9.88 9.88zm8.41-18.3A11.82 11.82 0 0 0 12.04 0C5.5 0 .16 5.33.16 11.89c0 2.1.55 4.14 1.59 5.94L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.68 1.45h.01c6.55 0 11.89-5.33 11.89-11.89 0-3.18-1.24-6.16-3.49-8.41z"/></svg>
+    <span>פקודות</span>
+  </div>
+  <div id="wa-bot-tip">💬 <b>עדכנו הוצאות והכנסות</b> בהודעה אחת — ישירות מבוט הוואטסאפ שלנו!</div>
+</a>
+<script>
+(function(){
+  var b=document.getElementById('wa-bot-bubble'); if(!b) return;
+  var tips=[
+    '💬 <b>עדכנו הוצאות והכנסות</b> בהודעה אחת — ישירות מבוט הוואטסאפ שלנו!',
+    '⚡ <b>רשמתם הוצאה?</b> שלחו אותה לבוט בוואטסאפ והיא תתעדכן כאן מיד',
+    '🤖 שלחו <b>"פקודות"</b> לבוט וגלו את כל מה שאפשר לעשות'
+  ], ti=0, tipEl=document.getElementById('wa-bot-tip'), hideT;
+  function visible(){
+    var v=document.getElementById('view-dashboard');
+    return !!(v && v.offsetParent!==null && !v.classList.contains('hidden'));
+  }
+  function sync(){
+    var on=visible();
+    if(on && !b.classList.contains('show')) b.classList.add('show');
+    else if(!on && b.classList.contains('show')) b.classList.remove('show','tip');
+  }
+  function popTip(){
+    if(!b.classList.contains('show') || document.hidden) return;
+    tipEl.innerHTML=tips[ti++ % tips.length];
+    b.classList.add('tip'); clearTimeout(hideT);
+    hideT=setTimeout(function(){ b.classList.remove('tip'); },5000);
+  }
+  setInterval(sync,700); sync();
+  setTimeout(popTip,4000); setInterval(popTip,22000);
+})();
+</script>
 </body>
 </html>
