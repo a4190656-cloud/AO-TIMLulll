@@ -145,6 +145,7 @@
   <link rel="dns-prefetch" href="https://firestore.googleapis.com">
   <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com">
   <style>
+    .tx-ev-note { display:inline-block; margin-inline-start:6px; font-size:9.5px; font-weight:800; color:var(--muted); opacity:.85; vertical-align:middle; }
     /* ✦ קטגוריות: ללא אנימציית כניסה שמסתירה ומקפיצה את האריחים בכל רענון */
     .cat-tile, .cat-tile.rise, #cat-list2 .rise { animation:none; opacity:1; transform:none; }
     /* ⚡ ביצועים: ביטול השהיית 300ms במגע, ללא הבהוב לחיצה, גלילה חלקה */
@@ -7031,6 +7032,17 @@ body.theme-light #evx-panel{background:#fff}
 .evx-fb{padding:13px;border:1px solid var(--bd);border-radius:14px;background:var(--bg2);color:var(--ink);font:800 12.5px 'Syne',sans-serif;cursor:pointer;touch-action:manipulation}
 .evx-fb.del{grid-column:1/-1;color:var(--r);border-color:rgba(255,92,122,.3);background:rgba(255,92,122,.07)}
 </style>
+<style>
+  .evx-divider { display:flex; align-items:center; gap:12px; margin:30px 2px 18px; }
+  .evx-divider::before, .evx-divider::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,transparent,rgba(181,140,255,.55)); }
+  .evx-divider::after { background:linear-gradient(270deg,transparent,rgba(181,140,255,.55)); }
+  .evx-divider span { display:inline-flex; align-items:center; gap:7px; padding:7px 15px; border-radius:99px; font:900 12.5px 'Syne',sans-serif; letter-spacing:.04em;
+    color:#B58CFF; background:rgba(181,140,255,.10); border:1px solid rgba(181,140,255,.30); }
+  body.theme-light .evx-divider::before { background:linear-gradient(90deg,transparent,rgba(124,77,219,.45)); }
+  body.theme-light .evx-divider::after { background:linear-gradient(270deg,transparent,rgba(124,77,219,.45)); }
+  body.theme-light .evx-divider span { color:#7C4DDB; background:rgba(124,77,219,.09); border-color:rgba(124,77,219,.28); }
+</style>
+<div class="evx-divider" role="separator"><span>🎉 אירועים</span></div>
 <div class="evx">
   <div id="evx-hero"></div>
   <div class="evx-tools">
@@ -8439,7 +8451,7 @@ body.theme-light #evx-panel{background:#fff}
 </div>
 <script>
 (function(){
-  var SECS = [["start", "🚀", "התחלה מהירה"], ["scan", "🧾", "סריקת קבלות"], ["cats", "🏷️", "קטגוריות ותקציב"], ["events", "🎉", "אירועים"], ["fixed", "🔁", "תשלומים קבועים"], ["cycle", "📅", "איפוס חודשי"], ["charts", "📊", "תרשימים"], ["wa", "💬", "בוט וואטסאפ"], ["set", "⚙️", "הגדרות וחשבון"], ["help", "🛟", "תמיכה"]], KB = [{"id": 1, "s": "start", "q": "איך מוסיפים הכנסה או הוצאה?", "a": "במסך <b>החשבון שלי</b> לוחצים על כפתור ההכנסה או ההוצאה ומזינים סכום (חובה). אפשר להוסיף גם תיאור, קטגוריה ואירוע. בלי תיאור התנועה תיקרא ״הכנסה כללית״ או ״הוצאה כללית״, והיא נרשמת בתאריך של היום.", "k": ["הוספה", "להוסיף", "מוסיפים", "הכנסה", "הוצאה", "תנועה", "רישום", "לרשום", "חדשה", "להזין"], "go": ["dashboard", "למסך הבית"]}, {"id": 2, "s": "start", "q": "איך עורכים, מוחקים או מחפשים תנועה?", "a": "ברשימת התנועות בכל שורה יש כפתור עריכה (עיפרון) וכפתור מחיקה (✕). בשורת החיפוש מעל הרשימה אפשר לחפש לפי תיאור או קטגוריה.", "k": ["עריכה", "לערוך", "מחיקה", "למחוק", "תיקון", "לתקן", "טעות", "חיפוש", "לחפש", "תנועה"], "go": ["dashboard", "למסך הבית"]}, {"id": 3, "s": "start", "q": "איך מחושבת היתרה?", "a": "היתרה = ההכנסות של המחזור הנוכחי (כולל הכנסות קבועות) פחות ההוצאות הקבועות ופחות ההוצאות הרגילות של המחזור.", "k": ["יתרה", "חישוב", "מחושב", "פנויה", "נשאר", "כמה נשאר", "סכום"], "go": ["dashboard", "למסך הבית"]}, {"id": 4, "s": "start", "q": "איך משנים מטבע?", "a": "בכותרת של מסך הבית יש כפתור עם סמל המטבע (₪ כברירת מחדל). לוחצים עליו ובוחרים מטבע מהרשימה, למשל דולר, אירו או פאונד. ההמרה לפי שער משוער.", "k": ["מטבע", "דולר", "אירו", "שקל", "המרה", "שער", "פאונד"], "go": ["dashboard", "למסך הבית"]}, {"id": 5, "s": "start", "q": "האפליקציה תקועה או לא מתעדכנת", "a": "לחצו על כפתור הרענון (החיצים) בכותרת של מסך הבית. בהגדרות יש גם כפתור לעדכון האפליקציה לגרסה האחרונה.", "k": ["תקוע", "תקועה", "רענון", "לרענן", "מתעדכן", "איטי", "איטית", "לא נטען", "עדכון", "לעדכן"], "go": ["settings", "להגדרות"]}, {"id": 6, "s": "scan", "q": "איך סורקים קבלה או חשבונית?", "a": "במסך הבית לוחצים על ״סריקת קבלה / חשבונית״, בוחרים מצלמה או גלריה, והבינה המלאכותית מזהה את הפרטים. לפני השמירה מוצג אישור, ואפשר לשייך לאירוע. אם הסכום לא זוהה אפשר להזין אותו ידנית.", "k": ["סריקה", "לסרוק", "סורקים", "קבלה", "חשבונית", "צילום", "מצלמה", "גלריה", "AI", "בינה"], "go": ["dashboard", "למסך הבית"]}, {"id": 7, "s": "scan", "q": "יש הגבלה על מספר הסריקות?", "a": "כן. מספר הסריקות המותר ליום מופיע על כפתור הסריקה (כרגע 7 סריקות ביום).", "k": ["הגבלה", "מגבלה", "מכסה", "יומי", "כמה סריקות", "סריקות"], "go": ["dashboard", "למסך הבית"]}, {"id": 8, "s": "cats", "q": "איך מוסיפים קטגוריה?", "a": "במסך ״קטגוריות ואירועים״ לוחצים על כפתור ההוספה, בוחרים אם זו הוצאה או הכנסה, נותנים שם, ואפשר להגדיר גם תקציב חודשי.", "k": ["קטגוריה", "קטגוריות", "להוסיף", "חדשה", "יצירת", "ליצור"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 9, "s": "cats", "q": "איך מגדירים תקציב לקטגוריה?", "a": "בכרטיס הקטגוריה לוחצים על כפתור עריכת התקציב (בפינה), מזינים סכום ושומרים. תראו פס התקדמות וכמה נשאר, וגם התראה כשמתקרבים לתקציב (80%) או חורגים ממנו.", "k": ["תקציב", "יעד", "חריגה", "התראה", "מסגרת", "להגביל"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 10, "s": "cats", "q": "איך מוחקים קטגוריה?", "a": "בכרטיס הקטגוריה יש כפתור ✕ למחיקה.", "k": ["מחיקת קטגוריה", "למחוק קטגוריה", "להסיר קטגוריה", "מחיקה"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 11, "s": "events", "q": "מה זה אירוע ואיך יוצרים אחד?", "a": "אירוע (ברית, חתונה, חופשה...) מרכז במקום אחד הכנסות והוצאות של עניין מסוים. במסך ״קטגוריות ואירועים״ יוצרים אירוע עם שם, אימוג׳י, תאריך ויעד תקציב.", "k": ["אירוע", "אירועים", "חתונה", "ברית", "חופשה", "אירוע חדש", "מסיבה"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 12, "s": "events", "q": "איך משייכים תנועה לאירוע?", "a": "בהוספת הכנסה או הוצאה יש שדה ״אירוע״ שבו בוחרים את האירוע. אפשר לשייך גם בסריקת קבלה. התנועה תופיע ברשימה עם תג האירוע ובתוך מסך האירוע.", "k": ["שיוך", "לשייך", "משייכים", "שנכנסה", "הוצאה לאירוע", "הוצאה שייכת", "אירוע", "תנועה", "תג"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 13, "s": "events", "q": "האם התקציב של האירוע נכנס כהכנסה?", "a": "לא. התקציב הוא יעד בלבד: הוא מציג כמה הוצאת מתוכו וכמה נשאר, ולא נרשם כהכנסה. הוצאות ששויכו לאירוע נספרות כרגע גם ביתרה החודשית וברשימת התנועות הרגילה.", "k": ["תקציב אירוע", "יעד אירוע", "נכנס", "הכנסה", "יתרה חודשית", "חודשית"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 14, "s": "events", "q": "מה קורה לתנועות של אירוע בתחילת חודש חדש?", "a": "האיפוס החודשי לא מוחק שום נתון, הוא רק קובע אילו תנועות מוצגות במסך החודשי. מסך האירוע מציג את כל התנועות ששויכו אליו, בלי קשר לחודש.", "k": ["איפוס", "חודש", "נמחק", "נעלם", "נמחקות", "אירוע", "תנועות אירוע"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 15, "s": "fixed", "q": "איך מוסיפים הוצאה או הכנסה קבועה?", "a": "בהגדרות, בחלק ״תשלומים קבועים״, מוסיפים שם וסכום להוצאה קבועה (שכירות, ארנונה...) או להכנסה קבועה (משכורת). הם נכללים בחישוב היתרה בכל מחזור.", "k": ["קבועה", "קבועות", "שכירות", "משכורת", "ארנונה", "חוזרת", "חודשית", "קבוע"], "go": ["settings", "להגדרות"]}, {"id": 16, "s": "fixed", "q": "מה זה ״דו-חודשי״?", "a": "הכנסות או הוצאות שחוזרות פעם בחודשיים, כמו חשבון מים. מוסיפים אותן בהגדרות, בבלוק ״דו-חודשי״ שבתוך התשלומים הקבועים.", "k": ["דו חודשי", "דו-חודשי", "חודשיים", "מים", "פעם בחודשיים"], "go": ["settings", "להגדרות"]}, {"id": 17, "s": "cycle", "q": "מה זה איפוס חודשי ואיך משנים את יום האיפוס?", "a": "היתרה והרשימות מחושבות לפי מחזור שמתחיל ביום שבחרתם (ברירת מחדל: 1 בחודש). בהגדרות, בכרטיס ״יום איפוס תקציב״, בוחרים יום מ-1 עד 31 ושומרים. האיפוס לא מוחק נתונים.", "k": ["איפוס", "מחזור", "יום איפוס", "תחילת חודש", "מתאפס", "לאפס", "לשנות יום"], "go": ["settings", "להגדרות"]}, {"id": 18, "s": "cycle", "q": "איך מבטלים את האיפוס החודשי?", "a": "בכרטיס ״יום איפוס תקציב״ יש מתג ״איפוס חודשי אוטומטי״. כשהוא כבוי האפליקציה עוברת למצב מצטבר: כל ההכנסות מול כל ההוצאות, בלי איפוס.", "k": ["ביטול", "לבטל", "כיבוי", "מצטבר", "ללא איפוס", "בלי איפוס", "מתג", "לא להתאפס"], "go": ["settings", "להגדרות"]}, {"id": 19, "s": "cycle", "q": "מה ההודעה שקופצת בתחילת מחזור על התשלומים הקבועים?", "a": "בתחילת מחזור חדש מוצגת הודעה עם סך ההכנסות וההוצאות הקבועות, כדי שתוודאו שהן עדיין נכונות. אם משהו השתנה, מעדכנים אותן בהגדרות.", "k": ["הודעה", "חלון", "קופץ", "בתחילת", "שינויים", "בסוף חודש", "קבועות"], "go": ["settings", "להגדרות"]}, {"id": 20, "s": "charts", "q": "מה יש במסך התרשימים?", "a": "סיכום הכנסות, הוצאות ויתרה של המחזור, פילוח לפי קטגוריות, השוואת הוצאות לתקציב, ותרשים מגמה עם בחירת תקופה.", "k": ["תרשים", "תרשימים", "גרף", "גרפים", "מגמה", "פילוח", "סטטיסטיקה", "דוח"], "go": ["charts", "לתרשימים"]}, {"id": 21, "s": "wa", "q": "איך מחברים את בוט הוואטסאפ?", "a": "בהגדרות, בחלק ״חיבור מספרי וואטסאפ לבוט״, מוסיפים את מספר הטלפון שלכם. אחר כך שולחים הודעות לבוט והתנועות נרשמות באפליקציה.", "k": ["וואטסאפ", "בוט", "חיבור", "מחברים", "מספר", "טלפון", "whatsapp", "ווצאפ"], "go": ["settings", "להגדרות"], "l": ["פתח את הבוט", "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA"]}, {"id": 22, "s": "wa", "q": "אילו פקודות שולחים לבוט?", "a": "הוצאה: <b>50 קפה</b>. הכנסה: <b>משכורת 8000</b>. רשימת פקודות: <b>פקודות</b>. תנועות שנרשמו דרך הבוט מסומנות בתג וואטסאפ.", "k": ["פקודות", "פקודה", "לשלוח", "דוגמה", "איך כותבים", "פורמט"], "l": ["שלח ״פקודות״ לבוט", "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA"]}, {"id": 23, "s": "wa", "q": "הבוט לא מגיב או שתנועה לא נרשמה", "a": "ודאו שהמספר שלכם מחובר בהגדרות בצורה נכונה, ושהודעה נשלחה בפורמט ״סכום + תיאור״. אפשר לשלוח ״פקודות״ לבדיקה. אם עדיין לא עובד, פנו לתמיכה.", "k": ["לא מגיב", "לא עובד", "לא נרשם", "לא נרשמה", "תקלה", "בעיה", "לא עונה"], "go": ["settings", "להגדרות"], "l": ["שלח ״פקודות״ לבוט", "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA"]}, {"id": 24, "s": "set", "q": "איך עוברים בין מצב כהה למצב בהיר?", "a": "בהגדרות, בחלק ״הגדרות כלליות״, בוחרים בין עיצוב כהה לעיצוב בהיר.", "k": ["כהה", "בהיר", "מצב לילה", "ערכת נושא", "עיצוב", "צבע", "ערכה"], "go": ["settings", "להגדרות"]}, {"id": 25, "s": "set", "q": "איך משנים שם או תמונת פרופיל?", "a": "בהגדרות, בכרטיס המשתמש בראש המסך, אפשר לערוך את השם ולהחליף תמונה. יש גם אפשרות לאפס את התמונה חזרה למקור.", "k": ["שם", "תמונה", "פרופיל", "אווטר", "לשנות שם", "להחליף תמונה"], "go": ["settings", "להגדרות"]}, {"id": 26, "s": "set", "q": "איך מתקינים את האפליקציה על מסך הבית?", "a": "האפליקציה ניתנת להתקנה: בדפדפן תופיע הצעת התקנה. באייפון בוחרים בשיתוף את ״הוסף למסך הבית״.", "k": ["התקנה", "להתקין", "מסך הבית", "אייפון", "אנדרואיד", "pwa", "אייקון"]}, {"id": 27, "s": "set", "q": "איפה הגדרות הנגישות?", "a": "כפתור הנגישות בצד המסך פותח אפשרויות: גודל טקסט, ניגודיות גבוהה, הדגשת קישורים, עצירת אנימציות וגווני אפור.", "k": ["נגישות", "גודל טקסט", "ניגודיות", "אנימציות", "גווני אפור", "הגדלה"]}, {"id": 28, "s": "set", "q": "איך מתנתקים או מוחקים חשבון?", "a": "התנתקות: כפתור היציאה בכותרת של מסך הבית. מחיקת חשבון: בהגדרות, באזור ״חשבון״. היא דורשת להקליד את המילה ״מחק״ ומוחקת את כל הנתונים לצמיתות.", "k": ["התנתקות", "להתנתק", "יציאה", "מחיקת חשבון", "למחוק חשבון", "לצמיתות", "הסרה"], "go": ["settings", "להגדרות"]}, {"id": 29, "s": "set", "q": "לא מצליח להתחבר", "a": "בכניסה חובה לסמן את אישור תנאי השימוש. אפשר להתחבר עם גוגל או עם אימייל, ואם שכחתם סיסמה יש כפתור ״שכחתי סיסמה״. מייל אימות לפעמים מגיע לתיבת הספאם.", "k": ["התחברות", "להתחבר", "להיכנס", "מצליח להיכנס", "לא נכנס", "נכנס לחשבון", "כניסה", "סיסמה", "שכחתי", "ספאם", "אימות", "תנאי שימוש", "תקנון"]}, {"id": 30, "s": "help", "q": "איך מדווחים על תקלה או יוצרים קשר?", "a": "בהגדרות, בחלק ״תמיכה ויצירת קשר״, אפשר לדווח על תקלה במייל או בוואטסאפ, וגם להצטרף לקבוצת הוואטסאפ.", "k": ["תמיכה", "דיווח", "תקלה", "קשר", "לדווח", "באג", "עזרה", "קבוצה", "פנייה"], "go": ["settings", "להגדרות"], "l": ["לקבוצת הוואטסאפ", "https://chat.whatsapp.com/HH3H5OzPhOACL98QhmicEM"]}], POP = [1, 3, 6, 13, 17, 21], BOT = "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA", GROUP = "https://chat.whatsapp.com/HH3H5OzPhOACL98QhmicEM";
+  var SECS = [["start", "🚀", "התחלה מהירה"], ["scan", "🧾", "סריקת קבלות"], ["cats", "🏷️", "קטגוריות ותקציב"], ["events", "🎉", "אירועים"], ["fixed", "🔁", "תשלומים קבועים"], ["cycle", "📅", "איפוס חודשי"], ["charts", "📊", "תרשימים"], ["wa", "💬", "בוט וואטסאפ"], ["set", "⚙️", "הגדרות וחשבון"], ["help", "🛟", "תמיכה"]], KB = [{"id": 1, "s": "start", "q": "איך מוסיפים הכנסה או הוצאה?", "a": "במסך <b>החשבון שלי</b> לוחצים על כפתור ההכנסה או ההוצאה ומזינים סכום (חובה). אפשר להוסיף גם תיאור, קטגוריה ואירוע. בלי תיאור התנועה תיקרא ״הכנסה כללית״ או ״הוצאה כללית״, והיא נרשמת בתאריך של היום.", "k": ["הוספה", "להוסיף", "מוסיפים", "הכנסה", "הוצאה", "תנועה", "רישום", "לרשום", "חדשה", "להזין"], "go": ["dashboard", "למסך הבית"]}, {"id": 2, "s": "start", "q": "איך עורכים, מוחקים או מחפשים תנועה?", "a": "ברשימת התנועות בכל שורה יש כפתור עריכה (עיפרון) וכפתור מחיקה (✕). בשורת החיפוש מעל הרשימה אפשר לחפש לפי תיאור או קטגוריה.", "k": ["עריכה", "לערוך", "מחיקה", "למחוק", "תיקון", "לתקן", "טעות", "חיפוש", "לחפש", "תנועה"], "go": ["dashboard", "למסך הבית"]}, {"id": 3, "s": "start", "q": "איך מחושבת היתרה?", "a": "היתרה = ההכנסות של המחזור הנוכחי (כולל הכנסות קבועות) פחות ההוצאות הקבועות ופחות ההוצאות הרגילות של המחזור.", "k": ["יתרה", "חישוב", "מחושב", "פנויה", "נשאר", "כמה נשאר", "סכום"], "go": ["dashboard", "למסך הבית"]}, {"id": 4, "s": "start", "q": "איך משנים מטבע?", "a": "בכותרת של מסך הבית יש כפתור עם סמל המטבע (₪ כברירת מחדל). לוחצים עליו ובוחרים מטבע מהרשימה, למשל דולר, אירו או פאונד. ההמרה לפי שער משוער.", "k": ["מטבע", "דולר", "אירו", "שקל", "המרה", "שער", "פאונד"], "go": ["dashboard", "למסך הבית"]}, {"id": 5, "s": "start", "q": "האפליקציה תקועה או לא מתעדכנת", "a": "לחצו על כפתור הרענון (החיצים) בכותרת של מסך הבית. בהגדרות יש גם כפתור לעדכון האפליקציה לגרסה האחרונה.", "k": ["תקוע", "תקועה", "רענון", "לרענן", "מתעדכן", "איטי", "איטית", "לא נטען", "עדכון", "לעדכן"], "go": ["settings", "להגדרות"]}, {"id": 6, "s": "scan", "q": "איך סורקים קבלה או חשבונית?", "a": "במסך הבית לוחצים על ״סריקת קבלה / חשבונית״, בוחרים מצלמה או גלריה, והבינה המלאכותית מזהה את הפרטים. לפני השמירה מוצג אישור, ואפשר לשייך לאירוע. אם הסכום לא זוהה אפשר להזין אותו ידנית.", "k": ["סריקה", "לסרוק", "סורקים", "קבלה", "חשבונית", "צילום", "מצלמה", "גלריה", "AI", "בינה"], "go": ["dashboard", "למסך הבית"]}, {"id": 7, "s": "scan", "q": "יש הגבלה על מספר הסריקות?", "a": "כן. מספר הסריקות המותר ליום מופיע על כפתור הסריקה (כרגע 7 סריקות ביום).", "k": ["הגבלה", "מגבלה", "מכסה", "יומי", "כמה סריקות", "סריקות"], "go": ["dashboard", "למסך הבית"]}, {"id": 8, "s": "cats", "q": "איך מוסיפים קטגוריה?", "a": "במסך ״קטגוריות ואירועים״ לוחצים על כפתור ההוספה, בוחרים אם זו הוצאה או הכנסה, נותנים שם, ואפשר להגדיר גם תקציב חודשי.", "k": ["קטגוריה", "קטגוריות", "להוסיף", "חדשה", "יצירת", "ליצור"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 9, "s": "cats", "q": "איך מגדירים תקציב לקטגוריה?", "a": "בכרטיס הקטגוריה לוחצים על כפתור עריכת התקציב (בפינה), מזינים סכום ושומרים. תראו פס התקדמות וכמה נשאר, וגם התראה כשמתקרבים לתקציב (80%) או חורגים ממנו.", "k": ["תקציב", "יעד", "חריגה", "התראה", "מסגרת", "להגביל"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 10, "s": "cats", "q": "איך מוחקים קטגוריה?", "a": "בכרטיס הקטגוריה יש כפתור ✕ למחיקה.", "k": ["מחיקת קטגוריה", "למחוק קטגוריה", "להסיר קטגוריה", "מחיקה"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 11, "s": "events", "q": "מה זה אירוע ואיך יוצרים אחד?", "a": "אירוע (ברית, חתונה, חופשה...) מרכז במקום אחד הכנסות והוצאות של עניין מסוים. במסך ״קטגוריות ואירועים״ יוצרים אירוע עם שם, אימוג׳י, תאריך ויעד תקציב.", "k": ["אירוע", "אירועים", "חתונה", "ברית", "חופשה", "אירוע חדש", "מסיבה"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 12, "s": "events", "q": "איך משייכים תנועה לאירוע?", "a": "בהוספת הכנסה או הוצאה יש שדה ״אירוע״ שבו בוחרים את האירוע. אפשר לשייך גם בסריקת קבלה. התנועה תופיע ברשימה עם תג האירוע ובתוך מסך האירוע, ולא תיספר ביתרה החודשית. אפשר לשייך או לבטל שיוך גם בעריכת תנועה.", "k": ["שיוך", "לשייך", "משייכים", "שנכנסה", "הוצאה לאירוע", "הוצאה שייכת", "אירוע", "תנועה", "תג"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 13, "s": "events", "q": "האם התקציב של האירוע נכנס כהכנסה?", "a": "לא. התקציב הוא יעד בלבד: הוא מציג כמה הוצאת מתוכו וכמה נשאר, ולא נרשם כהכנסה. תנועות ששויכו לאירוע לא נספרות ביתרה ובתקציב החודשי בכלל. הן מופיעות ברשימת התנועות האחרונות עם תג האירוע, ונספרות רק בתוך האירוע.", "k": ["תקציב אירוע", "יעד אירוע", "נכנס", "הכנסה", "יתרה חודשית", "חודשית"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 14, "s": "events", "q": "מה קורה לתנועות של אירוע בתחילת חודש חדש?", "a": "האיפוס החודשי לא מוחק שום נתון, הוא רק קובע אילו תנועות מוצגות במסך החודשי. מסך האירוע מציג את כל התנועות ששויכו אליו, בלי קשר לחודש.", "k": ["איפוס", "חודש", "נמחק", "נעלם", "נמחקות", "אירוע", "תנועות אירוע"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 15, "s": "fixed", "q": "איך מוסיפים הוצאה או הכנסה קבועה?", "a": "בהגדרות, בחלק ״תשלומים קבועים״, מוסיפים שם וסכום להוצאה קבועה (שכירות, ארנונה...) או להכנסה קבועה (משכורת). הם נכללים בחישוב היתרה בכל מחזור.", "k": ["קבועה", "קבועות", "שכירות", "משכורת", "ארנונה", "חוזרת", "חודשית", "קבוע"], "go": ["settings", "להגדרות"]}, {"id": 16, "s": "fixed", "q": "מה זה ״דו-חודשי״?", "a": "הכנסות או הוצאות שחוזרות פעם בחודשיים, כמו חשבון מים. מוסיפים אותן בהגדרות, בבלוק ״דו-חודשי״ שבתוך התשלומים הקבועים.", "k": ["דו חודשי", "דו-חודשי", "חודשיים", "מים", "פעם בחודשיים"], "go": ["settings", "להגדרות"]}, {"id": 17, "s": "cycle", "q": "מה זה איפוס חודשי ואיך משנים את יום האיפוס?", "a": "היתרה והרשימות מחושבות לפי מחזור שמתחיל ביום שבחרתם (ברירת מחדל: 1 בחודש). בהגדרות, בכרטיס ״יום איפוס תקציב״, בוחרים יום מ-1 עד 31 ושומרים. האיפוס לא מוחק נתונים.", "k": ["איפוס", "מחזור", "יום איפוס", "תחילת חודש", "מתאפס", "לאפס", "לשנות יום"], "go": ["settings", "להגדרות"]}, {"id": 18, "s": "cycle", "q": "איך מבטלים את האיפוס החודשי?", "a": "בכרטיס ״יום איפוס תקציב״ יש מתג ״איפוס חודשי אוטומטי״. כשהוא כבוי האפליקציה עוברת למצב מצטבר: כל ההכנסות מול כל ההוצאות, בלי איפוס.", "k": ["ביטול", "לבטל", "כיבוי", "מצטבר", "ללא איפוס", "בלי איפוס", "מתג", "לא להתאפס"], "go": ["settings", "להגדרות"]}, {"id": 19, "s": "cycle", "q": "מה ההודעה שקופצת בתחילת מחזור על התשלומים הקבועים?", "a": "בתחילת מחזור חדש מוצגת הודעה עם סך ההכנסות וההוצאות הקבועות, כדי שתוודאו שהן עדיין נכונות. אם משהו השתנה, מעדכנים אותן בהגדרות.", "k": ["הודעה", "חלון", "קופץ", "בתחילת", "שינויים", "בסוף חודש", "קבועות"], "go": ["settings", "להגדרות"]}, {"id": 20, "s": "charts", "q": "מה יש במסך התרשימים?", "a": "סיכום הכנסות, הוצאות ויתרה של המחזור, פילוח לפי קטגוריות, השוואת הוצאות לתקציב, ותרשים מגמה עם בחירת תקופה.", "k": ["תרשים", "תרשימים", "גרף", "גרפים", "מגמה", "פילוח", "סטטיסטיקה", "דוח"], "go": ["charts", "לתרשימים"]}, {"id": 21, "s": "wa", "q": "איך מחברים את בוט הוואטסאפ?", "a": "בהגדרות, בחלק ״חיבור מספרי וואטסאפ לבוט״, מוסיפים את מספר הטלפון שלכם. אחר כך שולחים הודעות לבוט והתנועות נרשמות באפליקציה.", "k": ["וואטסאפ", "בוט", "חיבור", "מחברים", "מספר", "טלפון", "whatsapp", "ווצאפ"], "go": ["settings", "להגדרות"], "l": ["פתח את הבוט", "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA"]}, {"id": 22, "s": "wa", "q": "אילו פקודות שולחים לבוט?", "a": "הוצאה: <b>50 קפה</b>. הכנסה: <b>משכורת 8000</b>. רשימת פקודות: <b>פקודות</b>. תנועות שנרשמו דרך הבוט מסומנות בתג וואטסאפ.", "k": ["פקודות", "פקודה", "לשלוח", "דוגמה", "איך כותבים", "פורמט"], "l": ["שלח ״פקודות״ לבוט", "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA"]}, {"id": 23, "s": "wa", "q": "הבוט לא מגיב או שתנועה לא נרשמה", "a": "ודאו שהמספר שלכם מחובר בהגדרות בצורה נכונה, ושהודעה נשלחה בפורמט ״סכום + תיאור״. אפשר לשלוח ״פקודות״ לבדיקה. אם עדיין לא עובד, פנו לתמיכה.", "k": ["לא מגיב", "לא עובד", "לא נרשם", "לא נרשמה", "תקלה", "בעיה", "לא עונה"], "go": ["settings", "להגדרות"], "l": ["שלח ״פקודות״ לבוט", "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA"]}, {"id": 24, "s": "set", "q": "איך עוברים בין מצב כהה למצב בהיר?", "a": "בהגדרות, בחלק ״הגדרות כלליות״, בוחרים בין עיצוב כהה לעיצוב בהיר.", "k": ["כהה", "בהיר", "מצב לילה", "ערכת נושא", "עיצוב", "צבע", "ערכה"], "go": ["settings", "להגדרות"]}, {"id": 25, "s": "set", "q": "איך משנים שם או תמונת פרופיל?", "a": "בהגדרות, בכרטיס המשתמש בראש המסך, אפשר לערוך את השם ולהחליף תמונה. יש גם אפשרות לאפס את התמונה חזרה למקור.", "k": ["שם", "תמונה", "פרופיל", "אווטר", "לשנות שם", "להחליף תמונה"], "go": ["settings", "להגדרות"]}, {"id": 26, "s": "set", "q": "איך מתקינים את האפליקציה על מסך הבית?", "a": "האפליקציה ניתנת להתקנה: בדפדפן תופיע הצעת התקנה. באייפון בוחרים בשיתוף את ״הוסף למסך הבית״.", "k": ["התקנה", "להתקין", "מסך הבית", "אייפון", "אנדרואיד", "pwa", "אייקון"]}, {"id": 27, "s": "set", "q": "איפה הגדרות הנגישות?", "a": "כפתור הנגישות בצד המסך פותח אפשרויות: גודל טקסט, ניגודיות גבוהה, הדגשת קישורים, עצירת אנימציות וגווני אפור.", "k": ["נגישות", "גודל טקסט", "ניגודיות", "אנימציות", "גווני אפור", "הגדלה"]}, {"id": 28, "s": "set", "q": "איך מתנתקים או מוחקים חשבון?", "a": "התנתקות: כפתור היציאה בכותרת של מסך הבית. מחיקת חשבון: בהגדרות, באזור ״חשבון״. היא דורשת להקליד את המילה ״מחק״ ומוחקת את כל הנתונים לצמיתות.", "k": ["התנתקות", "להתנתק", "יציאה", "מחיקת חשבון", "למחוק חשבון", "לצמיתות", "הסרה"], "go": ["settings", "להגדרות"]}, {"id": 29, "s": "set", "q": "לא מצליח להתחבר", "a": "בכניסה חובה לסמן את אישור תנאי השימוש. אפשר להתחבר עם גוגל או עם אימייל, ואם שכחתם סיסמה יש כפתור ״שכחתי סיסמה״. מייל אימות לפעמים מגיע לתיבת הספאם.", "k": ["התחברות", "להתחבר", "להיכנס", "מצליח להיכנס", "לא נכנס", "נכנס לחשבון", "כניסה", "סיסמה", "שכחתי", "ספאם", "אימות", "תנאי שימוש", "תקנון"]}, {"id": 30, "s": "help", "q": "איך מדווחים על תקלה או יוצרים קשר?", "a": "בהגדרות, בחלק ״תמיכה ויצירת קשר״, אפשר לדווח על תקלה במייל או בוואטסאפ, וגם להצטרף לקבוצת הוואטסאפ.", "k": ["תמיכה", "דיווח", "תקלה", "קשר", "לדווח", "באג", "עזרה", "קבוצה", "פנייה"], "go": ["settings", "להגדרות"], "l": ["לקבוצת הוואטסאפ", "https://chat.whatsapp.com/HH3H5OzPhOACL98QhmicEM"]}], POP = [1, 3, 6, 13, 17, 21], BOT = "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA", GROUP = "https://chat.whatsapp.com/HH3H5OzPhOACL98QhmicEM";
   var STOP = {};
   'איך מה האם אני את של על זה לי יש אפשר למה איפה כמה עם או גם לא כן רוצה צריך אם אל מי הוא היא הם אותו אותה לו בו כל עוד רק כדי זאת'.split(' ').forEach(function(w){ STOP[w]=1; });
   var guideBuilt = false, byId = {};
@@ -8755,6 +8767,7 @@ body.theme-light #evx-panel{background:#fff}
     <select id="modal-event" class="inp modern-hover" style="margin-bottom:6px;border-color:rgba(168,85,247,0.25);">
       <option value="">🎉 ללא אירוע</option>
     </select>
+      <div style="font-size:10.5px;font-weight:600;color:var(--muted);margin:0 4px 10px;line-height:1.5;">תנועה ששויכה לאירוע לא נספרת ביתרה ובתקציב החודשי.</div>
     <button id="btn-modal-new-cat-toggle" type="button">
       <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       צור קטגוריה חדשה
@@ -8905,7 +8918,9 @@ body.theme-light #evx-panel{background:#fff}
       style="font-size:36px;font-weight:800;text-align:center;padding:16px 10px;margin-bottom:11px">
     <input id="edit-modal-desc" class="inp modern-hover" type="text" placeholder="תיאור הפעולה"
       autocomplete="off" style="margin-bottom:11px">
-    <select id="edit-modal-category" class="inp modern-hover" style="margin-bottom:14px;"></select>
+    <select id="edit-modal-category" class="inp modern-hover" style="margin-bottom:11px;"></select>
+    <select id="edit-modal-event" class="inp modern-hover" style="margin-bottom:6px;border-color:rgba(168,85,247,0.25);"></select>
+    <div style="font-size:10.5px;font-weight:600;color:var(--muted);margin:0 4px 14px;line-height:1.5;">תנועה ששויכה לאירוע לא נספרת ביתרה ובתקציב החודשי.</div>
     <button id="edit-modal-submit" class="btn modern-hover btn-cyan" style="font-size:15px;padding:15px;">שמור שינויים</button>
   </div>
 </div>
@@ -9334,6 +9349,9 @@ body.theme-light #evx-panel{background:#fff}
       }
     });
     $('edit-modal-category').innerHTML = opts;
+    var _eo = '<option value="">🎉 ללא אירוע</option>';
+    (window._evList || []).forEach(function(ev){ _eo += '<option value="' + escHtml(ev.id) + '"' + (item.eventId === ev.id ? ' selected' : '') + '>' + escHtml((ev.emoji||'🎊') + ' ' + ev.name) + '</option>'; });
+    $('edit-modal-event').innerHTML = _eo;
     show('edit-modal-overlay');
     setTimeout(function() { $('edit-modal-amount').focus(); }, 100);
   };
@@ -9351,6 +9369,8 @@ body.theme-light #evx-panel{background:#fff}
     var data = { amount: amount, description: desc };
     var cat = $('edit-modal-category').value;
     if (cat) data.category = cat; else data.category = firebase.firestore.FieldValue.delete();
+    var _evSel = $('edit-modal-event') ? $('edit-modal-event').value : '';
+    if (_evSel) data.eventId = _evSel; else if (editingItem.eventId) data.eventId = firebase.firestore.FieldValue.delete();
     db.collection('users').doc(uid).collection(col).doc(editingItem.id).update(data)
       .then(function() { closeEditModal(); toast('התנועה עודכנה בהצלחה!', 'success'); })
       .catch(function() { toast('שגיאה בעדכון', 'error'); });
@@ -9488,14 +9508,14 @@ body.theme-light #evx-panel{background:#fff}
   }
   function calcIncome(){
     var s = cycleStart();
-    return incomes.filter(function(i){ return parseDate(i.date)>=s; })
+    return incomes.filter(function(i){ return !i.eventId && parseDate(i.date)>=s; })
                   .reduce(function(a,i){ return a+Number(i.amount||0); },0)
          + fixedIncomes.reduce(function(a,i){ return a+Number(i.amount||0); },0);
   }
   function calcFixedExp(){ return fixedExpenses.reduce(function(a,i){ return a+Number(i.amount||0); },0); }
   function calcVarExp(){
     var s = cycleStart();
-    return expenses.filter(function(i){ return parseDate(i.date)>=s; })
+    return expenses.filter(function(i){ return !i.eventId && parseDate(i.date)>=s; })
                    .reduce(function(a,i){ return a+Number(i.amount||0); },0);
   }
   function calcBal(){ return calcIncome()-calcFixedExp()-calcVarExp(); }
@@ -9601,6 +9621,7 @@ body.theme-light #evx-panel{background:#fff}
     if(_txListTouchActive){ _txRenderPending = true; return; }
     _renderTxNow();
   }
+  window._renderTx = renderTx;
   (function(){
     var listEl = document.getElementById('tx-list');
     if(!listEl) return;
@@ -9671,6 +9692,7 @@ body.theme-light #evx-panel{background:#fff}
         if(ev) evTag = '<span class="tx-ev-tag" data-ev-open="'+escHtml(ev.id)+'">'+
           escHtml(ev.emoji||'🎊')+' '+escHtml(ev.name)+'</span>';
       }
+      if(item.eventId) evTag += '<span class="tx-ev-note">לא נספר בתקציב החודשי</span>';
       var itemJson = JSON.stringify(item).replace(/'/g,"&#39;").replace(/"/g,"&quot;");
       _txItemsById[item.id] = item;
       return '<div class="tx-row modern-hover"'+(notLast?' style="border-bottom:1px solid rgba(255,255,255,0.04)"':'')+'>'+
@@ -9975,7 +9997,7 @@ window.deletePhoneIdx = function(i) {
     var overItems = [], nearItems = [];
     userCategories.forEach(function(cat) {
       if (cat.type !== 'expense' || !cat.budget || cat.budget <= 0) return;
-      var matched = expenses.filter(function(i){ return i.category === cat.name && parseDate(i.date) >= s; });
+      var matched = expenses.filter(function(i){ return !i.eventId && i.category === cat.name && parseDate(i.date) >= s; });
       var total = matched.reduce(function(a, i){ return a + Number(i.amount||0); }, 0);
       var pct = total / cat.budget;
       if (total >= cat.budget) overItems.push({ cat: cat, total: total });
@@ -10037,8 +10059,8 @@ window.deletePhoneIdx = function(i) {
     if(cyEl) cyEl.textContent = (resetEnabled === false) ? 'כל הזמן' : (mnths[s.getMonth()]+' '+s.getFullYear());
 
     /* ── collect data ── */
-    var cycleIncs = incomes.filter(function(i){ return parseDate(i.date)>=s; });
-    var cycleExps = expenses.filter(function(i){ return parseDate(i.date)>=s; });
+    var cycleIncs = incomes.filter(function(i){ return !i.eventId && parseDate(i.date)>=s; });
+    var cycleExps = expenses.filter(function(i){ return !i.eventId && parseDate(i.date)>=s; });
     var fixedExpT = fixedExpenses.reduce(function(a,i){ return a+Number(i.amount||0); },0);
     var fixedIncT = fixedIncomes.reduce(function(a,i){ return a+Number(i.amount||0); },0);
 
@@ -10388,7 +10410,7 @@ window.deletePhoneIdx = function(i) {
 
     // Build monthly buckets from the earliest transaction to now
     var now = new Date();
-    var allTx = incomes.concat(expenses);
+    var allTx = incomes.concat(expenses).filter(function(t){ return !t.eventId; });
 
     // Determine start month
     var startDate;
@@ -10425,9 +10447,9 @@ window.deletePhoneIdx = function(i) {
       var mEnd   = new Date(m.year, m.month + 1, 0, 23, 59, 59);
       var isCurrent = (m.year === now.getFullYear() && m.month === now.getMonth());
 
-      var inc = incomes.filter(function(tx){ var d=parseDate(tx.date); return d>=mStart&&d<=mEnd; })
+      var inc = incomes.filter(function(tx){ var d=parseDate(tx.date); return !tx.eventId && d>=mStart&&d<=mEnd; })
                        .reduce(function(a,tx){ return a+Number(tx.amount||0); }, 0);
-      var exp = expenses.filter(function(tx){ var d=parseDate(tx.date); return d>=mStart&&d<=mEnd; })
+      var exp = expenses.filter(function(tx){ var d=parseDate(tx.date); return !tx.eventId && d>=mStart&&d<=mEnd; })
                         .reduce(function(a,tx){ return a+Number(tx.amount||0); }, 0);
 
       // Add fixed monthly amounts to every completed month (and current)
@@ -10564,7 +10586,7 @@ window.deletePhoneIdx = function(i) {
       var overList = [], nearList = [];
       expCats.forEach(function(cat) {
         if (!cat.budget || cat.budget <= 0) return;
-        var regM = expenses.filter(function(i){ return i.category===cat.name && parseDate(i.date)>=s; });
+        var regM = expenses.filter(function(i){ return !i.eventId && i.category===cat.name && parseDate(i.date)>=s; });
         var fixM = fixedExpenses.filter(function(i){ return i.name===cat.name || i.category===cat.name; });
         var total = regM.reduce(function(a,i){ return a+Number(i.amount||0); },0)
                   + fixM.reduce(function(a,i){ return a+Number(i.amount||0); },0);
@@ -10708,7 +10730,7 @@ window.deletePhoneIdx = function(i) {
     // הוצאות — alert חריגה
     expCats.forEach(function(cat) {
       if (!cat.budget||cat.budget<=0) return;
-      var regM2  = expenses.filter(function(i){ return i.category===cat.name&&parseDate(i.date)>=s; });
+      var regM2  = expenses.filter(function(i){ return !i.eventId && i.category===cat.name&&parseDate(i.date)>=s; });
       var fixM2  = fixedExpenses.filter(function(i){ return i.name===cat.name||i.category===cat.name; });
       var tot2   = regM2.reduce(function(a,i){ return a+Number(i.amount||0); },0)
                  + fixM2.reduce(function(a,i){ return a+Number(i.amount||0); },0);
@@ -10724,7 +10746,7 @@ window.deletePhoneIdx = function(i) {
     // הכנסות — alert הגעה ליעד
     incCats.forEach(function(cat) {
       if (!cat.budget||cat.budget<=0) return;
-      var regM3  = incomes.filter(function(i){ return i.category===cat.name&&parseDate(i.date)>=s; });
+      var regM3  = incomes.filter(function(i){ return !i.eventId && i.category===cat.name&&parseDate(i.date)>=s; });
       var fixM3  = fixedIncomes.filter(function(i){ return i.name===cat.name||i.category===cat.name; });
       var tot3   = regM3.reduce(function(a,i){ return a+Number(i.amount||0); },0)
                  + fixM3.reduce(function(a,i){ return a+Number(i.amount||0); },0);
@@ -12238,7 +12260,7 @@ window.deletePhoneIdx = function(i) {
     // Show current spend for expense categories
     if (!isInc) {
       var s = cycleStart();
-      var matched = expenses.filter(function(i){ return i.category === budgetEditCat.name && parseDate(i.date) >= s; });
+      var matched = expenses.filter(function(i){ return !i.eventId && i.category === budgetEditCat.name && parseDate(i.date) >= s; });
       var currentSpend = matched.reduce(function(a,i){ return a+Number(i.amount||0); }, 0);
       $('budget-edit-current-spend').textContent = fmt(currentSpend);
 
@@ -15335,6 +15357,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
       window._evList = _evList;
       renderEvList();
       _reloadModalEvents();
+      try{ if(window._renderTx) window._renderTx(); }catch(e){}
     }, function(){ _evListenerStarted=false; });
   }
 
@@ -15651,9 +15674,20 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
 
   /* ── מחיקה ── */
   window.deleteEv = function(evId){
-    if(!confirm('למחוק את האירוע? התנועות המשויכות ישארו אך יאבדו את השיוך.')) return;
+    if(!confirm('למחוק את האירוע? התנועות המשויכות ישארו אך יאבדו את השיוך, ויחזרו להיספר בחודשי.')) return;
     var col=evCol(); if(!col) return;
-    col.doc(evId).delete().then(function(){ window.toast&&window.toast('האירוע נמחק','success'); });
+    var userDoc=col.parent;
+    col.doc(evId).delete().then(function(){
+      window.toast&&window.toast('האירוע נמחק','success');
+      ['incomes','expenses'].forEach(function(name){
+        userDoc.collection(name).where('eventId','==',evId).get().then(function(snap){
+          if(snap.empty) return;
+          var b=window.db.batch();
+          snap.docs.forEach(function(d){ b.update(d.ref,{eventId:firebase.firestore.FieldValue.delete()}); });
+          b.commit();
+        }).catch(function(){});
+      });
+    });
   };
 
   /* ── ריענון select במודל תנועה ── */
