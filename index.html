@@ -135,6 +135,10 @@
       else { setCircularFavicon(); }
     })();
   </script>
+  <style>
+    @keyframes termsShake { 0%,100%{transform:translateX(0);} 20%{transform:translateX(-7px);} 40%{transform:translateX(6px);} 60%{transform:translateX(-4px);} 80%{transform:translateX(3px);} }
+    #login-terms-box.terms-bad { border-color:rgba(255,77,106,.75) !important; box-shadow:0 0 0 3px rgba(255,77,106,.14); animation:termsShake .45s ease; }
+  </style>
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
@@ -4070,7 +4074,7 @@ body.theme-light { background-color: var(--bg) !important; }
       </button>
 
       <!-- הסכמה משפטית אלגנטית -->
-      <div style="
+      <div id="login-terms-box" style="
         margin-top:10px;margin-bottom:14px;
         padding:13px 15px;
         background:linear-gradient(135deg,rgba(0,229,255,0.03) 0%,rgba(255,255,255,0.02) 100%);
@@ -4085,6 +4089,7 @@ body.theme-light { background-color: var(--bg) !important; }
           קראתי ואני מאשר/ת את <a href="https://a4190656-cloud.github.io/AO-TIMLulll/privacy.html" target="_blank" style="color:rgba(0,229,255,0.60);font-weight:800;text-decoration:none;border-bottom:1px solid rgba(0,229,255,0.22);padding-bottom:1px;transition:color .15s,border-color .15s;" onmouseover="this.style.color='#00E5FF';this.style.borderColor='rgba(0,229,255,0.50)'" onmouseout="this.style.color='rgba(0,229,255,0.60)';this.style.borderColor='rgba(0,229,255,0.22)'">תנאי השימוש ומדיניות הפרטיות</a> של <bdi>MNTA+</bdi>, לרבות איסוף ועיבוד מידע כמפורט בהם.
         </label>
       </div>
+      <div id="login-terms-err" class="hidden" role="alert" style="margin:-6px 4px 14px;font-size:12px;font-weight:800;color:var(--red);line-height:1.5;text-align:center;">יש לאשר את תנאי השימוש ומדיניות הפרטיות כדי להמשיך</div>
 
       <!-- מפריד -->
       <div class="login-divider">
@@ -10753,7 +10758,7 @@ window.deletePhoneIdx = function(i) {
   // 2. הפעולה של לחיצה על הכפתור
   $('btn-google-login').onclick = function(){
     if(!$('login-terms-check').checked){
-      showLoginErr('יש לאשר את תנאי השימוש ומדיניות הפרטיות כדי להמשיך');
+      showTermsErr();
       return;
     }
     var btn = this;
@@ -10866,6 +10871,23 @@ window.deletePhoneIdx = function(i) {
   /* ══════════════════════════════════════════════
      HELPER — show login error
   ══════════════════════════════════════════════ */
+  function showTermsErr(){
+    var box=$('login-terms-box'), er=$('login-terms-err');
+    var el=$('login-err'); if(el) el.classList.add('hidden');
+    if(er) er.classList.remove('hidden');
+    if(box){
+      box.classList.remove('terms-bad'); void box.offsetWidth; box.classList.add('terms-bad');
+      try{ box.scrollIntoView({block:'center',behavior:'smooth'}); }catch(e){}
+    }
+    if(navigator.vibrate){ try{ navigator.vibrate(60); }catch(e){} }
+  }
+  (function(){
+    var cb=$('login-terms-check'); if(!cb) return;
+    cb.addEventListener('change',function(){
+      var box=$('login-terms-box'), er=$('login-terms-err');
+      if(cb.checked){ if(box) box.classList.remove('terms-bad'); if(er) er.classList.add('hidden'); }
+    });
+  })();
   function showLoginErr(msg){
     var el=$('login-err');
     if(!el) return;
@@ -10911,7 +10933,7 @@ window.deletePhoneIdx = function(i) {
   if(!email || !pass) return;
 
   if(!$('login-terms-check').checked){
-    showLoginErr('יש לאשר את תנאי השימוש ומדיניות הפרטיות כדי להמשיך');
+    showTermsErr();
     return;
   }
 
