@@ -7474,101 +7474,116 @@ body.theme-light { background-color: var(--bg) !important; }
         </div>
       </div>
 
+
+      <style>
+        /* ✦ תשלומים קבועים — עיצוב חדש (fx-*) ✦ */
+        .fx-card { --acc:#FF5C7A; --acc-rgb:255,92,122; position:relative; margin-bottom:14px; border-radius:26px; overflow:hidden;
+          background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.018)); border:1px solid rgba(255,255,255,.085);
+          box-shadow:0 14px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06); }
+        .fx-card.fx-income { --acc:#2EE59D; --acc-rgb:46,229,157; }
+        .fx-card.fx-bim { --acc:#B58CFF; --acc-rgb:181,140,255; }
+        .fx-card::before { content:''; position:absolute; inset:0 0 auto 0; height:120px; pointer-events:none;
+          background:radial-gradient(120% 100% at 85% -20%, rgba(var(--acc-rgb),.20), transparent 70%); }
+        .fx-head { position:relative; display:flex; align-items:center; gap:13px; padding:18px 18px 12px; }
+        .fx-ico { width:44px; height:44px; flex-shrink:0; border-radius:15px; display:flex; align-items:center; justify-content:center; color:var(--acc);
+          background:linear-gradient(145deg,rgba(var(--acc-rgb),.24),rgba(var(--acc-rgb),.08)); border:1px solid rgba(var(--acc-rgb),.30); }
+        .fx-ttl { flex:1; min-width:0; }
+        .fx-ttl b { display:block; font-size:15.5px; font-weight:900; color:#fff; letter-spacing:.005em; }
+        .fx-ttl span { display:block; margin-top:2px; font-size:11px; font-weight:600; color:rgba(255,255,255,.42); }
+        .fx-tot { text-align:left; direction:ltr; flex-shrink:0; }
+        .fx-tot small { display:block; font-size:9.5px; font-weight:800; letter-spacing:.08em; color:rgba(255,255,255,.38); text-transform:uppercase; direction:rtl; text-align:left; }
+        .fx-tot .fx-sum { display:block; font-family:'JetBrains Mono',monospace; font-size:17px; font-weight:800; color:var(--acc); margin-top:1px; }
+        .fx-list { position:relative; padding:4px 14px 6px; display:flex; flex-direction:column; gap:8px; min-height:8px; }
+        .fx-row { display:flex; align-items:center; gap:11px; padding:11px 12px 11px 10px; border-radius:18px;
+          background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06); opacity:1; transform:none; animation:none; }
+        .fx-dot { width:36px; height:36px; flex-shrink:0; border-radius:12px; display:flex; align-items:center; justify-content:center;
+          background:rgba(var(--acc-rgb),.14); color:var(--acc); }
+        .fx-info { flex:1; min-width:0; }
+        .fx-name { font-size:13.5px; font-weight:800; color:rgba(255,255,255,.94); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .fx-meta { margin-top:2px; font-size:10.5px; font-weight:600; color:rgba(255,255,255,.38); }
+        .fx-amt { font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:800; color:var(--acc); white-space:nowrap; direction:ltr; }
+        .fx-acts { display:flex; gap:5px; flex-shrink:0; }
+        .fx-btn { width:30px; height:30px; border:none; border-radius:10px; display:flex; align-items:center; justify-content:center; cursor:pointer;
+          background:rgba(255,255,255,.06); color:rgba(255,255,255,.62); touch-action:manipulation; transition:background .15s, color .15s, transform .12s; }
+        .fx-btn:active { transform:scale(.9); }
+        .fx-btn.del:hover, .fx-btn.del:active { background:rgba(255,77,106,.18); color:#FF6B84; }
+        .fx-btn.edit:hover, .fx-btn.edit:active { background:rgba(var(--acc-rgb),.18); color:var(--acc); }
+        .fx-empty { text-align:center; padding:18px 12px; border-radius:18px; border:1px dashed rgba(255,255,255,.10); font-size:12px; font-weight:600; color:rgba(255,255,255,.36); }
+        .fx-add { position:relative; padding:10px 14px 16px; display:grid; grid-template-columns:1.5fr 1fr; gap:8px; }
+        .fx-add.bim { grid-template-columns:1.5fr 1fr; }
+        .fx-add .full { grid-column:1 / -1; }
+        .fx-inp, .fx-sel { width:100%; box-sizing:border-box; min-width:0; padding:13px 14px; border-radius:14px; border:1px solid rgba(255,255,255,.09);
+          background:rgba(0,0,0,.22); color:#fff; font:600 13.5px 'Syne',sans-serif; text-align:right; outline:none; -webkit-appearance:none; appearance:none; transition:border-color .2s, box-shadow .2s; }
+        .fx-inp::placeholder { color:rgba(255,255,255,.28); font-size:12px; }
+        .fx-inp:focus, .fx-sel:focus { border-color:rgba(var(--acc-rgb),.6); box-shadow:0 0 0 3px rgba(var(--acc-rgb),.12); }
+        .fx-sel { color:var(--acc); font-weight:800; cursor:pointer; }
+        .fx-sel option { background:#101626; color:#fff; }
+        .fx-go { grid-column:1 / -1; display:flex; align-items:center; justify-content:center; gap:7px; padding:13px; border:none; border-radius:15px; cursor:pointer;
+          font:900 13.5px 'Syne',sans-serif; color:#06110c; background:linear-gradient(135deg,var(--acc),rgba(var(--acc-rgb),.78));
+          box-shadow:0 8px 22px rgba(var(--acc-rgb),.28); touch-action:manipulation; transition:transform .15s, box-shadow .15s; }
+        .fx-go:active { transform:scale(.97); box-shadow:0 4px 12px rgba(var(--acc-rgb),.25); }
+        .fx-card.fx-bim .fx-go { color:#150a2a; }
+
+        /* מצב בהיר */
+        body.theme-light .fx-card { background:#fff; border:1px solid rgba(16,18,34,.07); box-shadow:0 10px 30px rgba(16,24,40,.08); }
+        body.theme-light .fx-card.fx-expense, body.theme-light .fx-card:not(.fx-income):not(.fx-bim) { --acc:#E1344F; --acc-rgb:225,52,79; }
+        body.theme-light .fx-card.fx-income { --acc:#0F9D58; --acc-rgb:15,157,88; }
+        body.theme-light .fx-card.fx-bim { --acc:#7C4DDB; --acc-rgb:124,77,219; }
+        body.theme-light .fx-card::before { background:radial-gradient(120% 100% at 85% -20%, rgba(var(--acc-rgb),.12), transparent 70%); }
+        body.theme-light .fx-ttl b, body.theme-light .fx-name { color:#10121B !important; }
+        body.theme-light .fx-ttl span, body.theme-light .fx-meta, body.theme-light .fx-tot small { color:rgba(16,18,34,.5) !important; }
+        body.theme-light .fx-row { background:#F7F8FC; border-color:rgba(16,18,34,.06); }
+        body.theme-light .fx-btn { background:rgba(16,18,34,.06); color:rgba(16,18,34,.6); }
+        body.theme-light .fx-empty { border-color:rgba(16,18,34,.14); color:rgba(16,18,34,.45); }
+        body.theme-light .fx-inp, body.theme-light .fx-sel { background:#F7F8FC; color:#10121B; border-color:rgba(16,18,34,.10); }
+        body.theme-light .fx-inp::placeholder { color:rgba(16,18,34,.35); }
+        body.theme-light .fx-sel option { background:#fff; color:#10121B; }
+        body.theme-light .fx-go { color:#fff; }
+      </style>
+
       <!-- הוצאות קבועות -->
-      <div class="fixed-block-2026 fixed-block-expense">
-        <div class="fixed-block-header">
-          <div class="fixed-block-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6080" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-          </div>
-          <div class="fixed-block-title-col">
-            <div class="fixed-block-title">הוצאות קבועות</div>
-            <div class="fixed-block-sub">חיובים חוזרים מדי חודש</div>
-          </div>
-          <div class="fixed-block-total" id="fe-total-badge">₪0</div>
+      <div class="fx-card fx-expense">
+        <div class="fx-head">
+          <div class="fx-ico"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="15" x2="10" y2="15"/></svg></div>
+          <div class="fx-ttl"><b>הוצאות קבועות</b><span>חיובים חוזרים מדי חודש</span></div>
+          <div class="fx-tot"><small>סה״כ</small><span class="fx-sum" id="fe-total-badge">₪0</span></div>
         </div>
-        <div class="fixed-items-list" id="fe-list"></div>
-        <div class="fixed-add-wrap">
-          <div class="fixed-add-row">
-            <input id="fe-name" class="fixed-add-inp fixed-add-inp-expense" type="text" placeholder="שם ההוצאה (שכר דירה, ביטוח...)">
-          </div>
-          <div class="fixed-add-row">
-            <input id="fe-amount" class="fixed-add-inp fixed-add-inp-expense" type="number" placeholder="סכום ₪">
-          </div>
-          <div class="fixed-add-row">
-            <button id="btn-add-fe" class="fixed-add-btn fixed-add-btn-expense" style="flex:1;justify-content:center;">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              הוסף הוצאה
-            </button>
-          </div>
+        <div class="fx-list" id="fe-list"></div>
+        <div class="fx-add">
+          <input id="fe-name" class="fx-inp" type="text" placeholder="שם ההוצאה (שכר דירה, ביטוח...)" autocomplete="off">
+          <input id="fe-amount" class="fx-inp" type="number" inputmode="decimal" placeholder="סכום ₪">
+          <button id="btn-add-fe" class="fx-go" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>הוסף הוצאה</button>
         </div>
       </div>
 
       <!-- הכנסות קבועות -->
-      <div class="fixed-block-2026 fixed-block-income">
-        <div class="fixed-block-header">
-          <div class="fixed-block-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00E676" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
-          </div>
-          <div class="fixed-block-title-col">
-            <div class="fixed-block-title">הכנסות קבועות</div>
-            <div class="fixed-block-sub">מקורות הכנסה חוזרים</div>
-          </div>
-          <div class="fixed-block-total" id="fi-total-badge">₪0</div>
+      <div class="fx-card fx-income">
+        <div class="fx-head">
+          <div class="fx-ico"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
+          <div class="fx-ttl"><b>הכנסות קבועות</b><span>מקורות הכנסה חוזרים</span></div>
+          <div class="fx-tot"><small>סה״כ</small><span class="fx-sum" id="fi-total-badge">₪0</span></div>
         </div>
-        <div class="fixed-items-list" id="fi-list"></div>
-        <div class="fixed-add-wrap">
-          <div class="fixed-add-row">
-            <input id="fi-name" class="fixed-add-inp fixed-add-inp-income" type="text" placeholder="מקור הכנסה (משכורת, שכירות...)">
-          </div>
-          <div class="fixed-add-row">
-            <input id="fi-amount" class="fixed-add-inp fixed-add-inp-income" type="number" placeholder="סכום ₪">
-          </div>
-          <div class="fixed-add-row">
-            <button id="btn-add-fi" class="fixed-add-btn fixed-add-btn-income" style="flex:1;justify-content:center;">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              הוסף הכנסה
-            </button>
-          </div>
+        <div class="fx-list" id="fi-list"></div>
+        <div class="fx-add">
+          <input id="fi-name" class="fx-inp" type="text" placeholder="מקור הכנסה (משכורת, שכירות...)" autocomplete="off">
+          <input id="fi-amount" class="fx-inp" type="number" inputmode="decimal" placeholder="סכום ₪">
+          <button id="btn-add-fi" class="fx-go" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>הוסף הכנסה</button>
         </div>
       </div>
 
-      <!-- ═══════════════════════════════════════════
-           בועה דו-חודשית — הכנסות והוצאות פעם בחודשיים
-           ═══════════════════════════════════════════ -->
-      <div class="fixed-block-2026" id="bimonthly-block" style="border-color:rgba(171,71,188,0.28);background:linear-gradient(145deg,rgba(39,16,62,0.80),rgba(18,8,32,0.95));">
-        <div class="fixed-block-header">
-          <div class="fixed-block-icon" style="background:rgba(171,71,188,0.12);border:1px solid rgba(171,71,188,0.28);">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#CE93D8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
-              <line x1="3" y1="10" x2="21" y2="10"/>
-              <path d="M8 14h4m0 0h4m-4 0v4"/>
-            </svg>
-          </div>
-          <div class="fixed-block-title-col">
-            <div class="fixed-block-title" style="color:#CE93D8;">דו-חודשי</div>
-            <div class="fixed-block-sub">הכנסות / הוצאות פעם בחודשיים</div>
-          </div>
-          <div class="fixed-block-total" id="bim-total-badge" style="color:#CE93D8;">₪0</div>
+      <!-- דו-חודשי -->
+      <div class="fx-card fx-bim" id="bimonthly-block">
+        <div class="fx-head">
+          <div class="fx-ico"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 16h6"/></svg></div>
+          <div class="fx-ttl"><b>דו-חודשי</b><span>הכנסות / הוצאות פעם בחודשיים</span></div>
+          <div class="fx-tot"><small>סה״כ</small><span class="fx-sum" id="bim-total-badge">₪0</span></div>
         </div>
-        <div class="fixed-items-list" id="bim-list"></div>
-        <div class="fixed-add-wrap">
-          <!-- שורה ראשונה: שם + בחירת סוג -->
-          <div class="fixed-add-row" style="gap:8px;">
-            <input id="bim-name" class="fixed-add-inp" type="text" placeholder="שם (ביטוח שנתי, מנוי...)" style="border-color:rgba(171,71,188,0.28);flex:1;">
-            <select id="bim-type" style="background:rgba(171,71,188,0.08);border:1px solid rgba(171,71,188,0.28);border-radius:12px;color:#CE93D8;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:10px 10px;outline:none;flex:0 0 auto;cursor:pointer;">
-              <option value="expense">הוצאה</option>
-              <option value="income">הכנסה</option>
-            </select>
-          </div>
-          <div class="fixed-add-row" style="gap:8px;">
-            <input id="bim-amount" class="fixed-add-inp" type="number" placeholder="סכום ₪" style="border-color:rgba(171,71,188,0.28);">
-          </div>
-          <div class="fixed-add-row">
-            <button id="btn-add-bim" class="fixed-add-btn" style="flex:1;justify-content:center;background:rgba(171,71,188,0.15);border-color:rgba(171,71,188,0.35);color:#CE93D8;">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              הוסף
-            </button>
-          </div>
+        <div class="fx-list" id="bim-list"></div>
+        <div class="fx-add bim">
+          <input id="bim-name" class="fx-inp" type="text" placeholder="שם (ביטוח שנתי, מנוי...)" autocomplete="off">
+          <select id="bim-type" class="fx-sel"><option value="expense">הוצאה</option><option value="income">הכנסה</option></select>
+          <input id="bim-amount" class="fx-inp full" type="number" inputmode="decimal" placeholder="סכום ₪">
+          <button id="btn-add-bim" class="fx-go" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>הוסף</button>
         </div>
       </div>
 
@@ -8495,6 +8510,14 @@ body.theme-light { background-color: var(--bg) !important; }
   }
   #wa-fab-msg.show { opacity:1; transform:none; pointer-events:auto; visibility:visible; transition-delay:0s; }
   #wa-fab-msg b { color:#2BE575; }
+  #wa-fab-txt { display:block; cursor:pointer; }
+  #wa-fab-x { position:absolute; top:-9px; right:-9px; width:22px; height:22px; padding:0; border-radius:50%; border:1px solid rgba(255,255,255,.22);
+    background:rgba(20,28,46,.96); color:#fff; font:700 15px/1 sans-serif; display:flex; align-items:center; justify-content:center; cursor:pointer;
+    box-shadow:0 3px 10px rgba(0,0,0,.4); touch-action:manipulation; }
+  #wa-fab-x::after { content:''; position:absolute; inset:-12px; }
+  #wa-fab-x:active { transform:scale(.88); }
+  body.theme-light #wa-fab-x { background:#fff; color:#10121B; border-color:rgba(16,18,34,.18); }
+  #wa-fab.wa-dismissed #wa-fab-dot { display:none; }
   body.theme-light #wa-fab-msg { background:#fff; color:#1b2a3a; border-color:rgba(37,211,102,.5); box-shadow:0 10px 28px rgba(0,0,0,.14); }
   body.theme-light #wa-fab-dot { border-color:#fff; }
   @media (prefers-reduced-motion:reduce) { #wa-fab-btn, #wa-fab-btn svg, #wa-fab-btn::before, #wa-fab-btn::after { animation:none; } }
@@ -8504,7 +8527,7 @@ body.theme-light { background-color: var(--bg) !important; }
     <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
     <span id="wa-fab-dot">1</span>
   </a>
-  <div id="wa-fab-msg" onclick="document.getElementById('wa-fab-btn').click()"></div>
+  <div id="wa-fab-msg"><span id="wa-fab-txt" onclick="document.getElementById('wa-fab-btn').click()"></span><button id="wa-fab-x" type="button" aria-label="סגירה">&times;</button></div>
 </div>
 <script>
 (function(){
@@ -8514,7 +8537,19 @@ body.theme-light { background-color: var(--bg) !important; }
     '📲 שלחו <b>"פקודות"</b> ותראו מה הבוט יודע',
     '☕ "50 קפה" — וההוצאה כבר באפליקציה'
   ];
-  var i = 0, box = null, tHide = null, tNext = null, onDash = false, raf = 0;
+  var i = 0, box = null, tHide = null, tNext = null, onDash = false, raf = 0, dismissed = false;
+  try { dismissed = sessionStorage.getItem('wa_fab_dismissed') === '1'; } catch(_e) {}
+  function dismiss(){
+    dismissed = true;
+    try { sessionStorage.setItem('wa_fab_dismissed', '1'); } catch(_e) {}
+    clearTimeout(tHide); clearTimeout(tNext);
+    var b = document.getElementById('wa-fab-msg'); if (b) b.classList.remove('show');
+    var f = document.getElementById('wa-fab'); if (f) f.classList.add('wa-dismissed');
+  }
+  document.addEventListener('click', function(ev){
+    var t = ev.target; if (t && t.closest && t.closest('#wa-fab-x')) { ev.preventDefault(); ev.stopPropagation(); dismiss(); }
+  }, true);
+  document.addEventListener('DOMContentLoaded', function(){ if (dismissed) { var f = document.getElementById('wa-fab'); if (f) f.classList.add('wa-dismissed'); } });
   function overlayOpen(){
     var q = document.querySelector('#bug-modal-overlay.open, #help-overlay.open, #onboarding-overlay.open, #cycle-modal-overlay:not(.hidden), #phone-modal-overlay:not(.hidden)');
     if (q) return true;
@@ -8550,9 +8585,9 @@ body.theme-light { background-color: var(--bg) !important; }
   function cycle(){
     var fab = document.getElementById('wa-fab');
     box = box || document.getElementById('wa-fab-msg');
-    if (!box) return;
+    if (!box || dismissed) return;
     if (fab && fab.classList.contains('wa-fab-on') && !document.hidden) {
-      box.innerHTML = msgs[i++ % msgs.length];
+      document.getElementById('wa-fab-txt').innerHTML = msgs[i++ % msgs.length];
       box.classList.add('show');
       clearTimeout(tHide);
       tHide = setTimeout(function(){ box.classList.remove('show'); }, 5200);
@@ -9319,6 +9354,7 @@ body.theme-light { background-color: var(--bg) !important; }
   /* ── Nav ── */
   window.switchView = function(v){
     window.scrollTo(0, 0);
+    if (v === 'settings') { try { renderFixedLists(); renderBimonthlyList(); } catch(_e) {} }
     if (window._waFabSet) window._waFabSet(v);
     hide('view-dashboard'); hide('view-settings'); hide('view-categories'); hide('view-charts');
     ['nav-dashboard','nav-settings','nav-categories','nav-charts'].forEach(function(id){
@@ -9586,21 +9622,18 @@ body.theme-light { background-color: var(--bg) !important; }
   function renderFixedLists(){
     function makeFixedItem(item, col, type) {
       var isExp = type === 'expense';
-      var emoji = isExp ? '💳' : '💰';
-      var cls = isExp ? 'fixed-item-expense' : 'fixed-item-income';
-      return '<div class="fixed-item-row ' + cls + '">' +
-        '<span class="fixed-item-icon">' + emoji + '</span>' +
-        '<div class="fixed-item-info">' +
-          '<div class="fixed-item-name">' + escHtml(item.name || '—') + '</div>' +
-          '<div class="fixed-item-amount">₪' + fmt(item.amount) + ' / חודש</div>' +
+      var ico = isExp ? '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><line x1="2" y1="10" x2="22" y2="10"/></svg>' : '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>';
+      var amt = Number(item.amount) || 0;
+      return '<div class="fx-row">' +
+        '<div class="fx-dot">' + ico + '</div>' +
+        '<div class="fx-info">' +
+          '<div class="fx-name">' + escHtml(item.name || '—') + '</div>' +
+          '<div class="fx-meta">' + (isExp ? 'הוצאה קבועה · מדי חודש' : 'הכנסה קבועה · מדי חודש') + '</div>' +
         '</div>' +
-        '<div class="fixed-item-actions">' +
-          '<button class="fixed-item-btn edit" data-fixed-edit-col="'+escHtml(col)+'" data-fixed-edit-id="'+escHtml(item.id)+'" data-fixed-edit-name="'+escHtml(item.name||'')+'" data-fixed-edit-amount="'+item.amount+'" title="ערוך">' +
-            '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"/></svg>' +
-          '</button>' +
-          '<button class="fixed-item-btn del" data-fixed-del-col="'+escHtml(col)+'" data-fixed-del-id="'+escHtml(item.id)+'" title="מחק">' +
-            '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>' +
-          '</button>' +
+        '<div class="fx-amt">' + fmt(amt) + '</div>' +
+        '<div class="fx-acts">' +
+          '<button class="fx-btn edit" type="button" data-fixed-edit-col="'+escHtml(col)+'" data-fixed-edit-id="'+escHtml(item.id)+'" data-fixed-edit-name="'+escHtml(item.name||'')+'" data-fixed-edit-amount="'+amt+'" title="ערוך" aria-label="ערוך"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>' +
+          '<button class="fx-btn del" type="button" data-fixed-del-col="'+escHtml(col)+'" data-fixed-del-id="'+escHtml(item.id)+'" title="מחק" aria-label="מחק"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>' +
         '</div>' +
       '</div>';
     }
@@ -9608,10 +9641,10 @@ body.theme-light { background-color: var(--bg) !important; }
     var fiEl = $('fi-list');
     if(feEl) feEl.innerHTML = fixedExpenses.length
       ? fixedExpenses.map(function(item){ return makeFixedItem(item,'fixed_settings','expense'); }).join('')
-      : '<div class="fixed-empty-row">אין הוצאות קבועות — הוסיפו את הראשונה</div>';
+      : '<div class="fx-empty">אין הוצאות קבועות עדיין<br>הוסיפו את הראשונה למטה</div>';
     if(fiEl) fiEl.innerHTML = fixedIncomes.length
       ? fixedIncomes.map(function(item){ return makeFixedItem(item,'fixed_incomes','income'); }).join('')
-      : '<div class="fixed-empty-row">אין הכנסות קבועות — הוסיפו את הראשונה</div>';
+      : '<div class="fx-empty">אין הכנסות קבועות עדיין<br>הוסיפו את הראשונה למטה</div>';
 
     ['fe-list','fi-list'].forEach(function(id){
       var el = $(id);
@@ -11983,31 +12016,26 @@ window.deletePhoneIdx = function(i) {
     var badge = $('bim-total-badge');
     if (!el) return;
     if (!bimonthlyItems.length) {
-      el.innerHTML = '<div class="fixed-empty-row" style="color:rgba(206,147,216,0.5);">אין פריטים דו-חודשיים עדיין</div>';
-      if (badge) badge.textContent = '₪0';
+      el.innerHTML = '<div class="fx-empty">אין פריטים דו-חודשיים עדיין<br>הוסיפו את הראשון למטה</div>';
+      if (badge) badge.textContent = fmt(0);
       return;
     }
-    // Total (sum / 2 to show monthly equivalent)
     var total = bimonthlyItems.reduce(function(a,i){ return a + Number(i.amount||0); }, 0);
-    if (badge) badge.textContent = '₪' + fmt(total);
+    if (badge) badge.textContent = fmt(total);
 
     el.innerHTML = bimonthlyItems.map(function(item) {
       var isExp = item.itemType === 'expense';
-      var col   = isExp ? 'rgba(255,100,128,0.85)' : 'rgba(0,220,110,0.85)';
-      var emoji = isExp ? '💳' : '💰';
-      return '<div class="fixed-item-row" style="border-right:3px solid rgba(171,71,188,0.50);">' +
-        '<span class="fixed-item-icon">' + emoji + '</span>' +
-        '<div class="fixed-item-info">' +
-          '<div class="fixed-item-name">' + escHtml(item.name||'—') + '</div>' +
-          '<div class="fixed-item-amount" style="color:' + col + ';">₪' + fmt(item.amount) + ' / 6 פעמים בשנה</div>' +
+      var amt = Number(item.amount) || 0;
+      return '<div class="fx-row">' +
+        '<div class="fx-dot">' + (isExp ? '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><line x1="2" y1="10" x2="22" y2="10"/></svg>' : '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>') + '</div>' +
+        '<div class="fx-info">' +
+          '<div class="fx-name">' + escHtml(item.name||'—') + '</div>' +
+          '<div class="fx-meta">' + (isExp ? 'הוצאה' : 'הכנסה') + ' · פעם בחודשיים</div>' +
         '</div>' +
-        '<div class="fixed-item-actions">' +
-          '<button class="fixed-item-btn edit" data-bim-edit-id="'+escHtml(item.id)+'" data-bim-edit-name="'+escHtml(item.name||'')+'" data-bim-edit-amount="'+item.amount+'" data-bim-edit-type="'+escHtml(item.itemType||'expense')+'" title="ערוך">' +
-            '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"/></svg>' +
-          '</button>' +
-          '<button class="fixed-item-btn del" data-bim-del-id="'+escHtml(item.id)+'" title="מחק">' +
-            '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>' +
-          '</button>' +
+        '<div class="fx-amt">' + fmt(amt) + '</div>' +
+        '<div class="fx-acts">' +
+          '<button class="fx-btn edit" type="button" data-bim-edit-id="'+escHtml(item.id)+'" data-bim-edit-name="'+escHtml(item.name||'')+'" data-bim-edit-amount="'+amt+'" data-bim-edit-type="'+escHtml(item.itemType||'expense')+'" title="ערוך" aria-label="ערוך"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>' +
+          '<button class="fx-btn del" type="button" data-bim-del-id="'+escHtml(item.id)+'" title="מחק" aria-label="מחק"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>' +
         '</div>' +
       '</div>';
     }).join('');
