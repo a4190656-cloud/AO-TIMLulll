@@ -145,6 +145,8 @@
   <link rel="dns-prefetch" href="https://firestore.googleapis.com">
   <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com">
   <style>
+    /* ✦ קטגוריות: ללא אנימציית כניסה שמסתירה ומקפיצה את האריחים בכל רענון */
+    .cat-tile, .cat-tile.rise, #cat-list2 .rise { animation:none; opacity:1; transform:none; }
     /* ⚡ ביצועים: ביטול השהיית 300ms במגע, ללא הבהוב לחיצה, גלילה חלקה */
     a, button, .nav-btn, [onclick], label, input, select, textarea { touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
     html { -webkit-text-size-adjust:100%; }
@@ -6936,17 +6938,109 @@ body.theme-light { background-color: var(--bg) !important; }
         body.theme-light .tx-ev-tag { color: #7C3AED !important; }
       </style>
 
-      <div class="ev-section-label">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(200,130,255,0.7)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        תקציב אירועים
-      </div>
+<style>
+/* ✦ EVENTS 2026 — evx-* ✦ */
+.evx{--p:#B58CFF;--p-rgb:181,140,255;--g:#2EE59D;--r:#FF5C7A;--a:#FFB020;--ink:#fff;--mut:rgba(255,255,255,.45);--bg2:rgba(255,255,255,.04);--bd:rgba(255,255,255,.085)}
+body.theme-light .evx,body.theme-light #evx-detail{--p:#7C4DDB;--p-rgb:124,77,219;--g:#0F9D58;--r:#E1344F;--a:#D98200;--ink:#10121B;--mut:rgba(16,18,34,.5);--bg2:#F7F8FC;--bd:rgba(16,18,34,.07)}
+.evx-hero{position:relative;overflow:hidden;margin:2px 0 12px;padding:18px;border-radius:26px;color:var(--ink);background:linear-gradient(145deg,rgba(var(--p-rgb),.26),rgba(var(--p-rgb),.06) 60%,rgba(255,255,255,.02));border:1px solid rgba(var(--p-rgb),.28);box-shadow:0 16px 44px rgba(0,0,0,.28)}
+body.theme-light .evx-hero{background:linear-gradient(145deg,rgba(var(--p-rgb),.13),#fff 70%);box-shadow:0 10px 30px rgba(16,24,40,.08)}
+.evx-hero::after{content:'';position:absolute;width:180px;height:180px;left:-60px;top:-70px;border-radius:50%;background:radial-gradient(circle,rgba(var(--p-rgb),.35),transparent 70%);pointer-events:none}
+.evx-hero-top{position:relative;display:flex;align-items:center;gap:14px}
+.evx-hero-txt{flex:1;min-width:0}
+.evx-hero-txt small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.08em;color:var(--mut)}
+.evx-hero-txt b{display:block;margin-top:3px;font:800 25px 'JetBrains Mono',monospace;color:var(--ink);direction:ltr;text-align:right}
+.evx-hero-txt span{display:block;margin-top:3px;font-size:11.5px;font-weight:600;color:var(--mut)}
+.evx-hero-row{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.evx-mini{padding:9px 8px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid var(--bd);text-align:center}
+body.theme-light .evx-mini{background:rgba(255,255,255,.8)}
+.evx-mini small{display:block;font-size:9.5px;font-weight:800;color:var(--mut)}
+.evx-mini b{display:block;margin-top:2px;font:800 12.5px 'JetBrains Mono',monospace;color:var(--ink)}
+.evx-tools{display:flex;flex-direction:column;gap:10px;margin:0 0 12px}
+.evx-search{width:100%;box-sizing:border-box;padding:12px 15px;border-radius:15px;border:1px solid var(--bd);background:var(--bg2);color:var(--ink);font:600 13.5px 'Syne',sans-serif;outline:none;direction:rtl;-webkit-appearance:none}
+.evx-search:focus{border-color:rgba(var(--p-rgb),.6);box-shadow:0 0 0 3px rgba(var(--p-rgb),.12)}
+.evx-search::placeholder{color:var(--mut)}
+.evx-chips{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.evx-chips::-webkit-scrollbar{display:none}
+.evx-chip{flex:0 0 auto;padding:8px 14px;border-radius:99px;border:1px solid var(--bd);background:var(--bg2);color:var(--mut);font:800 12px 'Syne',sans-serif;cursor:pointer;touch-action:manipulation}
+.evx-chip.on{color:#fff;border-color:transparent;background:linear-gradient(135deg,var(--p),rgba(var(--p-rgb),.7))}
+#btn-add-event.evx-add{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;margin:0 0 14px;border:none;border-radius:17px;cursor:pointer;font:900 14px 'Syne',sans-serif;color:#fff;background:linear-gradient(135deg,#9B6BFF,#6D4AE0);box-shadow:0 10px 26px rgba(124,77,219,.38);touch-action:manipulation}
+#btn-add-event.evx-add:active{transform:scale(.98)}
+.evx-card{position:relative;margin-bottom:12px;padding:16px;border-radius:24px;cursor:pointer;color:var(--ink);background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.018));border:1px solid var(--bd);box-shadow:0 12px 34px rgba(0,0,0,.28);-webkit-tap-highlight-color:transparent}
+body.theme-light .evx-card{background:#fff;box-shadow:0 8px 26px rgba(16,24,40,.07)}
+.evx-card:active{transform:scale(.99)}
+.evx-card.over{border-color:rgba(255,92,122,.4)}
+.evx-top{display:flex;align-items:center;gap:13px}
+.evx-emo{width:52px;height:52px;flex-shrink:0;border-radius:17px;display:flex;align-items:center;justify-content:center;font-size:26px;background:linear-gradient(145deg,rgba(var(--p-rgb),.26),rgba(var(--p-rgb),.08));border:1px solid rgba(var(--p-rgb),.3)}
+.evx-inf{flex:1;min-width:0}
+.evx-nm{font-size:15.5px;font-weight:900;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evx-dt{margin-top:3px;font-size:11.5px;font-weight:600;color:var(--mut)}
+.evx-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.evx-tag{padding:3px 9px;border-radius:99px;font-size:10.5px;font-weight:800;background:rgba(var(--p-rgb),.14);color:var(--p)}
+.evx-tag.g{background:rgba(46,229,157,.14);color:var(--g)}.evx-tag.r{background:rgba(255,92,122,.15);color:var(--r)}.evx-tag.a{background:rgba(255,176,32,.16);color:var(--a)}.evx-tag.m{background:var(--bg2);color:var(--mut)}
+.evx-ring{position:relative;width:58px;height:58px;flex-shrink:0}
+.evx-ring svg{width:58px;height:58px;transform:rotate(-90deg)}
+.evx-ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:800 12px 'JetBrains Mono',monospace;color:var(--ink)}
+.evx-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.evx-num{padding:9px 6px;border-radius:14px;background:var(--bg2);border:1px solid var(--bd);text-align:center}
+.evx-num small{display:block;font-size:9.5px;font-weight:800;color:var(--mut)}
+.evx-num b{display:block;margin-top:2px;font:800 12.5px 'JetBrains Mono',monospace}
+.evx-bar{margin-top:12px;height:7px;border-radius:99px;background:var(--bg2);overflow:hidden}
+.evx-bar i{display:block;height:100%;border-radius:99px;transition:width .5s cubic-bezier(.2,.9,.3,1)}
+.evx-barl{display:flex;justify-content:space-between;margin-top:6px;font-size:10.5px;font-weight:700;color:var(--mut)}
+.evx-qa{display:flex;gap:8px;margin-top:13px}
+.evx-q{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border:none;border-radius:13px;cursor:pointer;font:800 12px 'Syne',sans-serif;touch-action:manipulation}
+.evx-q.e{background:rgba(255,92,122,.14);color:var(--r)}.evx-q.i{background:rgba(46,229,157,.14);color:var(--g)}
+.evx-q.s{flex:0 0 42px;background:var(--bg2);color:var(--mut)}
+.evx-empty{text-align:center;padding:34px 18px;border-radius:22px;border:1px dashed var(--bd);color:var(--mut);font-size:13px;line-height:1.8}
+.evx-empty b{display:block;font-size:34px;margin-bottom:6px}
+/* detail */
+#evx-detail{position:fixed;inset:0;z-index:9400;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.62);direction:rtl}
+#evx-detail.open{display:flex;animation:evxF .2s ease both}
+@keyframes evxF{from{opacity:0}to{opacity:1}}@keyframes evxU{from{transform:translateY(36px);opacity:0}to{transform:none;opacity:1}}
+body.theme-light #evx-detail{background:rgba(16,24,40,.45)}
+#evx-panel{width:100%;max-width:560px;height:94vh;height:94dvh;display:flex;flex-direction:column;border-radius:28px 28px 0 0;overflow:hidden;color:var(--ink);background:linear-gradient(175deg,#12172b,#070b16);border:1px solid rgba(var(--p-rgb),.25);border-bottom:none;box-shadow:0 -22px 60px rgba(0,0,0,.55);animation:evxU .3s cubic-bezier(.2,.9,.3,1) both}
+body.theme-light #evx-panel{background:#fff}
+.evx-dh{position:relative;padding:16px 18px 14px;background:radial-gradient(120% 100% at 85% -30%,rgba(var(--p-rgb),.28),transparent 70%)}
+.evx-grab{width:40px;height:4px;border-radius:2px;background:var(--bd);margin:0 auto 12px}
+.evx-dtop{display:flex;align-items:center;gap:13px}
+.evx-dtop .evx-emo{width:60px;height:60px;font-size:30px}
+.evx-dtop h2{margin:0;font-size:19px;font-weight:900;color:var(--ink)}
+.evx-ib{width:36px;height:36px;border:none;border-radius:12px;cursor:pointer;background:var(--bg2);color:var(--ink);font-size:15px;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
+.evx-ibs{display:flex;gap:7px;flex-shrink:0}
+.evx-db{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:4px 18px calc(28px + env(safe-area-inset-bottom,0px))}
+.evx-big{display:flex;align-items:center;gap:16px;padding:16px;border-radius:22px;background:var(--bg2);border:1px solid var(--bd)}
+.evx-big .evx-ring{width:92px;height:92px}.evx-big .evx-ring svg{width:92px;height:92px}.evx-big .evx-ring b{font-size:17px}
+.evx-bigt{flex:1;min-width:0}.evx-bigt small{display:block;font-size:10.5px;font-weight:800;color:var(--mut)}
+.evx-bigt b{display:block;margin:3px 0;font:800 22px 'JetBrains Mono',monospace;direction:ltr;text-align:right}
+.evx-bigt span{font-size:12px;font-weight:700}
+.evx-sec{margin:20px 2px 9px;font-size:11px;font-weight:900;letter-spacing:.08em;color:var(--mut)}
+.evx-cat{display:flex;align-items:center;gap:10px;margin-bottom:9px;font-size:12.5px;font-weight:700}
+.evx-cat span:first-child{width:84px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evx-cat .tr{flex:1;height:8px;border-radius:99px;background:var(--bg2);overflow:hidden}.evx-cat .tr i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--p),rgba(var(--p-rgb),.55))}
+.evx-cat em{font:800 11.5px 'JetBrains Mono',monospace;font-style:normal;min-width:62px;text-align:left;direction:ltr}
+.evx-tabs{display:flex;gap:6px;padding:4px;border-radius:15px;background:var(--bg2);border:1px solid var(--bd);margin-bottom:10px}
+.evx-tab{flex:1;padding:9px;border:none;border-radius:11px;background:transparent;color:var(--mut);font:800 12px 'Syne',sans-serif;cursor:pointer}
+.evx-tab.on{background:linear-gradient(135deg,var(--p),rgba(var(--p-rgb),.7));color:#fff}
+.evx-tx{display:flex;align-items:center;gap:11px;padding:11px 13px;margin-bottom:7px;border-radius:16px;background:var(--bg2);border:1px solid var(--bd)}
+.evx-tx .d{width:34px;height:34px;flex-shrink:0;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900}
+.evx-tx .d.e{background:rgba(255,92,122,.14);color:var(--r)}.evx-tx .d.i{background:rgba(46,229,157,.14);color:var(--g)}
+.evx-tx .m{flex:1;min-width:0}.evx-tx .m b{display:block;font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evx-tx .m small{display:block;margin-top:2px;font-size:10.5px;color:var(--mut);font-weight:600}
+.evx-tx .a{font:800 13px 'JetBrains Mono',monospace;direction:ltr;white-space:nowrap}
+.evx-foot{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px}
+.evx-fb{padding:13px;border:1px solid var(--bd);border-radius:14px;background:var(--bg2);color:var(--ink);font:800 12.5px 'Syne',sans-serif;cursor:pointer;touch-action:manipulation}
+.evx-fb.del{grid-column:1/-1;color:var(--r);border-color:rgba(255,92,122,.3);background:rgba(255,92,122,.07)}
+</style>
+<div class="evx">
+  <div id="evx-hero"></div>
+  <div class="evx-tools">
+    <input id="evx-search" class="evx-search" type="search" placeholder="חיפוש אירוע..." autocomplete="off">
+    <div class="evx-chips" id="evx-chips"></div>
+  </div>
+  <button id="btn-add-event" class="evx-add" onclick="openEvSheet(null)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>אירוע חדש</button>
+  <div id="ev-list"></div>
+</div>
 
-      <button id="btn-add-event" onclick="openEvSheet(null)">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        אירוע חדש
-      </button>
-
-      <div id="ev-list"></div>
 
       <!-- Event bottom sheet -->
       <div id="ev-overlay" onclick="if(event.target===this)closeEvSheet()">
@@ -8551,7 +8645,7 @@ body.theme-light { background-color: var(--bg) !important; }
   }, true);
   document.addEventListener('DOMContentLoaded', function(){ if (dismissed) { var f = document.getElementById('wa-fab'); if (f) f.classList.add('wa-dismissed'); } });
   function overlayOpen(){
-    var q = document.querySelector('#bug-modal-overlay.open, #help-overlay.open, #onboarding-overlay.open, #cycle-modal-overlay:not(.hidden), #phone-modal-overlay:not(.hidden)');
+    var q = document.querySelector('#bug-modal-overlay.open, #help-overlay.open, #evx-detail.open, #onboarding-overlay.open, #cycle-modal-overlay:not(.hidden), #phone-modal-overlay:not(.hidden)');
     if (q) return true;
     var kids = document.body.children;
     for (var k = 0; k < kids.length; k++) {
@@ -9353,6 +9447,13 @@ body.theme-light { background-color: var(--bg) !important; }
 
   /* ── Nav ── */
   window.switchView = function(v){
+    var _tid = 'view-' + ((v==='dashboard'||v==='categories'||v==='charts') ? v : 'settings');
+    var _te = $(_tid);
+    if (_te && !_te.classList.contains('hidden')) {
+      if (window._waFabSet) window._waFabSet(v);
+      try { window.scrollTo({top:0, behavior:'smooth'}); } catch(_e) { window.scrollTo(0,0); }
+      return;
+    }
     window.scrollTo(0, 0);
     if (v === 'settings') { try { renderFixedLists(); renderBimonthlyList(); } catch(_e) {} }
     if (window._waFabSet) window._waFabSet(v);
@@ -10556,7 +10657,7 @@ window.deletePhoneIdx = function(i) {
       } else {
         budgetHtml = '<div class="cat-tile-bar" style="background:'+colBar+';opacity:0.45;"></div>';
       }
-      var tileClass = 'cat-tile'+(_catViewJustOpened ? ' rise d'+((idx%6)+1) : '')+(overBudget?' over-budget':nearBudget?' near-budget':'');
+      var tileClass = 'cat-tile'+(overBudget?' over-budget':nearBudget?' near-budget':'');
       var glowStyle = (budget>0&&!isInc) ? (overBudget ?
         'box-shadow:0 0 0 1.5px rgba(255,31,78,0.45),0 0 28px rgba(255,31,78,0.18),0 8px 32px rgba(0,0,0,0.5);' :
         nearBudget ?
@@ -10585,7 +10686,7 @@ window.deletePhoneIdx = function(i) {
       }).join('');
       if(expCats.length){ html+='<div class="cat-section-label">הוצאות</div><div class="cat-tiles-grid">'+expTiles+'</div>'; }
       if(incCats.length){ html+='<div class="cat-section-label">הכנסות</div><div class="cat-tiles-grid">'+incTiles+'</div>'; }
-      el.innerHTML=html;
+      if(el._lastHtml!==html){ el.innerHTML=html; el._lastHtml=html; }
       if(!el._delegated){
         el._delegated = true;
         el.addEventListener('click', function(e){
@@ -15251,6 +15352,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     window._renderEvList = renderEvList; /* חשוף גלובלית */
     var el = document.getElementById('ev-list');
     if(!el) return;
+    if(window._evxRender){ window._evxRender(_evList); return; }
     if(!_evList.length){
       el.innerHTML = '<div class="ev-empty"><span class="ev-empty-icon">🎊</span>עוד לא יצרת אירועים.<br>הוסף אירוע כדי לעקוב אחרי התקציב שלו בנפרד מהשוטף.</div>';
       return;
@@ -15570,6 +15672,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
   window._renderEvList = renderEvList;
   window.calcEvStats   = calcEvStats;
   window.calcDaysTo    = calcDaysTo;
+  window._evCol        = evCol;
 
   /* ── hook: renderAll — גיבוי נוסף ── */
   var _origRA=window.renderAll;
@@ -15605,5 +15708,156 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     <div id="ev-detail-tx-section"></div>
   </div>
 </div>
+
+<!-- ✦ EVENTS 2026 MODULE ✦ -->
+<div id="evx-detail" role="dialog" aria-modal="true"><div id="evx-panel"></div></div>
+<script>
+(function(){
+  var EVS=[], filter='all', q='', tab='all', curId=null;
+  var $=function(i){return document.getElementById(i)};
+  function esc(t){return String(t==null?'':t).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function F(n){ return typeof window.fmt==='function' ? window.fmt(n) : '\u20AA'+Math.round(Number(n)||0).toLocaleString('he-IL'); }
+  function dstr(ev){ if(!ev.date) return ''; if(ev.calType==='hebrew') return ev.date; try{ return new Date(ev.date).toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'}); }catch(e){ return ev.date; } }
+  function stats(id){ return window.calcEvStats ? window.calcEvStats(id) : {income:0,expense:0,net:0}; }
+  function cd(ev){ return (ev.date && window.calcDaysTo) ? window.calcDaysTo(ev) : null; }
+  function txs(id){
+    var r=[]; (window.incomes||[]).forEach(function(t){ if(t.eventId===id) r.push(Object.assign({},t,{_t:'i'})); });
+    (window.expenses||[]).forEach(function(t){ if(t.eventId===id) r.push(Object.assign({},t,{_t:'e'})); });
+    r.sort(function(a,b){ return new Date(b.date)-new Date(a.date); }); return r;
+  }
+  function col(pct){ return pct>=100?'#FF5C7A':pct>80?'#FFB020':'#B58CFF'; }
+  function ring(pct,size,sw,label){
+    var r=(size-sw)/2, c=2*Math.PI*r, off=c*(1-Math.min(pct,100)/100), k=col(pct);
+    return '<div class="evx-ring"><svg viewBox="0 0 '+size+' '+size+'"><circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="rgba(128,128,150,.2)" stroke-width="'+sw+'"/><circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="'+k+'" stroke-width="'+sw+'" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" style="transition:stroke-dashoffset .6s ease"/></svg><b>'+label+'</b></div>';
+  }
+  function cdTag(ev){
+    var c=cd(ev); if(!c) return '';
+    if(c.today) return '<span class="evx-tag g">🎉 היום!</span>';
+    if(c.past) return '<span class="evx-tag m">לפני '+c.days+(c.days===1?' יום':' ימים')+'</span>';
+    return '<span class="evx-tag '+(c.days<=7?'r':c.days<=30?'a':'')+'">'+(c.days<=7?'🔥 ':'⏳ ')+'בעוד '+c.days+(c.days===1?' יום':' ימים')+'</span>';
+  }
+  function sorted(list){
+    function key(ev){ var c=cd(ev); if(!c) return 1e7; return c.past ? 5e6+c.days : (c.today?0:c.days); }
+    return list.slice().sort(function(a,b){ return key(a)-key(b); });
+  }
+  function visible(){
+    var qq=q.trim().toLowerCase();
+    return sorted(EVS).filter(function(ev){
+      if(qq && String(ev.name||'').toLowerCase().indexOf(qq)<0) return false;
+      var c=cd(ev), st=stats(ev.id), b=Number(ev.budget)||0;
+      if(filter==='up') return c && !c.past;
+      if(filter==='past') return c && c.past;
+      if(filter==='over') return b>0 && st.expense>b;
+      return true;
+    });
+  }
+  function hero(){
+    var n=EVS.length, b=0, ex=0, inc=0;
+    EVS.forEach(function(ev){ var st=stats(ev.id); b+=Number(ev.budget)||0; ex+=st.expense; inc+=st.income; });
+    var pct=b>0?ex/b*100:0, h=$('evx-hero'); if(!h) return;
+    if(!n){ h.innerHTML=''; return; }
+    h.innerHTML='<div class="evx-hero"><div class="evx-hero-top"><div class="evx-hero-txt"><small>סה״כ הוצאות באירועים</small><b>'+F(ex)+'</b><span>'+n+(n===1?' אירוע':' אירועים')+(b>0?' · תקציב כולל '+F(b):'')+'</span></div>'+(b>0?ring(pct,64,7,Math.round(pct)+'%'):'')+'</div>'+
+      '<div class="evx-hero-row"><div class="evx-mini"><small>הכנסות</small><b style="color:var(--g)">'+F(inc)+'</b></div><div class="evx-mini"><small>הוצאות</small><b style="color:var(--r)">'+F(ex)+'</b></div><div class="evx-mini"><small>יתרה</small><b style="color:'+(inc-ex>=0?'var(--g)':'var(--r)')+'">'+F(inc-ex)+'</b></div></div></div>';
+  }
+  function chips(){
+    var el=$('evx-chips'); if(!el) return;
+    var def=[['all','הכל'],['up','קרובים'],['past','שעברו'],['over','חריגה']];
+    el.innerHTML=def.map(function(d){ return '<button class="evx-chip'+(filter===d[0]?' on':'')+'" data-f="'+d[0]+'">'+d[1]+'</button>'; }).join('');
+  }
+  var ICO_E='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+  function card(ev){
+    var st=stats(ev.id), b=Number(ev.budget)||0, has=b>0, pct=has?st.expense/b*100:0, over=has&&pct>=100;
+    var n=txs(ev.id).length, k=col(pct);
+    var status=!has?'<span class="evx-tag">פתוח</span>':over?'<span class="evx-tag r">חריגה</span>':pct>80?'<span class="evx-tag a">כמעט בתקציב</span>':'<span class="evx-tag g">בתקציב</span>';
+    return '<div class="evx-card'+(over?' over':'')+'" data-open="'+esc(ev.id)+'">'+
+      '<div class="evx-top"><div class="evx-emo">'+esc(ev.emoji||'🎊')+'</div><div class="evx-inf"><div class="evx-nm">'+esc(ev.name||'—')+'</div><div class="evx-dt">'+(dstr(ev)?'📅 '+esc(dstr(ev))+' · ':'')+n+' תנועות</div><div class="evx-tags">'+status+cdTag(ev)+'</div></div>'+(has?ring(pct,58,6,Math.round(pct)+'%'):'')+'</div>'+
+      '<div class="evx-nums"><div class="evx-num"><small>הכנסות</small><b style="color:var(--g)">'+F(st.income)+'</b></div><div class="evx-num"><small>הוצאות</small><b style="color:var(--r)">'+F(st.expense)+'</b></div><div class="evx-num"><small>'+(has?'נותר':'יתרה')+'</small><b style="color:'+((has?b-st.expense:st.net)>=0?'var(--g)':'var(--r)')+'">'+F(has?b-st.expense:st.net)+'</b></div></div>'+
+      (has?'<div class="evx-bar"><i style="width:'+Math.min(pct,100).toFixed(1)+'%;background:'+k+'"></i></div><div class="evx-barl"><span>'+F(st.expense)+' מתוך '+F(b)+'</span><span>'+(over?'גירעון '+F(st.expense-b):Math.round(pct)+'%')+'</span></div>':'')+
+      '<div class="evx-qa"><button class="evx-q e" data-add="expense" data-id="'+esc(ev.id)+'">'+ICO_E+'הוצאה</button><button class="evx-q i" data-add="income" data-id="'+esc(ev.id)+'">'+ICO_E+'הכנסה</button></div></div>';
+  }
+  window._evxRender=function(list){
+    EVS=list||EVS; var el=$('ev-list'); if(!el) return;
+    hero(); chips();
+    if(!EVS.length){ el.innerHTML='<div class="evx-empty"><b>🎊</b>עוד לא יצרת אירועים.<br>צרו אירוע (ברית, חתונה, חופשה) כדי לעקוב אחרי התקציב שלו בנפרד.</div>'; return; }
+    var v=visible();
+    el.innerHTML=v.length?v.map(card).join(''):'<div class="evx-empty"><b>🔍</b>לא נמצאו אירועים לסינון הזה</div>';
+  };
+  /* ── detail ── */
+  function detail(id){
+    var ev=EVS.filter(function(e){return e.id===id})[0]; if(!ev) return;
+    curId=id; var st=stats(id), b=Number(ev.budget)||0, has=b>0, pct=has?st.expense/b*100:0;
+    var all=txs(id), exp=all.filter(function(t){return t._t==='e'});
+    var cats={}; exp.forEach(function(t){ var c=t.category||'ללא קטגוריה'; cats[c]=(cats[c]||0)+Number(t.amount||0); });
+    var cl=Object.keys(cats).map(function(k){return [k,cats[k]]}).sort(function(a,b){return b[1]-a[1]}).slice(0,5), mx=cl.length?cl[0][1]:1;
+    var rem=b-st.expense;
+    var big=has?ring(pct,92,9,Math.round(pct)+'%')+'<div class="evx-bigt"><small>'+(rem>=0?'נותר מהתקציב':'חריגה מהתקציב')+'</small><b style="color:'+(rem>=0?'var(--g)':'var(--r)')+'">'+F(Math.abs(rem))+'</b><span style="color:var(--mut)">הוצאתם '+F(st.expense)+' מתוך '+F(b)+'</span></div>'
+      :'<div class="evx-bigt"><small>יתרת האירוע</small><b style="color:'+(st.net>=0?'var(--g)':'var(--r)')+'">'+F(st.net)+'</b><span style="color:var(--mut)">לא הוגדר יעד תקציב · אפשר להוסיף בעריכה</span></div>';
+    $('evx-panel').innerHTML=
+      '<div class="evx-dh"><div class="evx-grab"></div><div class="evx-dtop"><div class="evx-emo">'+esc(ev.emoji||'🎊')+'</div><div class="evx-inf"><h2>'+esc(ev.name)+'</h2><div class="evx-dt">'+(dstr(ev)?'📅 '+esc(dstr(ev)):'ללא תאריך')+'</div><div class="evx-tags">'+cdTag(ev)+'</div></div>'+
+      '<div class="evx-ibs"><button class="evx-ib" data-act="edit" aria-label="עריכה">✎</button><button class="evx-ib" data-act="close" aria-label="סגירה">✕</button></div></div></div>'+
+      '<div class="evx-db"><div class="evx-big">'+big+'</div>'+
+      '<div class="evx-nums" style="margin-top:12px"><div class="evx-num"><small>הכנסות</small><b style="color:var(--g)">'+F(st.income)+'</b></div><div class="evx-num"><small>הוצאות</small><b style="color:var(--r)">'+F(st.expense)+'</b></div><div class="evx-num"><small>תנועות</small><b>'+all.length+'</b></div></div>'+
+      '<div class="evx-qa" style="margin-top:12px"><button class="evx-q e" data-add="expense" data-id="'+esc(id)+'">'+ICO_E+'הוספת הוצאה</button><button class="evx-q i" data-add="income" data-id="'+esc(id)+'">'+ICO_E+'הוספת הכנסה</button></div>'+
+      (cl.length?'<div class="evx-sec">לאן הלך הכסף</div>'+cl.map(function(c){ return '<div class="evx-cat"><span>'+esc(c[0])+'</span><div class="tr"><i style="width:'+(c[1]/mx*100).toFixed(0)+'%"></i></div><em>'+F(c[1])+'</em></div>'; }).join(''):'')+
+      '<div class="evx-sec">תנועות</div><div class="evx-tabs"><button class="evx-tab on" data-tab="all">הכל ('+all.length+')</button><button class="evx-tab" data-tab="e">הוצאות</button><button class="evx-tab" data-tab="i">הכנסות</button></div><div id="evx-txs"></div>'+
+      '<div class="evx-foot"><button class="evx-fb" data-act="share">📤 שיתוף סיכום</button><button class="evx-fb" data-act="dup">⧉ שכפול אירוע</button><button class="evx-fb del" data-act="del">🗑 מחיקת האירוע</button></div></div>';
+    tab='all'; txList(); $('evx-detail').classList.add('open'); document.body.style.overflow='hidden';
+  }
+  function txList(){
+    var el=$('evx-txs'); if(!el) return;
+    var l=txs(curId).filter(function(t){ return tab==='all'||t._t===tab; });
+    el.innerHTML=l.length?l.map(function(t){
+      var d=new Date(t.date), ds=isNaN(d)?(t.date||''):d.toLocaleDateString('he-IL',{day:'numeric',month:'short',year:'numeric'});
+      return '<div class="evx-tx"><div class="d '+t._t+'">'+(t._t==='i'?'+':'−')+'</div><div class="m"><b>'+esc(t.description||t.category||'—')+'</b><small>'+(t.category?esc(t.category)+' · ':'')+esc(ds)+'</small></div><div class="a" style="color:'+(t._t==='i'?'var(--g)':'var(--r)')+'">'+(t._t==='i'?'+':'−')+F(t.amount)+'</div></div>';
+    }).join(''):'<div class="evx-empty" style="padding:22px"><b>📭</b>אין תנועות להצגה</div>';
+  }
+  function closeD(){ var o=$('evx-detail'); if(o) o.classList.remove('open'); document.body.style.overflow=''; }
+  function toast(m,t){ if(window.toast) window.toast(m,t||'success'); }
+  function share(){
+    var ev=EVS.filter(function(e){return e.id===curId})[0]; if(!ev) return;
+    var st=stats(curId), b=Number(ev.budget)||0, ex=txs(curId).filter(function(t){return t._t==='e'}), cats={};
+    ex.forEach(function(t){ var c=t.category||'ללא קטגוריה'; cats[c]=(cats[c]||0)+Number(t.amount||0); });
+    var lines=[(ev.emoji||'🎊')+' '+ev.name+(dstr(ev)?' · '+dstr(ev):''),'',
+      '💸 הוצאות: '+F(st.expense),'💰 הכנסות: '+F(st.income),'⚖️ יתרה: '+F(st.net)];
+    if(b>0) lines.push('🎯 תקציב: '+F(b)+' ('+(b-st.expense>=0?'נותר '+F(b-st.expense):'חריגה '+F(st.expense-b))+')');
+    var cl=Object.keys(cats).map(function(k){return [k,cats[k]]}).sort(function(a,b){return b[1]-a[1]}).slice(0,5);
+    if(cl.length){ lines.push('','📊 לפי קטגוריה:'); cl.forEach(function(c){ lines.push('• '+c[0]+': '+F(c[1])); }); }
+    lines.push('','נוצר ב-MNTA+');
+    var text=lines.join('\n');
+    if(navigator.share){ navigator.share({text:text}).catch(function(){}); return; }
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(function(){ toast('הסיכום הועתק ללוח'); }); }
+    else toast('השיתוף לא נתמך במכשיר זה','error');
+  }
+  function dup(){
+    var ev=EVS.filter(function(e){return e.id===curId})[0]; var c=window._evCol&&window._evCol(); if(!ev||!c){ toast('לא ניתן לשכפל','error'); return; }
+    c.add({name:ev.name+' (עותק)',emoji:ev.emoji||'🎊',calType:ev.calType||'gregorian',date:'',budget:Number(ev.budget)||0,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()})
+      .then(function(){ toast('האירוע שוכפל ✓'); closeD(); }).catch(function(e){ toast('שגיאה: '+e.message,'error'); });
+  }
+  function addTx(type,id){
+    closeD(); var btn=$(type==='income'?'btn-add-income':'btn-add-expense'); if(!btn) return;
+    btn.click(); var sel=$('modal-event'); if(sel) sel.value=id;
+  }
+  window.openEvDetail=function(id){ detail(id); };
+  var _c=window.closeEvDetail; window.closeEvDetail=function(){ closeD(); if(_c) try{_c();}catch(e){} };
+  document.addEventListener('click',function(e){
+    var t=e.target; if(!t||!t.closest) return;
+    var f=t.closest('.evx-chip'); if(f){ filter=f.getAttribute('data-f'); window._evxRender(); return; }
+    var a=t.closest('[data-add]'); if(a){ e.stopPropagation(); addTx(a.getAttribute('data-add'),a.getAttribute('data-id')); return; }
+    var c=t.closest('[data-open]'); if(c&&c.classList.contains('evx-card')){ detail(c.getAttribute('data-open')); return; }
+    if(t.id==='evx-detail'){ closeD(); return; }
+    var tb=t.closest('.evx-tab'); if(tb){ tab=tb.getAttribute('data-tab'); document.querySelectorAll('.evx-tab').forEach(function(x){ x.classList.toggle('on',x===tb); }); txList(); return; }
+    var ac=t.closest('[data-act]'); if(ac&&$('evx-detail').contains(ac)){
+      var k=ac.getAttribute('data-act');
+      if(k==='close') closeD();
+      else if(k==='edit'){ var id=curId; closeD(); if(window.openEvSheet) window.openEvSheet(id); }
+      else if(k==='share') share();
+      else if(k==='dup') dup();
+      else if(k==='del'){ var d=curId; if(window.deleteEv){ closeD(); window.deleteEv(d); } }
+    }
+  },true);
+  document.addEventListener('input',function(e){ if(e.target&&e.target.id==='evx-search'){ q=e.target.value; window._evxRender(); } });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&$('evx-detail').classList.contains('open')) closeD(); });
+})();
+</script>
 </body>
 </html>
