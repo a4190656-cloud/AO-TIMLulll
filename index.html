@@ -7279,6 +7279,13 @@ body.theme-light { background-color: var(--bg) !important; }
         </div>
       </div>
 
+      <div class="sblock modern-hover" style="border-color:rgba(0,229,255,0.15);">
+        <div class="sblock-body" style="padding:14px 16px;">
+          <button onclick="window.openHelp()" class="btn btn-ghost" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;padding:12px;">📖 מדריך משתמש ושאלות על המערכת</button>
+        </div>
+      </div>
+
+
       <div class="settings-section-title" id="settings-fixed-section">תשלומים קבועים</div>
 
       <style>
@@ -8252,6 +8259,191 @@ body.theme-light { background-color: var(--bg) !important; }
   </div>
 
 
+
+<!-- ✦ HELP CENTER ✦ -->
+<style>
+  #help-overlay { position:fixed; inset:0; z-index:9500; display:none; align-items:flex-end; justify-content:center; background:rgba(0,0,0,.6); }
+  #help-overlay.open { display:flex; animation:helpFade .2s ease both; }
+  @keyframes helpFade { from{opacity:0;} to{opacity:1;} }
+  @keyframes helpUp { from{transform:translateY(40px);opacity:0;} to{transform:none;opacity:1;} }
+  #help-panel { width:100%; max-width:560px; height:92vh; height:92dvh; display:flex; flex-direction:column; direction:rtl;
+    background:linear-gradient(170deg,#0e1628,#070b16); color:#fff; border:1px solid rgba(0,229,255,.18); border-bottom:none;
+    border-radius:26px 26px 0 0; box-shadow:0 -20px 60px rgba(0,0,0,.55); overflow:hidden; animation:helpUp .32s cubic-bezier(.2,.9,.3,1) both; }
+  #help-head { display:flex; align-items:center; gap:10px; padding:16px 18px 10px; }
+  #help-head h2 { margin:0; flex:1; font-size:17px; font-weight:900; font-family:'Syne',sans-serif; }
+  #help-close { width:34px; height:34px; border-radius:50%; border:none; cursor:pointer; background:rgba(255,255,255,.08); color:inherit; font-size:15px; }
+  #help-searchbar { display:flex; gap:8px; padding:4px 18px 10px; }
+  #help-input { flex:1; min-width:0; padding:13px 15px; border-radius:15px; border:1px solid rgba(0,229,255,.25); background:rgba(255,255,255,.06);
+    color:inherit; font:600 14px 'Syne',sans-serif; outline:none; direction:rtl; }
+  #help-input:focus { border-color:rgba(0,229,255,.6); box-shadow:0 0 0 3px rgba(0,229,255,.12); }
+  #help-ask { padding:0 18px; border:none; border-radius:15px; cursor:pointer; font:900 14px 'Syne',sans-serif; color:#02131a; background:linear-gradient(135deg,#00E5FF,#00BFFF); }
+  #help-body { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:0 18px calc(24px + env(safe-area-inset-bottom,0px)); overscroll-behavior:contain; }
+  .help-chips { display:flex; flex-wrap:wrap; gap:7px; margin:2px 0 14px; }
+  .help-chip { padding:8px 12px; border-radius:99px; border:1px solid rgba(0,229,255,.28); background:rgba(0,229,255,.07); color:inherit; font:700 12px 'Syne',sans-serif; cursor:pointer; }
+  .help-q { align-self:flex-start; max-width:88%; margin:6px 0 8px; padding:9px 14px; border-radius:16px 16px 16px 4px; background:rgba(0,229,255,.14); font-weight:700; font-size:13px; width:fit-content; }
+  .help-a { margin:0 0 10px; padding:14px 15px; border-radius:18px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.09); font-size:13.5px; line-height:1.7; }
+  .help-a .hq { font-weight:900; font-size:13px; color:#00E5FF; margin-bottom:5px; }
+  .help-act { display:flex; flex-wrap:wrap; gap:8px; margin-top:11px; }
+  .help-btn { display:inline-flex; align-items:center; gap:6px; padding:9px 14px; border-radius:12px; border:1px solid rgba(0,229,255,.35); background:rgba(0,229,255,.1);
+    color:#00E5FF; font:800 12px 'Syne',sans-serif; cursor:pointer; text-decoration:none; }
+  .help-btn.wa { border-color:rgba(37,211,102,.45); background:rgba(37,211,102,.12); color:#2BE575; }
+  .help-sec-title { font-size:11px; font-weight:900; letter-spacing:.08em; color:rgba(255,255,255,.4); margin:18px 2px 8px; }
+  #help-body details { margin:0 0 7px; border-radius:15px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); overflow:hidden; }
+  #help-body summary { list-style:none; cursor:pointer; padding:13px 15px; font-weight:800; font-size:13.5px; display:flex; align-items:center; gap:9px; }
+  #help-body summary::-webkit-details-marker { display:none; }
+  #help-body summary::after { content:'›'; margin-inline-start:auto; transform:rotate(90deg); opacity:.5; font-size:18px; transition:transform .2s; }
+  #help-body details[open] > summary::after { transform:rotate(-90deg); }
+  #help-body details > .help-a { margin:0; border:none; border-radius:0; border-top:1px solid rgba(255,255,255,.07); background:transparent; }
+  .help-sec > summary { font-size:14.5px; }
+  .help-sec > .help-in { padding:0 10px 10px; }
+  .help-sec .help-sec-n { font-weight:700; font-size:11px; opacity:.45; }
+  .help-empty { font-size:13px; line-height:1.7; }
+  body.theme-light #help-overlay { background:rgba(16,24,40,.45); }
+  body.theme-light #help-panel { background:#fff; color:#10121B; border-color:rgba(16,18,34,.08); }
+  body.theme-light #help-panel * { color:inherit; }
+  body.theme-light #help-close { background:#F1F3F8; }
+  body.theme-light #help-input { background:#F7F8FC; border-color:rgba(16,18,34,.12); }
+  body.theme-light #help-ask { color:#fff; background:linear-gradient(135deg,#00C9B1,#3E7BFA); }
+  body.theme-light .help-chip { background:rgba(0,201,177,.09); border-color:rgba(0,201,177,.3); }
+  body.theme-light .help-q { background:rgba(0,201,177,.14); }
+  body.theme-light .help-a, body.theme-light #help-body details { background:#F7F8FC; border-color:rgba(16,18,34,.08); }
+  body.theme-light .help-a .hq, body.theme-light .help-btn { color:#00786D !important; }
+  body.theme-light .help-btn { background:rgba(0,201,177,.1); border-color:rgba(0,201,177,.35); }
+  body.theme-light .help-btn.wa { color:#128C4E !important; background:rgba(37,211,102,.1); border-color:rgba(37,211,102,.4); }
+  body.theme-light .help-sec-title { color:rgba(16,18,34,.45) !important; }
+</style>
+<div id="help-overlay" role="dialog" aria-modal="true" aria-label="מדריך ועזרה">
+  <div id="help-panel">
+    <div id="help-head"><h2>📖 מדריך ועזרה</h2><button id="help-close" aria-label="סגירה">✕</button></div>
+    <div id="help-searchbar">
+      <input id="help-input" type="search" enterkeyhint="search" placeholder="שאלו על פונקציה, למשל: איך סורקים קבלה?" autocomplete="off">
+      <button id="help-ask">שאל</button>
+    </div>
+    <div id="help-body">
+      <div class="help-sec-title" style="margin-top:4px;">שאלות נפוצות</div>
+      <div class="help-chips" id="help-chips"></div>
+      <div id="help-chat"></div>
+      <div class="help-sec-title">המדריך המלא</div>
+      <div id="help-guide"></div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var SECS = [["start", "🚀", "התחלה מהירה"], ["scan", "🧾", "סריקת קבלות"], ["cats", "🏷️", "קטגוריות ותקציב"], ["events", "🎉", "אירועים"], ["fixed", "🔁", "תשלומים קבועים"], ["cycle", "📅", "איפוס חודשי"], ["charts", "📊", "תרשימים"], ["wa", "💬", "בוט וואטסאפ"], ["set", "⚙️", "הגדרות וחשבון"], ["help", "🛟", "תמיכה"]], KB = [{"id": 1, "s": "start", "q": "איך מוסיפים הכנסה או הוצאה?", "a": "במסך <b>החשבון שלי</b> לוחצים על כפתור ההכנסה או ההוצאה ומזינים סכום (חובה). אפשר להוסיף גם תיאור, קטגוריה ואירוע. בלי תיאור התנועה תיקרא ״הכנסה כללית״ או ״הוצאה כללית״, והיא נרשמת בתאריך של היום.", "k": ["הוספה", "להוסיף", "מוסיפים", "הכנסה", "הוצאה", "תנועה", "רישום", "לרשום", "חדשה", "להזין"], "go": ["dashboard", "למסך הבית"]}, {"id": 2, "s": "start", "q": "איך עורכים, מוחקים או מחפשים תנועה?", "a": "ברשימת התנועות בכל שורה יש כפתור עריכה (עיפרון) וכפתור מחיקה (✕). בשורת החיפוש מעל הרשימה אפשר לחפש לפי תיאור או קטגוריה.", "k": ["עריכה", "לערוך", "מחיקה", "למחוק", "תיקון", "לתקן", "טעות", "חיפוש", "לחפש", "תנועה"], "go": ["dashboard", "למסך הבית"]}, {"id": 3, "s": "start", "q": "איך מחושבת היתרה?", "a": "היתרה = ההכנסות של המחזור הנוכחי (כולל הכנסות קבועות) פחות ההוצאות הקבועות ופחות ההוצאות הרגילות של המחזור.", "k": ["יתרה", "חישוב", "מחושב", "פנויה", "נשאר", "כמה נשאר", "סכום"], "go": ["dashboard", "למסך הבית"]}, {"id": 4, "s": "start", "q": "איך משנים מטבע?", "a": "בכותרת של מסך הבית יש כפתור עם סמל המטבע (₪ כברירת מחדל). לוחצים עליו ובוחרים מטבע מהרשימה, למשל דולר, אירו או פאונד. ההמרה לפי שער משוער.", "k": ["מטבע", "דולר", "אירו", "שקל", "המרה", "שער", "פאונד"], "go": ["dashboard", "למסך הבית"]}, {"id": 5, "s": "start", "q": "האפליקציה תקועה או לא מתעדכנת", "a": "לחצו על כפתור הרענון (החיצים) בכותרת של מסך הבית. בהגדרות יש גם כפתור לעדכון האפליקציה לגרסה האחרונה.", "k": ["תקוע", "תקועה", "רענון", "לרענן", "מתעדכן", "איטי", "איטית", "לא נטען", "עדכון", "לעדכן"], "go": ["settings", "להגדרות"]}, {"id": 6, "s": "scan", "q": "איך סורקים קבלה או חשבונית?", "a": "במסך הבית לוחצים על ״סריקת קבלה / חשבונית״, בוחרים מצלמה או גלריה, והבינה המלאכותית מזהה את הפרטים. לפני השמירה מוצג אישור, ואפשר לשייך לאירוע. אם הסכום לא זוהה אפשר להזין אותו ידנית.", "k": ["סריקה", "לסרוק", "סורקים", "קבלה", "חשבונית", "צילום", "מצלמה", "גלריה", "AI", "בינה"], "go": ["dashboard", "למסך הבית"]}, {"id": 7, "s": "scan", "q": "יש הגבלה על מספר הסריקות?", "a": "כן. מספר הסריקות המותר ליום מופיע על כפתור הסריקה (כרגע 7 סריקות ביום).", "k": ["הגבלה", "מגבלה", "מכסה", "יומי", "כמה סריקות", "סריקות"], "go": ["dashboard", "למסך הבית"]}, {"id": 8, "s": "cats", "q": "איך מוסיפים קטגוריה?", "a": "במסך ״קטגוריות ואירועים״ לוחצים על כפתור ההוספה, בוחרים אם זו הוצאה או הכנסה, נותנים שם, ואפשר להגדיר גם תקציב חודשי.", "k": ["קטגוריה", "קטגוריות", "להוסיף", "חדשה", "יצירת", "ליצור"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 9, "s": "cats", "q": "איך מגדירים תקציב לקטגוריה?", "a": "בכרטיס הקטגוריה לוחצים על כפתור עריכת התקציב (בפינה), מזינים סכום ושומרים. תראו פס התקדמות וכמה נשאר, וגם התראה כשמתקרבים לתקציב (80%) או חורגים ממנו.", "k": ["תקציב", "יעד", "חריגה", "התראה", "מסגרת", "להגביל"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 10, "s": "cats", "q": "איך מוחקים קטגוריה?", "a": "בכרטיס הקטגוריה יש כפתור ✕ למחיקה.", "k": ["מחיקת קטגוריה", "למחוק קטגוריה", "להסיר קטגוריה", "מחיקה"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 11, "s": "events", "q": "מה זה אירוע ואיך יוצרים אחד?", "a": "אירוע (ברית, חתונה, חופשה...) מרכז במקום אחד הכנסות והוצאות של עניין מסוים. במסך ״קטגוריות ואירועים״ יוצרים אירוע עם שם, אימוג׳י, תאריך ויעד תקציב.", "k": ["אירוע", "אירועים", "חתונה", "ברית", "חופשה", "אירוע חדש", "מסיבה"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 12, "s": "events", "q": "איך משייכים תנועה לאירוע?", "a": "בהוספת הכנסה או הוצאה יש שדה ״אירוע״ שבו בוחרים את האירוע. אפשר לשייך גם בסריקת קבלה. התנועה תופיע ברשימה עם תג האירוע ובתוך מסך האירוע.", "k": ["שיוך", "לשייך", "משייכים", "שנכנסה", "הוצאה לאירוע", "הוצאה שייכת", "אירוע", "תנועה", "תג"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 13, "s": "events", "q": "האם התקציב של האירוע נכנס כהכנסה?", "a": "לא. התקציב הוא יעד בלבד: הוא מציג כמה הוצאת מתוכו וכמה נשאר, ולא נרשם כהכנסה. הוצאות ששויכו לאירוע נספרות כרגע גם ביתרה החודשית וברשימת התנועות הרגילה.", "k": ["תקציב אירוע", "יעד אירוע", "נכנס", "הכנסה", "יתרה חודשית", "חודשית"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 14, "s": "events", "q": "מה קורה לתנועות של אירוע בתחילת חודש חדש?", "a": "האיפוס החודשי לא מוחק שום נתון, הוא רק קובע אילו תנועות מוצגות במסך החודשי. מסך האירוע מציג את כל התנועות ששויכו אליו, בלי קשר לחודש.", "k": ["איפוס", "חודש", "נמחק", "נעלם", "נמחקות", "אירוע", "תנועות אירוע"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 15, "s": "fixed", "q": "איך מוסיפים הוצאה או הכנסה קבועה?", "a": "בהגדרות, בחלק ״תשלומים קבועים״, מוסיפים שם וסכום להוצאה קבועה (שכירות, ארנונה...) או להכנסה קבועה (משכורת). הם נכללים בחישוב היתרה בכל מחזור.", "k": ["קבועה", "קבועות", "שכירות", "משכורת", "ארנונה", "חוזרת", "חודשית", "קבוע"], "go": ["settings", "להגדרות"]}, {"id": 16, "s": "fixed", "q": "מה זה ״דו-חודשי״?", "a": "הכנסות או הוצאות שחוזרות פעם בחודשיים, כמו חשבון מים. מוסיפים אותן בהגדרות, בבלוק ״דו-חודשי״ שבתוך התשלומים הקבועים.", "k": ["דו חודשי", "דו-חודשי", "חודשיים", "מים", "פעם בחודשיים"], "go": ["settings", "להגדרות"]}, {"id": 17, "s": "cycle", "q": "מה זה איפוס חודשי ואיך משנים את יום האיפוס?", "a": "היתרה והרשימות מחושבות לפי מחזור שמתחיל ביום שבחרתם (ברירת מחדל: 1 בחודש). בהגדרות, בכרטיס ״יום איפוס תקציב״, בוחרים יום מ-1 עד 31 ושומרים. האיפוס לא מוחק נתונים.", "k": ["איפוס", "מחזור", "יום איפוס", "תחילת חודש", "מתאפס", "לאפס", "לשנות יום"], "go": ["settings", "להגדרות"]}, {"id": 18, "s": "cycle", "q": "איך מבטלים את האיפוס החודשי?", "a": "בכרטיס ״יום איפוס תקציב״ יש מתג ״איפוס חודשי אוטומטי״. כשהוא כבוי האפליקציה עוברת למצב מצטבר: כל ההכנסות מול כל ההוצאות, בלי איפוס.", "k": ["ביטול", "לבטל", "כיבוי", "מצטבר", "ללא איפוס", "בלי איפוס", "מתג", "לא להתאפס"], "go": ["settings", "להגדרות"]}, {"id": 19, "s": "cycle", "q": "מה ההודעה שקופצת בתחילת מחזור על התשלומים הקבועים?", "a": "בתחילת מחזור חדש מוצגת הודעה עם סך ההכנסות וההוצאות הקבועות, כדי שתוודאו שהן עדיין נכונות. אם משהו השתנה, מעדכנים אותן בהגדרות.", "k": ["הודעה", "חלון", "קופץ", "בתחילת", "שינויים", "בסוף חודש", "קבועות"], "go": ["settings", "להגדרות"]}, {"id": 20, "s": "charts", "q": "מה יש במסך התרשימים?", "a": "סיכום הכנסות, הוצאות ויתרה של המחזור, פילוח לפי קטגוריות, השוואת הוצאות לתקציב, ותרשים מגמה עם בחירת תקופה.", "k": ["תרשים", "תרשימים", "גרף", "גרפים", "מגמה", "פילוח", "סטטיסטיקה", "דוח"], "go": ["charts", "לתרשימים"]}, {"id": 21, "s": "wa", "q": "איך מחברים את בוט הוואטסאפ?", "a": "בהגדרות, בחלק ״חיבור מספרי וואטסאפ לבוט״, מוסיפים את מספר הטלפון שלכם. אחר כך שולחים הודעות לבוט והתנועות נרשמות באפליקציה.", "k": ["וואטסאפ", "בוט", "חיבור", "מחברים", "מספר", "טלפון", "whatsapp", "ווצאפ"], "go": ["settings", "להגדרות"], "l": ["פתח את הבוט", "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA"]}, {"id": 22, "s": "wa", "q": "אילו פקודות שולחים לבוט?", "a": "הוצאה: <b>50 קפה</b>. הכנסה: <b>משכורת 8000</b>. רשימת פקודות: <b>פקודות</b>. תנועות שנרשמו דרך הבוט מסומנות בתג וואטסאפ.", "k": ["פקודות", "פקודה", "לשלוח", "דוגמה", "איך כותבים", "פורמט"], "l": ["שלח ״פקודות״ לבוט", "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA"]}, {"id": 23, "s": "wa", "q": "הבוט לא מגיב או שתנועה לא נרשמה", "a": "ודאו שהמספר שלכם מחובר בהגדרות בצורה נכונה, ושהודעה נשלחה בפורמט ״סכום + תיאור״. אפשר לשלוח ״פקודות״ לבדיקה. אם עדיין לא עובד, פנו לתמיכה.", "k": ["לא מגיב", "לא עובד", "לא נרשם", "לא נרשמה", "תקלה", "בעיה", "לא עונה"], "go": ["settings", "להגדרות"], "l": ["שלח ״פקודות״ לבוט", "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA"]}, {"id": 24, "s": "set", "q": "איך עוברים בין מצב כהה למצב בהיר?", "a": "בהגדרות, בחלק ״הגדרות כלליות״, בוחרים בין עיצוב כהה לעיצוב בהיר.", "k": ["כהה", "בהיר", "מצב לילה", "ערכת נושא", "עיצוב", "צבע", "ערכה"], "go": ["settings", "להגדרות"]}, {"id": 25, "s": "set", "q": "איך משנים שם או תמונת פרופיל?", "a": "בהגדרות, בכרטיס המשתמש בראש המסך, אפשר לערוך את השם ולהחליף תמונה. יש גם אפשרות לאפס את התמונה חזרה למקור.", "k": ["שם", "תמונה", "פרופיל", "אווטר", "לשנות שם", "להחליף תמונה"], "go": ["settings", "להגדרות"]}, {"id": 26, "s": "set", "q": "איך מתקינים את האפליקציה על מסך הבית?", "a": "האפליקציה ניתנת להתקנה: בדפדפן תופיע הצעת התקנה. באייפון בוחרים בשיתוף את ״הוסף למסך הבית״.", "k": ["התקנה", "להתקין", "מסך הבית", "אייפון", "אנדרואיד", "pwa", "אייקון"]}, {"id": 27, "s": "set", "q": "איפה הגדרות הנגישות?", "a": "כפתור הנגישות בצד המסך פותח אפשרויות: גודל טקסט, ניגודיות גבוהה, הדגשת קישורים, עצירת אנימציות וגווני אפור.", "k": ["נגישות", "גודל טקסט", "ניגודיות", "אנימציות", "גווני אפור", "הגדלה"]}, {"id": 28, "s": "set", "q": "איך מתנתקים או מוחקים חשבון?", "a": "התנתקות: כפתור היציאה בכותרת של מסך הבית. מחיקת חשבון: בהגדרות, באזור ״חשבון״. היא דורשת להקליד את המילה ״מחק״ ומוחקת את כל הנתונים לצמיתות.", "k": ["התנתקות", "להתנתק", "יציאה", "מחיקת חשבון", "למחוק חשבון", "לצמיתות", "הסרה"], "go": ["settings", "להגדרות"]}, {"id": 29, "s": "set", "q": "לא מצליח להתחבר", "a": "בכניסה חובה לסמן את אישור תנאי השימוש. אפשר להתחבר עם גוגל או עם אימייל, ואם שכחתם סיסמה יש כפתור ״שכחתי סיסמה״. מייל אימות לפעמים מגיע לתיבת הספאם.", "k": ["התחברות", "להתחבר", "להיכנס", "מצליח להיכנס", "לא נכנס", "נכנס לחשבון", "כניסה", "סיסמה", "שכחתי", "ספאם", "אימות", "תנאי שימוש", "תקנון"]}, {"id": 30, "s": "help", "q": "איך מדווחים על תקלה או יוצרים קשר?", "a": "בהגדרות, בחלק ״תמיכה ויצירת קשר״, אפשר לדווח על תקלה במייל או בוואטסאפ, וגם להצטרף לקבוצת הוואטסאפ.", "k": ["תמיכה", "דיווח", "תקלה", "קשר", "לדווח", "באג", "עזרה", "קבוצה", "פנייה"], "go": ["settings", "להגדרות"], "l": ["לקבוצת הוואטסאפ", "https://chat.whatsapp.com/HH3H5OzPhOACL98QhmicEM"]}], POP = [1, 3, 6, 13, 17, 21], BOT = "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA", GROUP = "https://chat.whatsapp.com/HH3H5OzPhOACL98QhmicEM";
+  var STOP = {};
+  'איך מה האם אני את של על זה לי יש אפשר למה איפה כמה עם או גם לא כן רוצה צריך אם אל מי הוא היא הם אותו אותה לו בו כל עוד רק כדי זאת'.split(' ').forEach(function(w){ STOP[w]=1; });
+  var guideBuilt = false, byId = {};
+  KB.forEach(function(e){ byId[e.id] = e; });
+  function $h(id){ return document.getElementById(id); }
+  function norm(t){ return String(t||'').toLowerCase().replace(/[\u0591-\u05C7]/g,'').replace(/["'׳״“”’`.,!?;:()\[\]{}\-–—_\/\\]/g,' ').replace(/\s+/g,' ').trim(); }
+  function esc(t){ return String(t).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function plain(h){ return norm(String(h).replace(/<[^>]+>/g,' ')); }
+  KB.forEach(function(e){ e.qn = norm(e.q); e.an = plain(e.a); e.kn = e.k.map(norm); });
+  function variants(w){
+    var v = [w];
+    if (w.length > 3 && 'והבכלמש'.indexOf(w.charAt(0)) > -1) v.push(w.slice(1));
+    var base = v.slice();
+    base.forEach(function(x){
+      if (x.length > 4 && /(ים|ות)$/.test(x)) v.push(x.slice(0,-2));
+      else if (x.length > 3 && /[הי]$/.test(x)) v.push(x.slice(0,-1));
+    });
+    return v.filter(function(x){ return x.length >= 2; });
+  }
+  function score(e, q, toks){
+    var sc = 0;
+    e.kn.forEach(function(k){ if (k.indexOf(' ') > -1 && q.indexOf(k) > -1) sc += 4; });
+    toks.forEach(function(vs){
+      var best = 0;
+      vs.forEach(function(v){
+        e.kn.forEach(function(k){
+          if (k === v) best = Math.max(best, 3);
+          else if (v.length >= 3 && k.length >= 3 && (k.indexOf(v) === 0 || v.indexOf(k) === 0)) best = Math.max(best, 2.4);
+        });
+        if (v.length >= 3 && e.qn.indexOf(v) > -1) best = Math.max(best, 1.6);
+        if (v.length >= 4 && e.an.indexOf(v) > -1) best = Math.max(best, 0.5);
+      });
+      sc += best;
+    });
+    return sc;
+  }
+  function search(raw){
+    var q = norm(raw); if (!q) return [];
+    var toks = q.split(' ').filter(function(w){ return !STOP[w]; }).map(variants);
+    if (!toks.length) toks = q.split(' ').map(variants);
+    var res = KB.map(function(e){ return {e:e, s:score(e,q,toks)}; }).filter(function(r){ return r.s >= 3; });
+    res.sort(function(a,b){ return b.s - a.s; });
+    if (!res.length) return [];
+    var top = res[0].s;
+    return res.filter(function(r){ return r.s >= top * 0.55; }).slice(0,3).map(function(r){ return r.e; });
+  }
+  function actions(e){
+    var h = '';
+    if (e.go) h += '<button class="help-btn" data-go="'+e.go[0]+'">'+esc(e.go[1])+' ←</button>';
+    if (e.l) h += '<a class="help-btn wa" href="'+e.l[1]+'" target="_blank" rel="noopener">'+esc(e.l[0])+'</a>';
+    return h ? '<div class="help-act">'+h+'</div>' : '';
+  }
+  function answerHtml(e){ return '<div class="help-a"><div class="hq">'+esc(e.q)+'</div>'+e.a+actions(e)+'</div>'; }
+  function supportHtml(){
+    return '<div class="help-act"><button class="help-btn" data-bug="1">דיווח תקלה</button>'+
+      '<a class="help-btn wa" href="'+GROUP+'" target="_blank" rel="noopener">קבוצת הוואטסאפ</a>'+
+      '<a class="help-btn wa" href="'+BOT+'" target="_blank" rel="noopener">הבוט בוואטסאפ</a></div>';
+  }
+  function show(qText, entries){
+    var chat = $h('help-chat');
+    var html = '<div class="help-q">'+esc(qText)+'</div>';
+    if (entries.length) html += entries.map(answerHtml).join('');
+    else html += '<div class="help-a help-empty">לא מצאתי תשובה מדויקת לשאלה הזו. נסו לנסח במילים אחרות או לבחור נושא מהמדריך למטה. אפשר גם לפנות אלינו:'+supportHtml()+'</div>';
+    chat.innerHTML = html;
+    $h('help-body').scrollTo({top:0, behavior:'smooth'});
+  }
+  function buildGuide(){
+    if (guideBuilt) return; guideBuilt = true;
+    $h('help-chips').innerHTML = POP.map(function(id){ var e = byId[id]; return e ? '<button class="help-chip" data-id="'+id+'">'+esc(e.q)+'</button>' : ''; }).join('');
+    $h('help-guide').innerHTML = SECS.map(function(s){
+      var items = KB.filter(function(e){ return e.s === s[0]; });
+      if (!items.length) return '';
+      return '<details class="help-sec"><summary><span>'+s[1]+'</span><span>'+esc(s[2])+'</span><span class="help-sec-n">'+items.length+'</span></summary><div class="help-in">'+
+        items.map(function(e){ return '<details><summary>'+esc(e.q)+'</summary>'+
+          '<div class="help-a" style="padding-top:10px;">'+e.a+actions(e)+'</div></details>'; }).join('')+'</div></details>';
+    }).join('');
+  }
+  window.openHelp = function(prefill){
+    buildGuide();
+    var o = $h('help-overlay'); o.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    if (typeof prefill === 'string' && prefill) { $h('help-input').value = prefill; ask(); }
+  };
+  window.closeHelp = function(){
+    $h('help-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  };
+  function ask(){
+    var v = $h('help-input').value.trim(); if (!v) return;
+    show(v, search(v));
+    $h('help-input').blur();
+  }
+  document.addEventListener('click', function(ev){
+    var t = ev.target;
+    if (!t || !t.closest) return;
+    var o = $h('help-overlay');
+    if (t === o || t.closest('#help-close')) { window.closeHelp(); return; }
+    if (!o.classList.contains('open')) return;
+    var go = t.closest('[data-go]');
+    if (go) { window.closeHelp(); if (window.switchView) window.switchView(go.getAttribute('data-go')); return; }
+    if (t.closest('[data-bug]')) { window.closeHelp(); if (window.openBugModal) window.openBugModal(); return; }
+    var ch = t.closest('[data-id]');
+    if (ch) { var e = byId[ch.getAttribute('data-id')]; if (e) { $h('help-input').value = ''; show(e.q, [e]); } return; }
+    if (t.closest('#help-ask')) ask();
+  });
+  document.addEventListener('keydown', function(ev){
+    var o = $h('help-overlay'); if (!o || !o.classList.contains('open')) return;
+    if (ev.key === 'Escape') window.closeHelp();
+    else if (ev.key === 'Enter' && ev.target && ev.target.id === 'help-input') { ev.preventDefault(); ask(); }
+  });
+})();
+</script>
+
 <!-- ✦ WHATSAPP BOT FAB ✦ -->
 <style>
   #wa-fab {
@@ -8324,7 +8516,7 @@ body.theme-light { background-color: var(--bg) !important; }
   ];
   var i = 0, box = null, tHide = null, tNext = null, onDash = false, raf = 0;
   function overlayOpen(){
-    var q = document.querySelector('#bug-modal-overlay.open, #onboarding-overlay.open, #cycle-modal-overlay:not(.hidden), #phone-modal-overlay:not(.hidden)');
+    var q = document.querySelector('#bug-modal-overlay.open, #help-overlay.open, #onboarding-overlay.open, #cycle-modal-overlay:not(.hidden), #phone-modal-overlay:not(.hidden)');
     if (q) return true;
     var kids = document.body.children;
     for (var k = 0; k < kids.length; k++) {
