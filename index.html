@@ -16090,12 +16090,15 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     c.classList.toggle('hidden',!ok);
   }
   window.shareHide=function(){ hideFor(30); };
+  var SHARE_URL='https://play.google.com/store/apps/details?id=com.aoproductions.aobudget';
+  var SHARE_TEXT='אני עושה סדר בכסף עם MNTA+ 💰 עוקב אחרי הוצאות, תקציבים, סורק קבלות ואפילו מוסיף תנועות ישירות מוואטסאפ. תנסה גם 👇';
   window.shareApp=function(src){
-    var url=(location.origin&&location.origin!=='null')?location.origin+location.pathname.replace(/index\.html$/,''):location.href;
-    var text='אני עושה סדר בכסף עם MNTA+ 💰 עוקב אחרי הוצאות, תקציבים ואפילו סורק קבלות. תנסה גם 👇';
     if(src==='eom') hideFor(30);
-    if(navigator.share){ navigator.share({title:'MNTA+',text:text,url:url}).catch(function(){}); return; }
-    window.open('https://wa.me/?text='+encodeURIComponent(text+'\n'+url),'_blank','noopener');
+    var full=SHARE_TEXT+'\n'+SHARE_URL;
+    if(navigator.share){ navigator.share({title:'MNTA+',text:full}).catch(function(){}); return; }
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(full).then(function(){ if(window.toast) window.toast('ההודעה הועתקה — אפשר להדביק ולשלוח','success'); });
+    } else if(window.toast) window.toast('השיתוף לא נתמך במכשיר זה','error');
   };
   var bd=$('balance-display');
   if(bd){ try{ new MutationObserver(function(){ clearTimeout(window._shrT); window._shrT=setTimeout(check,300); }).observe(bd,{childList:true,characterData:true,subtree:true}); }catch(e){} }
