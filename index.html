@@ -16095,10 +16095,8 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
   window.shareApp=function(src){
     if(src==='eom') hideFor(30);
     var full=SHARE_TEXT+'\n'+SHARE_URL;
-    if(navigator.share){ navigator.share({title:'MNTA+',text:full}).catch(function(){}); return; }
-    if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(full).then(function(){ if(window.toast) window.toast('ההודעה הועתקה — אפשר להדביק ולשלוח','success'); });
-    } else if(window.toast) window.toast('השיתוף לא נתמך במכשיר זה','error');
+    if(navigator.share){ navigator.share({title:'MNTA+',text:full}).catch(function(){}); }
+    else if(window.toast) window.toast('השיתוף לא נתמך במכשיר או בדפדפן הזה','error');
   };
   var bd=$('balance-display');
   if(bd){ try{ new MutationObserver(function(){ clearTimeout(window._shrT); window._shrT=setTimeout(check,300); }).observe(bd,{childList:true,characterData:true,subtree:true}); }catch(e){} }
