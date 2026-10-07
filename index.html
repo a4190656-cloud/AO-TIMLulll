@@ -7923,7 +7923,7 @@ body.theme-light #evx-panel{background:#fff}
         <div class="phones-add-wrap">
           <div class="phones-input-wrap">
             <input id="settings-new-phone-input" type="tel"
-              placeholder="0501234567"
+              placeholder="0501234567 או +44 7911 123456"
               autocomplete="tel"
               onkeydown="if(event.key==='Enter') addNewPhoneFromInput()">
             <span class="phones-input-icon">📲</span>
@@ -8833,7 +8833,7 @@ body.theme-light #evx-panel{background:#fff}
     </div>
     <h3 style="font-size:20px; font-weight:800; margin-bottom:8px; color:#25D366;">התחברות לבוט וואטסאפ</h3>
     <p style="color:var(--muted); font-size:13px; line-height:1.5; margin-bottom:20px;">הזן את מספר הטלפון שלך כדי שנוכל לזהות אותך בוואטסאפ. תוכל להוסיף מספרים נוספים תמיד מההגדרות.</p>
-    <input id="modal-phone-input" class="inp" type="tel" placeholder="050-1234567" style="margin-bottom:14px; text-align:center; direction:ltr; font-size:16px; letter-spacing:1px; border-color:rgba(37,211,102,0.3);">
+    <input id="modal-phone-input" class="inp" type="tel" placeholder="050-1234567 או +44 7911 123456" style="margin-bottom:14px; text-align:center; direction:ltr; font-size:16px; letter-spacing:1px; border-color:rgba(37,211,102,0.3);">
     <div id="phone-modal-taken-help" class="hidden" style="
       margin-bottom:14px;
       padding:14px 16px;
@@ -9423,10 +9423,20 @@ body.theme-light #evx-panel{background:#fff}
   };
 
   window.formatPhone = function(p) {
+    p = String(p || '').trim();
     var c = p.replace(/\D/g, '');
+    if(!c) return c;
+    /* מספר בינלאומי מפורש: +קידומת או 00 — לא נוגעים בקידומת */
+    if(p.charAt(0) === '+') return c;
+    if(c.startsWith('00')) return c.substring(2);
+    /* ישראלי עם קידומת מדינה (גם אם הוקלד 9720...) */
+    if(c.startsWith('9720')) return '972' + c.substring(4);
     if(c.startsWith('972')) return c;
+    /* ישראלי מקומי: 05X... */
     if(c.startsWith('0')) return '972' + c.substring(1);
-    if(c.startsWith('5')) return '972' + c;
+    /* ישראלי נייד בלי אפס מוביל: 5XXXXXXXX (9 ספרות בדיוק) */
+    if(c.startsWith('5') && c.length === 9) return '972' + c;
+    /* כל השאר: מספר בינלאומי שהוקלד בלי פלוס (למשל 447911..., 15551234567) */
     return c;
   };
 
