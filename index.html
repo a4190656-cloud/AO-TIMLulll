@@ -16324,7 +16324,7 @@ body.v-home #hero-balance-card .cb-pill.pos b{color:#8EF3D9 !important}body.v-ho
 /* כפתורי הוספה */
 body.v-home .action-btn-income,body.v-home .action-btn-expense{border:none !important;border-radius:22px !important;filter:none !important;animation:none !important}
 body.v-home .action-btn-income{background:linear-gradient(135deg,#27AEC4,#0E7F95) !important;box-shadow:0 10px 22px rgba(14,127,149,.28) !important}
-body.v-home .action-btn-expense{background:linear-gradient(135deg,#F5AE48,#E8742A) !important;box-shadow:0 10px 22px rgba(232,116,42,.26) !important}
+body.v-home .action-btn-expense{background:linear-gradient(135deg,#F2876A,#D4543F) !important;box-shadow:0 10px 22px rgba(212,84,63,.28) !important}
 body.v-home .action-btn-income::before,body.v-home .action-btn-income::after,body.v-home .action-btn-expense::before,body.v-home .action-btn-expense::after{display:none !important}
 body.v-home .action-btn-icon-wrap{background:rgba(255,255,255,.2) !important;border:none !important;box-shadow:none !important}
 body.v-home .action-btn-label{color:#fff !important;text-shadow:none !important}
@@ -16413,6 +16413,35 @@ body.v-home .shr-btn{background:linear-gradient(135deg,#27AEC4,#0E7F95) !importa
     })(t0);
   }
   try{ new MutationObserver(onChange).observe(el,{childList:true,characterData:true,subtree:true}); }catch(e){}
+})();
+</script>
+
+<style id="home-ambient">
+body.v-home #hero-balance-card{isolation:isolate}
+.hm-fx{position:absolute;inset:0;z-index:-1;overflow:hidden;border-radius:inherit;pointer-events:none}
+.hm-glow{position:absolute;border-radius:50%;will-change:transform}
+.hm-glow.a{width:75%;aspect-ratio:1;left:-15%;top:-45%;background:radial-gradient(circle,rgba(56,201,221,.34),transparent 66%)}
+.hm-glow.b{width:62%;aspect-ratio:1;right:-18%;bottom:-50%;background:radial-gradient(circle,rgba(242,169,59,.24),transparent 66%)}
+.hm-wave{position:absolute;left:0;bottom:0;width:200%;height:46%;will-change:transform}
+.hm-wave svg{display:block;width:100%;height:100%}
+.hm-wave.w1{opacity:1}.hm-wave.w2{opacity:1;height:38%}
+@media (prefers-reduced-motion:no-preference){
+  .hm-glow.a{animation:hmDriftA 17s ease-in-out infinite alternate}
+  .hm-glow.b{animation:hmDriftB 21s ease-in-out infinite alternate}
+  .hm-wave.w1{animation:hmWave 13s linear infinite}
+  .hm-wave.w2{animation:hmWave 19s linear infinite reverse}
+  @keyframes hmDriftA{0%{transform:translate(0,0) scale(1)}100%{transform:translate(70%,34%) scale(1.18)}}
+  @keyframes hmDriftB{0%{transform:translate(0,0) scale(1.1)}100%{transform:translate(-62%,-30%) scale(.92)}}
+  @keyframes hmWave{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+}
+</style>
+<script>
+(function(){
+  var c=document.getElementById('hero-balance-card'); if(!c||c.querySelector('.hm-fx')) return;
+  var P1='M0,30 C100,8 200,8 300,30 S500,52 600,30 S800,8 900,30 S1100,52 1200,30 V70 H0 Z';
+  var P2='M0,34 C120,56 180,56 300,34 S480,12 600,34 S780,56 900,34 S1080,12 1200,34 V70 H0 Z';
+  function wave(cls,path,fill){ return '<div class="hm-wave '+cls+'"><svg viewBox="0 0 1200 70" preserveAspectRatio="none"><path d="'+path+'" fill="'+fill+'"/></svg></div>'; }
+  c.insertAdjacentHTML('afterbegin','<div class="hm-fx" aria-hidden="true"><div class="hm-glow a"></div><div class="hm-glow b"></div>'+wave('w1',P1,'rgba(255,255,255,.075)')+wave('w2',P2,'rgba(255,255,255,.05)')+'</div>');
 })();
 </script>
 </body>
