@@ -16389,30 +16389,13 @@ body.v-home .shr-btn{background:linear-gradient(135deg,#27AEC4,#0E7F95) !importa
 }
 </style>
 <script>
-/* ✦ ספירת יתרה מונפשת ✦ */
+/* ✦ משוב צבע ליתרה (בלי לכתוב לטקסט — האנימציה של הספירה כבר קיימת באפליקציה) ✦ */
 (function(){
-  var el=document.getElementById('balance-display'); if(!el) return;
-  var cur=null, prev=null, last='', raf=0, reduce=false;
-  try{ reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
-  function F(n){ return typeof window.fmt==='function' ? window.fmt(n) : '\u20AA'+Math.round(n).toLocaleString('he-IL'); }
-  function write(t){ last=t; el.textContent=t; }
-  function onChange(){
-    if(el.textContent===last) return;
-    var finalTxt=el.textContent, to;
-    try{ to=window._calcBal(); }catch(e){ return; }
-    if(typeof to!=='number'||isNaN(to)){ last=finalTxt; return; }
-    var from=(cur===null)?0:cur;
-    if(reduce || document.hidden || Math.abs(to-from)<1){ cur=to; last=finalTxt; return; }
-    cancelAnimationFrame(raf);
-    var t0=performance.now(), D=Math.min(1000,450+Math.abs(to-from)/40);
-    el.classList.remove('bal-up','bal-down'); void el.offsetWidth; if(cur!==null) el.classList.add(to>from?'bal-up':'bal-down');
-    (function step(now){
-      var k=Math.min(1,(now-t0)/D), e=1-Math.pow(1-k,3);
-      cur=from+(to-from)*e;
-      if(k<1){ write(F(cur)); raf=requestAnimationFrame(step); } else { cur=to; write(finalTxt); }
-    })(t0);
-  }
-  try{ new MutationObserver(onChange).observe(el,{childList:true,characterData:true,subtree:true}); }catch(e){}
+  var el=document.getElementById('balance-display'); if(!el) return; var prev=null, t=0;
+  function chk(){ var v; try{ v=window._calcBal(); }catch(e){ return; } if(typeof v!=='number'||isNaN(v)) return;
+    if(prev!==null && Math.abs(v-prev)>=1){ el.classList.remove('bal-up','bal-down'); void el.offsetWidth; el.classList.add(v>prev?'bal-up':'bal-down'); }
+    prev=v; }
+  try{ new MutationObserver(function(){ clearTimeout(t); t=setTimeout(chk,250); }).observe(el,{childList:true,characterData:true,subtree:true}); }catch(e){}
 })();
 </script>
 
@@ -16444,5 +16427,17 @@ body.v-home #hero-balance-card{isolation:isolate}
   c.insertAdjacentHTML('afterbegin','<div class="hm-fx" aria-hidden="true"><div class="hm-glow a"></div><div class="hm-glow b"></div>'+wave('w1',P1,'rgba(255,255,255,.075)')+wave('w2',P2,'rgba(255,255,255,.05)')+'</div>');
 })();
 </script>
+
+<style id="home-stats">
+body.v-home .rise.d2{gap:8px !important;margin-top:10px !important}
+body.v-home .rise.d2 > .card{background:var(--hs) !important;border:1px solid var(--hb) !important;border-radius:16px !important;box-shadow:none !important;
+  backdrop-filter:none !important;-webkit-backdrop-filter:none !important;padding:9px 6px !important;filter:none !important}
+body.v-home .rise.d2 > .card p:first-child{color:var(--hm) !important;font-size:9.5px !important;font-weight:700 !important;letter-spacing:.07em !important;margin-bottom:2px !important}
+body.v-home #stat-income,body.v-home #stat-fixed,body.v-home #stat-var{font-size:13px !important;font-weight:700 !important;text-shadow:none !important}
+body.v-home #stat-income{color:#6FDCC6 !important}
+body.v-home #stat-fixed,body.v-home #stat-var{color:#F29A86 !important}
+body.v-home.theme-light #stat-income{color:#0A8A7A !important}
+body.v-home.theme-light #stat-fixed,body.v-home.theme-light #stat-var{color:#D4543F !important}
+</style>
 </body>
 </html>
