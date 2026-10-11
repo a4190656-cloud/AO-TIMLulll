@@ -9531,6 +9531,7 @@ body.theme-light #evx-panel{background:#fff}
       return;
     }
     window.scrollTo(0, 0);
+    document.body.classList.toggle('v-home', v === 'dashboard');
     if (v === 'settings') { try { renderFixedLists(); renderBimonthlyList(); } catch(_e) {} }
     if (window._waFabSet) window._waFabSet(v);
     hide('view-dashboard'); hide('view-settings'); hide('view-categories'); hide('view-charts');
@@ -16297,6 +16298,121 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
   var bd=$('balance-display');
   if(bd){ try{ new MutationObserver(function(){ clearTimeout(T); T=setTimeout(update,400); }).observe(bd,{childList:true,characterData:true,subtree:true}); }catch(e){} }
   setTimeout(update,2500); setTimeout(update,8000);
+})();
+</script>
+
+<style id="home-2026">
+/* ✦ HOME 2026 — פלטת הלוגו: פטרול עמוק, טורקיז, ענבר, לבן שמנת. בלי זוהר. ✦ */
+body.v-home{--hs:rgba(255,255,255,.05);--hb:rgba(255,255,255,.09);--hi:#EAF3F5;--hm:rgba(234,243,245,.55);--teal:#2BB5CC;--amber:#F2A93B;--orange:#E8742A;
+  background:#071C25 !important}
+body.v-home.theme-light{--hs:#FFFFFF;--hb:rgba(14,42,51,.08);--hi:#0E2A33;--hm:rgba(14,42,51,.56);--teal:#0E8FA3;background:#EDF3F5 !important}
+body.v-home::before,body.v-home::after{display:none !important}
+/* כרטיס יתרה */
+body.v-home #hero-balance-card{background:linear-gradient(150deg,#1B6B81 0%,#10526A 52%,#0B3C4E 100%) !important;border:1px solid rgba(255,255,255,.12) !important;
+  border-radius:28px !important;box-shadow:0 18px 40px rgba(5,30,40,.35) !important;overflow:hidden}
+body.v-home #hero-balance-card::before,body.v-home #hero-balance-card::after{display:none !important}
+body.v-home #hero-particles,body.v-home #hero-balance-card .hero-orb,body.v-home .hero-mesh-layer,body.v-home .hero-sheen,body.v-home #hero-scanline{display:none !important;animation:none !important}
+body.v-home #hero-balance-card .hero-label-2026{color:rgba(255,255,255,.72) !important;text-shadow:none !important;letter-spacing:.06em}
+body.v-home #hero-balance-card .hero-label-2026::before,body.v-home #hero-balance-card .hero-label-2026::after{display:none !important}
+body.v-home #balance-display{color:#fff !important;text-shadow:none !important;filter:none !important}
+body.v-home #balance-display.bal-neg{color:#FFB4A3 !important}
+body.v-home #budget-progress-ring{stroke:#F2A93B !important;filter:none !important}
+body.v-home #budget-percent{color:#fff !important}
+body.v-home #hero-balance-card .hero-divider{background:rgba(255,255,255,.14) !important;box-shadow:none !important}
+body.v-home #hero-balance-card .cb-pill{color:#fff !important;background:rgba(255,255,255,.12) !important;border-color:rgba(255,255,255,.2) !important}
+body.v-home #hero-balance-card .cb-pill.pos b{color:#8EF3D9 !important}body.v-home #hero-balance-card .cb-pill.neg b{color:#FFB4A3 !important}
+/* כפתורי הוספה */
+body.v-home .action-btn-income,body.v-home .action-btn-expense{border:none !important;border-radius:22px !important;filter:none !important;animation:none !important}
+body.v-home .action-btn-income{background:linear-gradient(135deg,#27AEC4,#0E7F95) !important;box-shadow:0 10px 22px rgba(14,127,149,.28) !important}
+body.v-home .action-btn-expense{background:linear-gradient(135deg,#F5AE48,#E8742A) !important;box-shadow:0 10px 22px rgba(232,116,42,.26) !important}
+body.v-home .action-btn-income::before,body.v-home .action-btn-income::after,body.v-home .action-btn-expense::before,body.v-home .action-btn-expense::after{display:none !important}
+body.v-home .action-btn-icon-wrap{background:rgba(255,255,255,.2) !important;border:none !important;box-shadow:none !important}
+body.v-home .action-btn-label{color:#fff !important;text-shadow:none !important}
+body.v-home .action-btn-sublabel{color:rgba(255,255,255,.82) !important}
+body.v-home .action-btn-svg-income,body.v-home .action-btn-svg-expense{stroke:#fff !important;color:#fff !important;filter:none !important}
+/* סריקה */
+body.v-home .scan-doc-btn{background:var(--hs) !important;border:1px solid var(--hb) !important;border-radius:20px !important;box-shadow:none !important;filter:none !important}
+body.v-home .scan-doc-btn::before,body.v-home .scan-doc-pulse{display:none !important}
+body.v-home .scan-doc-icon-wrap{background:rgba(43,181,204,.14) !important;border:none !important;box-shadow:none !important;color:var(--teal) !important}
+body.v-home .scan-doc-title{color:var(--hi) !important}body.v-home .scan-doc-sub{color:var(--hm) !important}
+body.v-home .scan-doc-arrow{color:var(--hm) !important}
+/* חיפוש ורשימת תנועות */
+body.v-home #tx-search{background:var(--hs) !important;border:1px solid var(--hb) !important;color:var(--hi) !important;box-shadow:none !important;border-radius:16px !important}
+body.v-home #tx-search::placeholder{color:var(--hm) !important}
+body.v-home #view-dashboard .card{background:var(--hs) !important;border:1px solid var(--hb) !important;border-radius:22px !important;box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
+body.v-home #tx-list .tx-row{border-bottom:1px solid var(--hb) !important;background:transparent !important}
+body.v-home #tx-list .tx-row,body.v-home #tx-list .tx-row *{text-shadow:none !important}
+body.v-home #tx-list .tx-row b,body.v-home #tx-list .tx-row p,body.v-home #tx-list .tx-row .tx-desc{color:var(--hi) !important}
+body.v-home #view-dashboard [data-i18n="recent_tx"]{color:var(--hi) !important}
+/* בוט וואטסאפ + שיתוף */
+body.v-home #wa-bot-card{background:var(--hs) !important;border:1px solid var(--hb) !important;border-radius:22px !important;box-shadow:none !important}
+body.v-home #wa-bot-card::before{display:none !important}
+body.v-home .wa-bot-title{color:var(--hi) !important}body.v-home .wa-bot-sub{color:var(--hm) !important}
+body.v-home .wa-cmd-chip{background:rgba(43,181,204,.1) !important;border:1px solid rgba(43,181,204,.22) !important;color:var(--hi) !important;box-shadow:none !important}
+body.v-home .shr-card{background:var(--hs) !important;border-color:var(--hb) !important;box-shadow:none !important;color:var(--hi) !important}
+body.v-home .shr-btn{background:linear-gradient(135deg,#27AEC4,#0E7F95) !important;color:#fff !important;box-shadow:none !important}
+</style>
+
+<style id="home-motion">
+@media (prefers-reduced-motion:no-preference){
+  /* הבהוב אור עדין שחולף על כרטיס היתרה */
+  body.v-home #hero-balance-card{position:relative}
+  body.v-home #hero-balance-card::after{display:block !important;content:'';position:absolute;top:0;left:-60%;width:45%;height:100%;pointer-events:none;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.11),transparent);transform:skewX(-18deg);animation:hmSheen 9s ease-in-out 2.5s infinite}
+  @keyframes hmSheen{0%,68%{transform:skewX(-18deg) translateX(0)}100%{transform:skewX(-18deg) translateX(480%)}}
+  /* טבעת התקציב נטענת בחלקות */
+  body.v-home #budget-progress-ring{transition:stroke-dashoffset 1.1s cubic-bezier(.2,.9,.3,1),stroke .4s ease}
+  /* כניסה מדורגת של אלמנטי הבית */
+  body.v-home #view-dashboard > *{animation:hmIn .55s cubic-bezier(.2,.9,.3,1) backwards}
+  body.v-home #view-dashboard > *:nth-child(2){animation-delay:.05s}body.v-home #view-dashboard > *:nth-child(3){animation-delay:.1s}
+  body.v-home #view-dashboard > *:nth-child(4){animation-delay:.15s}body.v-home #view-dashboard > *:nth-child(5){animation-delay:.2s}
+  body.v-home #view-dashboard > *:nth-child(6){animation-delay:.25s}body.v-home #view-dashboard > *:nth-child(n+7){animation-delay:.3s}
+  @keyframes hmIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  /* לחיצה על כפתורי ההוספה: קפיצה וסיבוב אייקון */
+  body.v-home .action-btn-income,body.v-home .action-btn-expense{transition:transform .32s cubic-bezier(.34,1.56,.64,1),box-shadow .3s ease !important}
+  body.v-home .action-btn-income:active,body.v-home .action-btn-expense:active{transform:scale(.96) !important}
+  body.v-home .action-btn-icon-wrap svg{transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+  body.v-home .action-btn-income:active .action-btn-icon-wrap svg{transform:rotate(90deg) scale(1.12)}
+  body.v-home .action-btn-expense:active .action-btn-icon-wrap svg{transform:rotate(-90deg) scale(1.12)}
+  /* אייקון הסריקה מרחף קלות */
+  body.v-home .scan-doc-icon-wrap{animation:hmBob 4.2s ease-in-out infinite}
+  @keyframes hmBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+  /* משוב כשהיתרה משתנה */
+  #balance-display{transform-origin:right center}
+  #balance-display.bal-up{animation:hmUp .9s ease}#balance-display.bal-down{animation:hmDown .9s ease}
+  @keyframes hmUp{0%,100%{transform:scale(1)}30%{transform:scale(1.05);color:#8EF3D9}}
+  @keyframes hmDown{0%,100%{transform:scale(1)}30%{transform:scale(1.05);color:#FFC9A8}}
+  /* תנועה ברשימה: הדגשה עדינה בלחיצה */
+  body.v-home #tx-list .tx-row{transition:background .2s ease}
+  body.v-home #tx-list .tx-row:active{background:rgba(43,181,204,.09) !important}
+  body.v-home .cb-pill{transition:transform .25s cubic-bezier(.34,1.56,.64,1),background .2s}
+}
+</style>
+<script>
+/* ✦ ספירת יתרה מונפשת ✦ */
+(function(){
+  var el=document.getElementById('balance-display'); if(!el) return;
+  var cur=null, prev=null, last='', raf=0, reduce=false;
+  try{ reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+  function F(n){ return typeof window.fmt==='function' ? window.fmt(n) : '\u20AA'+Math.round(n).toLocaleString('he-IL'); }
+  function write(t){ last=t; el.textContent=t; }
+  function onChange(){
+    if(el.textContent===last) return;
+    var finalTxt=el.textContent, to;
+    try{ to=window._calcBal(); }catch(e){ return; }
+    if(typeof to!=='number'||isNaN(to)){ last=finalTxt; return; }
+    var from=(cur===null)?0:cur;
+    if(reduce || document.hidden || Math.abs(to-from)<1){ cur=to; last=finalTxt; return; }
+    cancelAnimationFrame(raf);
+    var t0=performance.now(), D=Math.min(1000,450+Math.abs(to-from)/40);
+    el.classList.remove('bal-up','bal-down'); void el.offsetWidth; if(cur!==null) el.classList.add(to>from?'bal-up':'bal-down');
+    (function step(now){
+      var k=Math.min(1,(now-t0)/D), e=1-Math.pow(1-k,3);
+      cur=from+(to-from)*e;
+      if(k<1){ write(F(cur)); raf=requestAnimationFrame(step); } else { cur=to; write(finalTxt); }
+    })(t0);
+  }
+  try{ new MutationObserver(onChange).observe(el,{childList:true,characterData:true,subtree:true}); }catch(e){}
 })();
 </script>
 </body>
