@@ -418,19 +418,19 @@
     .action-btn-income:hover { transform: translateY(-3px); box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 -3px 0 0 rgba(0,140,60,0.9), 0 12px 36px rgba(0,230,118,0.30), 0 4px 12px rgba(0,0,0,0.5); }
     .action-btn-income:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 0 0 0 rgba(0,100,50,0.9), 0 3px 12px rgba(0,230,118,0.15), 0 1px 4px rgba(0,0,0,0.6); }
     .action-btn-expense {
-      background: linear-gradient(160deg, #1e0a0d 0%, #120508 100%);
-      box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 -3px 0 0 rgba(140,0,30,0.9), 0 6px 24px rgba(255,23,68,0.18), 0 2px 8px rgba(0,0,0,0.5);
-      border: 1px solid rgba(255,23,68,0.28);
+      background: linear-gradient(160deg, #14102e 0%, #0c0a22 100%);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 -3px 0 0 rgba(40,30,120,0.9), 0 6px 24px rgba(139,124,246,0.18), 0 2px 8px rgba(0,0,0,0.5);
+      border: 1px solid rgba(139,124,246,0.28);
     }
     .action-btn-expense::before {
       content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 50% -20%, rgba(255,23,68,0.15) 0%, transparent 70%);
+      background: radial-gradient(ellipse at 50% -20%, rgba(139,124,246,0.15) 0%, transparent 70%);
       pointer-events: none;
     }
-    .action-btn-expense:hover { transform: translateY(-3px); box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 -3px 0 0 rgba(180,0,30,0.9), 0 12px 36px rgba(255,23,68,0.28), 0 4px 12px rgba(0,0,0,0.5); }
-    .action-btn-expense:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 0 0 0 rgba(140,0,30,0.9), 0 3px 12px rgba(255,23,68,0.12), 0 1px 4px rgba(0,0,0,0.6); }
+    .action-btn-expense:hover { transform: translateY(-3px); box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 -3px 0 0 rgba(180,0,30,0.9), 0 12px 36px rgba(139,124,246,0.28), 0 4px 12px rgba(0,0,0,0.5); }
+    .action-btn-expense:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 0 0 0 rgba(40,30,120,0.9), 0 3px 12px rgba(139,124,246,0.12), 0 1px 4px rgba(0,0,0,0.6); }
     .action-btn-income::after  { content: ''; position: absolute; top:0; left:15%; right:15%; height:1px; background:linear-gradient(90deg,transparent,rgba(0,230,118,0.55),transparent); pointer-events:none; }
-    .action-btn-expense::after { content: ''; position: absolute; top:0; left:15%; right:15%; height:1px; background:linear-gradient(90deg,transparent,rgba(255,23,68,0.50),transparent); pointer-events:none; }
+    .action-btn-expense::after { content: ''; position: absolute; top:0; left:15%; right:15%; height:1px; background:linear-gradient(90deg,transparent,rgba(139,124,246,0.50),transparent); pointer-events:none; }
     .action-btn-inner {
       display: flex; flex-direction: column; align-items: center; gap: 10px;
       padding: 20px 12px 18px; width: 100%; position: relative; z-index: 1;
@@ -440,7 +440,7 @@
       display: flex; align-items: center; justify-content: center;
     }
     .action-btn-income .action-btn-icon-wrap { background:linear-gradient(145deg,rgba(0,230,118,0.18),rgba(0,230,118,0.06)); border:1px solid rgba(0,230,118,0.32); box-shadow:0 0 16px rgba(0,230,118,0.15),inset 0 1px 0 rgba(255,255,255,0.10); }
-    .action-btn-expense .action-btn-icon-wrap { background:linear-gradient(145deg,rgba(255,23,68,0.18),rgba(255,23,68,0.06)); border:1px solid rgba(255,23,68,0.32); box-shadow:0 0 16px rgba(255,23,68,0.15),inset 0 1px 0 rgba(255,255,255,0.10); }
+    .action-btn-expense .action-btn-icon-wrap { background:linear-gradient(145deg,rgba(139,124,246,0.18),rgba(139,124,246,0.06)); border:1px solid rgba(139,124,246,0.32); box-shadow:0 0 16px rgba(139,124,246,0.15),inset 0 1px 0 rgba(255,255,255,0.10); }
     .action-btn-label { font-size:13px; font-weight:800; letter-spacing:.04em; line-height:1; }
     .action-btn-income .action-btn-label  { color:#00E676; }
     .action-btn-expense .action-btn-label { color:#FF4D70; }
@@ -453,9 +453,9 @@
       border-radius: 20px; overflow: hidden; margin-bottom: 16px; position: relative;
     }
     .sblock-fixed-expense {
-      background: linear-gradient(145deg,rgba(30,6,10,0.92),rgba(18,4,8,0.95));
-      border:1px solid rgba(255,23,68,0.30);
-      box-shadow:0 0 0 1px rgba(255,23,68,0.08),0 8px 32px rgba(255,23,68,0.12),inset 0 1px 0 rgba(255,255,255,0.06);
+      background: linear-gradient(145deg,rgba(18,12,42,0.92),rgba(12,8,30,0.95));
+      border:1px solid rgba(139,124,246,0.30);
+      box-shadow:0 0 0 1px rgba(139,124,246,0.08),0 8px 32px rgba(139,124,246,0.12),inset 0 1px 0 rgba(255,255,255,0.06);
     }
     .sblock-fixed-income {
       background: linear-gradient(145deg,rgba(4,22,12,0.92),rgba(3,14,8,0.95));
@@ -465,21 +465,21 @@
     .sblock-fixed-expense::before,.sblock-fixed-income::before {
       content:''; position:absolute; top:0; left:0; right:0; height:3px; border-radius:20px 20px 0 0;
     }
-    .sblock-fixed-expense::before { background:linear-gradient(90deg,transparent 5%,rgba(255,23,68,0.75) 40%,rgba(255,80,110,0.9) 60%,transparent 95%); }
+    .sblock-fixed-expense::before { background:linear-gradient(90deg,transparent 5%,rgba(139,124,246,0.75) 40%,rgba(255,80,110,0.9) 60%,transparent 95%); }
     .sblock-fixed-income::before  { background:linear-gradient(90deg,transparent 5%,rgba(0,200,80,0.75) 40%,rgba(0,230,118,0.9) 60%,transparent 95%); }
     .sblock-fixed-head { padding:15px 18px 14px; border-bottom:1px solid; display:flex; align-items:center; gap:10px; }
-    .sblock-fixed-expense .sblock-fixed-head { border-color:rgba(255,23,68,0.15); background:rgba(255,23,68,0.04); }
+    .sblock-fixed-expense .sblock-fixed-head { border-color:rgba(139,124,246,0.15); background:rgba(139,124,246,0.04); }
     .sblock-fixed-income  .sblock-fixed-head { border-color:rgba(0,230,118,0.14); background:rgba(0,230,118,0.03); }
     .sblock-fixed-head-icon { width:32px; height:32px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-    .sblock-fixed-expense .sblock-fixed-head-icon { background:rgba(255,23,68,0.14); border:1px solid rgba(255,23,68,0.28); }
+    .sblock-fixed-expense .sblock-fixed-head-icon { background:rgba(139,124,246,0.14); border:1px solid rgba(139,124,246,0.28); }
     .sblock-fixed-income  .sblock-fixed-head-icon { background:rgba(0,230,118,0.12); border:1px solid rgba(0,230,118,0.26); }
     .sblock-fixed-head-text { flex:1; }
     .sblock-fixed-head-title { font-weight:800; font-size:14px; line-height:1.2; }
-    .sblock-fixed-expense .sblock-fixed-head-title { color:#FF6080; }
+    .sblock-fixed-expense .sblock-fixed-head-title { color:#8B7CF6; }
     .sblock-fixed-income  .sblock-fixed-head-title { color:#00E676; }
     .sblock-fixed-head-sub { font-size:10px; font-weight:600; letter-spacing:.05em; margin-top:2px; opacity:0.5; }
     .sblock-fixed-total { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700; background:rgba(255,255,255,0.04); border-radius:8px; padding:4px 10px; flex-shrink:0; }
-    .sblock-fixed-expense .sblock-fixed-total { color:#FF6080; }
+    .sblock-fixed-expense .sblock-fixed-total { color:#8B7CF6; }
     .sblock-fixed-income  .sblock-fixed-total { color:#00E676; }
     .sblock-fixed-body { padding:16px 18px 18px; }
 
@@ -533,7 +533,7 @@
     #ticker-inner .t-brand  { color:rgba(0,229,255,0.90)!important; font-weight:900; letter-spacing:.04em; unicode-bidi:isolate; direction:ltr; }
     #ticker-inner .t-bal    { color:var(--cyan)!important; font-weight:800; }
     #ticker-inner .t-inc    { color:#00E676!important; font-weight:800; }
-    #ticker-inner .t-exp    { color:#FF6080!important; font-weight:800; }
+    #ticker-inner .t-exp    { color:#8B7CF6!important; font-weight:800; }
     #ticker-inner .t-label  { color:rgba(255,255,255,0.28)!important; font-weight:600; font-size:10px; }
     /* live pulse dot */
     #ticker-live-dot {
@@ -942,9 +942,9 @@
       box-shadow:0 0 0 1px rgba(0,230,118,0.10),0 24px 60px rgba(0,0,0,0.7),0 0 60px rgba(0,230,118,0.15);
     }
     .success-card.expense-card {
-      background:linear-gradient(145deg,rgba(22,4,8,0.97),rgba(14,3,6,0.98));
-      border:1px solid rgba(255,23,68,0.32);
-      box-shadow:0 0 0 1px rgba(255,23,68,0.08),0 24px 60px rgba(0,0,0,0.7),0 0 60px rgba(255,23,68,0.12);
+      background:linear-gradient(145deg,rgba(18,12,42,0.97),rgba(12,8,30,0.98));
+      border:1px solid rgba(139,124,246,0.32);
+      box-shadow:0 0 0 1px rgba(139,124,246,0.08),0 24px 60px rgba(0,0,0,0.7),0 0 60px rgba(139,124,246,0.12);
     }
     @keyframes successCardPop {
       0%  { opacity:0; transform:scale(.72) translateY(20px); }
@@ -956,19 +956,19 @@
     @keyframes successCardOut { 0%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(.82) translateY(-14px)} }
     .success-circle { width:72px; height:72px; border-radius:50%; display:flex; align-items:center; justify-content:center; position:relative; }
     .success-circle.income-circle  { background:radial-gradient(circle,rgba(0,230,118,0.18) 0%,rgba(0,230,118,0.06) 100%); border:2px solid rgba(0,230,118,0.45); box-shadow:0 0 28px rgba(0,230,118,0.30),inset 0 1px 0 rgba(255,255,255,0.08); }
-    .success-circle.expense-circle { background:radial-gradient(circle,rgba(255,23,68,0.16) 0%,rgba(255,23,68,0.05) 100%); border:2px solid rgba(255,80,110,0.42); box-shadow:0 0 28px rgba(255,23,68,0.25),inset 0 1px 0 rgba(255,255,255,0.08); }
+    .success-circle.expense-circle { background:radial-gradient(circle,rgba(139,124,246,0.16) 0%,rgba(139,124,246,0.05) 100%); border:2px solid rgba(255,80,110,0.42); box-shadow:0 0 28px rgba(139,124,246,0.25),inset 0 1px 0 rgba(255,255,255,0.08); }
     .check-svg { overflow:visible; }
     .check-path { fill:none; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:30; stroke-dashoffset:30; animation:drawCheck .42s cubic-bezier(.4,0,.2,1) .28s forwards; }
     .income-circle  .check-path { stroke:#00E676; }
-    .expense-circle .check-path { stroke:#FF6080; }
+    .expense-circle .check-path { stroke:#8B7CF6; }
     @keyframes drawCheck { to{stroke-dashoffset:0} }
     .success-ring { position:absolute; inset:-10px; border-radius:50%; animation:ringPulse .7s ease .3s forwards; opacity:0; }
     .income-circle  .success-ring { border:2px solid rgba(0,230,118,0.35); }
-    .expense-circle .success-ring { border:2px solid rgba(255,23,68,0.30); }
+    .expense-circle .success-ring { border:2px solid rgba(139,124,246,0.30); }
     @keyframes ringPulse { 0%{opacity:.8;transform:scale(1)} 100%{opacity:0;transform:scale(1.5)} }
     .success-label { font-family:'Syne',sans-serif; font-size:17px; font-weight:800; letter-spacing:-.2px; animation:fadeLabelIn .35s ease .35s both; }
     .income-card  .success-label { color:#00E676; }
-    .expense-card .success-label { color:#FF6080; }
+    .expense-card .success-label { color:#8B7CF6; }
     .success-sublabel { font-size:12px; font-weight:600; color:rgba(255,255,255,0.38); margin-top:-8px; animation:fadeLabelIn .35s ease .45s both; }
     .success-particles { position:absolute; inset:0; pointer-events:none; overflow:hidden; border-radius:28px; }
     .sp { position:absolute; width:5px; height:5px; border-radius:50%; animation:floatParticle 1s ease forwards; opacity:0; }
@@ -1458,14 +1458,14 @@
         inset 0 1px 0 rgba(0,255,136,0.15);
     }
     .success-card.expense-card {
-      background: linear-gradient(160deg, rgba(30,0,10,0.98) 0%, rgba(15,0,6,0.99) 100%);
-      border: 1px solid rgba(255,31,78,0.28);
+      background: linear-gradient(160deg, rgba(18,12,42,0.98) 0%, rgba(12,8,30,0.99) 100%);
+      border: 1px solid rgba(139,124,246,0.28);
       box-shadow:
-        0 0 0 1px rgba(255,23,68,0.10),
-        0 0 80px rgba(255,31,78,0.20),
-        0 0 160px rgba(255,23,68,0.08),
+        0 0 0 1px rgba(139,124,246,0.10),
+        0 0 80px rgba(139,124,246,0.20),
+        0 0 160px rgba(139,124,246,0.08),
         0 32px 80px rgba(0,0,0,0.8),
-        inset 0 1px 0 rgba(255,31,78,0.12);
+        inset 0 1px 0 rgba(139,124,246,0.12);
     }
     /* Scanline top border on success card */
     .success-card::before {
@@ -1484,9 +1484,9 @@
       box-shadow: 0 0 0 8px rgba(0,255,136,0.06), 0 0 40px rgba(0,255,136,0.35), inset 0 1px 0 rgba(255,255,255,0.1) !important;
     }
     .success-circle.expense-circle {
-      background: radial-gradient(circle, rgba(255,31,78,0.14) 0%, rgba(255,23,68,0.04) 100%) !important;
-      border: 2px solid rgba(255,31,78,0.38) !important;
-      box-shadow: 0 0 0 8px rgba(255,31,78,0.06), 0 0 40px rgba(255,31,78,0.30), inset 0 1px 0 rgba(255,255,255,0.1) !important;
+      background: radial-gradient(circle, rgba(139,124,246,0.14) 0%, rgba(139,124,246,0.04) 100%) !important;
+      border: 2px solid rgba(139,124,246,0.38) !important;
+      box-shadow: 0 0 0 8px rgba(139,124,246,0.06), 0 0 40px rgba(139,124,246,0.30), inset 0 1px 0 rgba(255,255,255,0.1) !important;
     }
     .success-label {
       font-size: 22px !important;
@@ -6151,13 +6151,13 @@ body.theme-light { background-color: var(--bg) !important; }
         <p style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.06em;margin-bottom:3px">הכנסות</p>
         <p id="stat-income" class="mono" style="color:var(--green);font-weight:700;font-size:14px">₪0</p>
       </div>
-      <div class="card modern-hover" style="padding:11px 8px;text-align:center;border-top:1px solid rgba(255,23,68,0.2)">
+      <div class="card modern-hover" style="padding:11px 8px;text-align:center;border-top:1px solid rgba(139,124,246,0.2)">
         <p style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.06em;margin-bottom:3px">קבועות</p>
-        <p id="stat-fixed" class="mono" style="color:var(--red);font-weight:700;font-size:14px">₪0</p>
+        <p id="stat-fixed" class="mono" style="color:var(--exp);font-weight:700;font-size:14px">₪0</p>
       </div>
-      <div class="card modern-hover" style="padding:11px 8px;text-align:center;border-top:1px solid rgba(255,23,68,0.2)">
+      <div class="card modern-hover" style="padding:11px 8px;text-align:center;border-top:1px solid rgba(139,124,246,0.2)">
         <p style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.06em;margin-bottom:3px">משתנות</p>
-        <p id="stat-var" class="mono" style="color:var(--red);font-weight:700;font-size:14px">₪0</p>
+        <p id="stat-var" class="mono" style="color:var(--exp);font-weight:700;font-size:14px">₪0</p>
       </div>
     </div>
   </div>
@@ -6431,11 +6431,11 @@ body.theme-light { background-color: var(--bg) !important; }
         }
         .cwiz-type-btn:hover { transform:translateY(-3px); }
         .cwiz-type-expense {
-          background:linear-gradient(150deg,rgba(30,6,10,0.95),rgba(18,4,8,0.98));
-          border:1px solid rgba(255,23,68,0.30);
-          box-shadow:0 4px 20px rgba(255,23,68,0.14),inset 0 -3px 0 rgba(140,0,30,0.7);
+          background:linear-gradient(150deg,rgba(18,12,42,0.95),rgba(12,8,30,0.98));
+          border:1px solid rgba(139,124,246,0.30);
+          box-shadow:0 4px 20px rgba(139,124,246,0.14),inset 0 -3px 0 rgba(40,30,120,0.7);
         }
-        .cwiz-type-expense:hover { box-shadow:0 8px 28px rgba(255,23,68,0.22),inset 0 -3px 0 rgba(140,0,30,0.7); }
+        .cwiz-type-expense:hover { box-shadow:0 8px 28px rgba(139,124,246,0.22),inset 0 -3px 0 rgba(40,30,120,0.7); }
         .cwiz-type-income {
           background:linear-gradient(150deg,rgba(4,22,12,0.95),rgba(3,14,8,0.98));
           border:1px solid rgba(0,230,118,0.28);
@@ -6447,18 +6447,18 @@ body.theme-light { background-color: var(--bg) !important; }
           display:flex; align-items:center; justify-content:center; flex-shrink:0;
         }
         .cwiz-type-expense .cwiz-type-icon {
-          background:rgba(255,23,68,0.12); border:1px solid rgba(255,23,68,0.28);
-          box-shadow:0 0 16px rgba(255,23,68,0.2);
+          background:rgba(139,124,246,0.12); border:1px solid rgba(139,124,246,0.28);
+          box-shadow:0 0 16px rgba(139,124,246,0.2);
         }
         .cwiz-type-income .cwiz-type-icon {
           background:rgba(0,230,118,0.10); border:1px solid rgba(0,230,118,0.26);
           box-shadow:0 0 16px rgba(0,230,118,0.18);
         }
         .cwiz-type-text { font-family:'Syne',sans-serif; font-size:15px; font-weight:900; }
-        .cwiz-type-expense .cwiz-type-text { color:#FF6080; }
+        .cwiz-type-expense .cwiz-type-text { color:#8B7CF6; }
         .cwiz-type-income  .cwiz-type-text { color:#00E676; }
         .cwiz-type-sub { font-size:10px; font-weight:700; opacity:.45; }
-        .cwiz-type-expense .cwiz-type-sub { color:#FF6080; }
+        .cwiz-type-expense .cwiz-type-sub { color:#8B7CF6; }
         .cwiz-type-income  .cwiz-type-sub { color:#00E676; }
 
         /* Step 2 — form */
@@ -6551,11 +6551,11 @@ body.theme-light { background-color: var(--bg) !important; }
         }
         .cwiz-save-btn:active { transform:scale(0.97); }
         .cwiz-save-expense {
-          background:linear-gradient(135deg,rgba(255,23,68,0.18),rgba(200,0,40,0.12));
-          border:1px solid rgba(255,23,68,0.35); color:#FF6080;
-          box-shadow:0 4px 20px rgba(255,23,68,0.15);
+          background:linear-gradient(135deg,rgba(139,124,246,0.18),rgba(117,102,232,0.12));
+          border:1px solid rgba(139,124,246,0.35); color:#8B7CF6;
+          box-shadow:0 4px 20px rgba(139,124,246,0.15);
         }
-        .cwiz-save-expense:hover { box-shadow:0 6px 28px rgba(255,23,68,0.25); transform:translateY(-1px); }
+        .cwiz-save-expense:hover { box-shadow:0 6px 28px rgba(139,124,246,0.25); transform:translateY(-1px); }
         .cwiz-save-income {
           background:linear-gradient(135deg,rgba(0,230,118,0.16),rgba(0,160,80,0.10));
           border:1px solid rgba(0,230,118,0.32); color:#00E676;
@@ -6575,7 +6575,7 @@ body.theme-light { background-color: var(--bg) !important; }
           <div class="cwiz-type-grid">
             <button onclick="setCatWizType('expense')" class="cwiz-type-btn cwiz-type-expense">
               <div class="cwiz-type-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF6080" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B7CF6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
               </div>
               <span class="cwiz-type-text">הוצאה</span>
               <span class="cwiz-type-sub">מעקב הוצאות</span>
@@ -6975,8 +6975,8 @@ body.theme-light { background-color: var(--bg) !important; }
 
 <style>
 /* ✦ EVENTS 2026 — evx-* ✦ */
-.evx{--p:#B58CFF;--p-rgb:181,140,255;--g:#2EE59D;--r:#FF5C7A;--a:#FFB020;--ink:#fff;--mut:rgba(255,255,255,.45);--bg2:rgba(255,255,255,.04);--bd:rgba(255,255,255,.085)}
-body.theme-light .evx,body.theme-light #evx-detail{--p:#7C4DDB;--p-rgb:124,77,219;--g:#0F9D58;--r:#E1344F;--a:#D98200;--ink:#10121B;--mut:rgba(16,18,34,.5);--bg2:#F7F8FC;--bd:rgba(16,18,34,.07)}
+.evx,#evx-detail{--e:#8B7CF6;--p:#B58CFF;--p-rgb:181,140,255;--g:#2EE59D;--r:#FF5C7A;--a:#FFB020;--ink:#fff;--mut:rgba(255,255,255,.45);--bg2:rgba(255,255,255,.04);--bd:rgba(255,255,255,.085)}
+body.theme-light .evx,body.theme-light #evx-detail{--e:#6A59D6;--p:#7C4DDB;--p-rgb:124,77,219;--g:#0F9D58;--r:#E1344F;--a:#D98200;--ink:#10121B;--mut:rgba(16,18,34,.5);--bg2:#F7F8FC;--bd:rgba(16,18,34,.07)}
 .evx-hero{position:relative;overflow:hidden;margin:2px 0 12px;padding:18px;border-radius:26px;color:var(--ink);background:linear-gradient(145deg,rgba(var(--p-rgb),.26),rgba(var(--p-rgb),.06) 60%,rgba(255,255,255,.02));border:1px solid rgba(var(--p-rgb),.28);box-shadow:0 16px 44px rgba(0,0,0,.28)}
 body.theme-light .evx-hero{background:linear-gradient(145deg,rgba(var(--p-rgb),.13),#fff 70%);box-shadow:0 10px 30px rgba(16,24,40,.08)}
 .evx-hero::after{content:'';position:absolute;width:180px;height:180px;left:-60px;top:-70px;border-radius:50%;background:radial-gradient(circle,rgba(var(--p-rgb),.35),transparent 70%);pointer-events:none}
@@ -7024,7 +7024,7 @@ body.theme-light .evx-card{background:#fff;box-shadow:0 8px 26px rgba(16,24,40,.
 .evx-barl{display:flex;justify-content:space-between;margin-top:6px;font-size:10.5px;font-weight:700;color:var(--mut)}
 .evx-qa{display:flex;gap:8px;margin-top:13px}
 .evx-q{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border:none;border-radius:13px;cursor:pointer;font:800 12px 'Syne',sans-serif;touch-action:manipulation}
-.evx-q.e{background:rgba(255,92,122,.14);color:var(--r)}.evx-q.i{background:rgba(46,229,157,.14);color:var(--g)}
+.evx-q.e{background:rgba(139,124,246,.16);color:var(--e)}.evx-q.i{background:rgba(46,229,157,.14);color:var(--g)}
 .evx-q.s{flex:0 0 42px;background:var(--bg2);color:var(--mut)}
 .evx-empty{text-align:center;padding:34px 18px;border-radius:22px;border:1px dashed var(--bd);color:var(--mut);font-size:13px;line-height:1.8}
 .evx-empty b{display:block;font-size:34px;margin-bottom:6px}
@@ -7058,7 +7058,7 @@ body.theme-light #evx-panel{background:#fff}
 .evx-tab.on{background:linear-gradient(135deg,var(--p),rgba(var(--p-rgb),.7));color:#fff}
 .evx-tx{display:flex;align-items:center;gap:11px;padding:11px 13px;margin-bottom:7px;border-radius:16px;background:var(--bg2);border:1px solid var(--bd)}
 .evx-tx .d{width:34px;height:34px;flex-shrink:0;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900}
-.evx-tx .d.e{background:rgba(255,92,122,.14);color:var(--r)}.evx-tx .d.i{background:rgba(46,229,157,.14);color:var(--g)}
+.evx-tx .d.e{background:rgba(139,124,246,.16);color:var(--e)}.evx-tx .d.i{background:rgba(46,229,157,.14);color:var(--g)}
 .evx-tx .m{flex:1;min-width:0}.evx-tx .m b{display:block;font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .evx-tx .m small{display:block;margin-top:2px;font-size:10.5px;color:var(--mut);font-weight:600}
 .evx-tx .a{font:800 13px 'JetBrains Mono',monospace;direction:ltr;white-space:nowrap}
@@ -7314,9 +7314,9 @@ body.theme-light #evx-panel{background:#fff}
       <div class="ch-kpi-label">הכנסות</div>
       <div class="ch-kpi-val" style="color:#00E676;" id="ch-kpi-inc">₪0</div>
     </div>
-    <div class="ch-kpi" style="background:rgba(255,23,68,.07);border:1px solid rgba(255,23,68,.18);">
+    <div class="ch-kpi" style="background:rgba(139,124,246,.07);border:1px solid rgba(139,124,246,.18);">
       <div class="ch-kpi-label">הוצאות</div>
-      <div class="ch-kpi-val" style="color:#FF6080;" id="ch-kpi-exp">₪0</div>
+      <div class="ch-kpi-val" style="color:#8B7CF6;" id="ch-kpi-exp">₪0</div>
     </div>
     <div class="ch-kpi" style="background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.16);">
       <div class="ch-kpi-label">יתרה</div>
@@ -7629,11 +7629,11 @@ body.theme-light #evx-panel{background:#fff}
 
       <style>
         /* ✦ תשלומים קבועים — עיצוב חדש (fx-*) ✦ */
-        .fx-card { --acc:#FF5C7A; --acc-rgb:255,92,122; position:relative; margin-bottom:14px; border-radius:26px; overflow:hidden;
+        .fx-card { --acc:#8B7CF6; --acc-rgb:139,124,246; position:relative; margin-bottom:14px; border-radius:26px; overflow:hidden;
           background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.018)); border:1px solid rgba(255,255,255,.085);
           box-shadow:0 14px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06); }
         .fx-card.fx-income { --acc:#2EE59D; --acc-rgb:46,229,157; }
-        .fx-card.fx-bim { --acc:#B58CFF; --acc-rgb:181,140,255; }
+        .fx-card.fx-bim { --acc:#F2A93B; --acc-rgb:242,169,59; }
         .fx-card::before { content:''; position:absolute; inset:0 0 auto 0; height:120px; pointer-events:none;
           background:radial-gradient(120% 100% at 85% -20%, rgba(var(--acc-rgb),.20), transparent 70%); }
         .fx-head { position:relative; display:flex; align-items:center; gap:13px; padding:18px 18px 12px; }
@@ -7678,9 +7678,9 @@ body.theme-light #evx-panel{background:#fff}
 
         /* מצב בהיר */
         body.theme-light .fx-card { background:#fff; border:1px solid rgba(16,18,34,.07); box-shadow:0 10px 30px rgba(16,24,40,.08); }
-        body.theme-light .fx-card.fx-expense, body.theme-light .fx-card:not(.fx-income):not(.fx-bim) { --acc:#E1344F; --acc-rgb:225,52,79; }
+        body.theme-light .fx-card.fx-expense, body.theme-light .fx-card:not(.fx-income):not(.fx-bim) { --acc:#6A59D6; --acc-rgb:106,89,214; }
         body.theme-light .fx-card.fx-income { --acc:#0F9D58; --acc-rgb:15,157,88; }
-        body.theme-light .fx-card.fx-bim { --acc:#7C4DDB; --acc-rgb:124,77,219; }
+        body.theme-light .fx-card.fx-bim { --acc:#C98A12; --acc-rgb:201,138,18; }
         body.theme-light .fx-card::before { background:radial-gradient(120% 100% at 85% -20%, rgba(var(--acc-rgb),.12), transparent 70%); }
         body.theme-light .fx-ttl b, body.theme-light .fx-name { color:#10121B !important; }
         body.theme-light .fx-ttl span, body.theme-light .fx-meta, body.theme-light .fx-tot small { color:rgba(16,18,34,.5) !important; }
@@ -8308,22 +8308,6 @@ body.theme-light #evx-panel{background:#fff}
       })();
       </script>
 
-      <div class="sblock modern-hover">
-        <div class="sblock-head">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-          ניהול קטגוריות
-        </div>
-        <div class="sblock-body">
-          <input id="cat-name" class="inp" type="text" placeholder="שם הקטגוריה (למשל: מעשרות, עסק)" autocomplete="off" style="margin-bottom:8px">
-          <select id="cat-type" class="inp" style="margin-bottom:10px;">
-            <option value="expense">מיועד עבור: הוצאות</option>
-            <option value="income">מיועד עבור: הכנסות</option>
-          </select>
-          <button id="btn-add-cat" class="btn btn-ghost" style="font-size:13px;padding:10px;margin-bottom:13px">+ הוסף קטגוריה חדשה</button>
-          <div id="cat-list"></div>
-        </div>
-      </div>
-
       <div class="settings-section-title" style="margin-top:6px;">חשבון</div>
 <div class="sblock modern-hover" id="export-data-card">
   <div class="sblock-head">
@@ -8332,11 +8316,11 @@ body.theme-light #evx-panel{background:#fff}
   </div>
   <div class="sblock-body">
     <p style="color:var(--muted); font-size:12px; margin-bottom:12px; line-height:1.6">
-      רוצה לשמור עותק של כל התנועות שלך? תוכל לייצא את כל הנתונים לקובץ CSV שניתן לפתוח באקסל.
+      רוצה לשמור עותק של כל התנועות שלך? ייצאו את כל הנתונים לקובץ אקסל (תנועות + תשלומים קבועים).
     </p>
     <button onclick="exportUserData()" class="btn btn-ghost" style="font-size:13px; padding:11px; display:flex; align-items:center; justify-content:center; gap:8px; border-color:rgba(0,229,255,0.3); color:var(--cyan);">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-      ייצוא נתונים (CSV)
+      ייצוא נתונים לאקסל
     </button>
   </div>
 </div>
@@ -8880,7 +8864,7 @@ body.theme-light #evx-panel{background:#fff}
       </div>
       <div class="cycle-total-card">
         <div class="cycle-total-title">הוצאות קבועות</div>
-        <div id="cycle-fe-total" class="cycle-total-amount" style="color:var(--red);">₪0</div>
+        <div id="cycle-fe-total" class="cycle-total-amount" style="color:var(--exp);">₪0</div>
       </div>
     </div>
 
@@ -8985,7 +8969,7 @@ body.theme-light #evx-panel{background:#fff}
     <div id="budget-edit-status" class="hidden" style="border-radius:12px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;">
       <div>
         <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);margin-bottom:2px;">הוצאה במחזור הנוכחי</div>
-        <div id="budget-edit-current-spend" style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;color:#FF6080;"></div>
+        <div id="budget-edit-current-spend" style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;color:#8B7CF6;"></div>
       </div>
       <div style="text-align:left;">
         <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);margin-bottom:2px;">נותר מהתקרה</div>
@@ -9383,8 +9367,8 @@ body.theme-light #evx-panel{background:#fff}
       : (window._i18n_current && window._i18n_current.edit_expense || 'עריכת הוצאה');
     $('edit-modal-amount').value = item.amount;
     $('edit-modal-amount').style.color = isInc ? 'var(--green)' : 'var(--text)';
-    $('edit-modal-amount').style.borderColor = isInc ? 'rgba(0,230,118,0.3)' : 'rgba(255,23,68,0.3)';
-    $('edit-modal-sheet').style.borderTop = '2px solid ' + (isInc ? 'var(--green)' : 'var(--red)');
+    $('edit-modal-amount').style.borderColor = isInc ? 'rgba(0,230,118,0.3)' : 'rgba(139,124,246,0.3)';
+    $('edit-modal-sheet').style.borderTop = '2px solid ' + (isInc ? 'var(--green)' : 'var(--exp)');
     $('edit-modal-submit').className = 'btn modern-hover ' + (isInc ? 'btn-green' : 'btn-red');
     $('edit-modal-desc').value = item.description || '';
     // Populate categories
@@ -9579,6 +9563,7 @@ body.theme-light #evx-panel{background:#fff}
   }
   function calcBal(){ return calcIncome()-calcFixedExp()-calcVarExp(); }
   window._calcBal = calcBal;
+  window._fixedLists = function(){ return {inc: fixedIncomes.slice(), exp: fixedExpenses.slice()}; };
   window._fixedParts = function(){ return {inc: fixedIncomes.reduce(function(a,i){ return a+Number(i.amount||0); },0), exp: calcFixedExp()}; };
   window._fixedNet = function(){ return fixedIncomes.reduce(function(a,i){ return a+Number(i.amount||0); },0) - calcFixedExp(); };
 
@@ -9759,10 +9744,10 @@ body.theme-light #evx-panel{background:#fff}
       _txItemsById[item.id] = item;
       return '<div class="tx-row modern-hover"'+(notLast?' style="border-bottom:1px solid rgba(255,255,255,0.04)"':'')+'>'+
         '<div style="display:flex;align-items:center;gap:11px">'+
-        '<div class="tx-icon" style="background:'+(isInc?'rgba(0,230,118,0.1)':'rgba(255,96,128,0.08)')+';border:1px solid '+(isInc?'rgba(0,230,118,0.2)':'rgba(255,96,128,0.18)')+'">'+
+        '<div class="tx-icon" style="background:'+(isInc?'rgba(0,230,118,0.1)':'rgba(139,124,246,0.08)')+';border:1px solid '+(isInc?'rgba(0,230,118,0.2)':'rgba(139,124,246,0.18)')+'">'+
         (isInc
           ?'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>'
-          :'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF6080" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>')+
+          :'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B7CF6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>')+
         '</div>'+
         '<div><p style="font-weight:600;font-size:13px;line-height:1.3;display:flex;align-items:center;flex-wrap:wrap;gap:4px;">'+catHtml+escHtml(item.description||'')+waHtml+'</p>'+
         '<p class="mono" style="font-size:10px;color:var(--muted);margin-top:2px">'+
@@ -9782,6 +9767,7 @@ body.theme-light #evx-panel{background:#fff}
   }
 
   function renderCategoriesList(){
+    if(!$('cat-list')) return;
     if(!userCategories||!userCategories.length){
       $('cat-list').innerHTML='<div style="color:var(--muted);font-size:12px;text-align:center;padding:10px;">אין קטגוריות. <button onclick="loadDefaultCategories()" style="background:none;border:none;color:var(--cyan);text-decoration:underline;cursor:pointer;">טען קטגוריות ברירת מחדל</button></div>';
       return;
@@ -10560,7 +10546,7 @@ window.deletePhoneIdx = function(i) {
     // Defs for gradients
     svg += '<defs>' +
       '<linearGradient id="tg-inc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00E676" stop-opacity=".25"/><stop offset="100%" stop-color="#00E676" stop-opacity=".02"/></linearGradient>' +
-      '<linearGradient id="tg-exp" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FF1744" stop-opacity=".22"/><stop offset="100%" stop-color="#FF1744" stop-opacity=".02"/></linearGradient>' +
+      '<linearGradient id="tg-exp" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8B7CF6" stop-opacity=".22"/><stop offset="100%" stop-color="#8B7CF6" stop-opacity=".02"/></linearGradient>' +
       '<linearGradient id="tg-bal-pos" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00E5FF" stop-opacity=".20"/><stop offset="100%" stop-color="#00E5FF" stop-opacity=".02"/></linearGradient>' +
     '</defs>';
 
@@ -10575,14 +10561,14 @@ window.deletePhoneIdx = function(i) {
 
     // Areas (filled under lines)
     svg += '<path d="' + makeArea(data, 'inc', '#00E676') + '" fill="url(#tg-inc)"/>';
-    svg += '<path d="' + makeArea(data, 'exp', '#FF1744') + '" fill="url(#tg-exp)"/>';
+    svg += '<path d="' + makeArea(data, 'exp', '#8B7CF6') + '" fill="url(#tg-exp)"/>';
 
     // Balance area (only above zero)
     svg += '<path d="' + makeArea(data, 'bal', '#00E5FF') + '" fill="url(#tg-bal-pos)" opacity="0.7"/>';
 
     // Lines
     svg += '<path d="' + makePath(data, 'inc') + '" fill="none" stroke="#00E676" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 5px #00E67688)"/>';
-    svg += '<path d="' + makePath(data, 'exp') + '" fill="none" stroke="#FF1744" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 5px #FF174488)"/>';
+    svg += '<path d="' + makePath(data, 'exp') + '" fill="none" stroke="#8B7CF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 5px #8B7CF688)"/>';
     svg += '<path d="' + makePath(data, 'bal') + '" fill="none" stroke="#00E5FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5,3" style="filter:drop-shadow(0 0 6px #00E5FFAA)"/>';
 
     // Dots + X labels + current month highlight
@@ -10595,7 +10581,7 @@ window.deletePhoneIdx = function(i) {
       // X label
       svg += '<text x="' + x.toFixed(1) + '" y="' + (H - 6) + '" text-anchor="middle" font-family="\'Syne\',sans-serif" font-size="9" font-weight="700" fill="rgba(255,255,255,' + (d.isCurrent ? '0.7' : '0.32') + ')">' + d.label + '</text>';
       // Dots for each line
-      [['inc','#00E676'],['exp','#FF1744'],['bal','#00E5FF']].forEach(function(pair) {
+      [['inc','#00E676'],['exp','#8B7CF6'],['bal','#00E5FF']].forEach(function(pair) {
         var yv = scaleY(d[pair[0]]);
         svg += '<circle cx="' + x.toFixed(1) + '" cy="' + yv.toFixed(1) + '" r="3" fill="' + pair[1] + '" opacity="0.85" style="filter:drop-shadow(0 0 3px ' + pair[1] + ')"/>';
       });
@@ -10616,7 +10602,7 @@ window.deletePhoneIdx = function(i) {
     if (legEl) {
       legEl.innerHTML =
         '<div class="trend-leg-item"><div class="trend-leg-dot" style="background:#00E676;color:#00E676;"></div>הכנסות</div>' +
-        '<div class="trend-leg-item"><div class="trend-leg-dot" style="background:#FF1744;color:#FF1744;"></div>הוצאות</div>' +
+        '<div class="trend-leg-item"><div class="trend-leg-dot" style="background:#8B7CF6;color:#8B7CF6;"></div>הוצאות</div>' +
         '<div class="trend-leg-item"><div class="trend-leg-dot" style="background:#00E5FF;color:#00E5FF;"></div>יתרה נטו</div>';
     }
   }
@@ -10688,10 +10674,10 @@ window.deletePhoneIdx = function(i) {
 
     function tileHtml(cat, idx){
       var isInc=cat.type==='income';
-      var col    = isInc ? 'var(--green)' : 'var(--red)';
-      var colBg  = isInc ? 'rgba(0,230,118,0.07)' : 'rgba(255,23,68,0.07)';
-      var colBdr = isInc ? 'rgba(0,230,118,0.20)' : 'rgba(255,23,68,0.18)';
-      var colBar = isInc ? 'linear-gradient(90deg,var(--green),#00C853)' : 'linear-gradient(90deg,#FF1744,#D50000)';
+      var col    = isInc ? 'var(--green)' : 'var(--exp)';
+      var colBg  = isInc ? 'rgba(0,230,118,0.07)' : 'rgba(139,124,246,0.07)';
+      var colBdr = isInc ? 'rgba(0,230,118,0.20)' : 'rgba(139,124,246,0.18)';
+      var colBar = isInc ? 'linear-gradient(90deg,var(--green),#00C853)' : 'linear-gradient(90deg,#8B7CF6,#7566E8)';
       var regSrc   = isInc ? incomes   : expenses;
       var fixedSrc = isInc ? fixedIncomes : fixedExpenses;
       var regM   = regSrc.filter(function(i){ return i.category===cat.name && parseDate(i.date)>=s; });
@@ -11930,8 +11916,8 @@ window.deletePhoneIdx = function(i) {
       ? (window._i18n_current && window._i18n_current.modal_income || 'הוספת הכנסה')
       : (window._i18n_current && window._i18n_current.modal_expense || 'הוספת הוצאה');
     $('modal-amount').style.color=type==='income'?'var(--green)':'var(--text)';
-    $('modal-amount').style.borderColor=type==='income'?'rgba(0,230,118,0.3)':'rgba(255,23,68,0.3)';
-    $('modal-sheet').style.borderTop='2px solid '+(type==='income'?'var(--green)':'var(--red)');
+    $('modal-amount').style.borderColor=type==='income'?'rgba(0,230,118,0.3)':'rgba(139,124,246,0.3)';
+    $('modal-sheet').style.borderTop='2px solid '+(type==='income'?'var(--green)':'var(--exp)');
     $('modal-submit').className='btn modern-hover '+(type==='income'?'btn-green':'btn-red');
     reloadModalCategorySelect(null);
     $('modal-amount').value=''; $('modal-desc').value='';
@@ -12074,7 +12060,7 @@ window.deletePhoneIdx = function(i) {
   };
 
   /* ── Categories (settings) ── */
-  $('btn-add-cat').onclick=function(){
+  if($('btn-add-cat')) $('btn-add-cat').onclick=function(){
     var name=$('cat-name').value.trim(), type=$('cat-type').value;
     if(!name){ toast('נא להזין שם קטגוריה', 'error'); return; }
     db.collection('users').doc(uid).collection('categories').add({name:name,type:type})
@@ -12102,7 +12088,7 @@ window.deletePhoneIdx = function(i) {
 
     var isInc = type === 'income';
     var titleText  = isInc ? '✦ הכנסה חדשה' : '✦ הוצאה חדשה';
-    var titleColor = isInc ? '#00E676' : '#FF6080';
+    var titleColor = isInc ? '#00E676' : '#8B7CF6';
 
     $('cat-wiz-title').innerHTML = '<span style="color:' + titleColor + ';">' + titleText + '</span>';
 
@@ -12117,7 +12103,7 @@ window.deletePhoneIdx = function(i) {
     }
     // dot color
     var dot = document.getElementById('cwiz-dot-name');
-    if(dot) dot.style.background = isInc ? '#00E676' : '#FF6080';
+    if(dot) dot.style.background = isInc ? '#00E676' : '#8B7CF6';
 
     show('cat-wiz-step2');
     setTimeout(function() { $('cat-wiz-name').focus(); }, 50);
@@ -12328,8 +12314,8 @@ window.deletePhoneIdx = function(i) {
 
       var statusEl = $('budget-edit-status');
       statusEl.classList.remove('hidden');
-      statusEl.style.background = currentSpend > 0 ? 'rgba(255,23,68,0.06)' : 'rgba(255,255,255,0.03)';
-      statusEl.style.border = '1px solid ' + (currentSpend > 0 ? 'rgba(255,23,68,0.15)' : 'rgba(255,255,255,0.07)');
+      statusEl.style.background = currentSpend > 0 ? 'rgba(139,124,246,0.06)' : 'rgba(255,255,255,0.03)';
+      statusEl.style.border = '1px solid ' + (currentSpend > 0 ? 'rgba(139,124,246,0.15)' : 'rgba(255,255,255,0.07)');
 
       // Update remain
       var budget = budgetEditCat.budget || 0;
@@ -13363,13 +13349,13 @@ window.exportUserData = function() {
 
     function colorOf(type){ return type==='income'
       ? (_lt ? '#059669' : '#00E676')
-      : (_lt ? '#E11D48' : '#FF6080'); }
+      : (_lt ? '#6A59D6' : '#8B7CF6'); }
     function bgOf(type){ return type==='income'
       ? (_lt ? 'rgba(5,150,105,0.09)' : 'rgba(0,230,118,0.10)')
-      : (_lt ? 'rgba(225,29,72,0.08)' : 'rgba(255,23,68,0.10)'); }
+      : (_lt ? 'rgba(106,89,214,0.08)' : 'rgba(139,124,246,0.10)'); }
     function bdrOf(type){ return type==='income'
       ? (_lt ? 'rgba(5,150,105,0.30)' : 'rgba(0,230,118,0.30)')
-      : (_lt ? 'rgba(225,29,72,0.26)' : 'rgba(255,23,68,0.30)'); }
+      : (_lt ? 'rgba(106,89,214,0.26)' : 'rgba(139,124,246,0.30)'); }
     function symOf(type){ return type==='income' ? '+' : '−'; }
 
     /* ── build sheet HTML ── */
@@ -13630,8 +13616,8 @@ window.exportUserData = function() {
               'touch-action:manipulation;-webkit-tap-highlight-color:transparent;',
               'transition:all .18s cubic-bezier(0.34,1.56,0.64,1);',
               (it.editType==='expense'
-                ? (_lt?'background:linear-gradient(135deg,#E11D48,#F43F5E);border:none;color:#fff;box-shadow:0 6px 20px rgba(225,29,72,0.28);'
-                      :'background:rgba(255,23,68,0.16);border:1.5px solid rgba(255,23,68,0.50);color:#FF6080;box-shadow:0 4px 14px rgba(255,23,68,0.18);')
+                ? (_lt?'background:linear-gradient(135deg,#6A59D6,#7C6DEB);border:none;color:#fff;box-shadow:0 6px 20px rgba(106,89,214,0.28);'
+                      :'background:rgba(139,124,246,0.16);border:1.5px solid rgba(139,124,246,0.50);color:#8B7CF6;box-shadow:0 4px 14px rgba(139,124,246,0.18);')
                 : (_lt?'background:rgba(17,19,45,0.06);border:1px solid rgba(17,19,45,0.10);color:rgba(17,19,45,0.38);'
                       :'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);color:rgba(255,255,255,0.28);')),
             '">− הוצאה</button>',
@@ -13875,9 +13861,9 @@ window.exportUserData = function() {
       if(expBtn && incBtn){
         var _ltN = document.body.classList.contains('theme-light');
         if(type === 'expense'){
-          expBtn.style.cssText = expBtn.style.cssText.replace(/background:[^;]+/,'background:'+(_ltN?'linear-gradient(135deg,#E11D48,#F43F5E)':'rgba(255,23,68,0.16)'));
-          expBtn.style.color = _ltN ? '#fff' : '#FF6080';
-          expBtn.style.border = _ltN ? 'none' : '1.5px solid rgba(255,23,68,0.50)';
+          expBtn.style.cssText = expBtn.style.cssText.replace(/background:[^;]+/,'background:'+(_ltN?'linear-gradient(135deg,#6A59D6,#7C6DEB)':'rgba(139,124,246,0.16)'));
+          expBtn.style.color = _ltN ? '#fff' : '#8B7CF6';
+          expBtn.style.border = _ltN ? 'none' : '1.5px solid rgba(139,124,246,0.50)';
           incBtn.style.background = _ltN ? 'rgba(17,19,45,0.06)' : 'rgba(255,255,255,0.04)';
           incBtn.style.color = _ltN ? 'rgba(17,19,45,0.38)' : 'rgba(255,255,255,0.28)';
           incBtn.style.border = _ltN ? '1px solid rgba(17,19,45,0.10)' : '1px solid rgba(255,255,255,0.09)';
@@ -14208,9 +14194,9 @@ window.exportUserData = function() {
     var isInc     = type === 'income';
     var sym       = isInc ? '+' : '−';
     var typeLabel = isInc ? 'הכנסה' : 'הוצאה';
-    var typeColor = isInc ? '#00E676' : '#FF6080';
-    var typeBg    = isInc ? 'rgba(0,230,118,0.10)' : 'rgba(255,23,68,0.10)';
-    var typeBdr   = isInc ? 'rgba(0,230,118,0.28)' : 'rgba(255,23,68,0.28)';
+    var typeColor = isInc ? '#00E676' : '#8B7CF6';
+    var typeBg    = isInc ? 'rgba(0,230,118,0.10)' : 'rgba(139,124,246,0.10)';
+    var typeBdr   = isInc ? 'rgba(0,230,118,0.28)' : 'rgba(139,124,246,0.28)';
 
     /* Try to match AI category to a real user category */
     var matchedCat = '';
@@ -14248,9 +14234,9 @@ window.exportUserData = function() {
     function renderScanResult(){
       var r = window._scanResult;
       var isI = r.type === 'income';
-      var tColor = isI ? '#00E676' : '#FF6080';
-      var tBg    = isI ? 'rgba(0,230,118,0.10)' : 'rgba(255,23,68,0.10)';
-      var tBdr   = isI ? 'rgba(0,230,118,0.28)' : 'rgba(255,23,68,0.28)';
+      var tColor = isI ? '#00E676' : '#8B7CF6';
+      var tBg    = isI ? 'rgba(0,230,118,0.10)' : 'rgba(139,124,246,0.10)';
+      var tBdr   = isI ? 'rgba(0,230,118,0.28)' : 'rgba(139,124,246,0.28)';
       var tLabel = isI ? 'הכנסה' : 'הוצאה';
       var tSym   = isI ? '+' : '−';
       var cats   = isI ? incCats : expCats;
@@ -14292,8 +14278,8 @@ window.exportUserData = function() {
               '<button id="scan-type-expense" onclick="window._scanResult.type=\'expense\';window.renderScanResult();" style="'+
                 'flex:1;padding:10px;border-radius:12px;border:none;cursor:pointer;'+
                 'font-family:\'Syne\',sans-serif;font-size:13px;font-weight:800;'+
-                (isI ? 'background:rgba(255,23,68,0.06);border:1px solid rgba(255,23,68,0.18);color:rgba(255,96,128,0.5);'
-                      : 'background:rgba(255,23,68,0.14);border:1px solid rgba(255,23,68,0.40);color:#FF6080;box-shadow:0 0 12px rgba(255,23,68,0.15);')+
+                (isI ? 'background:rgba(139,124,246,0.06);border:1px solid rgba(139,124,246,0.18);color:rgba(139,124,246,0.5);'
+                      : 'background:rgba(139,124,246,0.14);border:1px solid rgba(139,124,246,0.40);color:#8B7CF6;box-shadow:0 0 12px rgba(139,124,246,0.15);')+
               '">− הוצאה</button>'+
               '<button id="scan-type-income" onclick="window._scanResult.type=\'income\';window.renderScanResult();" style="'+
                 'flex:1;padding:10px;border-radius:12px;border:none;cursor:pointer;'+
@@ -15853,7 +15839,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     var pct=b>0?ex/b*100:0, h=$('evx-hero'); if(!h) return;
     if(!n){ h.innerHTML=''; return; }
     h.innerHTML='<div class="evx-hero"><div class="evx-hero-top"><div class="evx-hero-txt"><small>סה״כ הוצאות באירועים</small><b>'+F(ex)+'</b><span>'+n+(n===1?' אירוע':' אירועים')+(b>0?' · תקציב כולל '+F(b):'')+'</span></div>'+(b>0?ring(pct,64,7,Math.round(pct)+'%'):'')+'</div>'+
-      '<div class="evx-hero-row"><div class="evx-mini"><small>הכנסות</small><b style="color:var(--g)">'+F(inc)+'</b></div><div class="evx-mini"><small>הוצאות</small><b style="color:var(--r)">'+F(ex)+'</b></div><div class="evx-mini"><small>יתרה</small><b style="color:'+(inc-ex>=0?'var(--g)':'var(--r)')+'">'+F(inc-ex)+'</b></div></div></div>';
+      '<div class="evx-hero-row"><div class="evx-mini"><small>הכנסות</small><b style="color:var(--g)">'+F(inc)+'</b></div><div class="evx-mini"><small>הוצאות</small><b style="color:var(--e)">'+F(ex)+'</b></div><div class="evx-mini"><small>יתרה</small><b style="color:'+(inc-ex>=0?'var(--g)':'var(--r)')+'">'+F(inc-ex)+'</b></div></div></div>';
   }
   function chips(){
     var el=$('evx-chips'); if(!el) return;
@@ -15867,7 +15853,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     var status=!has?'<span class="evx-tag">פתוח</span>':over?'<span class="evx-tag r">חריגה</span>':pct>80?'<span class="evx-tag a">כמעט בתקציב</span>':'<span class="evx-tag g">בתקציב</span>';
     return '<div class="evx-card'+(over?' over':'')+'" data-open="'+esc(ev.id)+'">'+
       '<div class="evx-top"><div class="evx-emo">'+esc(ev.emoji||'🎊')+'</div><div class="evx-inf"><div class="evx-nm">'+esc(ev.name||'—')+'</div><div class="evx-dt">'+(dstr(ev)?'📅 '+esc(dstr(ev))+' · ':'')+n+' תנועות</div><div class="evx-tags">'+status+cdTag(ev)+'</div></div>'+(has?ring(pct,58,6,Math.round(pct)+'%'):'')+'</div>'+
-      '<div class="evx-nums"><div class="evx-num"><small>הכנסות</small><b style="color:var(--g)">'+F(st.income)+'</b></div><div class="evx-num"><small>הוצאות</small><b style="color:var(--r)">'+F(st.expense)+'</b></div><div class="evx-num"><small>'+(has?'נותר':'יתרה')+'</small><b style="color:'+((has?b-st.expense:st.net)>=0?'var(--g)':'var(--r)')+'">'+F(has?b-st.expense:st.net)+'</b></div></div>'+
+      '<div class="evx-nums"><div class="evx-num"><small>הכנסות</small><b style="color:var(--g)">'+F(st.income)+'</b></div><div class="evx-num"><small>הוצאות</small><b style="color:var(--e)">'+F(st.expense)+'</b></div><div class="evx-num"><small>'+(has?'נותר':'יתרה')+'</small><b style="color:'+((has?b-st.expense:st.net)>=0?'var(--g)':'var(--r)')+'">'+F(has?b-st.expense:st.net)+'</b></div></div>'+
       (has?'<div class="evx-bar"><i style="width:'+Math.min(pct,100).toFixed(1)+'%;background:'+k+'"></i></div><div class="evx-barl"><span>'+F(st.expense)+' מתוך '+F(b)+'</span><span>'+(over?'גירעון '+F(st.expense-b):Math.round(pct)+'%')+'</span></div>':'')+
       '<div class="evx-qa"><button class="evx-q e" data-add="expense" data-id="'+esc(ev.id)+'">'+ICO_E+'הוצאה</button><button class="evx-q i" data-add="income" data-id="'+esc(ev.id)+'">'+ICO_E+'הכנסה</button></div></div>';
   }
@@ -15892,7 +15878,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
       '<div class="evx-dh"><div class="evx-grab"></div><div class="evx-dtop"><div class="evx-emo">'+esc(ev.emoji||'🎊')+'</div><div class="evx-inf"><h2>'+esc(ev.name)+'</h2><div class="evx-dt">'+(dstr(ev)?'📅 '+esc(dstr(ev)):'ללא תאריך')+'</div><div class="evx-tags">'+cdTag(ev)+'</div></div>'+
       '<div class="evx-ibs"><button class="evx-ib" data-act="edit" aria-label="עריכה">✎</button><button class="evx-ib" data-act="close" aria-label="סגירה">✕</button></div></div></div>'+
       '<div class="evx-db"><div class="evx-big">'+big+'</div>'+
-      '<div class="evx-nums" style="margin-top:12px"><div class="evx-num"><small>הכנסות</small><b style="color:var(--g)">'+F(st.income)+'</b></div><div class="evx-num"><small>הוצאות</small><b style="color:var(--r)">'+F(st.expense)+'</b></div><div class="evx-num"><small>תנועות</small><b>'+all.length+'</b></div></div>'+
+      '<div class="evx-nums" style="margin-top:12px"><div class="evx-num"><small>הכנסות</small><b style="color:var(--g)">'+F(st.income)+'</b></div><div class="evx-num"><small>הוצאות</small><b style="color:var(--e)">'+F(st.expense)+'</b></div><div class="evx-num"><small>תנועות</small><b>'+all.length+'</b></div></div>'+
       '<div class="evx-qa" style="margin-top:12px"><button class="evx-q e" data-add="expense" data-id="'+esc(id)+'">'+ICO_E+'הוספת הוצאה</button><button class="evx-q i" data-add="income" data-id="'+esc(id)+'">'+ICO_E+'הוספת הכנסה</button></div>'+
       (cl.length?'<div class="evx-sec">לאן הלך הכסף</div>'+cl.map(function(c){ return '<div class="evx-cat"><span>'+esc(c[0])+'</span><div class="tr"><i style="width:'+(c[1]/mx*100).toFixed(0)+'%"></i></div><em>'+F(c[1])+'</em></div>'; }).join(''):'')+
       '<div class="evx-sec">תנועות</div><div class="evx-tabs"><button class="evx-tab on" data-tab="all">הכל ('+all.length+')</button><button class="evx-tab" data-tab="e">הוצאות</button><button class="evx-tab" data-tab="i">הכנסות</button></div><div id="evx-txs"></div>'+
@@ -15904,7 +15890,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     var l=txs(curId).filter(function(t){ return tab==='all'||t._t===tab; });
     el.innerHTML=l.length?l.map(function(t){
       var d=new Date(t.date), ds=isNaN(d)?(t.date||''):d.toLocaleDateString('he-IL',{day:'numeric',month:'short',year:'numeric'});
-      return '<div class="evx-tx"><div class="d '+t._t+'">'+(t._t==='i'?'+':'−')+'</div><div class="m"><b>'+esc(t.description||t.category||'—')+'</b><small>'+(t.category?esc(t.category)+' · ':'')+esc(ds)+'</small></div><div class="a" style="color:'+(t._t==='i'?'var(--g)':'var(--r)')+'">'+(t._t==='i'?'+':'−')+F(t.amount)+'</div></div>';
+      return '<div class="evx-tx"><div class="d '+t._t+'">'+(t._t==='i'?'+':'−')+'</div><div class="m"><b>'+esc(t.description||t.category||'—')+'</b><small>'+(t.category?esc(t.category)+' · ':'')+esc(ds)+'</small></div><div class="a" style="color:'+(t._t==='i'?'var(--g)':'var(--e)')+'">'+(t._t==='i'?'+':'−')+F(t.amount)+'</div></div>';
     }).join(''):'<div class="evx-empty" style="padding:22px"><b>📭</b>אין תנועות להצגה</div>';
   }
   function closeD(){ var o=$('evx-detail'); if(o) o.classList.remove('open'); document.body.style.overflow=''; }
@@ -15961,11 +15947,11 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
   #hist-overlay{position:fixed;inset:0;z-index:9450;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.62);direction:rtl}
   #hist-overlay.open{display:flex;animation:hxF .2s ease both}
   @keyframes hxF{from{opacity:0}to{opacity:1}}@keyframes hxU{from{transform:translateY(36px);opacity:0}to{transform:none;opacity:1}}
-  #hist-panel{--p:#B58CFF;--g:#2EE59D;--r:#FF5C7A;--ink:#fff;--mut:rgba(255,255,255,.45);--bg2:rgba(255,255,255,.045);--bd:rgba(255,255,255,.09);
+  #hist-panel{--e:#8B7CF6;--p:#B58CFF;--g:#2EE59D;--r:#FF5C7A;--ink:#fff;--mut:rgba(255,255,255,.45);--bg2:rgba(255,255,255,.045);--bd:rgba(255,255,255,.09);
     width:100%;max-width:560px;height:94vh;height:94dvh;display:flex;flex-direction:column;color:var(--ink);border-radius:28px 28px 0 0;overflow:hidden;
     background:linear-gradient(175deg,#12172b,#070b16);border:1px solid rgba(181,140,255,.25);border-bottom:none;box-shadow:0 -22px 60px rgba(0,0,0,.55);animation:hxU .3s cubic-bezier(.2,.9,.3,1) both}
   body.theme-light #hist-overlay{background:rgba(16,24,40,.45)}
-  body.theme-light #hist-panel{--p:#7C4DDB;--g:#0F9D58;--r:#E1344F;--ink:#10121B;--mut:rgba(16,18,34,.5);--bg2:#F7F8FC;--bd:rgba(16,18,34,.08);background:#fff}
+  body.theme-light #hist-panel{--e:#6A59D6;--p:#7C4DDB;--g:#0F9D58;--r:#E1344F;--ink:#10121B;--mut:rgba(16,18,34,.5);--bg2:#F7F8FC;--bd:rgba(16,18,34,.08);background:#fff}
   .hx-head{display:flex;align-items:center;gap:10px;padding:16px 18px 6px}
   .hx-head h2{margin:0;flex:1;font-size:18px;font-weight:900}
   .hx-ib{height:36px;min-width:36px;padding:0 12px;border:none;border-radius:12px;cursor:pointer;background:var(--bg2);color:var(--ink);font:800 12px 'Syne',sans-serif;touch-action:manipulation}
@@ -15990,7 +15976,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
   .hx-sec{margin:10px 4px 7px;font-size:10.5px;font-weight:900;letter-spacing:.06em;color:var(--mut)}
   .hx-tx{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:6px;border-radius:14px;background:rgba(128,128,150,.07)}
   .hx-tx .d{width:30px;height:30px;flex-shrink:0;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px}
-  .hx-tx .d.e{background:rgba(255,92,122,.15);color:var(--r)}.hx-tx .d.i{background:rgba(46,229,157,.15);color:var(--g)}
+  .hx-tx .d.e{background:rgba(139,124,246,.16);color:var(--e)}.hx-tx .d.i{background:rgba(46,229,157,.15);color:var(--g)}
   .hx-tx .m{flex:1;min-width:0}.hx-tx .m b{display:block;font-size:12.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .hx-tx .m small{display:block;margin-top:1px;font-size:10px;font-weight:600;color:var(--mut)}
   .hx-tx .a{font:800 12.5px 'JetBrains Mono',monospace;direction:ltr;white-space:nowrap}
@@ -16048,14 +16034,14 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
   function txRow(t){
     var ds=t._d.toLocaleDateString('he-IL',{day:'numeric',month:'short'})+' · '+t._d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
     var meta=(t.category?esc(t.category)+' · ':'')+(t.eventId?esc(evName(t.eventId))+' · ':'')+ds;
-    return '<div class="hx-tx"><div class="d '+t._t+'">'+(t._t==='i'?'+':'−')+'</div><div class="m"><b>'+esc(t.description||t.category||'—')+'</b><small>'+meta+'</small></div><div class="a" style="color:'+(t._t==='i'?'var(--g)':'var(--r)')+'">'+(t._t==='i'?'+':'−')+F(t.amount)+'</div></div>';
+    return '<div class="hx-tx"><div class="d '+t._t+'">'+(t._t==='i'?'+':'−')+'</div><div class="m"><b>'+esc(t.description||t.category||'—')+'</b><small>'+meta+'</small></div><div class="a" style="color:'+(t._t==='i'?'var(--g)':'var(--e)')+'">'+(t._t==='i'?'+':'−')+F(t.amount)+'</div></div>';
   }
   function cycleHtml(c,i){
     var bal=c.tinc-c.texp, prev=CY[i+1], tag='';
     if(prev && prev.texp>0){ var ch=(c.texp-prev.texp)/prev.texp*100; if(Math.abs(ch)>=1) tag='<span class="hx-tag '+(ch<0?'dn':'up')+'">הוצאות '+(ch<0?'▼ ':'▲ ')+Math.abs(Math.round(ch))+'%</span>'; }
     var isOpen=!!open[c.k];
     return '<div class="hx-cyc'+(c.cur?' cur':'')+(isOpen?' open':'')+'" data-k="'+c.k+'"><div class="hx-top" data-toggle="'+c.k+'"><div class="hx-ttl"><b>'+MN[c.m]+' '+c.y+(c.cur?'<span class="hx-tag">נוכחי</span>':'')+tag+'</b><span>'+c.n+' תנועות'+(c.ev.length?' · '+c.ev.length+' באירועים':'')+'</span></div><div class="hx-bal" style="color:'+(bal>=0?'var(--g)':'var(--r)')+'">'+F(bal)+'</div><div class="hx-chev">›</div></div>'+
-      '<div class="hx-nums"><div class="hx-num"><small>הכנסות</small><b style="color:var(--g)">'+F(c.tinc)+'</b></div><div class="hx-num"><small>הוצאות</small><b style="color:var(--r)">'+F(c.texp)+'</b></div></div>'+
+      '<div class="hx-nums"><div class="hx-num"><small>הכנסות</small><b style="color:var(--g)">'+F(c.tinc)+'</b></div><div class="hx-num"><small>הוצאות</small><b style="color:var(--e)">'+F(c.texp)+'</b></div></div>'+
       '<div class="hx-list" id="hx-l-'+c.k+'">'+(isOpen?listHtml(c):'')+'</div></div>';
   }
   function listHtml(c){
@@ -16113,7 +16099,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
   document.addEventListener('click',function(e){
     var t=e.target; if(!t||!t.closest||!$('hist-overlay').classList.contains('open')) return;
     if(t.id==='hist-overlay'||t.closest('#hx-close')){ window.closeHistory(); return; }
-    if(t.closest('#hx-export')){ csv(); return; }
+    if(t.closest('#hx-export')){ if(window.exportExcel) window.exportExcel(); else csv(); return; }
     var tg=t.closest('[data-toggle]'); if(tg){ var k=tg.getAttribute('data-toggle'), c=CY.filter(function(x){return String(x.k)===k})[0]; if(!c) return;
       var card=tg.closest('.hx-cyc'); open[k]=!open[k]; card.classList.toggle('open',open[k]); $('hx-l-'+k).innerHTML=open[k]?listHtml(c):''; return; }
     var mo=t.closest('[data-more]'); if(mo){ var k2=mo.getAttribute('data-more'), c2=CY.filter(function(x){return String(x.k)===k2})[0]; shown[k2]=(shown[k2]||PAGE)+PAGE; $('hx-l-'+k2).innerHTML=listHtml(c2); }
@@ -16324,7 +16310,7 @@ body.v-home #hero-balance-card .cb-pill.pos b{color:#8EF3D9 !important}body.v-ho
 /* כפתורי הוספה */
 body.v-home .action-btn-income,body.v-home .action-btn-expense{border:none !important;border-radius:22px !important;filter:none !important;animation:none !important}
 body.v-home .action-btn-income{background:linear-gradient(135deg,#27AEC4,#0E7F95) !important;box-shadow:0 10px 22px rgba(14,127,149,.28) !important}
-body.v-home .action-btn-expense{background:linear-gradient(135deg,#F2876A,#D4543F) !important;box-shadow:0 10px 22px rgba(212,84,63,.28) !important}
+body.v-home .action-btn-expense{background:linear-gradient(135deg,#8B7CF6,#7566E8) !important;box-shadow:0 10px 22px rgba(117,102,232,.30) !important}
 body.v-home .action-btn-income::before,body.v-home .action-btn-income::after,body.v-home .action-btn-expense::before,body.v-home .action-btn-expense::after{display:none !important}
 body.v-home .action-btn-icon-wrap{background:rgba(255,255,255,.2) !important;border:none !important;box-shadow:none !important}
 body.v-home .action-btn-label{color:#fff !important;text-shadow:none !important}
@@ -16435,9 +16421,110 @@ body.v-home .rise.d2 > .card{background:var(--hs) !important;border:1px solid va
 body.v-home .rise.d2 > .card p:first-child{color:var(--hm) !important;font-size:9.5px !important;font-weight:700 !important;letter-spacing:.07em !important;margin-bottom:2px !important}
 body.v-home #stat-income,body.v-home #stat-fixed,body.v-home #stat-var{font-size:13px !important;font-weight:700 !important;text-shadow:none !important}
 body.v-home #stat-income{color:#6FDCC6 !important}
-body.v-home #stat-fixed,body.v-home #stat-var{color:#F29A86 !important}
+body.v-home #stat-fixed,body.v-home #stat-var{color:var(--exp) !important}
 body.v-home.theme-light #stat-income{color:#0A8A7A !important}
-body.v-home.theme-light #stat-fixed,body.v-home.theme-light #stat-var{color:#D4543F !important}
+body.v-home.theme-light #stat-fixed,body.v-home.theme-light #stat-var{color:var(--exp) !important}
+
+body.v-home .card:has(> #stat-income),body.v-home .card:has(> #stat-fixed),body.v-home .card:has(> #stat-var){background:var(--hs) !important;border:1px solid var(--hb) !important;border-radius:16px !important;box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;padding:9px 6px !important;filter:none !important}
+body.v-home .card:has(> #stat-income) > p:first-child,body.v-home .card:has(> #stat-fixed) > p:first-child,body.v-home .card:has(> #stat-var) > p:first-child{color:var(--hm) !important;font-size:9.5px !important;font-weight:700 !important;letter-spacing:.07em !important;margin-bottom:2px !important}
+</style>
+
+<!-- ✦ EXCEL EXPORT ✦ -->
+<script>
+(function(){
+  var MIME='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+  var enc=new TextEncoder();
+  var T=(function(){ var t=[],n,k; for(n=0;n<256;n++){ var c=n; for(k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); t[n]=c>>>0; } return t; })();
+  function crc(u){ var c=0xFFFFFFFF; for(var i=0;i<u.length;i++) c=T[(c^u[i])&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+  function zip(files){
+    var parts=[], cen=[], off=0, i, f, nm, cr, sz, h, c, total=0, cdSize=0;
+    for(i=0;i<files.length;i++){
+      f=files[i]; nm=enc.encode(f.name); cr=crc(f.data); sz=f.data.length;
+      h=new DataView(new ArrayBuffer(30)); h.setUint32(0,0x04034b50,true); h.setUint16(4,20,true); h.setUint16(6,0x0800,true); h.setUint16(12,0x21,true);
+      h.setUint32(14,cr,true); h.setUint32(18,sz,true); h.setUint32(22,sz,true); h.setUint16(26,nm.length,true);
+      parts.push(new Uint8Array(h.buffer),nm,f.data);
+      c=new DataView(new ArrayBuffer(46)); c.setUint32(0,0x02014b50,true); c.setUint16(4,20,true); c.setUint16(6,20,true); c.setUint16(8,0x0800,true); c.setUint16(14,0x21,true);
+      c.setUint32(16,cr,true); c.setUint32(20,sz,true); c.setUint32(24,sz,true); c.setUint16(28,nm.length,true); c.setUint32(42,off,true);
+      cen.push(new Uint8Array(c.buffer),nm); off+=30+nm.length+sz;
+    }
+    cen.forEach(function(x){ cdSize+=x.length; });
+    var e=new DataView(new ArrayBuffer(22)); e.setUint32(0,0x06054b50,true); e.setUint16(8,files.length,true); e.setUint16(10,files.length,true); e.setUint32(12,cdSize,true); e.setUint32(16,off,true);
+    var all=parts.concat(cen,[new Uint8Array(e.buffer)]); all.forEach(function(x){ total+=x.length; });
+    var out=new Uint8Array(total), p=0; all.forEach(function(x){ out.set(x,p); p+=x.length; }); return out;
+  }
+  function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]}).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,''); }
+  function col(n){ return String.fromCharCode(65+n); }
+  function sheet(rows,widths){
+    var x='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView rightToLeft="1" workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>';
+    widths.forEach(function(w,i){ x+='<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+w+'" customWidth="1"/>'; });
+    x+='</cols><sheetData>';
+    rows.forEach(function(r,ri){ x+='<row r="'+(ri+1)+'">'; r.forEach(function(v,ci){ var ref=col(ci)+(ri+1), st=ri===0?' s="1"':'';
+      if(typeof v==='number'&&isFinite(v)) x+='<c r="'+ref+'"'+st+'><v>'+v+'</v></c>'; else x+='<c r="'+ref+'" t="inlineStr"'+st+'><is><t xml:space="preserve">'+esc(v)+'</t></is></c>'; }); x+='</row>'; });
+    return x+'</sheetData></worksheet>';
+  }
+  function xlsx(s1,s2){
+    var H='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>', R='http://schemas.openxmlformats.org/officeDocument/2006/relationships', M='http://schemas.openxmlformats.org/spreadsheetml/2006/main', PR='http://schemas.openxmlformats.org/package/2006/relationships';
+    var f=[
+      ['[Content_Types].xml',H+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>'],
+      ['_rels/.rels',H+'<Relationships xmlns="'+PR+'"><Relationship Id="rId1" Type="'+R+'/officeDocument" Target="xl/workbook.xml"/></Relationships>'],
+      ['xl/workbook.xml',H+'<workbook xmlns="'+M+'" xmlns:r="'+R+'"><sheets><sheet name="תנועות" sheetId="1" r:id="rId1"/><sheet name="תשלומים קבועים" sheetId="2" r:id="rId2"/></sheets></workbook>'],
+      ['xl/_rels/workbook.xml.rels',H+'<Relationships xmlns="'+PR+'"><Relationship Id="rId1" Type="'+R+'/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="'+R+'/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="'+R+'/styles" Target="styles.xml"/></Relationships>'],
+      ['xl/styles.xml',H+'<styleSheet xmlns="'+M+'"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs></styleSheet>'],
+      ['xl/worksheets/sheet1.xml',s1],['xl/worksheets/sheet2.xml',s2]
+    ].map(function(x){ return {name:x[0],data:enc.encode(x[1])}; });
+    return zip(f);
+  }
+  function evName(id){ var e=(window._evList||[]).filter(function(x){return x.id===id})[0]; return e?((e.emoji||'')+' '+e.name).trim():''; }
+  window._buildXlsx=function(){
+    var pd=function(d){ try{ return window._parseDate?window._parseDate(d):new Date(d); }catch(e){ return new Date(d); } };
+    var all=[]; (window.incomes||[]).forEach(function(t){ all.push({t:'הכנסה',x:t}); }); (window.expenses||[]).forEach(function(t){ all.push({t:'הוצאה',x:t}); });
+    all.forEach(function(r){ r.d=pd(r.x.date); }); all=all.filter(function(r){ return r.d&&!isNaN(r.d); }).sort(function(a,b){ return b.d-a.d; });
+    var rows=[['תאריך','שעה','סוג','תיאור','קטגוריה','אירוע','סכום']];
+    all.forEach(function(r){ rows.push([r.d.toLocaleDateString('he-IL'),r.d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'}),r.t,r.x.description||'',r.x.category||'',r.x.eventId?evName(r.x.eventId):'',Number(r.x.amount)||0]); });
+    var fl=(window._fixedLists&&window._fixedLists())||{inc:[],exp:[]}, rows2=[['סוג','שם','סכום חודשי']];
+    fl.inc.forEach(function(i){ rows2.push(['הכנסה קבועה',i.name||'',Number(i.amount)||0]); }); fl.exp.forEach(function(i){ rows2.push(['הוצאה קבועה',i.name||'',Number(i.amount)||0]); });
+    return {bytes:xlsx(sheet(rows,[14,9,10,28,16,18,12]),sheet(rows2,[16,28,14])),count:all.length};
+  };
+  function toast(m,t){ if(window.toast) window.toast(m,t||'info'); }
+  function b64(u8){ var s='',i,ch=0x8000; for(i=0;i<u8.length;i+=ch) s+=String.fromCharCode.apply(null,u8.subarray(i,i+ch)); return btoa(s); }
+  window.exportExcel=function(){
+    var r; try{ r=window._buildXlsx(); }catch(e){ toast('שגיאה ביצירת הקובץ','error'); return; }
+    if(!r.count){ toast('אין תנועות לייצוא','error'); return; }
+    var d=new Date(), name='MNTA-export-'+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+'.xlsx';
+    var fl=window.flutter_inappwebview;
+    function browser(){
+      var blob=new Blob([r.bytes],{type:MIME});
+      try{ var file=new File([blob],name,{type:MIME}); if(navigator.canShare&&navigator.canShare({files:[file]})){ navigator.share({files:[file],title:'MNTA+'}).catch(function(){}); return; } }catch(e){}
+      try{ var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },2000); toast('הקובץ נוצר ✓','success'); }
+      catch(e){ toast('לא ניתן לשמור קובץ בסביבה הזו','error'); }
+    }
+    if(fl&&typeof fl.callHandler==='function'){
+      toast('מכין קובץ אקסל...','info');
+      try{ fl.callHandler('NativeSaveFile',{filename:name,mime:MIME,base64:b64(r.bytes)}).then(function(res){
+        if(res===true||res==='ok'||(res&&res.ok)) toast('הקובץ מוכן ✓','success'); else toast('כדי לשמור קבצים צריך לעדכן את האפליקציה לגרסה האחרונה','error');
+      }).catch(function(){ toast('כדי לשמור קבצים צריך לעדכן את האפליקציה לגרסה האחרונה','error'); }); return; }catch(e){}
+    }
+    browser();
+  };
+  window.exportUserData=window.exportExcel;
+})();
+</script>
+
+<style id="exp-tokens">
+/* ✦ צבע הוצאות מרכזי: אינדיגו. אדום נשאר רק לשגיאה, יתרה שלילית, חריגה ומחיקה ✦ */
+:root{--exp:#8B7CF6;--exp-bg:#7566E8;--exp-rgb:139,124,246}
+body.theme-light{--exp:#6A59D6;--exp-bg:#6355D8;--exp-rgb:106,89,214}
+#modal-submit.btn-red,#edit-modal-submit.btn-red{background:linear-gradient(135deg,#8B7CF6,#7566E8) !important;color:#fff !important;border-color:transparent !important;box-shadow:0 8px 20px rgba(117,102,232,.30) !important}
+body.v-home .action-btn-expense .action-btn-icon-wrap{background:rgba(255,255,255,.18) !important}
+.fx-card.fx-expense .fx-go,.fx-card:not(.fx-income):not(.fx-bim) .fx-go{color:#fff}
+</style>
+
+<style id="exp-light">
+/* מצב בהיר: גוון הוצאה כהה יותר לטקסט ואייקונים קטנים (ניגודיות) */
+body.theme-light [style*="color:#8B7CF6"],body.theme-light [style*="color: #8B7CF6"]{color:#6A59D6 !important}
+body.theme-light svg[stroke="#8B7CF6"]{stroke:#6A59D6}
+body.theme-light svg text[fill="#8B7CF6"]{fill:#6A59D6 !important}
+body.theme-light #ticker-inner .t-exp{color:#6A59D6 !important}
 </style>
 </body>
 </html>
