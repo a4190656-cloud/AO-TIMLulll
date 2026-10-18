@@ -16888,7 +16888,7 @@ body.theme-light #mnta-sheet .ms-ghost{background:rgba(0,0,0,0.05);color:rgba(10
     var s = st(), m = mode(), c = cfg(), sw = $('rem-switch'), note = $('rem-note'), next = $('rem-next'), test = $('rem-test');
     $('rem-sub').textContent = c.on ? (MNTA_EOM_DAYS + ' ימים לפני שהתקציב מתאפס, וביום עצמו') : (MNTA_EOM_DAYS + ' ימים לפני סוף החודש');
     var card = $('reminders-card');
-    card.style.display = (m === 'none' || m === 'native-old') ? 'none' : '';
+    card.style.display = '';
     var on = !!s.on, noteText = '';
     sw.disabled = false;
     if(m === 'native-old'){ sw.disabled = true; on = false; noteText = 'התזכורות יגיעו לאפליקציה בעדכון הקרוב שלה. בינתיים אפשר להפעיל אותן מהאתר בדפדפן.'; }
