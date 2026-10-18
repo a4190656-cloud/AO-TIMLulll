@@ -16570,5 +16570,521 @@ body.theme-light svg[stroke="#F2876A"]{stroke:#C94A36}
 body.theme-light svg text[fill="#F2876A"]{fill:#C94A36 !important}
 body.theme-light #ticker-inner .t-exp{color:#C94A36 !important}
 </style>
+
+<!-- ✦ MNTA+ REMINDERS + EXPORT FALLBACK (v2.2) ✦ -->
+<style id="mnta-reminders-css">
+#reminders-card .rem-row{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:12px 14px}
+#reminders-card .rem-t{font-size:13px;font-weight:800;color:#fff;margin-bottom:2px}
+#reminders-card .rem-s{font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);line-height:1.4}
+.rem-switch{flex-shrink:0;width:46px;height:26px;border-radius:20px;border:none;cursor:pointer;background:rgba(255,255,255,0.12);position:relative;transition:background .25s ease;padding:0}
+.rem-switch span{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .25s cubic-bezier(.34,1.56,.64,1),background .25s ease;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.rem-switch.active{background:linear-gradient(135deg,#00E5FF,#00BFFF)}
+.rem-switch.active span{transform:translateX(-20px);background:#04141C}
+.rem-switch:disabled{opacity:.4;cursor:default}
+#reminders-card .rem-next{font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);margin-top:10px;line-height:1.5;display:none}
+#reminders-card .rem-note{font-size:12px;font-weight:600;color:rgba(255,255,255,0.55);margin-top:10px;line-height:1.5;display:none}
+#reminders-card .rem-test{display:none;margin-top:10px;width:100%;padding:10px;border-radius:12px;border:1px solid rgba(0,229,255,0.3);background:rgba(0,229,255,0.07);color:var(--cyan,#00E5FF);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+body.theme-light #reminders-card .rem-row{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.08)}
+body.theme-light #reminders-card .rem-t{color:#0A0A0F}
+body.theme-light #reminders-card .rem-s,body.theme-light #reminders-card .rem-next,body.theme-light #reminders-card .rem-note{color:rgba(10,10,15,0.55)}
+body.theme-light .rem-switch{background:rgba(0,0,0,0.12)}
+body.theme-light .rem-switch.active{background:linear-gradient(135deg,#00B8D4,#0091EA)}
+body.theme-light #reminders-card .rem-test{color:#0077A8;border-color:rgba(0,145,234,0.35);background:rgba(0,145,234,0.06)}
+#mnta-sheet{position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s ease}
+#mnta-sheet.open{opacity:1;pointer-events:auto}
+#mnta-sheet .ms-box{direction:rtl;width:100%;max-width:440px;background:#0B111C;border:1px solid rgba(255,255,255,0.08);border-bottom:none;border-radius:24px 24px 0 0;padding:22px 20px calc(20px + env(safe-area-inset-bottom));transform:translateY(30px);transition:transform .3s cubic-bezier(.34,1.3,.64,1);text-align:right}
+#mnta-sheet.open .ms-box{transform:none}
+#mnta-sheet .ms-ico{font-size:30px;line-height:1;margin-bottom:10px}
+#mnta-sheet .ms-title{font-size:18px;font-weight:900;color:#fff;margin-bottom:6px}
+#mnta-sheet .ms-text{font-size:14px;font-weight:500;color:rgba(255,255,255,0.65);line-height:1.55;margin-bottom:16px}
+#mnta-sheet .ms-link{direction:ltr;text-align:left;font-size:11px;color:rgba(255,255,255,0.5);word-break:break-all;background:rgba(255,255,255,0.04);border-radius:10px;padding:8px 10px;margin:-6px 0 14px;user-select:all;-webkit-user-select:all}
+#mnta-sheet .ms-btn{display:block;width:100%;padding:14px;border-radius:14px;border:none;font-size:15px;font-weight:800;cursor:pointer;margin-top:8px;font-family:inherit}
+#mnta-sheet .ms-primary{background:linear-gradient(135deg,#00E5FF,#00BFFF);color:#04141C}
+#mnta-sheet .ms-ghost{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.8)}
+body.theme-light #mnta-sheet .ms-box{background:#fff;border-color:rgba(0,0,0,0.08)}
+body.theme-light #mnta-sheet .ms-title{color:#0A0A0F}
+body.theme-light #mnta-sheet .ms-text{color:rgba(10,10,15,0.65)}
+body.theme-light #mnta-sheet .ms-link{color:rgba(10,10,15,0.6);background:rgba(0,0,0,0.04)}
+body.theme-light #mnta-sheet .ms-ghost{background:rgba(0,0,0,0.05);color:rgba(10,10,15,0.8)}
+</style>
+<script id="mnta-reminders-js">
+(function(){
+  'use strict';
+  var API = 'https://mnta-push.sites.tab.bot';
+  var LS = '_ao_reminders';
+  /* ── MNTA+ reminder schedule (shared by server and app) ── */
+  var MNTA_TZ = 'Asia/Jerusalem';
+  function mntaParts(date){
+    var f = new Intl.DateTimeFormat('en-GB',{timeZone:MNTA_TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',weekday:'short',hourCycle:'h23'});
+    var o = {}; f.formatToParts(date).forEach(function(p){ o[p.type]=p.value; });
+    var wd = {Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6}[o.weekday];
+    return {y:+o.year, m:+o.month, d:+o.day, h:+o.hour, min:+o.minute, wd:wd};
+  }
+  function mntaDim(y,m){ return new Date(Date.UTC(y,m,0)).getUTCDate(); }            /* m = 1..12 */
+  function mntaDayNum(y,m,d){ return Math.floor(Date.UTC(y,m-1,d)/86400000); }
+  function mntaFromNum(n){ var t=new Date(n*86400000); return {y:t.getUTCFullYear(), m:t.getUTCMonth()+1, d:t.getUTCDate(), wd:t.getUTCDay()}; }
+  function mntaResetIn(y,m,day){ return Math.min(Math.max(1,day|0||1), mntaDim(y,m)); } /* יום 31 בחודש קצר = היום האחרון בחודש */
+  function mntaNextReset(y,m,d,day){ /* first reset date strictly after (y,m,d) */
+    var r = mntaResetIn(y,m,day);
+    if(d < r) return mntaDayNum(y,m,r);
+    var ny = m===12 ? y+1 : y, nm = m===12 ? 1 : m+1;
+    return mntaDayNum(ny,nm,mntaResetIn(ny,nm,day));
+  }
+  /* local wall-clock time in Israel → UTC ms (handles DST) */
+  function mntaLocalToUtc(y,m,d,h,min){
+    var guess = Date.UTC(y,m-1,d,h,min);
+    for(var i=0;i<3;i++){
+      var p = mntaParts(new Date(guess));
+      var diff = Date.UTC(p.y,p.m-1,p.d,p.h,p.min) - Date.UTC(y,m-1,d,h,min);
+      if(!diff) break; guess -= diff;
+    }
+    return guess;
+  }
+  /* שעת שליחה: ערב לסוף חודש, בוקר ליום האיפוס. שישי מוקדם, שבת אחרי צאת שבת */
+  function mntaSendTime(kind, wd){
+    if(wd===5) return [11,0];
+    if(wd===6) return [21,0];
+    return kind==='eom' ? [20,0] : [9,0];
+  }
+  function mntaInQuiet(p){ return (p.wd===5 && p.h>=15) || (p.wd===6 && p.h<21); }
+  var MNTA_EOM_DAYS = 3;
+  function mntaText(kind, daysLeft){
+    if(kind==='eom'){
+      var when = daysLeft===1 ? 'מחר מתחיל חודש תקציב חדש' : (daysLeft===2 ? 'עוד יומיים מתחיל חודש תקציב חדש' : 'עוד '+daysLeft+' ימים מתחיל חודש תקציב חדש');
+      return {title: when+' ⏳', body: 'זה הזמן להציץ כמה נשאר ולסגור את החודש בפלוס 💪'};
+    }
+    return {title: 'חודש תקציב חדש התחיל 🎉', body: 'התקציב התאפס. בוא נתחיל נכון, תרשום את ההוצאות הראשונות.'};
+  }
+  /* the reminders anchored around a given day: [{kind, key, dateNum, atUtc, daysLeft}] */
+  function mntaPlanForDay(dayNum, cfg){
+    var t = mntaFromNum(dayNum), out = [];
+    var day = cfg.on===false ? 1 : (cfg.day|0||1);
+    /* reset day */
+    if(cfg.on!==false && t.d === mntaResetIn(t.y,t.m,day)){
+      var st = mntaSendTime('reset', t.wd);
+      out.push({kind:'reset', key:'reset:'+t.y+'-'+t.m, dateNum:dayNum, atUtc:mntaLocalToUtc(t.y,t.m,t.d,st[0],st[1])});
+    }
+    /* end of cycle: MNTA_EOM_DAYS days before the next reset */
+    var nr = mntaNextReset(t.y,t.m,t.d,day);
+    if(nr - dayNum === MNTA_EOM_DAYS){
+      var st2 = mntaSendTime('eom', t.wd), n = mntaFromNum(nr);
+      out.push({kind:'eom', key:'eom:'+n.y+'-'+n.m+'-'+n.d, dateNum:dayNum, nextReset:nr, atUtc:mntaLocalToUtc(t.y,t.m,t.d,st2[0],st2[1])});
+    }
+    return out;
+  }
+  /* what is due right now (server, hourly). catch-up up to 2 days if a run was missed, never in Shabbat hours */
+  function mntaDue(nowMs, cfg, sent){
+    var p = mntaParts(new Date(nowMs)); if(mntaInQuiet(p)) return [];
+    var today = mntaDayNum(p.y,p.m,p.d), due = [];
+    for(var back=0; back<=2; back++){
+      mntaPlanForDay(today-back, cfg).forEach(function(r){
+        if(sent && sent[r.key]) return;
+        if(nowMs < r.atUtc) return;
+        if(r.kind==='eom'){ r.daysLeft = r.nextReset - today; if(r.daysLeft < 1) return; }
+        due.push(r);
+      });
+    }
+    return due;
+  }
+  /* the next N reminders from now (the app schedules these on the phone) */
+  function mntaUpcoming(nowMs, cfg, count){
+    var p = mntaParts(new Date(nowMs)), today = mntaDayNum(p.y,p.m,p.d), out = [];
+    for(var i=0; i<800 && out.length<count; i++){
+      mntaPlanForDay(today+i, cfg).forEach(function(r){
+        if(r.atUtc <= nowMs || out.length>=count) return;
+        if(r.kind==='eom') r.daysLeft = MNTA_EOM_DAYS;
+        out.push(r);
+      });
+    }
+    return out;
+  }
+  /* ── helpers ── */
+  function st(){ try{ return JSON.parse(localStorage.getItem(LS)) || {}; }catch(e){ return {}; } }
+  function save(patch){ var s = st(); for(var k in patch) s[k] = patch[k]; try{ localStorage.setItem(LS, JSON.stringify(s)); }catch(e){} return s; }
+  function cfg(){ var c = (typeof window._cycleCfg === 'function') ? window._cycleCfg() : null; return c ? {day: c.day|0 || 1, on: c.on !== false} : {day:1, on:true}; }
+  function sig(c){ return c.day + ':' + (c.on ? 1 : 0); }
+  function toast(m, t){ if(window.toast) window.toast(m, t || 'info'); }
+  function $(id){ return document.getElementById(id); }
+  function nat(){ var f = window.flutter_inappwebview; return (f && typeof f.callHandler === 'function') ? f : null; }
+  function okRes(r){ return r === true || r === 'ok' || !!(r && r.ok === true); }
+  function callNative(name, arg, ms){
+    return new Promise(function(resolve){
+      var done = false, f = nat();
+      function fin(v){ if(!done){ done = true; clearTimeout(t); resolve(v); } }
+      var t = setTimeout(function(){ fin(null); }, ms || 4000);
+      if(!f){ fin(null); return; }
+      try{ Promise.resolve(f.callHandler(name, arg)).then(fin, function(){ fin(null); }); }catch(e){ fin(null); }
+    });
+  }
+  function post(path, body){
+    return fetch(API + path, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)}).then(function(r){ return r.json(); });
+  }
+  function u8(s){ s = s.replace(/-/g,'+').replace(/_/g,'/'); while(s.length % 4) s += '='; var b = atob(s), a = new Uint8Array(b.length); for(var i=0;i<b.length;i++) a[i] = b.charCodeAt(i); return a; }
+  var ua = navigator.userAgent || '';
+  var isIOS = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  function standalone(){ try{ return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; }catch(e){ return false; } }
+  function inWebView(){ return /; wv\)|FBAN|FBAV|Instagram|Line\//.test(ua); }
+  var _srv = null;
+  function serverUp(){
+    if(_srv) return _srv;
+    _srv = Promise.race([
+      fetch(API + '/api/vapid', {cache:'no-store'}).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ return !!(j && j.publicKey); }),
+      new Promise(function(res){ setTimeout(function(){ res(false); }, 5000); })
+    ]).catch(function(){ return false; });
+    _srv.then(function(v){ if(!v) setTimeout(function(){ _srv = null; }, 10*60000); });
+    return _srv;
+  }
+  var srvOk = false;
+  function webPush(){ return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; }
+
+  /* ── environment: native app / browser push / iPhone not installed / none ── */
+  var nativeCap = null; /* null = not probed yet */
+  function probeNative(){
+    if(!nat()) return Promise.resolve(false);
+    if(nativeCap !== null) return Promise.resolve(nativeCap);
+    return callNative('NativeReminders', {action:'status'}, 3000).then(function(r){ nativeCap = okRes(r); return nativeCap; });
+  }
+  function mode(){
+    if(nat()) return nativeCap ? 'native' : 'native-old';
+    if(!srvOk) return 'none';
+    if(webPush() && !inWebView()) return 'web';
+    if(isIOS && !standalone()) return 'ios-install';
+    return 'none';
+  }
+
+  /* ── service worker registration (web) ── */
+  function swReg(){
+    return navigator.serviceWorker.getRegistration().then(function(reg){
+      if(!reg) return navigator.serviceWorker.register('sw.js');
+      return reg;
+    }).then(function(){
+      return Promise.race([navigator.serviceWorker.ready, new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('sw_timeout')); }, 10000); })]);
+    });
+  }
+  function webSubscribe(){
+    return swReg().then(function(reg){
+      return reg.pushManager.getSubscription().then(function(sub){
+        if(sub) return sub;
+        return fetch(API + '/api/vapid').then(function(r){ return r.json(); }).then(function(k){
+          return reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey: u8(k.publicKey)});
+        });
+      });
+    }).then(function(sub){
+      var c = cfg();
+      return post('/api/subscribe', {subscription: sub.toJSON(), resetDay: c.day, resetEnabled: c.on}).then(function(r){
+        if(!r || !r.ok) throw new Error('server');
+        save({on:true, sig:sig(c), synced:Date.now(), endpoint: sub.endpoint});
+        return true;
+      });
+    });
+  }
+  function webUnsubscribe(){
+    var ep = st().endpoint;
+    return swReg().then(function(reg){ return reg.pushManager.getSubscription(); }).then(function(sub){
+      if(sub){ ep = sub.endpoint; return sub.unsubscribe(); }
+    }).catch(function(){}).then(function(){ if(ep) return post('/api/unsubscribe', {endpoint: ep}).catch(function(){}); });
+  }
+
+  /* ── native app (after the app update) ── */
+  function nativeList(){
+    var c = cfg();
+    return mntaUpcoming(Date.now(), c, 12).map(function(r, i){
+      var t = mntaText(r.kind, r.daysLeft);
+      return {id: 7100 + i, at: r.atUtc, kind: r.kind, title: t.title, body: t.body};
+    });
+  }
+  function nativeSchedule(){
+    var c = cfg();
+    return callNative('NativeReminders', {action:'schedule', timezone: MNTA_TZ, reminders: nativeList()}, 15000).then(function(r){
+      if(okRes(r)){ save({on:true, sig:sig(c), synced:Date.now()}); return true; }
+      if(r && r.permission === 'denied') throw new Error('denied');
+      throw new Error('native');
+    });
+  }
+
+  /* ── on / off ── */
+  var busy = false;
+  function enable(){
+    if(busy) return Promise.resolve(false); busy = true;
+    var m = mode(), p;
+    if(m === 'native') p = nativeSchedule();
+    else if(m === 'web'){
+      p = Promise.resolve(Notification.permission === 'granted' ? 'granted' : Notification.requestPermission()).then(function(perm){
+        if(perm !== 'granted') throw new Error('denied');
+        return webSubscribe();
+      });
+    } else p = Promise.reject(new Error(m));
+    return p.then(function(){
+      busy = false; render(); toast('מעולה, אזכיר לך ✓', 'success'); return true;
+    }, function(e){
+      busy = false; save({on:false}); render();
+      var msg = e && e.message;
+      if(msg === 'denied') toast('ההתראות חסומות. אפשר לאשר אותן בהגדרות ואז להפעיל שוב', 'error');
+      else if(msg === 'ios-install') toast('באייפון צריך קודם להוסיף את MNTA+ למסך הבית', 'error');
+      else toast('לא הצלחתי להפעיל תזכורות כרגע, נסה שוב עוד מעט', 'error');
+      return false;
+    });
+  }
+  function disable(){
+    var m = mode(); save({on:false, sig:null});
+    if(m === 'native') callNative('NativeReminders', {action:'cancel'}, 5000);
+    else if(m === 'web') webUnsubscribe();
+    render(); toast('התזכורות כבויות', 'info');
+  }
+  function sendTest(){
+    var m = mode();
+    if(m === 'native'){ callNative('NativeReminders', {action:'test', title:'ככה ייראו התזכורות 👋', body:'אזכיר לך 3 ימים לפני סוף החודש, וביום שהתקציב מתאפס.'}, 5000).then(function(r){ if(!okRes(r)) toast('לא הצלחתי לשלוח תזכורת לדוגמה', 'error'); }); return; }
+    var ep = st().endpoint; if(!ep){ toast('קודם צריך להפעיל תזכורות', 'error'); return; }
+    toast('שולח תזכורת לדוגמה...', 'info');
+    post('/api/test', {endpoint: ep}).then(function(r){
+      if(!r || !r.ok){ toast('השליחה נכשלה. נסה לכבות ולהפעיל שוב', 'error'); save({on:false}); render(); }
+    }).catch(function(){ toast('אין חיבור כרגע, נסה שוב', 'error'); });
+  }
+
+  /* keep the server / phone in sync when the reset day changes */
+  function sync(force){
+    var s = st(); if(!s.on) return;
+    var c = cfg(), m = mode();
+    var stale = force || s.sig !== sig(c) || !s.synced || (Date.now() - s.synced > 3*86400000);
+    if(!stale) return;
+    if(m === 'native') nativeSchedule().catch(function(){});
+    else if(m === 'web'){
+      if(Notification.permission !== 'granted'){ save({on:false}); render(); return; }
+      webSubscribe().catch(function(){});
+    }
+    render();
+  }
+
+  /* ── UI: settings card ── */
+  var DAYS = ['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳'];
+  function nextText(){
+    var up = mntaUpcoming(Date.now(), cfg(), 2);
+    return up.map(function(r){
+      var p = mntaParts(new Date(r.atUtc));
+      return (r.kind === 'eom' ? 'לפני סוף החודש' : 'יום האיפוס') + ': יום ' + DAYS[p.wd] + ' ' + p.d + '.' + p.m;
+    }).join(' · ');
+  }
+  function buildCard(){
+    if($('reminders-card')) return;
+    var anchor = $('reset-day-card'); if(!anchor || !anchor.parentNode) return;
+    var el = document.createElement('div');
+    el.className = 'sblock modern-hover'; el.id = 'reminders-card';
+    el.innerHTML =
+      '<div class="sblock-head"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> תזכורות</div>' +
+      '<div class="sblock-body" style="padding:16px 18px 18px;">' +
+        '<div class="rem-row"><div style="flex:1;min-width:0;"><div class="rem-t">תזכורת לסוף החודש וליום האיפוס</div><div class="rem-s" id="rem-sub"></div></div>' +
+        '<button id="rem-switch" class="rem-switch" aria-label="תזכורות"><span></span></button></div>' +
+        '<div class="rem-next" id="rem-next"></div>' +
+        '<div class="rem-note" id="rem-note"></div>' +
+        '<button class="rem-test" id="rem-test">שלח לי תזכורת לדוגמה</button>' +
+      '</div>';
+    anchor.parentNode.insertBefore(el, anchor.nextSibling);
+    $('rem-switch').onclick = function(){ if(this.disabled) return; if(st().on) disable(); else enable(); };
+    $('rem-test').onclick = sendTest;
+    render();
+  }
+  function render(){
+    if(!$('reminders-card')) return;
+    var s = st(), m = mode(), c = cfg(), sw = $('rem-switch'), note = $('rem-note'), next = $('rem-next'), test = $('rem-test');
+    $('rem-sub').textContent = c.on ? (MNTA_EOM_DAYS + ' ימים לפני שהתקציב מתאפס, וביום עצמו') : (MNTA_EOM_DAYS + ' ימים לפני סוף החודש');
+    var card = $('reminders-card');
+    card.style.display = (m === 'none' || m === 'native-old') ? 'none' : '';
+    var on = !!s.on, noteText = '';
+    sw.disabled = false;
+    if(m === 'native-old'){ sw.disabled = true; on = false; noteText = 'התזכורות יגיעו לאפליקציה בעדכון הקרוב שלה. בינתיים אפשר להפעיל אותן מהאתר בדפדפן.'; }
+    else if(m === 'ios-install'){ sw.disabled = true; on = false; noteText = 'באייפון: פתח את האתר בספארי, שתף ← "הוסף למסך הבית", ואז הפעל כאן.'; }
+    else if(m === 'none'){ sw.disabled = true; on = false; noteText = inWebView() ? 'פתח את MNTA+ בדפדפן (כרום / ספארי) כדי להפעיל תזכורות.' : 'הדפדפן הזה לא תומך בתזכורות. נסה בכרום.'; }
+    else if(m === 'web' && Notification.permission === 'denied'){ on = false; noteText = 'ההתראות חסומות לאתר הזה. אפשר לאשר אותן בהגדרות הדפדפן ואז להפעיל כאן.'; }
+    sw.classList.toggle('active', on);
+    note.textContent = noteText; note.style.display = noteText ? 'block' : 'none';
+    next.textContent = on ? ('הבאות: ' + nextText()) : ''; next.style.display = on ? 'block' : 'none';
+    test.style.display = on ? 'block' : 'none';
+  }
+
+  /* ── UI: the in-context offer ── */
+  function sheet(html, actions){
+    var o = $('mnta-sheet');
+    if(!o){ o = document.createElement('div'); o.id = 'mnta-sheet'; document.body.appendChild(o);
+      o.addEventListener('click', function(e){ if(e.target === o) closeSheet(); }); }
+    o.innerHTML = '<div class="ms-box">' + html + '<div id="ms-actions"></div></div>';
+    var box = o.querySelector('#ms-actions');
+    actions.forEach(function(a){ var b = document.createElement('button'); b.className = 'ms-btn ' + (a.primary ? 'ms-primary' : 'ms-ghost'); b.textContent = a.label; b.onclick = a.onclick; box.appendChild(b); });
+    requestAnimationFrame(function(){ o.classList.add('open'); });
+  }
+  function closeSheet(){ var o = $('mnta-sheet'); if(o) o.classList.remove('open'); }
+  function canOffer(){
+    var s = st(), m = mode();
+    if(s.on) return false;
+    if(m !== 'web' && m !== 'native') return false;
+    if(m === 'web' && Notification.permission === 'denied') return false;
+    if(s.declined && Date.now() - s.declined < 30*86400000) return false;
+    if(s.offers >= 3) return false;
+    return true;
+  }
+  function offer(reason){
+    Promise.all([probeNative(), serverUp()]).then(function(v){ srvOk = !!v[1];
+      if(!canOffer()) return;
+      var c = cfg(), s = st();
+      save({offers: (s.offers || 0) + 1, lastOffer: Date.now()});
+      var text = c.on
+        ? 'התקציב שלך מתאפס ב-' + c.day + ' לחודש. אשלח לך תזכורת ' + MNTA_EOM_DAYS + ' ימים לפני, וביום עצמו. רק שתיים בחודש.'
+        : 'אשלח לך תזכורת ' + MNTA_EOM_DAYS + ' ימים לפני סוף החודש. רק אחת בחודש.';
+      var title = reason === 'cycle' ? 'רוצה שבחודש הבא אזכיר לך?' : 'רוצה שאזכיר לך?';
+      sheet('<div class="ms-ico">🔔</div><div class="ms-title">' + title + '</div><div class="ms-text">' + text + '</div>', [
+        {label:'כן, תזכיר לי', primary:true, onclick:function(){ closeSheet(); enable(); }},
+        {label:'לא עכשיו', onclick:function(){ closeSheet(); save({declined: Date.now()}); }}
+      ]);
+    });
+  }
+  function overlayOpen(){
+    var els = document.querySelectorAll('[id*="overlay"],[id*="modal"],[id*="sheet"],[class*="overlay"]');
+    for(var i=0;i<els.length;i++){
+      var e = els[i]; if(e.id === 'mnta-sheet') continue;
+      var cs = getComputedStyle(e);
+      if(cs.position === 'fixed' && cs.display !== 'none' && cs.visibility !== 'hidden' && parseFloat(cs.opacity) > 0.1 && e.offsetWidth > window.innerWidth*0.6 && e.offsetHeight > window.innerHeight*0.5 && cs.pointerEvents !== 'none') return true;
+    }
+    return false;
+  }
+  function loggedIn(){ try{ return !!(window.firebase && firebase.auth && firebase.auth().currentUser); }catch(e){ return false; } }
+
+  /* ── export: same file, but a path that works inside the app and in-app browsers ── */
+  var MIME = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+  function b64(u8a){ var s = '', i, ch = 0x8000; for(i=0;i<u8a.length;i+=ch) s += String.fromCharCode.apply(null, u8a.subarray(i, i+ch)); return btoa(s); }
+  function copyText(t){
+    if(navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(t).then(function(){ return true; }, function(){ return legacyCopy(t); });
+    return Promise.resolve(legacyCopy(t));
+  }
+  function legacyCopy(t){ try{ var a = document.createElement('textarea'); a.value = t; a.style.position = 'fixed'; a.style.opacity = '0'; document.body.appendChild(a); a.select(); var ok = document.execCommand('copy'); a.remove(); return ok; }catch(e){ return false; } }
+  function tsv(){
+    var pd = function(d){ try{ return window._parseDate ? window._parseDate(d) : new Date(d); }catch(e){ return new Date(d); } };
+    var ev = function(id){ var e = (window._evList||[]).filter(function(x){ return x.id === id; })[0]; return e ? ((e.emoji||'') + ' ' + e.name).trim() : ''; };
+    var clean = function(v){ return String(v == null ? '' : v).replace(/[\t\r\n]+/g, ' '); };
+    var all = [];
+    (window.incomes||[]).forEach(function(t){ all.push({t:'הכנסה', x:t}); });
+    (window.expenses||[]).forEach(function(t){ all.push({t:'הוצאה', x:t}); });
+    all.forEach(function(r){ r.d = pd(r.x.date); });
+    all = all.filter(function(r){ return r.d && !isNaN(r.d); }).sort(function(a,b){ return b.d - a.d; });
+    var rows = [['תאריך','שעה','סוג','תיאור','קטגוריה','אירוע','סכום']];
+    all.forEach(function(r){ rows.push([r.d.toLocaleDateString('he-IL'), r.d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'}), r.t, r.x.description||'', r.x.category||'', r.x.eventId ? ev(r.x.eventId) : '', Number(r.x.amount)||0]); });
+    return rows.map(function(r){ return r.map(clean).join('\t'); }).join('\n');
+  }
+  function copyFlow(){
+    var site = 'https://a4190656-cloud.github.io/AO-TIMLulll/';
+    sheet('<div class="ms-ico">📊</div><div class="ms-title">ייצוא לאקסל</div><div class="ms-text">בגרסה הזו של האפליקציה אי אפשר לשמור קובץ. אפשר להעתיק את כל התנועות ולהדביק אותן ב-Google Sheets או באקסל, או לייצא קובץ מהאתר בכרום.</div>', [
+      {label:'העתק את כל התנועות', primary:true, onclick:function(){ copyText(tsv()).then(function(ok){ if(ok){ closeSheet(); toast('הועתק ✓ עכשיו פתח גיליון חדש והדבק', 'success'); } else toast('ההעתקה לא הצליחה כאן, נסה מהאתר בכרום', 'error'); }); }},
+      {label:'פתח את האתר בדפדפן', onclick:function(){ closeSheet(); var w = null; try{ w = window.open(site, '_blank'); }catch(e){} if(!w) copyText(site).then(function(ok){ if(ok) toast('כתובת האתר הועתקה, הדבק אותה בכרום', 'info'); }); }},
+      {label:'סגור', onclick:closeSheet}
+    ]);
+  }
+  function linkFlow(bytes, name){
+    toast('מכין קישור להורדה...', 'info');
+    Promise.race([
+      post('/api/file', {filename: name, mime: MIME, base64: b64(bytes)}),
+      new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('timeout')); }, 6000); })
+    ]).then(function(r){
+      if(!r || !r.ok) throw new Error('upload');
+      var url = r.url;
+      sheet('<div class="ms-ico">📊</div><div class="ms-title">הקובץ מוכן</div><div class="ms-text">כאן אי אפשר לשמור קבצים ישירות, אז הכנתי לך קישור להורדה. הוא בתוקף 15 דקות.</div><div class="ms-link">' + url + '</div>', [
+        {label:'פתח והורד', primary:true, onclick:function(){ closeSheet(); var w = null; try{ w = window.open(url, '_blank'); }catch(e){} if(!w){ location.href = url; } }},
+        {label:'שלח לי בוואטסאפ', onclick:function(){ closeSheet(); var t = 'קובץ האקסל שלי מ-MNTA+ (בתוקף 15 דק׳): ' + url; if(window.nativeShare) window.nativeShare(t, 'MNTA+'); else location.href = 'https://wa.me/?text=' + encodeURIComponent(t); }},
+        {label:'העתק קישור', onclick:function(){ copyText(url).then(function(ok){ toast(ok ? 'הקישור הועתק. הדבק אותו בכרום כדי להוריד' : 'לחיצה ארוכה על הקישור כדי להעתיק', ok ? 'success' : 'info'); if(ok) closeSheet(); }); }},
+        {label:'סגור', onclick:closeSheet}
+      ]);
+    }).catch(function(){ copyFlow(); });
+  }
+  function fileName(){ var d = new Date(); return 'MNTA-export-' + d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0') + '.xlsx'; }
+  function blobDownload(bytes, name){
+    var blob = new Blob([bytes], {type: MIME});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = name; a.rel = 'noopener'; a.style.display = 'none';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ try{ URL.revokeObjectURL(a.href); a.remove(); }catch(e){} }, 60000);
+  }
+  function downloadedSheet(bytes, name){
+    sheet('<div class="ms-ico">📊</div><div class="ms-title">הקובץ ירד ✓</div><div class="ms-text">הוא נמצא בתיקיית ההורדות בשם<br><b dir="ltr">' + name + '</b><br>לא רואה אותו? אפשר להוריד דרך קישור.</div>', [
+      {label:'מעולה', primary:true, onclick:closeSheet},
+      {label:'הורד דרך קישור', onclick:function(){ closeSheet(); linkFlow(bytes, name); }}
+    ]);
+  }
+  function exportNow(){
+    var r, name = fileName();
+    try{
+      toast('מכין קובץ אקסל...', 'info');
+      if(typeof window._buildXlsx !== 'function') throw new Error('builder_missing');
+      r = window._buildXlsx();
+    }catch(e){ toast('שגיאה ביצירת הקובץ (' + (e && e.message || e) + ')', 'error'); return; }
+    if(!r || !r.count){ toast(loggedIn() ? 'אין תנועות לייצוא' : 'צריך להתחבר כדי לייצא', 'error'); return; }
+    try{
+      if(nat()){
+        callNative('NativeSaveFile', {filename:name, mime:MIME, base64:b64(r.bytes)}, 6000).then(function(res){
+          if(okRes(res)) toast('הקובץ מוכן ✓', 'success'); else linkFlow(r.bytes, name);
+        });
+        return;
+      }
+      if(inWebView()){ linkFlow(r.bytes, name); return; }
+      if(isIOS && navigator.canShare && navigator.share){
+        var file = null; try{ file = new File([r.bytes], name, {type: MIME}); }catch(e){}
+        if(file && navigator.canShare({files:[file]})){
+          navigator.share({files:[file], title:'MNTA+'}).then(function(){ toast('הקובץ מוכן ✓', 'success'); }, function(err){
+            if(err && err.name === 'AbortError') return; /* the user closed the share sheet */
+            linkFlow(r.bytes, name);
+          });
+          return;
+        }
+      }
+      blobDownload(r.bytes, name);
+      setTimeout(function(){ downloadedSheet(r.bytes, name); }, 400);
+    }catch(e){
+      toast('ההורדה נכשלה כאן, מכין קישור...', 'error');
+      linkFlow(r.bytes, name);
+    }
+  }
+  function installExport(){
+    if(window.exportExcel && window.exportExcel.__mnta) return;
+    exportNow.__mnta = true;
+    window.exportExcel = exportNow; window.exportUserData = exportNow;
+  }
+
+  /* ── boot ── */
+  function boot(){
+    installExport();
+    buildCard();
+    Promise.all([probeNative(), serverUp()]).then(function(v){ srvOk = !!v[1]; render(); sync(false); });
+    /* reset day saved → in-context offer */
+    var origSave = window._saveResetDay;
+    if(typeof origSave === 'function' && !origSave.__mnta){
+      window._saveResetDay = function(day, cb){
+        return origSave.call(this, day, function(){ if(cb) cb.apply(this, arguments); setTimeout(function(){ sync(true); render(); if(!st().on) offer('resetday'); }, 700); });
+      };
+      window._saveResetDay.__mnta = true;
+    }
+    var origEn = window._setResetEnabled;
+    if(typeof origEn === 'function' && !origEn.__mnta){
+      window._setResetEnabled = function(v){ var out = origEn.apply(this, arguments); setTimeout(function(){ sync(true); render(); }, 500); return out; };
+      window._setResetEnabled.__mnta = true;
+    }
+    /* "new month" popup closed → in-context offer */
+    document.addEventListener('click', function(e){
+      if(e.target && e.target.closest && e.target.closest('#btn-cycle-ok')) setTimeout(function(){ offer('cycle'); }, 900);
+    }, true);
+    /* once, a little after login, when nothing else is open */
+    var tries = 0, iv = setInterval(function(){
+      tries++; if(tries > 40){ clearInterval(iv); return; }
+      if(!loggedIn() || document.visibilityState !== 'visible') return;
+      buildCard(); render();
+      var s = st();
+      if(tries < 4 || s.firstOffer || overlayOpen()) return;
+      clearInterval(iv); save({firstOffer: Date.now()}); offer('first');
+    }, 3000);
+    /* follow changes made on another device */
+    var lastSig = sig(cfg());
+    setInterval(function(){ var g = sig(cfg()); if(g !== lastSig){ lastSig = g; sync(true); render(); } }, 20000);
+    document.addEventListener('visibilitychange', function(){ if(document.visibilityState === 'visible'){ buildCard(); sync(false); render(); } });
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ setTimeout(boot, 0); }); else setTimeout(boot, 0);
+  window._mntaReminders = {enable: enable, disable: disable, offer: offer, mode: mode, upcoming: function(){ return mntaUpcoming(Date.now(), cfg(), 4); }};
+})();
+</script>
+
 </body>
 </html>
