@@ -17087,6 +17087,22 @@ body.theme-light #mnta-sheet .ms-ghost{background:rgba(0,0,0,0.05);color:rgba(10
       {label:'סגור', onclick:closeSheet}
     ]);
   }
+  function openInChrome(url){
+    /* בתוך האפליקציה (WebView) אי אפשר להוריד — שולחים את הקישור לכרום. אם לא נפתח תוך רגע, מעתיקים את הקישור */
+    var isAndroid = /android/i.test(ua);
+    if(!isAndroid){ var w = null; try{ w = window.open(url, '_blank'); }catch(e){} if(!w) location.href = url; return; }
+    var left = false;
+    var onHide = function(){ if(document.hidden) left = true; };
+    document.addEventListener('visibilitychange', onHide);
+    var intent = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(url) + ';end';
+    try{ location.href = intent; }catch(e){}
+    setTimeout(function(){
+      document.removeEventListener('visibilitychange', onHide);
+      if(left) return;
+      try{ var w = window.open(url, '_system'); if(w) return; }catch(e){}
+      copyText(url).then(function(ok){ toast(ok ? 'לא הצלחתי לפתוח את כרום. הקישור הועתק, הדבק אותו בכרום' : 'פתח את הקישור בכרום כדי להוריד', 'info'); });
+    }, 1600);
+  }
   function linkFlow(bytes, name){
     toast('מכין קישור להורדה...', 'info');
     Promise.race([
@@ -17096,7 +17112,7 @@ body.theme-light #mnta-sheet .ms-ghost{background:rgba(0,0,0,0.05);color:rgba(10
       if(!r || !r.ok) throw new Error('upload');
       var url = r.url;
       sheet('<div class="ms-ico">📊</div><div class="ms-title">הקובץ מוכן</div><div class="ms-text">כאן אי אפשר לשמור קבצים ישירות, אז הכנתי לך קישור להורדה. הוא בתוקף 15 דקות.</div><div class="ms-link">' + url + '</div>', [
-        {label:'פתח והורד', primary:true, onclick:function(){ closeSheet(); var w = null; try{ w = window.open(url, '_blank'); }catch(e){} if(!w){ location.href = url; } }},
+        {label:'פתח בכרום והורד', primary:true, onclick:function(){ closeSheet(); openInChrome(url); }},
         {label:'שלח לי בוואטסאפ', onclick:function(){ closeSheet(); var t = 'קובץ האקסל שלי מ-MNTA+ (בתוקף 15 דק׳): ' + url; if(window.nativeShare) window.nativeShare(t, 'MNTA+'); else location.href = 'https://wa.me/?text=' + encodeURIComponent(t); }},
         {label:'העתק קישור', onclick:function(){ copyText(url).then(function(ok){ toast(ok ? 'הקישור הועתק. הדבק אותו בכרום כדי להוריד' : 'לחיצה ארוכה על הקישור כדי להעתיק', ok ? 'success' : 'info'); if(ok) closeSheet(); }); }},
         {label:'סגור', onclick:closeSheet}
@@ -17127,7 +17143,7 @@ body.theme-light #mnta-sheet .ms-ghost{background:rgba(0,0,0,0.05);color:rgba(10
     if(!r || !r.count){ toast(loggedIn() ? 'אין תנועות לייצוא' : 'צריך להתחבר כדי לייצא', 'error'); return; }
     try{
       if(nat()){
-        callNative('NativeSaveFile', {filename:name, mime:MIME, base64:b64(r.bytes)}, 6000).then(function(res){
+        callNative('NativeSaveFile', {filename:name, mime:MIME, base64:b64(r.bytes)}, 1500).then(function(res){
           if(okRes(res)) toast('הקובץ מוכן ✓', 'success'); else linkFlow(r.bytes, name);
         });
         return;
