@@ -2418,7 +2418,8 @@ body.theme-light .header-icon-btn {
 body.theme-light #btn-logout:active,
 body.theme-light #btn-reset:active,
 body.theme-light #btn-signout:active,
-body.theme-light #btn-currency:active {
+body.theme-light #btn-currency:active,
+body.theme-light #btn-lang:active {
   transform: scale(0.88) rotate(-4deg) !important;
   box-shadow: none !important;
 }
@@ -5830,7 +5831,7 @@ body.theme-light { background-color: var(--bg) !important; }
         </div>
       </div>
       <div style="display:flex;gap:7px;flex-shrink:0;">
-        <button id="btn-currency" class="card press modern-hover" style="padding:9px;border:none;cursor:pointer;color:rgba(255,255,255,0.8);font-weight:bold;font-size:14px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">₪</button>
+        <button id="btn-lang" class="card press modern-hover" type="button" aria-label="שפה ומטבע" title="שפה ומטבע" style="padding:0;border:none;cursor:pointer;color:rgba(255,255,255,0.8);font-size:19px;line-height:1;width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span id="btn-lang-flag" style="display:block;line-height:1;font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;">🇮🇱</span></button>
         <button onclick="window.location.reload()" class="card press modern-hover" style="padding:9px;border:none;cursor:pointer;color:rgba(255,255,255,0.45);flex-shrink:0;">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
         </button>
@@ -6146,17 +6147,17 @@ body.theme-light { background-color: var(--bg) !important; }
     })();
     </script>
 
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:11px" class="rise d2">
+    <div id="home-stats-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:11px" class="rise d2">
       <div class="card modern-hover" style="padding:11px 8px;text-align:center;border-top:1px solid rgba(0,230,118,0.22)">
         <p style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.06em;margin-bottom:3px">הכנסות</p>
         <p id="stat-income" class="mono" style="color:var(--green);font-weight:700;font-size:14px">₪0</p>
       </div>
-      <div class="card modern-hover" style="padding:11px 8px;text-align:center;border-top:1px solid rgba(242,135,106,0.2)">
-        <p style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.06em;margin-bottom:3px">קבועות</p>
+      <div id="stat-card-fixed" class="card modern-hover stat-go" role="button" tabindex="0" aria-label="קבועות — מעבר לתשלומים הקבועים בהגדרות" style="padding:11px 8px;text-align:center;border-top:1px solid rgba(242,135,106,0.2)">
+        <p style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.06em;margin-bottom:3px">קבועות<span class="stat-go-chev" aria-hidden="true">‹</span></p>
         <p id="stat-fixed" class="mono" style="color:var(--exp);font-weight:700;font-size:14px">₪0</p>
       </div>
-      <div class="card modern-hover" style="padding:11px 8px;text-align:center;border-top:1px solid rgba(242,135,106,0.2)">
-        <p style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.06em;margin-bottom:3px">משתנות</p>
+      <div id="stat-card-var" class="card modern-hover stat-go" role="button" tabindex="0" aria-label="משתנות — מעבר לתנועות האחרונות" style="padding:11px 8px;text-align:center;border-top:1px solid rgba(242,135,106,0.2)">
+        <p style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.06em;margin-bottom:3px">משתנות<span class="stat-go-chev" aria-hidden="true">‹</span></p>
         <p id="stat-var" class="mono" style="color:var(--exp);font-weight:700;font-size:14px">₪0</p>
       </div>
     </div>
@@ -6625,7 +6626,7 @@ body.theme-light { background-color: var(--bg) !important; }
             <div class="cwiz-budget-body">
               <div class="cwiz-budget-inp-wrap">
                 <input id="cat-wiz-budget" type="number" min="0" inputmode="decimal" placeholder="ללא הגבלה">
-                <span class="cwiz-budget-sym">₪</span>
+                <span class="cwiz-budget-sym" data-cur-sym>₪</span>
               </div>
               <div class="cwiz-budget-hint">
                 <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -7144,7 +7145,7 @@ body.theme-light #evx-panel{background:#fff}
 
           <!-- Budget -->
           <div class="ev-field-label">תקציב יעד <span style="opacity:.5">(אופציונלי)</span></div>
-          <input id="ev-inp-budget" class="ev-inp" type="number" inputmode="decimal" placeholder="₪0 — ללא הגבלה">
+          <input id="ev-inp-budget" class="ev-inp" type="number" inputmode="decimal" placeholder="₪0 — ללא הגבלה" data-cur-ph="{s}0 — ללא הגבלה">
 
           <button class="ev-save-btn" onclick="saveEvSheet()">✓ שמור אירוע</button>
           <button class="ev-cancel-btn" onclick="closeEvSheet()">ביטול</button>
@@ -7618,7 +7619,7 @@ body.theme-light #evx-panel{background:#fff}
           <div class="edit-sheet-handle"></div>
           <div class="edit-sheet-title" id="fixed-edit-title">עריכת פריט</div>
           <input id="fixed-edit-name"   class="edit-sheet-inp" type="text"   placeholder="שם">
-          <input id="fixed-edit-amount" class="edit-sheet-inp" type="number" placeholder="סכום ₪">
+          <input id="fixed-edit-amount" class="edit-sheet-inp" type="number" placeholder="סכום ₪" data-cur-ph="סכום {s}">
           <div class="edit-sheet-btns">
             <button class="edit-sheet-save"   onclick="saveFixedEdit()">שמור שינויים</button>
             <button class="edit-sheet-cancel" onclick="closeFixedEdit()">ביטול</button>
@@ -7703,7 +7704,7 @@ body.theme-light #evx-panel{background:#fff}
         <div class="fx-list" id="fe-list"></div>
         <div class="fx-add">
           <input id="fe-name" class="fx-inp" type="text" placeholder="שם ההוצאה (שכר דירה, ביטוח...)" autocomplete="off">
-          <input id="fe-amount" class="fx-inp" type="number" inputmode="decimal" placeholder="סכום ₪">
+          <input id="fe-amount" class="fx-inp" type="number" inputmode="decimal" placeholder="סכום ₪" data-cur-ph="סכום {s}">
           <button id="btn-add-fe" class="fx-go" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>הוסף הוצאה</button>
         </div>
       </div>
@@ -7718,7 +7719,7 @@ body.theme-light #evx-panel{background:#fff}
         <div class="fx-list" id="fi-list"></div>
         <div class="fx-add">
           <input id="fi-name" class="fx-inp" type="text" placeholder="מקור הכנסה (משכורת, שכירות...)" autocomplete="off">
-          <input id="fi-amount" class="fx-inp" type="number" inputmode="decimal" placeholder="סכום ₪">
+          <input id="fi-amount" class="fx-inp" type="number" inputmode="decimal" placeholder="סכום ₪" data-cur-ph="סכום {s}">
           <button id="btn-add-fi" class="fx-go" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>הוסף הכנסה</button>
         </div>
       </div>
@@ -7734,7 +7735,7 @@ body.theme-light #evx-panel{background:#fff}
         <div class="fx-add bim">
           <input id="bim-name" class="fx-inp" type="text" placeholder="שם (ביטוח שנתי, מנוי...)" autocomplete="off">
           <select id="bim-type" class="fx-sel"><option value="expense">הוצאה</option><option value="income">הכנסה</option></select>
-          <input id="bim-amount" class="fx-inp full" type="number" inputmode="decimal" placeholder="סכום ₪">
+          <input id="bim-amount" class="fx-inp full" type="number" inputmode="decimal" placeholder="סכום ₪" data-cur-ph="סכום {s}">
           <button id="btn-add-bim" class="fx-go" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>הוסף</button>
         </div>
       </div>
@@ -8481,7 +8482,7 @@ body.theme-light #evx-panel{background:#fff}
 </div>
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 (function(){
-  var SECS = [["start", "🚀", "התחלה מהירה"], ["scan", "🧾", "סריקת קבלות"], ["cats", "🏷️", "קטגוריות ותקציב"], ["events", "🎉", "אירועים"], ["fixed", "🔁", "תשלומים קבועים"], ["cycle", "📅", "איפוס חודשי"], ["charts", "📊", "תרשימים"], ["wa", "💬", "בוט וואטסאפ"], ["set", "⚙️", "הגדרות וחשבון"], ["help", "🛟", "תמיכה"]], KB = [{"id": 1, "s": "start", "q": "איך מוסיפים הכנסה או הוצאה?", "a": "במסך <b>החשבון שלי</b> לוחצים על כפתור ההכנסה או ההוצאה ומזינים סכום (חובה). אפשר להוסיף גם תיאור, קטגוריה ואירוע. בלי תיאור התנועה תיקרא ״הכנסה כללית״ או ״הוצאה כללית״, והיא נרשמת בתאריך של היום.", "k": ["הוספה", "להוסיף", "מוסיפים", "הכנסה", "הוצאה", "תנועה", "רישום", "לרשום", "חדשה", "להזין"], "go": ["dashboard", "למסך הבית"]}, {"id": 2, "s": "start", "q": "איך עורכים, מוחקים או מחפשים תנועה?", "a": "ברשימת התנועות בכל שורה יש כפתור עריכה (עיפרון) וכפתור מחיקה (✕). בשורת החיפוש מעל הרשימה אפשר לחפש לפי תיאור או קטגוריה.", "k": ["עריכה", "לערוך", "מחיקה", "למחוק", "תיקון", "לתקן", "טעות", "חיפוש", "לחפש", "תנועה"], "go": ["dashboard", "למסך הבית"]}, {"id": 3, "s": "start", "q": "איך מחושבת היתרה?", "a": "היתרה = ההכנסות של המחזור הנוכחי (כולל הכנסות קבועות) פחות ההוצאות הקבועות ופחות ההוצאות הרגילות של המחזור.", "k": ["יתרה", "חישוב", "מחושב", "פנויה", "נשאר", "כמה נשאר", "סכום"], "go": ["dashboard", "למסך הבית"]}, {"id": 4, "s": "start", "q": "איך משנים מטבע?", "a": "בכותרת של מסך הבית יש כפתור עם סמל המטבע (₪ כברירת מחדל). לוחצים עליו ובוחרים מטבע מהרשימה, למשל דולר, אירו או פאונד. ההמרה לפי שער משוער.", "k": ["מטבע", "דולר", "אירו", "שקל", "המרה", "שער", "פאונד"], "go": ["dashboard", "למסך הבית"]}, {"id": 5, "s": "start", "q": "האפליקציה תקועה או לא מתעדכנת", "a": "לחצו על כפתור הרענון (החיצים) בכותרת של מסך הבית. בהגדרות יש גם כפתור לעדכון האפליקציה לגרסה האחרונה.", "k": ["תקוע", "תקועה", "רענון", "לרענן", "מתעדכן", "איטי", "איטית", "לא נטען", "עדכון", "לעדכן"], "go": ["settings", "להגדרות"]}, {"id": 6, "s": "scan", "q": "איך סורקים קבלה או חשבונית?", "a": "במסך הבית לוחצים על ״סריקת קבלה / חשבונית״, בוחרים מצלמה או גלריה, והבינה המלאכותית מזהה את הפרטים. לפני השמירה מוצג אישור, ואפשר לשייך לאירוע. אם הסכום לא זוהה אפשר להזין אותו ידנית.", "k": ["סריקה", "לסרוק", "סורקים", "קבלה", "חשבונית", "צילום", "מצלמה", "גלריה", "AI", "בינה"], "go": ["dashboard", "למסך הבית"]}, {"id": 7, "s": "scan", "q": "יש הגבלה על מספר הסריקות?", "a": "כן. מספר הסריקות המותר ליום מופיע על כפתור הסריקה (כרגע 7 סריקות ביום).", "k": ["הגבלה", "מגבלה", "מכסה", "יומי", "כמה סריקות", "סריקות"], "go": ["dashboard", "למסך הבית"]}, {"id": 8, "s": "cats", "q": "איך מוסיפים קטגוריה?", "a": "במסך ״קטגוריות ואירועים״ לוחצים על כפתור ההוספה, בוחרים אם זו הוצאה או הכנסה, נותנים שם, ואפשר להגדיר גם תקציב חודשי.", "k": ["קטגוריה", "קטגוריות", "להוסיף", "חדשה", "יצירת", "ליצור"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 9, "s": "cats", "q": "איך מגדירים תקציב לקטגוריה?", "a": "בכרטיס הקטגוריה לוחצים על כפתור עריכת התקציב (בפינה), מזינים סכום ושומרים. תראו פס התקדמות וכמה נשאר, וגם התראה כשמתקרבים לתקציב (80%) או חורגים ממנו.", "k": ["תקציב", "יעד", "חריגה", "התראה", "מסגרת", "להגביל"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 10, "s": "cats", "q": "איך מוחקים קטגוריה?", "a": "בכרטיס הקטגוריה יש כפתור ✕ למחיקה.", "k": ["מחיקת קטגוריה", "למחוק קטגוריה", "להסיר קטגוריה", "מחיקה"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 11, "s": "events", "q": "מה זה אירוע ואיך יוצרים אחד?", "a": "אירוע (ברית, חתונה, חופשה...) מרכז במקום אחד הכנסות והוצאות של עניין מסוים. במסך ״קטגוריות ואירועים״ יוצרים אירוע עם שם, אימוג׳י, תאריך ויעד תקציב.", "k": ["אירוע", "אירועים", "חתונה", "ברית", "חופשה", "אירוע חדש", "מסיבה"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 12, "s": "events", "q": "איך משייכים תנועה לאירוע?", "a": "בהוספת הכנסה או הוצאה יש שדה ״אירוע״ שבו בוחרים את האירוע. אפשר לשייך גם בסריקת קבלה. התנועה תופיע ברשימה עם תג האירוע ובתוך מסך האירוע, ולא תיספר ביתרה החודשית. אפשר לשייך או לבטל שיוך גם בעריכת תנועה.", "k": ["שיוך", "לשייך", "משייכים", "שנכנסה", "הוצאה לאירוע", "הוצאה שייכת", "אירוע", "תנועה", "תג"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 13, "s": "events", "q": "האם התקציב של האירוע נכנס כהכנסה?", "a": "לא. התקציב הוא יעד בלבד: הוא מציג כמה הוצאת מתוכו וכמה נשאר, ולא נרשם כהכנסה. תנועות ששויכו לאירוע לא נספרות ביתרה ובתקציב החודשי בכלל. הן מופיעות ברשימת התנועות האחרונות עם תג האירוע, ונספרות רק בתוך האירוע.", "k": ["תקציב אירוע", "יעד אירוע", "נכנס", "הכנסה", "יתרה חודשית", "חודשית"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 14, "s": "events", "q": "מה קורה לתנועות של אירוע בתחילת חודש חדש?", "a": "האיפוס החודשי לא מוחק שום נתון, הוא רק קובע אילו תנועות מוצגות במסך החודשי. מסך האירוע מציג את כל התנועות ששויכו אליו, בלי קשר לחודש.", "k": ["איפוס", "חודש", "נמחק", "נעלם", "נמחקות", "אירוע", "תנועות אירוע"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 15, "s": "fixed", "q": "איך מוסיפים הוצאה או הכנסה קבועה?", "a": "בהגדרות, בחלק ״תשלומים קבועים״, מוסיפים שם וסכום להוצאה קבועה (שכירות, ארנונה...) או להכנסה קבועה (משכורת). הם נכללים בחישוב היתרה בכל מחזור.", "k": ["קבועה", "קבועות", "שכירות", "משכורת", "ארנונה", "חוזרת", "חודשית", "קבוע"], "go": ["settings", "להגדרות"]}, {"id": 16, "s": "fixed", "q": "מה זה ״דו-חודשי״?", "a": "הכנסות או הוצאות שחוזרות פעם בחודשיים, כמו חשבון מים. מוסיפים אותן בהגדרות, בבלוק ״דו-חודשי״ שבתוך התשלומים הקבועים.", "k": ["דו חודשי", "דו-חודשי", "חודשיים", "מים", "פעם בחודשיים"], "go": ["settings", "להגדרות"]}, {"id": 17, "s": "cycle", "q": "מה זה איפוס חודשי ואיך משנים את יום האיפוס?", "a": "היתרה והרשימות מחושבות לפי מחזור שמתחיל ביום שבחרתם (ברירת מחדל: 1 בחודש). בהגדרות, בכרטיס ״יום איפוס תקציב״, בוחרים יום מ-1 עד 31 ושומרים. האיפוס לא מוחק נתונים.", "k": ["איפוס", "מחזור", "יום איפוס", "תחילת חודש", "מתאפס", "לאפס", "לשנות יום"], "go": ["settings", "להגדרות"]}, {"id": 18, "s": "cycle", "q": "איך מבטלים את האיפוס החודשי?", "a": "בכרטיס ״יום איפוס תקציב״ יש מתג ״איפוס חודשי אוטומטי״. כשהוא כבוי האפליקציה עוברת למצב מצטבר: כל ההכנסות מול כל ההוצאות, בלי איפוס.", "k": ["ביטול", "לבטל", "כיבוי", "מצטבר", "ללא איפוס", "בלי איפוס", "מתג", "לא להתאפס"], "go": ["settings", "להגדרות"]}, {"id": 19, "s": "cycle", "q": "מה ההודעה שקופצת בתחילת מחזור על התשלומים הקבועים?", "a": "בתחילת מחזור חדש מוצגת הודעה עם סך ההכנסות וההוצאות הקבועות, כדי שתוודאו שהן עדיין נכונות. אם משהו השתנה, מעדכנים אותן בהגדרות.", "k": ["הודעה", "חלון", "קופץ", "בתחילת", "שינויים", "בסוף חודש", "קבועות"], "go": ["settings", "להגדרות"]}, {"id": 20, "s": "charts", "q": "מה יש במסך התרשימים?", "a": "סיכום הכנסות, הוצאות ויתרה של המחזור, פילוח לפי קטגוריות, השוואת הוצאות לתקציב, ותרשים מגמה עם בחירת תקופה.", "k": ["תרשים", "תרשימים", "גרף", "גרפים", "מגמה", "פילוח", "סטטיסטיקה", "דוח"], "go": ["charts", "לתרשימים"]}, {"id": 21, "s": "wa", "q": "איך מחברים את בוט הוואטסאפ?", "a": "בהגדרות, בחלק ״חיבור מספרי וואטסאפ לבוט״, מוסיפים את מספר הטלפון שלכם. אחר כך שולחים הודעות לבוט והתנועות נרשמות באפליקציה.", "k": ["וואטסאפ", "בוט", "חיבור", "מחברים", "מספר", "טלפון", "whatsapp", "ווצאפ"], "go": ["settings", "להגדרות"], "l": ["פתח את הבוט", "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA"]}, {"id": 22, "s": "wa", "q": "אילו פקודות שולחים לבוט?", "a": "הוצאה: <b>50 קפה</b>. הכנסה: <b>משכורת 8000</b>. רשימת פקודות: <b>פקודות</b>. תנועות שנרשמו דרך הבוט מסומנות בתג וואטסאפ.", "k": ["פקודות", "פקודה", "לשלוח", "דוגמה", "איך כותבים", "פורמט"], "l": ["שלח ״פקודות״ לבוט", "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA"]}, {"id": 23, "s": "wa", "q": "הבוט לא מגיב או שתנועה לא נרשמה", "a": "ודאו שהמספר שלכם מחובר בהגדרות בצורה נכונה, ושהודעה נשלחה בפורמט ״סכום + תיאור״. אפשר לשלוח ״פקודות״ לבדיקה. אם עדיין לא עובד, פנו לתמיכה.", "k": ["לא מגיב", "לא עובד", "לא נרשם", "לא נרשמה", "תקלה", "בעיה", "לא עונה"], "go": ["settings", "להגדרות"], "l": ["שלח ״פקודות״ לבוט", "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA"]}, {"id": 24, "s": "set", "q": "איך עוברים בין מצב כהה למצב בהיר?", "a": "בהגדרות, בחלק ״הגדרות כלליות״, בוחרים בין עיצוב כהה לעיצוב בהיר.", "k": ["כהה", "בהיר", "מצב לילה", "ערכת נושא", "עיצוב", "צבע", "ערכה"], "go": ["settings", "להגדרות"]}, {"id": 25, "s": "set", "q": "איך משנים שם או תמונת פרופיל?", "a": "בהגדרות, בכרטיס המשתמש בראש המסך, אפשר לערוך את השם ולהחליף תמונה. יש גם אפשרות לאפס את התמונה חזרה למקור.", "k": ["שם", "תמונה", "פרופיל", "אווטר", "לשנות שם", "להחליף תמונה"], "go": ["settings", "להגדרות"]}, {"id": 26, "s": "set", "q": "איך מתקינים את האפליקציה על מסך הבית?", "a": "האפליקציה ניתנת להתקנה: בדפדפן תופיע הצעת התקנה. באייפון בוחרים בשיתוף את ״הוסף למסך הבית״.", "k": ["התקנה", "להתקין", "מסך הבית", "אייפון", "אנדרואיד", "pwa", "אייקון"]}, {"id": 27, "s": "set", "q": "איפה הגדרות הנגישות?", "a": "כפתור הנגישות בצד המסך פותח אפשרויות: גודל טקסט, ניגודיות גבוהה, הדגשת קישורים, עצירת אנימציות וגווני אפור.", "k": ["נגישות", "גודל טקסט", "ניגודיות", "אנימציות", "גווני אפור", "הגדלה"]}, {"id": 28, "s": "set", "q": "איך מתנתקים או מוחקים חשבון?", "a": "התנתקות: כפתור היציאה בכותרת של מסך הבית. מחיקת חשבון: בהגדרות, באזור ״חשבון״. היא דורשת להקליד את המילה ״מחק״ ומוחקת את כל הנתונים לצמיתות.", "k": ["התנתקות", "להתנתק", "יציאה", "מחיקת חשבון", "למחוק חשבון", "לצמיתות", "הסרה"], "go": ["settings", "להגדרות"]}, {"id": 29, "s": "set", "q": "לא מצליח להתחבר", "a": "בכניסה חובה לסמן את אישור תנאי השימוש. אפשר להתחבר עם גוגל או עם אימייל, ואם שכחתם סיסמה יש כפתור ״שכחתי סיסמה״. מייל אימות לפעמים מגיע לתיבת הספאם.", "k": ["התחברות", "להתחבר", "להיכנס", "מצליח להיכנס", "לא נכנס", "נכנס לחשבון", "כניסה", "סיסמה", "שכחתי", "ספאם", "אימות", "תנאי שימוש", "תקנון"]}, {"id": 32, "s": "start", "q": "מה זה ״יתרה מחודשים קודמים״?", "a": "בכרטיס היתרה במסך הבית מופיע כפתור קטן עם הסכום שנשאר לך מהמחזורים שנסגרו. לחיצה עליו מציגה פירוט לפי מחזור, את היתרה הנוכחית ואת הסך הכל הזמין. הוא מידע בלבד ואינו מתווסף ליתרה החודשית. הוא מופיע רק כשהאיפוס החודשי פעיל.", "k": ["יתרה", "קודמים", "חודשים קודמים", "נשאר", "עודף", "מחודשים", "חיסכון", "הצטברות"], "go": ["dashboard", "למסך הבית"]}, {"id": 31, "s": "set", "q": "איפה רואים היסטוריה של חודשים קודמים?", "a": "בהגדרות, בכרטיס ״היסטוריית תנועות״, מופיעים כל המחזורים מהחדש לישן, עם הכנסות, הוצאות ויתרה לכל מחזור. לחיצה על מחזור פותחת את התנועות שלו, ויש חיפוש וייצוא לקובץ שנפתח באקסל. הסיכום כולל גם את התשלומים הקבועים (לפי הסכומים הנוכחיים), ותנועות של אירועים מוצגות בנפרד ואינן נספרות.", "k": ["היסטוריה", "היסטוריית", "חודשים קודמים", "חודש שעבר", "תנועות ישנות", "ייצוא", "אקסל", "csv", "הורדה", "קודם", "מחזורים"], "go": ["settings", "להגדרות"]}, {"id": 30, "s": "help", "q": "איך מדווחים על תקלה או יוצרים קשר?", "a": "בהגדרות, בחלק ״תמיכה ויצירת קשר״, אפשר לדווח על תקלה במייל או בוואטסאפ, וגם להצטרף לקבוצת הוואטסאפ.", "k": ["תמיכה", "דיווח", "תקלה", "קשר", "לדווח", "באג", "עזרה", "קבוצה", "פנייה"], "go": ["settings", "להגדרות"], "l": ["לקבוצת הוואטסאפ", "https://chat.whatsapp.com/HH3H5OzPhOACL98QhmicEM"]}], POP = [1, 3, 6, 13, 17, 21], BOT = "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA", GROUP = "https://chat.whatsapp.com/HH3H5OzPhOACL98QhmicEM";
+  var SECS = [["start", "🚀", "התחלה מהירה"], ["scan", "🧾", "סריקת קבלות"], ["cats", "🏷️", "קטגוריות ותקציב"], ["events", "🎉", "אירועים"], ["fixed", "🔁", "תשלומים קבועים"], ["cycle", "📅", "איפוס חודשי"], ["charts", "📊", "תרשימים"], ["wa", "💬", "בוט וואטסאפ"], ["set", "⚙️", "הגדרות וחשבון"], ["help", "🛟", "תמיכה"]], KB = [{"id": 1, "s": "start", "q": "איך מוסיפים הכנסה או הוצאה?", "a": "במסך <b>החשבון שלי</b> לוחצים על כפתור ההכנסה או ההוצאה ומזינים סכום (חובה). אפשר להוסיף גם תיאור, קטגוריה ואירוע. בלי תיאור התנועה תיקרא ״הכנסה כללית״ או ״הוצאה כללית״, והיא נרשמת בתאריך של היום.", "k": ["הוספה", "להוסיף", "מוסיפים", "הכנסה", "הוצאה", "תנועה", "רישום", "לרשום", "חדשה", "להזין"], "go": ["dashboard", "למסך הבית"]}, {"id": 2, "s": "start", "q": "איך עורכים, מוחקים או מחפשים תנועה?", "a": "ברשימת התנועות בכל שורה יש כפתור עריכה (עיפרון) וכפתור מחיקה (✕). בשורת החיפוש מעל הרשימה אפשר לחפש לפי תיאור או קטגוריה.", "k": ["עריכה", "לערוך", "מחיקה", "למחוק", "תיקון", "לתקן", "טעות", "חיפוש", "לחפש", "תנועה"], "go": ["dashboard", "למסך הבית"]}, {"id": 3, "s": "start", "q": "איך מחושבת היתרה?", "a": "היתרה = ההכנסות של המחזור הנוכחי (כולל הכנסות קבועות) פחות ההוצאות הקבועות ופחות ההוצאות הרגילות של המחזור.", "k": ["יתרה", "חישוב", "מחושב", "פנויה", "נשאר", "כמה נשאר", "סכום"], "go": ["dashboard", "למסך הבית"]}, {"id": 4, "s": "start", "q": "איך משנים מטבע?", "a": "בכותרת של מסך הבית יש כפתור עם דגל השפה (🇮🇱 כברירת מחדל). לוחצים עליו, ובחלק מטבע בוחרים מטבע מהרשימה, למשל דולר, אירו או פאונד. סכומים מוקלדים ומוצגים במטבע שנבחר, וההמרה לפי שער משוער. כשמחליפים שפה, האפליקציה גם שואלת אם להחליף גם את המטבע.", "k": ["מטבע", "דולר", "אירו", "שקל", "המרה", "שער", "פאונד"], "go": ["dashboard", "למסך הבית"]}, {"id": 5, "s": "start", "q": "האפליקציה תקועה או לא מתעדכנת", "a": "לחצו על כפתור הרענון (החיצים) בכותרת של מסך הבית. בהגדרות יש גם כפתור לעדכון האפליקציה לגרסה האחרונה.", "k": ["תקוע", "תקועה", "רענון", "לרענן", "מתעדכן", "איטי", "איטית", "לא נטען", "עדכון", "לעדכן"], "go": ["settings", "להגדרות"]}, {"id": 6, "s": "scan", "q": "איך סורקים קבלה או חשבונית?", "a": "במסך הבית לוחצים על ״סריקת קבלה / חשבונית״, בוחרים מצלמה או גלריה, והבינה המלאכותית מזהה את הפרטים. לפני השמירה מוצג אישור, ואפשר לשייך לאירוע. אם הסכום לא זוהה אפשר להזין אותו ידנית.", "k": ["סריקה", "לסרוק", "סורקים", "קבלה", "חשבונית", "צילום", "מצלמה", "גלריה", "AI", "בינה"], "go": ["dashboard", "למסך הבית"]}, {"id": 7, "s": "scan", "q": "יש הגבלה על מספר הסריקות?", "a": "כן. מספר הסריקות המותר ליום מופיע על כפתור הסריקה (כרגע 7 סריקות ביום).", "k": ["הגבלה", "מגבלה", "מכסה", "יומי", "כמה סריקות", "סריקות"], "go": ["dashboard", "למסך הבית"]}, {"id": 8, "s": "cats", "q": "איך מוסיפים קטגוריה?", "a": "במסך ״קטגוריות ואירועים״ לוחצים על כפתור ההוספה, בוחרים אם זו הוצאה או הכנסה, נותנים שם, ואפשר להגדיר גם תקציב חודשי.", "k": ["קטגוריה", "קטגוריות", "להוסיף", "חדשה", "יצירת", "ליצור"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 9, "s": "cats", "q": "איך מגדירים תקציב לקטגוריה?", "a": "בכרטיס הקטגוריה לוחצים על כפתור עריכת התקציב (בפינה), מזינים סכום ושומרים. תראו פס התקדמות וכמה נשאר, וגם התראה כשמתקרבים לתקציב (80%) או חורגים ממנו.", "k": ["תקציב", "יעד", "חריגה", "התראה", "מסגרת", "להגביל"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 10, "s": "cats", "q": "איך מוחקים קטגוריה?", "a": "בכרטיס הקטגוריה יש כפתור ✕ למחיקה.", "k": ["מחיקת קטגוריה", "למחוק קטגוריה", "להסיר קטגוריה", "מחיקה"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 11, "s": "events", "q": "מה זה אירוע ואיך יוצרים אחד?", "a": "אירוע (ברית, חתונה, חופשה...) מרכז במקום אחד הכנסות והוצאות של עניין מסוים. במסך ״קטגוריות ואירועים״ יוצרים אירוע עם שם, אימוג׳י, תאריך ויעד תקציב.", "k": ["אירוע", "אירועים", "חתונה", "ברית", "חופשה", "אירוע חדש", "מסיבה"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 12, "s": "events", "q": "איך משייכים תנועה לאירוע?", "a": "בהוספת הכנסה או הוצאה יש שדה ״אירוע״ שבו בוחרים את האירוע. אפשר לשייך גם בסריקת קבלה. התנועה תופיע ברשימה עם תג האירוע ובתוך מסך האירוע, ולא תיספר ביתרה החודשית. אפשר לשייך או לבטל שיוך גם בעריכת תנועה.", "k": ["שיוך", "לשייך", "משייכים", "שנכנסה", "הוצאה לאירוע", "הוצאה שייכת", "אירוע", "תנועה", "תג"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 13, "s": "events", "q": "האם התקציב של האירוע נכנס כהכנסה?", "a": "לא. התקציב הוא יעד בלבד: הוא מציג כמה הוצאת מתוכו וכמה נשאר, ולא נרשם כהכנסה. תנועות ששויכו לאירוע לא נספרות ביתרה ובתקציב החודשי בכלל. הן מופיעות ברשימת התנועות האחרונות עם תג האירוע, ונספרות רק בתוך האירוע.", "k": ["תקציב אירוע", "יעד אירוע", "נכנס", "הכנסה", "יתרה חודשית", "חודשית"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 14, "s": "events", "q": "מה קורה לתנועות של אירוע בתחילת חודש חדש?", "a": "האיפוס החודשי לא מוחק שום נתון, הוא רק קובע אילו תנועות מוצגות במסך החודשי. מסך האירוע מציג את כל התנועות ששויכו אליו, בלי קשר לחודש.", "k": ["איפוס", "חודש", "נמחק", "נעלם", "נמחקות", "אירוע", "תנועות אירוע"], "go": ["categories", "לקטגוריות ואירועים"]}, {"id": 15, "s": "fixed", "q": "איך מוסיפים הוצאה או הכנסה קבועה?", "a": "בהגדרות, בחלק ״תשלומים קבועים״, מוסיפים שם וסכום להוצאה קבועה (שכירות, ארנונה...) או להכנסה קבועה (משכורת). הם נכללים בחישוב היתרה בכל מחזור.", "k": ["קבועה", "קבועות", "שכירות", "משכורת", "ארנונה", "חוזרת", "חודשית", "קבוע"], "go": ["settings", "להגדרות"]}, {"id": 16, "s": "fixed", "q": "מה זה ״דו-חודשי״?", "a": "הכנסות או הוצאות שחוזרות פעם בחודשיים, כמו חשבון מים. מוסיפים אותן בהגדרות, בבלוק ״דו-חודשי״ שבתוך התשלומים הקבועים.", "k": ["דו חודשי", "דו-חודשי", "חודשיים", "מים", "פעם בחודשיים"], "go": ["settings", "להגדרות"]}, {"id": 17, "s": "cycle", "q": "מה זה איפוס חודשי ואיך משנים את יום האיפוס?", "a": "היתרה והרשימות מחושבות לפי מחזור שמתחיל ביום שבחרתם (ברירת מחדל: 1 בחודש). בהגדרות, בכרטיס ״יום איפוס תקציב״, בוחרים יום מ-1 עד 31 ושומרים. האיפוס לא מוחק נתונים.", "k": ["איפוס", "מחזור", "יום איפוס", "תחילת חודש", "מתאפס", "לאפס", "לשנות יום"], "go": ["settings", "להגדרות"]}, {"id": 18, "s": "cycle", "q": "איך מבטלים את האיפוס החודשי?", "a": "בכרטיס ״יום איפוס תקציב״ יש מתג ״איפוס חודשי אוטומטי״. כשהוא כבוי האפליקציה עוברת למצב מצטבר: כל ההכנסות מול כל ההוצאות, בלי איפוס.", "k": ["ביטול", "לבטל", "כיבוי", "מצטבר", "ללא איפוס", "בלי איפוס", "מתג", "לא להתאפס"], "go": ["settings", "להגדרות"]}, {"id": 19, "s": "cycle", "q": "מה ההודעה שקופצת בתחילת מחזור על התשלומים הקבועים?", "a": "בתחילת מחזור חדש מוצגת הודעה עם סך ההכנסות וההוצאות הקבועות, כדי שתוודאו שהן עדיין נכונות. אם משהו השתנה, מעדכנים אותן בהגדרות.", "k": ["הודעה", "חלון", "קופץ", "בתחילת", "שינויים", "בסוף חודש", "קבועות"], "go": ["settings", "להגדרות"]}, {"id": 20, "s": "charts", "q": "מה יש במסך התרשימים?", "a": "סיכום הכנסות, הוצאות ויתרה של המחזור, פילוח לפי קטגוריות, השוואת הוצאות לתקציב, ותרשים מגמה עם בחירת תקופה.", "k": ["תרשים", "תרשימים", "גרף", "גרפים", "מגמה", "פילוח", "סטטיסטיקה", "דוח"], "go": ["charts", "לתרשימים"]}, {"id": 21, "s": "wa", "q": "איך מחברים את בוט הוואטסאפ?", "a": "בהגדרות, בחלק ״חיבור מספרי וואטסאפ לבוט״, מוסיפים את מספר הטלפון שלכם. אחר כך שולחים הודעות לבוט והתנועות נרשמות באפליקציה.", "k": ["וואטסאפ", "בוט", "חיבור", "מחברים", "מספר", "טלפון", "whatsapp", "ווצאפ"], "go": ["settings", "להגדרות"], "l": ["פתח את הבוט", "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA"]}, {"id": 22, "s": "wa", "q": "אילו פקודות שולחים לבוט?", "a": "הוצאה: <b>50 קפה</b>. הכנסה: <b>משכורת 8000</b>. רשימת פקודות: <b>פקודות</b>. תנועות שנרשמו דרך הבוט מסומנות בתג וואטסאפ.", "k": ["פקודות", "פקודה", "לשלוח", "דוגמה", "איך כותבים", "פורמט"], "l": ["שלח ״פקודות״ לבוט", "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA"]}, {"id": 23, "s": "wa", "q": "הבוט לא מגיב או שתנועה לא נרשמה", "a": "ודאו שהמספר שלכם מחובר בהגדרות בצורה נכונה, ושהודעה נשלחה בפורמט ״סכום + תיאור״. אפשר לשלוח ״פקודות״ לבדיקה. אם עדיין לא עובד, פנו לתמיכה.", "k": ["לא מגיב", "לא עובד", "לא נרשם", "לא נרשמה", "תקלה", "בעיה", "לא עונה"], "go": ["settings", "להגדרות"], "l": ["שלח ״פקודות״ לבוט", "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA"]}, {"id": 24, "s": "set", "q": "איך עוברים בין מצב כהה למצב בהיר?", "a": "בהגדרות, בחלק ״הגדרות כלליות״, בוחרים בין עיצוב כהה לעיצוב בהיר.", "k": ["כהה", "בהיר", "מצב לילה", "ערכת נושא", "עיצוב", "צבע", "ערכה"], "go": ["settings", "להגדרות"]}, {"id": 25, "s": "set", "q": "איך משנים שם או תמונת פרופיל?", "a": "בהגדרות, בכרטיס המשתמש בראש המסך, אפשר לערוך את השם ולהחליף תמונה. יש גם אפשרות לאפס את התמונה חזרה למקור.", "k": ["שם", "תמונה", "פרופיל", "אווטר", "לשנות שם", "להחליף תמונה"], "go": ["settings", "להגדרות"]}, {"id": 26, "s": "set", "q": "איך מתקינים את האפליקציה על מסך הבית?", "a": "האפליקציה ניתנת להתקנה: בדפדפן תופיע הצעת התקנה. באייפון בוחרים בשיתוף את ״הוסף למסך הבית״.", "k": ["התקנה", "להתקין", "מסך הבית", "אייפון", "אנדרואיד", "pwa", "אייקון"]}, {"id": 27, "s": "set", "q": "איפה הגדרות הנגישות?", "a": "כפתור הנגישות בצד המסך פותח אפשרויות: גודל טקסט, ניגודיות גבוהה, הדגשת קישורים, עצירת אנימציות וגווני אפור.", "k": ["נגישות", "גודל טקסט", "ניגודיות", "אנימציות", "גווני אפור", "הגדלה"]}, {"id": 28, "s": "set", "q": "איך מתנתקים או מוחקים חשבון?", "a": "התנתקות: כפתור היציאה בכותרת של מסך הבית. מחיקת חשבון: בהגדרות, באזור ״חשבון״. היא דורשת להקליד את המילה ״מחק״ ומוחקת את כל הנתונים לצמיתות.", "k": ["התנתקות", "להתנתק", "יציאה", "מחיקת חשבון", "למחוק חשבון", "לצמיתות", "הסרה"], "go": ["settings", "להגדרות"]}, {"id": 29, "s": "set", "q": "לא מצליח להתחבר", "a": "בכניסה חובה לסמן את אישור תנאי השימוש. אפשר להתחבר עם גוגל או עם אימייל, ואם שכחתם סיסמה יש כפתור ״שכחתי סיסמה״. מייל אימות לפעמים מגיע לתיבת הספאם.", "k": ["התחברות", "להתחבר", "להיכנס", "מצליח להיכנס", "לא נכנס", "נכנס לחשבון", "כניסה", "סיסמה", "שכחתי", "ספאם", "אימות", "תנאי שימוש", "תקנון"]}, {"id": 32, "s": "start", "q": "מה זה ״יתרה מחודשים קודמים״?", "a": "בכרטיס היתרה במסך הבית מופיע כפתור קטן עם הסכום שנשאר לך מהמחזורים שנסגרו. לחיצה עליו מציגה פירוט לפי מחזור, את היתרה הנוכחית ואת הסך הכל הזמין. הוא מידע בלבד ואינו מתווסף ליתרה החודשית. הוא מופיע רק כשהאיפוס החודשי פעיל.", "k": ["יתרה", "קודמים", "חודשים קודמים", "נשאר", "עודף", "מחודשים", "חיסכון", "הצטברות"], "go": ["dashboard", "למסך הבית"]}, {"id": 31, "s": "set", "q": "איפה רואים היסטוריה של חודשים קודמים?", "a": "בהגדרות, בכרטיס ״היסטוריית תנועות״, מופיעים כל המחזורים מהחדש לישן, עם הכנסות, הוצאות ויתרה לכל מחזור. לחיצה על מחזור פותחת את התנועות שלו, ויש חיפוש וייצוא לקובץ שנפתח באקסל. הסיכום כולל גם את התשלומים הקבועים (לפי הסכומים הנוכחיים), ותנועות של אירועים מוצגות בנפרד ואינן נספרות.", "k": ["היסטוריה", "היסטוריית", "חודשים קודמים", "חודש שעבר", "תנועות ישנות", "ייצוא", "אקסל", "csv", "הורדה", "קודם", "מחזורים"], "go": ["settings", "להגדרות"]}, {"id": 30, "s": "help", "q": "איך מדווחים על תקלה או יוצרים קשר?", "a": "בהגדרות, בחלק ״תמיכה ויצירת קשר״, אפשר לדווח על תקלה במייל או בוואטסאפ, וגם להצטרף לקבוצת הוואטסאפ.", "k": ["תמיכה", "דיווח", "תקלה", "קשר", "לדווח", "באג", "עזרה", "קבוצה", "פנייה"], "go": ["settings", "להגדרות"], "l": ["לקבוצת הוואטסאפ", "https://chat.whatsapp.com/HH3H5OzPhOACL98QhmicEM"]}], POP = [1, 3, 6, 13, 17, 21], BOT = "https://wa.me/972559254440?text=%D7%A4%D7%A7%D7%95%D7%93%D7%95%D7%AA", GROUP = "https://chat.whatsapp.com/HH3H5OzPhOACL98QhmicEM";
   var STOP = {};
   'איך מה האם אני את של על זה לי יש אפשר למה איפה כמה עם או גם לא כן רוצה צריך אם אל מי הוא היא הם אותו אותה לו בו כל עוד רק כדי זאת'.split(' ').forEach(function(w){ STOP[w]=1; });
   var guideBuilt = false, byId = {};
@@ -8773,7 +8774,7 @@ body.theme-light #evx-panel{background:#fff}
   <span class="wa-help-arrow">←</span>
 </a>
 
-<div id="modal-overlay" class="hidden" onclick="if(event.target===this) hide('modal-overlay')">
+<div id="modal-overlay" class="hidden" onclick="if(event.target===this) this.classList.add('hidden')">
   <div id="modal-sheet" class="slide-up" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding:0 2px;">
@@ -8784,11 +8785,16 @@ body.theme-light #evx-panel{background:#fff}
       <div style="width:38px;flex-shrink:0;"></div>
     </div>
     <form autocomplete="off" role="presentation" style="display:contents">
+      <div class="amt-cur-wrap" style="position:relative;margin-bottom:11px;">
       <input id="modal-amount" class="inp mono modern-hover" type="text" inputmode="decimal"
         placeholder="0" autocomplete="off" name="budget-amount" role="presentation"
-        style="font-size:40px;font-weight:800;text-align:center;padding:18px 10px;margin-bottom:11px">
+        style="font-size:40px;font-weight:800;text-align:center;padding:18px 46px;margin-bottom:0">
+      <span id="modal-cur-sym" class="amt-cur-sym" data-cur-sym aria-hidden="true">₪</span>
+      </div>
       <input id="modal-desc" class="inp modern-hover" type="text" placeholder="תיאור הפעולה"
         autocomplete="off" name="budget-description" role="presentation" style="margin-bottom:11px">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);margin:0 4px 4px;">📅 תאריך</div>
+      <input id="modal-date" class="inp modern-hover" type="date" style="margin-bottom:11px;direction:rtl;">
     </form>
     <select id="modal-category" class="inp modern-hover" style="margin-bottom:6px;">
       <option value="">ללא קטגוריה</option>
@@ -8943,11 +8949,16 @@ body.theme-light #evx-panel{background:#fff}
       <h3 id="edit-modal-title" style="font-size:17px;font-weight:700;text-align:center;flex:1;margin:0;">עריכת תנועה</h3>
       <div style="width:38px;flex-shrink:0;"></div>
     </div>
+    <div class="amt-cur-wrap" style="position:relative;margin-bottom:11px;">
     <input id="edit-modal-amount" class="inp mono modern-hover" type="text" inputmode="decimal"
       placeholder="0" autocomplete="off"
-      style="font-size:36px;font-weight:800;text-align:center;padding:16px 10px;margin-bottom:11px">
+      style="font-size:36px;font-weight:800;text-align:center;padding:16px 46px;margin-bottom:0">
+    <span id="edit-modal-cur-sym" class="amt-cur-sym" data-cur-sym aria-hidden="true">₪</span>
+    </div>
     <input id="edit-modal-desc" class="inp modern-hover" type="text" placeholder="תיאור הפעולה"
       autocomplete="off" style="margin-bottom:11px">
+    <div style="font-size:11px;font-weight:700;color:var(--muted);margin:0 4px 4px;">📅 תאריך</div>
+    <input id="edit-modal-date" class="inp modern-hover" type="date" style="margin-bottom:11px;direction:rtl;">
     <select id="edit-modal-category" class="inp modern-hover" style="margin-bottom:11px;"></select>
     <select id="edit-modal-event" class="inp modern-hover" style="margin-bottom:6px;border-color:rgba(168,85,247,0.25);"></select>
     <div style="font-size:10.5px;font-weight:600;color:var(--muted);margin:0 4px 14px;line-height:1.5;">תנועה ששויכה לאירוע לא נספרת ביתרה ובתקציב החודשי.</div>
@@ -8988,7 +8999,7 @@ body.theme-light #evx-panel{background:#fff}
         placeholder="ללא הגבלה"
         style="padding-left:36px;font-size:24px;font-weight:800;text-align:left;direction:ltr;letter-spacing:0.02em;"
         oninput="updateBudgetModalLive()">
-      <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--cyan);font-size:16px;font-weight:700;pointer-events:none;">₪</span>
+      <span data-cur-sym style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--cyan);font-size:16px;font-weight:700;pointer-events:none;">₪</span>
     </div>
     <p style="font-size:11px;color:rgba(255,255,255,0.28);text-align:center;margin-bottom:18px;">השאר ריק או 0 לביטול ההגבלה</p>
     <button id="budget-edit-save" class="btn modern-hover btn-cyan" style="font-size:15px;padding:15px;margin-bottom:10px;">שמור תקרה</button>
@@ -9188,7 +9199,47 @@ body.theme-light #evx-panel{background:#fff}
   }
   /* ── חשיפה גלובלית של fmt ו-_currency לכל IIFE חיצוני ── */
   window._fmt = fmt;
+  window.fmt = fmt; /* כמה מודולים (היסטוריה, אירועים, יתרה מצטברת) מחפשים window.fmt — בלעדיו נפלו לסימן ₪ קבוע */
   window._getCurrency = function(){ return _currency; };
+
+  /* ── המרת סכומים בין המטבע המוצג לבסיס (שקל) ──
+     הנתונים נשמרים תמיד בשקלים. כשהמשתמש בוחר מטבע אחר, מה שהוא מקליד הוא במטבע הנבחר,
+     ולכן ממירים לשקל לפני שמירה ומשקל למטבע הנבחר כשממלאים שדה לעריכה. */
+  function _curRate(){
+    if(_currency.code === 'ILS') return 1;
+    var r = Number(_currency.rate);
+    if(!(r > 0)){
+      var lc = _currencyList.find(function(x){ return x.code === _currency.code; });
+      r = (lc && lc.rate > 0) ? lc.rate : 1;
+    }
+    return r;
+  }
+  function _toBase(v){ v = Number(v); if(!isFinite(v)) return 0; var r = _curRate(); return r === 1 ? v : Math.round(v / r * 100) / 100; }
+  function _fromBase(v){ v = Number(v); if(!isFinite(v)) return 0; var r = _curRate(); return r === 1 ? v : Math.round(v * r * 100) / 100; }
+  /* ממלא שדה סכום בערך המוצג, וזוכר את הערך המקורי כדי שעריכה בלי שינוי סכום לא תזיז אותו באגורות */
+  function _amtFill(inp, base){
+    if(!inp) return;
+    if(base === '' || base == null || isNaN(Number(base))){ inp.value = ''; delete inp.dataset.amtDisp; return; }
+    var disp = _fromBase(base);
+    inp.value = disp;
+    inp.dataset.amtDisp = String(disp); inp.dataset.amtBase = String(Number(base)); inp.dataset.amtCur = _currency.code;
+  }
+  function _amtToBase(inp, num){
+    num = Number(num);
+    if(inp && inp.dataset && inp.dataset.amtDisp != null && inp.dataset.amtCur === _currency.code && Number(inp.dataset.amtDisp) === num) return Number(inp.dataset.amtBase);
+    return _toBase(num);
+  }
+  function _applyCurrencyUI(){
+    var sym = _currency.symbol || '₪';
+    try {
+      document.querySelectorAll('[data-cur-sym]').forEach(function(el){ if(el.textContent !== sym) el.textContent = sym; });
+      document.querySelectorAll('[data-cur-ph]').forEach(function(el){ el.placeholder = el.getAttribute('data-cur-ph').split('{s}').join(sym); });
+    } catch(e){}
+  }
+  window._curRate = _curRate; window._toBase = _toBase; window._fromBase = _fromBase;
+  window._amtFill = _amtFill; window._amtToBase = _amtToBase; window._applyCurrencyUI = _applyCurrencyUI;
+  window._curSymbol = function(){ return _currency.symbol || '₪'; };
+  window._currencyListRef = function(){ return _currencyList; };
 
   // ── חשיפה גלובלית של המשתנים הנדרשים ל-IIFE חיצוניים (כמו scan-doc) ──
   Object.defineProperty(window, '_appUserCategories', {
@@ -9337,7 +9388,15 @@ body.theme-light #evx-panel{background:#fff}
     if (!d) return new Date();
     if (d.toDate) return d.toDate();
     if (d.seconds) return new Date(d.seconds * 1000);
-    return new Date(d);
+    if (d._seconds) return new Date(d._seconds * 1000);
+    if (typeof d === 'number') return new Date(d < 1e12 ? d * 1000 : d);
+    var r = new Date(d);
+    if (isNaN(r) && typeof d === 'string') {
+      /* תאריך בפורמט ישראלי: 18/10/2026, 18.10.26, 18-10-2026 (+ שעה אופציונלית) */
+      var m = d.trim().match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})(?:[ ,T]+(\d{1,2}):(\d{2}))?/);
+      if (m) { var y = +m[3]; if (y < 100) y += 2000; r = new Date(y, +m[2]-1, +m[1], m[4]?+m[4]:12, m[5]?+m[5]:0); }
+    }
+    return r;
   }
 
   /* ── Toast notifications ── */
@@ -9386,12 +9445,14 @@ body.theme-light #evx-panel{background:#fff}
     $('edit-modal-title').textContent = isInc
       ? (window._i18n_current && window._i18n_current.edit_income  || 'עריכת הכנסה')
       : (window._i18n_current && window._i18n_current.edit_expense || 'עריכת הוצאה');
-    $('edit-modal-amount').value = item.amount;
+    _amtFill($('edit-modal-amount'), item.amount);
+    var _ecs = $('edit-modal-cur-sym'); if(_ecs){ _ecs.textContent = _currency.symbol || '₪'; _ecs.style.color = isInc ? 'var(--green)' : 'var(--exp)'; }
     $('edit-modal-amount').style.color = isInc ? 'var(--green)' : 'var(--text)';
     $('edit-modal-amount').style.borderColor = isInc ? 'rgba(0,230,118,0.3)' : 'rgba(242,135,106,0.3)';
     $('edit-modal-sheet').style.borderTop = '2px solid ' + (isInc ? 'var(--green)' : 'var(--exp)');
     $('edit-modal-submit').className = 'btn modern-hover ' + (isInc ? 'btn-green' : 'btn-red');
     $('edit-modal-desc').value = item.description || '';
+    if($('edit-modal-date')){ var _d=parseDate(item.date); $('edit-modal-date').value = isNaN(_d)?window._ymdLocal(new Date()):window._ymdLocal(_d); $('edit-modal-date').max=window._ymdLocal(new Date()); $('edit-modal-date').dataset.orig=$('edit-modal-date').value; }
     // Populate categories
     var opts = '<option value="">ללא קטגוריה</option>';
     userCategories.forEach(function(c) {
@@ -9414,10 +9475,12 @@ body.theme-light #evx-panel{background:#fff}
     var desc = $('edit-modal-desc').value.trim();
     if (!amount || amount <= 0) { toast('נא למלא סכום חיובי', 'error'); return; }
     if (amount > 9999999) { toast('סכום גדול מדי', 'error'); return; }
+    amount = _amtToBase($('edit-modal-amount'), amount); /* מהמטבע הנבחר לשקל; בלי שינוי — הסכום המקורי בדיוק */
     /* אם לא הוזן תיאור — ברירת מחדל לפי סוג */
     if (!desc) desc = (editingItem._t === 'income') ? 'הכנסה כללית' : 'הוצאה כללית';
     var col = editingItem._t === 'income' ? 'incomes' : 'expenses';
     var data = { amount: amount, description: desc };
+    var _ed=$('edit-modal-date'); if(_ed && _ed.value && _ed.value!==_ed.dataset.orig) data.date = window._isoFromPicker(_ed.value);
     var cat = $('edit-modal-category').value;
     if (cat) data.category = cat; else data.category = firebase.firestore.FieldValue.delete();
     var _evSel = $('edit-modal-event') ? $('edit-modal-event').value : '';
@@ -9538,6 +9601,8 @@ body.theme-light #evx-panel{background:#fff}
     }
     window.scrollTo(0, 0);
     document.body.classList.toggle('v-home', v === 'dashboard');
+    /* בועת היתרה (כרטיס היתרה + שורת הכנסות/קבועות/משתנות) — רק במסך הראשי */
+    document.body.classList.toggle('v-sub', v !== 'dashboard');
     if (v === 'settings') { try { renderFixedLists(); renderBimonthlyList(); } catch(_e) {} }
     if (window._waFabSet) window._waFabSet(v);
     hide('view-dashboard'); hide('view-settings'); hide('view-categories'); hide('view-charts');
@@ -9546,6 +9611,8 @@ body.theme-light #evx-panel{background:#fff}
     });
     if (v === 'dashboard'){
       show('view-dashboard'); $('nav-dashboard').classList.add('active');
+      /* היתרה הייתה מוסתרת — מתאימים מחדש את גודל הגופן שלה עכשיו כשהיא שוב גלויה */
+      requestAnimationFrame(function(){ try { renderStats(); } catch(_e){} });
     } else if (v === 'categories'){
       show('view-categories'); $('nav-categories').classList.add('active');
       _catViewJustOpened = true;
@@ -9871,7 +9938,7 @@ body.theme-light #evx-panel{background:#fff}
       ? (window._i18n_current && window._i18n_current.edit_fixed_inc || 'עריכת הכנסה קבועה')
       : (window._i18n_current && window._i18n_current.edit_fixed_exp || 'עריכת הוצאה קבועה');
     $('fixed-edit-name').value   = name;
-    $('fixed-edit-amount').value = amount;
+    _amtFill($('fixed-edit-amount'), amount);
     $('fixed-edit-overlay').classList.add('open');
   };
   window.closeFixedEdit = function() {
@@ -9883,6 +9950,7 @@ body.theme-light #evx-panel{background:#fff}
     var name   = $('fixed-edit-name').value.trim();
     var amount = parseFloat($('fixed-edit-amount').value);
     if(!name || !amount) return;
+    amount = _amtToBase($('fixed-edit-amount'), amount);
     db.collection('users').doc(uid).collection(_editFixedMeta.col).doc(_editFixedMeta.id)
       .update({ name:name, amount:amount })
       .then(function(){ closeFixedEdit(); toast('עודכן בהצלחה!','success'); })
@@ -10612,7 +10680,7 @@ window.deletePhoneIdx = function(i) {
         var balY = scaleY(d.bal);
         var labelY = d.bal >= 0 ? balY - 7 : balY + 14;
         var color = d.bal >= 0 ? '#00E5FF' : '#FF6080';
-        svg += '<text x="' + x.toFixed(1) + '" y="' + labelY.toFixed(1) + '" text-anchor="middle" font-family="\'JetBrains Mono\',monospace" font-size="8.5" font-weight="800" fill="' + color + '" opacity="0.85">₪' + _compactNum(Math.abs(d.bal)) + '</text>';
+        svg += '<text x="' + x.toFixed(1) + '" y="' + labelY.toFixed(1) + '" text-anchor="middle" font-family="\'JetBrains Mono\',monospace" font-size="8.5" font-weight="800" fill="' + color + '" opacity="0.85">' + escHtml(_currency.symbol || '₪') + _compactNum(Math.abs(_fromBase(d.bal))) + '</text>';
       }
     });
 
@@ -11786,24 +11854,47 @@ window.deletePhoneIdx = function(i) {
     }).catch(function(e){ console.error(e); toast('שגיאה בשמירה', 'error'); });
   };
 
-  /* ── Currency toggle ── */
-  $('btn-currency').onclick = function(){ _openCurrencySheet(); };
-  /* עדכן סמל כפתור לפי מטבע שמור */
+  /* ── Currency ──
+     כפתור ה-₪ בכותרת הוחלף בכפתור שפה (דגל). בחירת מטבע זמינה מתוך גיליון השפה (מקטע "מטבע"),
+     שפותח את גיליון המטבעות הזה. */
+  if($('btn-currency')) $('btn-currency').onclick = function(){ _openCurrencySheet(); };
   (function(){
     var btn = $('btn-currency');
     if(btn) btn.textContent = _currency.symbol;
+    _applyCurrencyUI();
   })();
+
+  /* החלפת מטבע אחת לכל האפליקציה — מעדכנת מיד כל סכום וסימן */
+  function _applyCurrencyCode(code){
+    var cur = _currencyList.find(function(x){ return x.code===code; });
+    if(!cur) return null;
+    _currency = { code:cur.code, symbol:cur.symbol, rate:cur.rate, name:cur.name, flag:cur.flag||'' };
+    isUSD = (code !== 'ILS');
+    try { localStorage.setItem('ao_currency', JSON.stringify(_currency)); } catch(e){}
+    if(typeof window._resetBalanceCounter === 'function') window._resetBalanceCounter();
+    var btn = document.getElementById('btn-currency');
+    if(btn) btn.textContent = cur.symbol;
+    _applyCurrencyUI();
+    try { renderAll(); } catch(e){ console.error(e); }
+    try { if(!$('view-settings').classList.contains('hidden')){ renderFixedLists(); renderBimonthlyList(); } } catch(e){}
+    try { if(typeof window._renderEvList === 'function') window._renderEvList(); } catch(e){}
+    try { document.dispatchEvent(new CustomEvent('mnta:currency', {detail:{code:cur.code}})); } catch(e){}
+    return cur;
+  }
+  window._applyCurrencyCode = _applyCurrencyCode;
+  window._openCurrencySheet = function(opts){ _openCurrencySheet(opts); };
 
   /* ══════════════════════════════════════════════════
      CURRENCY PICKER SHEET
   ══════════════════════════════════════════════════ */
-  function _openCurrencySheet(){
-    var ex = document.getElementById('_cur-sheet');
+  function _openCurrencySheet(opts){
+    opts = opts || {};
+    var ex = document.getElementById('_cur-overlay');
     if(ex) ex.remove();
     _fetchLiveRates();
 
     var sheet = document.createElement('div');
-    sheet.id  = '_cur-sheet';
+    sheet.id  = '_cur-overlay';
     sheet.style.cssText = [
       'position:fixed;inset:0;z-index:9996',
       'background:rgba(0,0,0,0.60)',
@@ -11927,17 +12018,11 @@ window.deletePhoneIdx = function(i) {
     sheet.addEventListener('click', function(e){ if(e.target===sheet) closeSheet(); });
 
     window._setCurrency = function(code){
-      var cur = _currencyList.find(function(x){ return x.code===code; });
+      var cur = _applyCurrencyCode(code);
       if(!cur) return;
-      _currency = { code:cur.code, symbol:cur.symbol, rate:cur.rate, name:cur.name, flag:cur.flag||'' };
-      isUSD = (code !== 'ILS');
-      try { localStorage.setItem('ao_currency', JSON.stringify(_currency)); } catch(e){}
-      if(typeof window._resetBalanceCounter === 'function') window._resetBalanceCounter();
-      var btn = document.getElementById('btn-currency');
-      if(btn) btn.textContent = cur.symbol;
-      renderAll();
       /* סגור sheet מטבע קודם, ואז שאל על שפה */
       setTimeout(closeSheet, 180);
+      if(opts.noLangAsk) return;
       setTimeout(function(){
         if(typeof window._askLangChange === 'function'){
           window._askLangChange(cur.code, cur.name, cur.flag);
@@ -11950,6 +12035,14 @@ window.deletePhoneIdx = function(i) {
   $('btn-add-income').onclick=function(){ openModal('income'); };
   $('btn-add-expense').onclick=function(){ openModal('expense'); };
 
+  /* ── בחירת תאריך לתנועה ── */
+  function _ymdLocal(d){ d=new Date(d); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function _isoFromPicker(v){
+    if(!v) return new Date().toISOString();
+    if(v===_ymdLocal(new Date())) return new Date().toISOString();
+    var a=v.split('-'); return new Date(+a[0],+a[1]-1,+a[2],12,0,0).toISOString();
+  }
+  window._ymdLocal=_ymdLocal; window._isoFromPicker=_isoFromPicker;
   function openModal(type){
     modalType=type;
     $('modal-title').textContent = type==='income'
@@ -11959,8 +12052,10 @@ window.deletePhoneIdx = function(i) {
     $('modal-amount').style.borderColor=type==='income'?'rgba(0,230,118,0.3)':'rgba(242,135,106,0.3)';
     $('modal-sheet').style.borderTop='2px solid '+(type==='income'?'var(--green)':'var(--exp)');
     $('modal-submit').className='btn modern-hover '+(type==='income'?'btn-green':'btn-red');
+    var _cs=$('modal-cur-sym'); if(_cs){ _cs.textContent=_currency.symbol||'₪'; _cs.style.color=type==='income'?'var(--green)':'var(--exp)'; }
     reloadModalCategorySelect(null);
     $('modal-amount').value=''; $('modal-desc').value='';
+    if($('modal-date')){ $('modal-date').value=_ymdLocal(new Date()); $('modal-date').max=_ymdLocal(new Date()); }
     $('modal-category').value=''; $('modal-new-cat-name').value='';
     // אפס שיוך אירוע ורענן אופציות
     if(window._reloadModalEvents) window._reloadModalEvents();
@@ -11968,7 +12063,8 @@ window.deletePhoneIdx = function(i) {
     hide('modal-new-cat-wrap'); newCatPanelOpen=false;
     $('btn-modal-new-cat-toggle').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> צור קטגוריה חדשה';
     show('modal-overlay');
-    setTimeout(function(){ $('modal-amount').focus(); },120);
+    /* פוקוס מיידי, באותה לחיצה: המקלדת נפתחת יחד עם הגיליון (ולא באמצע האנימציה), וב-iOS זה מה שמאפשר לה להיפתח בכלל */
+    try { $('modal-amount').focus({preventScroll:true}); } catch(_e){ $('modal-amount').focus(); }
   }
 
   $('btn-modal-new-cat-toggle').onclick=function(){
@@ -12018,12 +12114,12 @@ window.deletePhoneIdx = function(i) {
     /* 2026 — יותר חלקיקים, צבעים עשירים יותר, אנימציה ממלאת מסך */
     var col=isInc?['#00FF88','#00E676','#00C853','#69F0AE','#B9F6CA','#00BFA5','#1DE9B6']:
                   ['#FF1F4E','#FF1744','#FF6080','#FF4D70','#FF8A80','#FF6D00','#FFD600'];
-    for(var i=0;i<22;i++){
+    for(var i=0;i<14;i++){
       var sp=document.createElement('div'); sp.className='sp';
       sp.style.background=col[Math.floor(Math.random()*col.length)];
       sp.style.left=(5+Math.random()*90)+'%';
       sp.style.bottom=(5+Math.random()*40)+'%';
-      sp.style.animationDelay=(Math.random()*.6)+'s';
+      sp.style.animationDelay=(Math.random()*.3)+'s';
       var sz = (2+Math.random()*6);
       sp.style.width=sz+'px'; sp.style.height=sz+'px';
       sp.style.borderRadius = Math.random()>0.5 ? '50%' : '2px';
@@ -12032,11 +12128,13 @@ window.deletePhoneIdx = function(i) {
     /* החלף backdrop ל-2026 version */
     var bd = $('success-overlay').querySelector('.success-backdrop');
     if(bd) bd.className = 'success-backdrop-2026';
+    /* אנימציה מקוצרת: ~1.2 שנ' במקום ~2.5, כדי שאפשר יהיה להמשיך מיד */
+    if(card._sT1){ clearTimeout(card._sT1); clearTimeout(card._sT2); card.classList.remove('outro'); }
     show('success-overlay');
-    setTimeout(function(){
+    card._sT1=setTimeout(function(){
       card.classList.add('outro');
-      setTimeout(function(){ hide('success-overlay'); card.classList.remove('outro'); },450);
-    },2000);
+      card._sT2=setTimeout(function(){ hide('success-overlay'); card.classList.remove('outro'); card._sT1=null; },280);
+    },1050);
   }
 
   /* ── Submit modal ── */
@@ -12047,10 +12145,12 @@ window.deletePhoneIdx = function(i) {
     var cat=$('modal-category').value;
     if(!amount || amount <= 0){ toast('נא להזין סכום חיובי', 'error'); return; }
     if(amount > 9999999){ toast('סכום גדול מדי', 'error'); return; }
+    /* הסכום הוקלד במטבע הנבחר — נשמר בשקלים (בסיס), ומוצג חזרה בדיוק כפי שהוקלד */
+    amount = _toBase(amount);
     /* אם לא הוזן תיאור — ברירת מחדל לפי סוג */
     if(!desc) desc = (modalType==='income') ? 'הכנסה כללית' : 'הוצאה כללית';
 
-    var dataObj={amount:amount,description:desc,date:new Date().toISOString()};
+    var dataObj={amount:amount,description:desc,date:_isoFromPicker($('modal-date')?$('modal-date').value:'')};
     if(cat!=='') dataObj.category=cat;
     var evId = $('modal-event') ? $('modal-event').value : '';
     if(evId) dataObj.eventId = evId;
@@ -12177,7 +12277,7 @@ window.deletePhoneIdx = function(i) {
 
     var budgetVal = Number($('cat-wiz-budget').value) || 0;
     var catData = { name: name, type: type };
-    if (budgetVal > 0) catData.budget = budgetVal;
+    if (budgetVal > 0) catData.budget = _toBase(budgetVal);
 
     db.collection('users').doc(uid).collection('categories').add(catData)
       .then(function() {
@@ -12207,12 +12307,14 @@ window.deletePhoneIdx = function(i) {
   $('btn-add-fe').onclick=function(){
     var name=$('fe-name').value.trim(), amount=Number($('fe-amount').value);
     if(!name||!amount){ toast('נא למלא שם וסכום', 'error'); return; }
+    amount=_toBase(amount);
     db.collection('users').doc(uid).collection('fixed_settings').add({name:name,amount:amount})
       .then(function(){ $('fe-name').value=''; $('fe-amount').value=''; toast('הוצאה קבועה נוספה!', 'success'); });
   };
   $('btn-add-fi').onclick=function(){
     var name=$('fi-name').value.trim(), amount=Number($('fi-amount').value);
     if(!name||!amount){ toast('נא למלא שם וסכום', 'error'); return; }
+    amount=_toBase(amount);
     db.collection('users').doc(uid).collection('fixed_incomes').add({name:name,amount:amount})
       .then(function(){ $('fi-name').value=''; $('fi-amount').value=''; toast('הכנסה קבועה נוספה!', 'success'); });
   };
@@ -12276,6 +12378,7 @@ window.deletePhoneIdx = function(i) {
     var amount = Number($('bim-amount').value);
     var type   = $('bim-type').value;
     if (!name || !amount) { toast('נא למלא שם וסכום', 'error'); return; }
+    amount = _toBase(amount);
     db.collection('users').doc(uid).collection('bimonthly_items').add({ name: name, amount: amount, itemType: type })
       .then(function() {
         $('bim-name').value = '';
@@ -12300,7 +12403,7 @@ window.deletePhoneIdx = function(i) {
       '<span style="font-size:13px;font-weight:800;color:rgba(206,147,216,0.9);">עריכת פריט דו-חודשי</span>' +
       '<input id="' + nId + '" value="' + escHtml(name) + '" placeholder="שם" style="background:rgba(255,255,255,0.07);border:1px solid rgba(171,71,188,0.30);border-radius:10px;color:#fff;font-family:\'Syne\',sans-serif;font-size:14px;padding:9px 12px;width:100%;outline:none;">' +
       '<div style="display:flex;gap:8px;">' +
-        '<input id="' + aId + '" type="number" value="' + amount + '" placeholder="סכום ₪" style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(171,71,188,0.30);border-radius:10px;color:#fff;font-family:\'Syne\',sans-serif;font-size:14px;padding:9px 12px;outline:none;">' +
+        '<input id="' + aId + '" type="number" value="' + _fromBase(amount) + '" placeholder="סכום ' + escHtml(_currency.symbol || '₪') + '" style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(171,71,188,0.30);border-radius:10px;color:#fff;font-family:\'Syne\',sans-serif;font-size:14px;padding:9px 12px;outline:none;">' +
         '<select id="' + tId + '" style="background:rgba(171,71,188,0.10);border:1px solid rgba(171,71,188,0.28);border-radius:10px;color:#CE93D8;font-family:\'Syne\',sans-serif;font-size:13px;padding:9px 10px;outline:none;">' +
           '<option value="expense"' + (type==='expense'?' selected':'') + '>הוצאה</option>' +
           '<option value="income"' + (type==='income'?' selected':'') + '>הכנסה</option>' +
@@ -12319,6 +12422,7 @@ window.deletePhoneIdx = function(i) {
         var a = Number(document.getElementById(aId).value);
         var t = document.getElementById(tId).value;
         if (!n || !a) { toast('נא למלא שם וסכום', 'error'); return; }
+        a = (a === _fromBase(amount)) ? Number(amount) : _toBase(a); /* מהמטבע הנבחר לשקל; בלי שינוי — המקור בדיוק */
         db.collection('users').doc(uid).collection('bimonthly_items').doc(_editBimId)
           .update({ name: n, amount: a, itemType: t })
           .then(function() { toast('עודכן!', 'success'); })
@@ -12340,7 +12444,7 @@ window.deletePhoneIdx = function(i) {
     var isInc = budgetEditCat.type === 'income';
     $('budget-edit-catname').textContent = budgetEditCat.name;
     $('budget-edit-icon').textContent = isInc ? '💚' : '🎯';
-    $('budget-edit-input').value = budgetEditCat.budget || '';
+    _amtFill($('budget-edit-input'), budgetEditCat.budget || '');
     $('budget-edit-save').style.background = isInc ? 'linear-gradient(135deg,#00E676,#00C853)' : 'linear-gradient(135deg,var(--cyan),var(--cyan2))';
     $('budget-edit-save').style.color = isInc ? '#04070E' : '#04070E';
     $('budget-edit-save').style.borderColor = 'transparent';
@@ -12389,7 +12493,7 @@ window.deletePhoneIdx = function(i) {
 
   window.updateBudgetModalLive = function() {
     if (!budgetEditCat || budgetEditCat.type === 'income') return;
-    var newBudget = Number($('budget-edit-input').value) || 0;
+    var newBudget = _amtToBase($('budget-edit-input'), Number($('budget-edit-input').value) || 0);
     var currentSpend = $('budget-edit-modal')._currentSpend || 0;
     var remainEl = $('budget-edit-remain');
     var barWrap = $('budget-edit-bar-wrap');
@@ -12411,6 +12515,7 @@ window.deletePhoneIdx = function(i) {
   $('budget-edit-save').onclick = function() {
     if (!budgetEditCat) return;
     var val = Number($('budget-edit-input').value) || 0;
+    if (val > 0) val = _amtToBase($('budget-edit-input'), val);
     var data = val > 0 ? { budget: val } : { budget: firebase.firestore.FieldValue.delete() };
     db.collection('users').doc(uid).collection('categories').doc(budgetEditCat.id).update(data)
       .then(function() {
@@ -15219,6 +15324,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
 
   /* ── utils ── */
   function evFmt(n){
+    if(typeof window._fmt === 'function') return window._fmt(Number(n)||0); /* לפי המטבע הנבחר */
     if(!n && n!==0) return '₪0';
     var abs=Math.abs(Math.round(n));
     var s=abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
@@ -15683,6 +15789,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     document.getElementById('ev-inp-date').value='';
     document.getElementById('ev-inp-heb-date').value='';
     document.getElementById('ev-inp-budget').value='';
+    try{ delete document.getElementById('ev-inp-budget').dataset.amtDisp; }catch(_e){}
     /* איפוס picker עברי */
     document.getElementById('ev-heb-day').value='';
     document.getElementById('ev-heb-month').value='';
@@ -15695,7 +15802,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
       if(ev){
         _evEmoji=ev.emoji||EV_EMOJIS[0];
         document.getElementById('ev-inp-name').value=ev.name||'';
-        document.getElementById('ev-inp-budget').value=ev.budget||'';
+        if(window._amtFill) window._amtFill(document.getElementById('ev-inp-budget'), ev.budget||''); else document.getElementById('ev-inp-budget').value=ev.budget||'';
         var ct=ev.calType||'gregorian';
         setEvCal(ct);
         if(ct==='hebrew'){
@@ -15752,6 +15859,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
       ?document.getElementById('ev-inp-heb-date').value.trim()
       :document.getElementById('ev-inp-date').value;
     var budgetVal=Number(document.getElementById('ev-inp-budget').value)||0;
+    if(budgetVal>0 && window._amtToBase) budgetVal=window._amtToBase(document.getElementById('ev-inp-budget'), budgetVal);
 
     var dataObj={ name:name, emoji:_evEmoji, calType:_evCal, date:dateVal||'', budget:budgetVal,
                   updatedAt:firebase.firestore.FieldValue.serverTimestamp() };
@@ -16074,7 +16182,7 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     }
     CY=Object.keys(map).map(function(k){return map[k]}).sort(function(a,b){return b.k-a.k});
     var fp=(window._fixedParts&&window._fixedParts())||{inc:0,exp:0}, regs=CY.filter(function(c){return c.tx.length}).map(idx), minReg=regs.length?Math.min.apply(null,regs):Infinity;
-    CY.forEach(function(c){ var f=idx(c)>=minReg; c.tinc=c.inc+(f?fp.inc:0); c.texp=c.exp+(f?fp.exp:0); c.cur=(c.k===nowC.k); });
+    CY.forEach(function(c){ var f=idx(c)>=minReg; c.fx=f; c.tinc=c.inc+(f?fp.inc:0); c.texp=c.exp+(f?fp.exp:0); c.cur=(c.k===nowC.k); });
   }
   function txRow(t){
     var ds=t._d.toLocaleDateString('he-IL',{day:'numeric',month:'short'})+' · '+t._d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
@@ -16093,6 +16201,9 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
     var lim=shown[c.k]||PAGE, h='';
     if(c.tx.length){ h+=c.tx.slice(0,lim).map(txRow).join(''); if(c.tx.length>lim) h+='<button class="hx-more" data-more="'+c.k+'">הצג עוד ('+(c.tx.length-lim)+')</button>'; }
     else h+='<div class="hx-empty" style="padding:16px">אין תנועות חודשיות במחזור הזה</div>';
+    if(c.fx){ var fl=(window._fixedLists&&window._fixedLists())||{inc:[],exp:[]};
+      var fr=function(t,ty){ return '<div class="hx-tx"><div class="d '+ty+'">'+(ty==='i'?'+':'−')+'</div><div class="m"><b>'+esc(t.name||t.description||t.category||'—')+'</b><small>'+(ty==='i'?'הכנסה קבועה':'תשלום קבוע')+' · כל חודש</small></div><div class="a" style="color:'+(ty==='i'?'var(--g)':'var(--e)')+'">'+(ty==='i'?'+':'−')+F(t.amount)+'</div></div>'; };
+      if(fl.inc.length||fl.exp.length) h+='<div class="hx-sec">🔁 קבועים (נכללים בסיכום החודש)</div>'+fl.inc.map(function(t){return fr(t,'i')}).join('')+fl.exp.map(function(t){return fr(t,'e')}).join(''); }
     if(c.ev.length){ h+='<div class="hx-sec">🎉 תנועות אירועים (לא נספרו בחודשי)</div>'+c.ev.map(txRow).join(''); }
     return h;
   }
@@ -17083,6 +17194,279 @@ body.theme-light #mnta-sheet .ms-ghost{background:rgba(0,0,0,0.05);color:rgba(10
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ setTimeout(boot, 0); }); else setTimeout(boot, 0);
   window._mntaReminders = {enable: enable, disable: disable, offer: offer, mode: mode, upcoming: function(){ return mntaUpcoming(Date.now(), cfg(), 4); }};
+})();
+</script>
+
+<style id="mnta-5changes">
+/* ✦ 2026-10-19 — שפה/מטבע, יתרה רק בבית, קיצורי קבועות/משתנות, הוספה מהירה ✦ */
+
+/* (3) בועת היתרה ושורת הסיכומים — רק במסך הראשי */
+body.v-sub #hero-balance-card, body.v-sub #home-stats-grid { display:none !important; }
+
+/* (4) קבועות / משתנות — לחיצים */
+.stat-go { cursor:pointer; -webkit-tap-highlight-color:transparent; transition:transform .15s ease; }
+.stat-go:active { transform:scale(.95); }
+.stat-go-chev { display:inline-block; margin-inline-start:3px; opacity:.6; font-weight:900; font-size:11px; line-height:1; }
+@keyframes mntaFlash { 0%{ outline-color:rgba(43,181,204,0); } 18%{ outline-color:rgba(43,181,204,.95); } 60%{ outline-color:rgba(43,181,204,.7); } 100%{ outline-color:rgba(43,181,204,0); } }
+.mnta-flash { outline:2.5px solid rgba(43,181,204,0); outline-offset:3px; animation:mntaFlash 1.7s ease-out 1; }
+
+/* (1) סימן המטבע בתוך שדה הסכום */
+.amt-cur-sym { position:absolute; right:16px; top:50%; transform:translateY(-50%); font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:800; opacity:.8; pointer-events:none; line-height:1; }
+
+/* (5) פתיחה מהירה של גיליון ההוספה: בלי טשטוש רקע כבד (backdrop-filter) ואנימציה קצרה על ה-GPU */
+#modal-overlay { backdrop-filter:none !important; -webkit-backdrop-filter:none !important; background:rgba(0,0,0,0.62); }
+#modal-overlay:not(.hidden) { animation:mntaOvIn .16s ease-out both; }
+#modal-sheet { backdrop-filter:none !important; -webkit-backdrop-filter:none !important; will-change:transform; animation:mntaSheetIn .26s cubic-bezier(.22,.9,.3,1) both !important; }
+body:not(.theme-light) #modal-sheet { background:rgba(10,16,30,0.985); }
+@keyframes mntaSheetIn { from{ transform:translate3d(0,56px,0); opacity:.35; } to{ transform:none; opacity:1; } }
+@keyframes mntaOvIn { from{ opacity:0; } to{ opacity:1; } }
+/* אנימציית ההצלחה: ~1.3 שנ' במקום ~2.5, בלי אנימציית blur על כל המסך */
+.success-backdrop-2026 { animation:mntaSuccessBg 1.33s ease forwards !important; }
+@keyframes mntaSuccessBg { 0%{ background:rgba(0,0,0,0); } 14%{ background:rgba(0,0,0,.55); } 78%{ background:rgba(0,0,0,.55); } 100%{ background:rgba(0,0,0,0); } }
+#success-overlay .success-card { animation:epicCardPop .42s var(--spring) forwards !important; }
+#success-overlay .success-card.outro { animation:successCardOut .26s cubic-bezier(.4,0,1,1) forwards !important; }
+#success-overlay .check-path { animation-delay:.12s !important; animation-duration:.3s !important; }
+#success-overlay .success-ring { animation-delay:.12s !important; }
+#success-overlay .success-label { animation:fadeLabelIn .25s ease .12s both !important; }
+#success-overlay .success-sublabel { animation:fadeLabelIn .25s ease .18s both !important; }
+#success-overlay .sp { animation-duration:1s !important; }
+
+/* (2) כפתור שפה בכותרת + גיליון שפה/מטבע */
+#btn-lang-flag { font-size:19px; }
+#_lang-picker-overlay { position:fixed; inset:0; z-index:9996; background:rgba(0,0,0,.55); display:flex; align-items:flex-end; justify-content:center; opacity:0; transition:opacity .2s ease; }
+#_lang-picker-overlay.open { opacity:1; }
+#_lang-picker-panel { width:100%; max-width:480px; max-height:86vh; display:flex; flex-direction:column; overflow:hidden; border-radius:24px 24px 0 0; background:linear-gradient(180deg,#0A1022 0%,#060A18 100%); border:1px solid rgba(255,255,255,.08); border-bottom:none; box-shadow:0 -12px 40px rgba(0,0,0,.45); transform:translate3d(0,100%,0); transition:transform .28s cubic-bezier(.22,.9,.3,1); color:#EAF3F5; font-family:'Syne',sans-serif; }
+#_lang-picker-overlay.open #_lang-picker-panel { transform:none; }
+.lp-grab { width:38px; height:4px; border-radius:2px; background:rgba(255,255,255,.14); margin:12px auto 8px; flex-shrink:0; }
+.lp-head { display:flex; align-items:center; justify-content:space-between; padding:2px 18px 12px; border-bottom:1px solid rgba(255,255,255,.07); flex-shrink:0; }
+.lp-title { font-size:18px; font-weight:900; letter-spacing:-.3px; }
+.lp-x { width:34px; height:34px; border-radius:11px; border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.05); color:rgba(255,255,255,.5); font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; -webkit-tap-highlight-color:transparent; }
+.lp-body { overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; padding:6px 0 calc(env(safe-area-inset-bottom,0px) + 14px); }
+.lp-sec { font-size:11px; font-weight:800; letter-spacing:.08em; color:rgba(234,243,245,.45); padding:12px 20px 6px; }
+.lp-row { width:100%; display:flex; align-items:center; gap:13px; padding:12px 18px; background:transparent; border:none; border-bottom:1px solid rgba(255,255,255,.05); color:inherit; font-family:inherit; text-align:start; cursor:pointer; -webkit-tap-highlight-color:transparent; transition:background .12s; }
+.lp-row:active { background:rgba(43,181,204,.10); }
+.lp-row.on { background:rgba(43,181,204,.10); }
+.lp-flag { font-size:24px; line-height:1; flex-shrink:0; width:30px; text-align:center; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
+.lp-name { flex:1; min-width:0; font-size:15px; font-weight:800; }
+.lp-sub { display:block; font-size:11px; font-weight:600; color:rgba(234,243,245,.45); margin-top:2px; font-family:'JetBrains Mono','Syne',monospace; }
+.lp-check { width:22px; height:22px; border-radius:50%; background:#2BB5CC; color:#04131A; font-size:13px; font-weight:900; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.lp-go { font-size:12px; font-weight:800; color:#2BB5CC; flex-shrink:0; }
+.lp-cur-sym { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:900; color:#2BB5CC; flex-shrink:0; }
+body.theme-light #_lang-picker-panel { background:#FFFFFF; border-color:rgba(14,42,51,.08); color:#0E2A33; box-shadow:0 -12px 40px rgba(16,24,40,.14); }
+body.theme-light .lp-grab { background:rgba(14,42,51,.16); }
+body.theme-light .lp-head { border-bottom-color:rgba(14,42,51,.08); }
+body.theme-light .lp-x { background:rgba(14,42,51,.05); border-color:rgba(14,42,51,.10); color:rgba(14,42,51,.55); }
+body.theme-light .lp-sec, body.theme-light .lp-sub { color:rgba(14,42,51,.5); }
+body.theme-light .lp-row { border-bottom-color:rgba(14,42,51,.06); }
+body.theme-light .lp-row.on, body.theme-light .lp-row:active { background:rgba(14,143,163,.08); }
+body.theme-light .lp-check { background:#0E8FA3; color:#fff; }
+body.theme-light .lp-go, body.theme-light .lp-cur-sym { color:#0E8FA3; }
+
+/* דיאלוג "להחליף גם מטבע?" */
+#_curask-overlay { position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,.55); display:flex; align-items:center; justify-content:center; padding:22px; opacity:0; transition:opacity .18s ease; }
+#_curask-overlay.open { opacity:1; }
+.ca-card { width:100%; max-width:340px; border-radius:24px; padding:22px 18px 16px; background:linear-gradient(160deg,#0C1428,#060A18); border:1px solid rgba(43,181,204,.22); box-shadow:0 24px 60px rgba(0,0,0,.6); color:#EAF3F5; font-family:'Syne',sans-serif; text-align:center; transform:scale(.94); transition:transform .22s cubic-bezier(.34,1.3,.64,1); }
+#_curask-overlay.open .ca-card { transform:none; }
+.ca-ico { font-size:30px; line-height:1; margin-bottom:10px; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
+.ca-ico b { font-family:'JetBrains Mono',monospace; font-size:24px; color:#2BB5CC; vertical-align:middle; margin:0 4px; }
+.ca-title { font-size:16px; font-weight:900; margin-bottom:6px; }
+.ca-text { font-size:12.5px; color:rgba(234,243,245,.55); margin-bottom:16px; line-height:1.5; }
+.ca-btn { width:100%; padding:13px; border-radius:14px; font-family:inherit; font-size:14px; font-weight:900; cursor:pointer; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+.ca-yes { background:linear-gradient(135deg,#27AEC4,#0E7F95); color:#fff; border:none; margin-bottom:8px; box-shadow:0 8px 20px rgba(14,127,149,.3); }
+.ca-no { background:transparent; color:rgba(234,243,245,.6); border:1px solid rgba(255,255,255,.12); font-weight:700; font-size:13px; }
+.ca-btn:active { transform:scale(.97); }
+body.theme-light .ca-card { background:#FFFFFF; border-color:rgba(14,42,51,.10); color:#0E2A33; box-shadow:0 24px 60px rgba(16,24,40,.22); }
+body.theme-light .ca-text { color:rgba(14,42,51,.6); }
+body.theme-light .ca-no { color:rgba(14,42,51,.6); border-color:rgba(14,42,51,.14); }
+body.theme-light .ca-ico b { color:#0E8FA3; }
+</style>
+
+<script id="mnta-5changes-js">
+/* ✦ 2026-10-19 — (2) בורר שפה בכותרת + שאלה על מטבע, (4) קיצורי קבועות/משתנות ✦ */
+(function(){
+  'use strict';
+  function $(id){ return document.getElementById(id); }
+
+  /* ── (4) קבועות → תשלומים קבועים בהגדרות, משתנות → תנועות אחרונות ── */
+  function flash(el){
+    if(!el) return;
+    el.classList.remove('mnta-flash'); void el.offsetWidth; el.classList.add('mnta-flash');
+    clearTimeout(el._mntaFlashT); el._mntaFlashT = setTimeout(function(){ el.classList.remove('mnta-flash'); }, 1800);
+  }
+  function scrollToEl(el, off){
+    if(!el) return;
+    var y = el.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop || 0) - (off || 12);
+    try { window.scrollTo({top:Math.max(0, y), behavior:'smooth'}); } catch(e){ window.scrollTo(0, Math.max(0, y)); }
+  }
+  function afterLayout(fn){ requestAnimationFrame(function(){ requestAnimationFrame(fn); }); }
+  window._goFixedSettings = function(){
+    if(typeof window.switchView === 'function') window.switchView('settings');
+    afterLayout(function(){
+      scrollToEl($('settings-fixed-section'), 14);
+      setTimeout(function(){ flash(document.querySelector('#view-settings .fx-card.fx-expense')); }, 260);
+    });
+  };
+  window._goRecentTx = function(){
+    var dash = $('view-dashboard');
+    if(dash && dash.classList.contains('hidden') && typeof window.switchView === 'function') window.switchView('dashboard');
+    afterLayout(function(){
+      var h = document.querySelector('#view-dashboard [data-i18n="recent_tx"]');
+      scrollToEl(h ? (h.parentElement || h) : $('tx-list'), 14);
+      setTimeout(function(){ flash($('tx-list')); }, 260);
+    });
+  };
+  function bindGo(id, fn){
+    var el = $(id); if(!el) return;
+    el.addEventListener('click', function(e){ e.preventDefault(); fn(); });
+    el.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); fn(); } });
+  }
+  bindGo('stat-card-fixed', window._goFixedSettings);
+  bindGo('stat-card-var', window._goRecentTx);
+
+  /* ── (2) שפה ── */
+  var LANGS = [
+    { code:'he', name:'עברית',    flag:'🇮🇱', cur:'ILS' },
+    { code:'en', name:'English',  flag:'🇺🇸', cur:'USD' },
+    { code:'ar', name:'العربية',  flag:'🇸🇦', cur:'ILS' }, /* אפליקציה ישראלית — רוב דוברי הערבית שמשתמשים בה משלמים בשקלים */
+    { code:'fr', name:'Français', flag:'🇫🇷', cur:'EUR' },
+    { code:'de', name:'Deutsch',  flag:'🇩🇪', cur:'EUR' },
+    { code:'es', name:'Español',  flag:'🇪🇸', cur:'EUR' },
+    { code:'ru', name:'Русский',  flag:'🇷🇺', cur:'RUB' }
+  ].filter(function(l){ return !window._i18n || window._i18n[l.code]; });
+  window._langNaturalCurrency = {}; LANGS.forEach(function(l){ window._langNaturalCurrency[l.code] = l.cur; });
+
+  var TXT = {
+    he:{ t:'שפה', c:'מטבע', ch:'שינוי', q:'להחליף גם את המטבע?', qt:'המטבע שמתאים ל{L} הוא {N}', y:'כן, עבור ל-{S}', n:'לא, השאר {S}' },
+    en:{ t:'Language', c:'Currency', ch:'Change', q:'Change the currency too?', qt:'The usual currency for {L} is {N}', y:'Yes, switch to {S}', n:'No, keep {S}' },
+    ar:{ t:'اللغة', c:'العملة', ch:'تغيير', q:'هل تريد تغيير العملة أيضًا؟', qt:'العملة المعتادة لـ{L} هي {N}', y:'نعم، التحويل إلى {S}', n:'لا، الإبقاء على {S}' },
+    fr:{ t:'Langue', c:'Devise', ch:'Modifier', q:'Changer aussi la devise ?', qt:'La devise habituelle pour {L} est {N}', y:'Oui, passer à {S}', n:'Non, garder {S}' },
+    de:{ t:'Sprache', c:'Währung', ch:'Ändern', q:'Auch die Währung ändern?', qt:'Die übliche Währung für {L} ist {N}', y:'Ja, zu {S} wechseln', n:'Nein, {S} behalten' },
+    es:{ t:'Idioma', c:'Moneda', ch:'Cambiar', q:'¿Cambiar también la moneda?', qt:'La moneda habitual para {L} es {N}', y:'Sí, cambiar a {S}', n:'No, mantener {S}' },
+    ru:{ t:'Язык', c:'Валюта', ch:'Изменить', q:'Сменить и валюту?', qt:'Обычная валюта для языка {L}: {N}', y:'Да, перейти на {S}', n:'Нет, оставить {S}' }
+  };
+  function tx(lang){ return TXT[lang] || TXT.he; }
+  function curLang(){ return window._appLang || 'he'; }
+  function langInfo(code){ for(var i=0;i<LANGS.length;i++) if(LANGS[i].code === code) return LANGS[i]; return LANGS[0]; }
+  function esc(s){ return (window.escHtml ? window.escHtml(s) : String(s)); }
+  function curInfo(code){ var l = (window._currencyListRef && window._currencyListRef()) || []; for(var i=0;i<l.length;i++) if(l[i].code === code) return l[i]; return null; }
+  function curObj(){
+    var c = (window._getCurrency && window._getCurrency()) || {code:'ILS', symbol:'₪', name:'שקל ישראלי'};
+    var li = curInfo(c.code);
+    return { code:c.code, symbol:c.symbol || (li && li.symbol) || '₪', name:c.name || (li && li.name) || c.code, flag:c.flag || (li && li.flag) || '' };
+  }
+
+  function updateFlag(){
+    var f = $('btn-lang-flag'); if(f) f.textContent = langInfo(curLang()).flag;
+    var b = $('btn-lang'); if(b){ var t = tx(curLang()); b.setAttribute('aria-label', t.t + ' / ' + t.c); b.title = t.t + ' / ' + t.c; }
+  }
+  /* כל החלפת שפה (גם מהשאלה שאחרי בחירת מטבע) מעדכנת את הדגל */
+  if(typeof window._applyLang === 'function' && !window._applyLang._mntaWrapped){
+    var _origApply = window._applyLang;
+    window._applyLang = function(){ var r = _origApply.apply(this, arguments); try { updateFlag(); } catch(e){} return r; };
+    window._applyLang._mntaWrapped = true;
+  }
+
+  function closeLangSheet(cb){
+    var ov = $('_lang-picker-overlay'); if(!ov){ if(cb) cb(); return; }
+    ov.classList.remove('open');
+    setTimeout(function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); if(cb) cb(); }, 230);
+    document.removeEventListener('keydown', onKey);
+  }
+  function onKey(e){ if(e.key === 'Escape') closeLangSheet(); }
+
+  window._openLangSheet = function(){
+    var ex = $('_lang-picker-overlay'); if(ex) ex.parentNode.removeChild(ex);
+    var lang = curLang(), t = tx(lang), cur = curObj();
+    var rows = LANGS.map(function(l){
+      var on = l.code === lang;
+      return '<button type="button" class="lp-row'+(on?' on':'')+'" data-lang="'+l.code+'" dir="auto">'+
+        '<span class="lp-flag">'+l.flag+'</span>'+
+        '<span class="lp-name" dir="auto">'+esc(l.name)+'</span>'+
+        (on ? '<span class="lp-check">✓</span>' : '')+
+      '</button>';
+    }).join('');
+    var ov = document.createElement('div');
+    ov.id = '_lang-picker-overlay';
+    ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true');
+    ov.innerHTML =
+      '<div id="_lang-picker-panel" dir="'+((window._i18n && window._i18n[lang] && window._i18n[lang].dir) || 'rtl')+'">'+
+        '<div class="lp-grab"></div>'+
+        '<div class="lp-head"><div class="lp-title">🌐 '+esc(t.t)+'</div><button type="button" class="lp-x" id="_lp-close" aria-label="סגור">✕</button></div>'+
+        '<div class="lp-body">'+
+          rows +
+          '<div class="lp-sec">'+esc(t.c)+'</div>'+
+          '<button type="button" class="lp-row" id="_lp-currency">'+
+            '<span class="lp-flag">'+(cur.flag || '💱')+'</span>'+
+            '<span class="lp-name">'+esc(cur.name || cur.code)+'<span class="lp-sub">'+esc(cur.code)+'</span></span>'+
+            '<span class="lp-cur-sym">'+esc(cur.symbol)+'</span>'+
+            '<span class="lp-go">'+esc(t.ch)+' ‹</span>'+
+          '</button>'+
+        '</div>'+
+      '</div>';
+    /* inline position/z-index כדי שגם בודקי "יש חלון פתוח" הקיימים (כפתור הווטסאפ וכו') יזהו אותו */
+    ov.style.position = 'fixed'; ov.style.zIndex = '9996';
+    document.body.appendChild(ov);
+    requestAnimationFrame(function(){ ov.classList.add('open'); });
+    ov.addEventListener('click', function(e){
+      if(e.target === ov){ closeLangSheet(); return; }
+      if(e.target.closest && e.target.closest('#_lp-close')){ closeLangSheet(); return; }
+      if(e.target.closest && e.target.closest('#_lp-currency')){
+        closeLangSheet(function(){ if(window._openCurrencySheet) window._openCurrencySheet({noLangAsk:true}); });
+        return;
+      }
+      var row = e.target.closest && e.target.closest('[data-lang]');
+      if(row) pickLang(row.getAttribute('data-lang'));
+    });
+    document.addEventListener('keydown', onKey);
+  };
+
+  function pickLang(code){
+    var prev = curLang();
+    closeLangSheet();
+    if(code === prev) return;
+    if(typeof window._applyLang === 'function') window._applyLang(code);
+    updateFlag();
+    var want = window._langNaturalCurrency[code];
+    var cur = curObj();
+    if(want && cur && want !== cur.code && curInfo(want)) setTimeout(function(){ askCurrency(code, want); }, 240);
+  }
+
+  function askCurrency(lang, wantCode){
+    var ex = $('_curask-overlay'); if(ex) ex.parentNode.removeChild(ex);
+    var t = tx(lang), from = curObj(), to = curInfo(wantCode), L = langInfo(lang);
+    if(!to) return;
+    var toS = to.symbol + ' ' + to.code, fromS = from.symbol + ' ' + from.code;
+    var ov = document.createElement('div');
+    ov.id = '_curask-overlay';
+    ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true');
+    ov.style.position = 'fixed'; ov.style.zIndex = '10001';
+    ov.innerHTML =
+      '<div class="ca-card" dir="'+((window._i18n && window._i18n[lang] && window._i18n[lang].dir) || 'rtl')+'">'+
+        '<div class="ca-ico" dir="ltr">'+(from.flag||'')+'<b>'+esc(from.symbol)+'</b>→<b>'+esc(to.symbol)+'</b>'+(to.flag||'')+'</div>'+
+        '<div class="ca-title">'+esc(t.q)+'</div>'+
+        '<div class="ca-text">'+esc(t.qt.replace('{L}', L.name).replace('{N}', toS))+'</div>'+
+        '<button type="button" class="ca-btn ca-yes" id="_ca-yes"><bdi>'+esc(t.y.replace('{S}', toS))+'</bdi></button>'+
+        '<button type="button" class="ca-btn ca-no" id="_ca-no"><bdi>'+esc(t.n.replace('{S}', fromS))+'</bdi></button>'+
+      '</div>';
+    document.body.appendChild(ov);
+    requestAnimationFrame(function(){ ov.classList.add('open'); });
+    function close(){ ov.classList.remove('open'); setTimeout(function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); }, 200); }
+    ov.addEventListener('click', function(e){
+      if(e.target === ov){ close(); return; }
+      if(e.target.closest && e.target.closest('#_ca-yes')){
+        close();
+        if(window._applyCurrencyCode) window._applyCurrencyCode(wantCode);
+        if(window.toast) try { window.toast(to.flag + ' ' + to.symbol + ' ' + to.code, 'success'); } catch(_e){}
+        return;
+      }
+      if(e.target.closest && e.target.closest('#_ca-no')) close();
+    });
+  }
+  window._askCurrencyForLang = askCurrency;
+
+  var btn = $('btn-lang');
+  if(btn) btn.addEventListener('click', function(e){ e.preventDefault(); window._openLangSheet(); });
+  updateFlag();
 })();
 </script>
 
