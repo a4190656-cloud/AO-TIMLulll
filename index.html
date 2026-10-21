@@ -17482,5 +17482,727 @@ body.theme-light .ca-ico b { color:#0E8FA3; }
 })();
 </script>
 
+
+<!-- ✦ MNTA+ REFERRAL v2 — הזמן 2 חברים (נעילה רק בבוט הוואטסאפ; האפליקציה לא ננעלת אף פעם) ✦ -->
+<style id="mnta-ref-css">
+#ref-sheet{position:fixed;inset:0;z-index:100050;background:rgba(2,6,14,.66);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s ease}
+#ref-sheet.open{opacity:1;pointer-events:auto}
+#ref-sheet .rf-box{direction:rtl;position:relative;overflow:hidden;width:100%;max-width:460px;max-height:92vh;overflow-y:auto;background:linear-gradient(170deg,#0F1A2B 0%,#0A101B 55%,#070B14 100%);border:1px solid rgba(0,229,255,.18);border-bottom:none;border-radius:28px 28px 0 0;padding:14px 20px calc(18px + env(safe-area-inset-bottom));transform:translateY(40px);transition:transform .35s cubic-bezier(.34,1.3,.64,1);text-align:center;color:#fff;box-shadow:0 -24px 60px rgba(0,0,0,.55)}
+#ref-sheet.open .rf-box{transform:none}
+#ref-sheet .rf-box::before{content:'';position:absolute;top:-120px;left:50%;width:320px;height:240px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(255,159,67,.22),rgba(0,229,255,.10) 55%,transparent);pointer-events:none}
+.rf-grab{width:40px;height:4px;border-radius:2px;background:rgba(255,255,255,.18);margin:0 auto 14px}
+.rf-close{position:absolute;top:12px;left:14px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.07);color:rgba(255,255,255,.7);font-size:15px;cursor:pointer;z-index:2}
+.rf-gift{position:relative;width:76px;height:76px;margin:2px auto 12px;border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:40px;background:linear-gradient(140deg,rgba(255,159,67,.25),rgba(0,229,255,.16));border:1px solid rgba(255,190,120,.35);box-shadow:0 10px 30px rgba(255,140,40,.18),inset 0 1px 0 rgba(255,255,255,.15);animation:rfBob 3.2s ease-in-out infinite}
+@keyframes rfBob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-5px) rotate(3deg)}}
+.rf-title{position:relative;font-size:21px;font-weight:900;letter-spacing:-.3px;line-height:1.3;margin-bottom:6px}
+.rf-sub{position:relative;font-size:14px;font-weight:600;color:rgba(255,255,255,.66);line-height:1.55;margin:0 auto 16px;max-width:340px}
+.rf-sub b{color:#FFB46B;font-weight:900}
+.rf-prog{position:relative;display:flex;align-items:center;justify-content:center;gap:14px;margin:0 0 14px}
+.rf-slot{width:58px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.rf-av{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;border:2px dashed rgba(255,255,255,.22);color:rgba(255,255,255,.35);background:rgba(255,255,255,.03)}
+.rf-slot.on .rf-av{border:2px solid #00E676;color:#04141C;background:linear-gradient(135deg,#00E676,#00BFA5);box-shadow:0 0 18px rgba(0,230,118,.35)}
+.rf-nm{font-size:11px;font-weight:700;color:rgba(255,255,255,.5);max-width:62px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rf-slot.on .rf-nm{color:#7CF5B8}
+.rf-n{font-family:'Plus Jakarta Sans',system-ui,-apple-system,Roboto,Arial,sans-serif;font-weight:900;font-variant-numeric:tabular-nums}
+.rf-count{font-family:'Plus Jakarta Sans',system-ui,-apple-system,Roboto,Arial,sans-serif;font-size:28px;font-weight:900;font-variant-numeric:tabular-nums;direction:ltr;min-width:64px}
+.rf-count small{font-size:15px;color:rgba(255,255,255,.4);font-weight:800}
+.rf-bar{position:relative;height:8px;border-radius:8px;background:rgba(255,255,255,.07);overflow:hidden;margin:0 6px 16px}
+.rf-bar i{position:absolute;top:0;bottom:0;right:0;border-radius:8px;background:linear-gradient(90deg,#00E5FF,#00E676);transition:width .6s cubic-bezier(.34,1.2,.64,1)}
+.rf-code{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px;padding:10px 12px 10px 10px;border-radius:16px;background:rgba(255,255,255,.04);border:1px dashed rgba(0,229,255,.35)}
+.rf-code span{font-size:12px;font-weight:700;color:rgba(255,255,255,.55)}
+.rf-code b{font-size:20px;font-weight:900;letter-spacing:3px;direction:ltr;color:#00E5FF;font-family:ui-monospace,Menlo,monospace}
+.rf-code button{border:none;border-radius:11px;padding:8px 12px;font:800 12px inherit;font-family:inherit;background:rgba(0,229,255,.12);color:#00E5FF;cursor:pointer}
+.rf-btn{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px;border-radius:16px;border:none;font-size:15.5px;font-weight:900;cursor:pointer;margin-top:9px;font-family:inherit;touch-action:manipulation}
+.rf-btn:active{transform:scale(.98)}
+.rf-wa{background:linear-gradient(135deg,#25D366,#12A150);color:#fff;box-shadow:0 10px 24px rgba(37,211,102,.28)}
+.rf-primary{background:linear-gradient(135deg,#00E5FF,#00BFFF);color:#04141C}
+.rf-ghost{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85)}
+.rf-link{display:inline-block;margin-top:12px;border:none;background:none;color:rgba(255,255,255,.5);font:700 12.5px inherit;font-family:inherit;text-decoration:underline;cursor:pointer}
+.rf-note{font-size:11.5px;font-weight:600;color:rgba(255,255,255,.4);line-height:1.5;margin-top:12px}
+.rf-input{width:100%;box-sizing:border-box;margin:4px 0 4px;padding:14px;border-radius:14px;border:1px solid rgba(0,229,255,.3);background:rgba(255,255,255,.05);color:#fff;font:900 20px ui-monospace,Menlo,monospace;letter-spacing:4px;text-align:center;direction:ltr;text-transform:uppercase;outline:none}
+.rf-input:focus{border-color:#00E5FF;box-shadow:0 0 0 3px rgba(0,229,255,.15)}
+.rf-err{min-height:18px;font-size:12.5px;font-weight:700;color:#FF7A8A;margin:2px 0 4px}
+.rf-err.ok{color:#2EE59D}
+body.theme-light #ref-sheet{background:rgba(16,24,40,.45)}
+body.theme-light #ref-sheet .rf-box{background:linear-gradient(170deg,#FFFFFF,#F5F9FC);color:#0A0A0F;border-color:rgba(0,0,0,.07)}
+body.theme-light .rf-sub{color:rgba(10,10,15,.62)} body.theme-light .rf-sub b{color:#D9700F}
+body.theme-light .rf-close,body.theme-light .rf-ghost{background:rgba(0,0,0,.05);color:rgba(10,10,15,.75)}
+body.theme-light .rf-av{border-color:rgba(0,0,0,.18);color:rgba(0,0,0,.3);background:rgba(0,0,0,.02)}
+body.theme-light .rf-nm{color:rgba(10,10,15,.5)} body.theme-light .rf-slot.on .rf-nm{color:#00995A}
+body.theme-light .rf-count small{color:rgba(10,10,15,.4)}
+body.theme-light .rf-bar{background:rgba(0,0,0,.07)}
+body.theme-light .rf-code{background:rgba(0,145,234,.05);border-color:rgba(0,145,234,.35)} body.theme-light .rf-code span{color:rgba(10,10,15,.55)}
+body.theme-light .rf-code b{color:#0077A8} body.theme-light .rf-code button{background:rgba(0,145,234,.1);color:#0077A8}
+body.theme-light .rf-link,body.theme-light .rf-note{color:rgba(10,10,15,.45)}
+body.theme-light .rf-input{background:#fff;color:#0A0A0F;border-color:rgba(0,145,234,.35)}
+/* banner (day 53+ / locked) */
+#ref-banner{direction:rtl;display:none;align-items:center;gap:10px;margin:0 0 14px;padding:11px 12px 11px 10px;border-radius:16px;cursor:pointer;background:linear-gradient(135deg,rgba(255,159,67,.13),rgba(0,229,255,.07));border:1px solid rgba(255,170,90,.28);color:#fff}
+#ref-banner.show{display:flex;animation:rfIn .35s ease both}
+@keyframes rfIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+#ref-banner .rb-ico{font-size:20px;flex-shrink:0}
+#ref-banner .rb-t{flex:1;min-width:0;font-size:13px;font-weight:800;line-height:1.4}
+#ref-banner .rb-t small{display:block;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.55)}
+#ref-banner .rb-go{flex-shrink:0;border:none;border-radius:11px;padding:8px 11px;font:900 12px inherit;font-family:inherit;background:linear-gradient(135deg,#FFB46B,#FF8A3D);color:#2A1400;cursor:pointer}
+#ref-banner .rb-x{flex-shrink:0;border:none;background:none;color:rgba(255,255,255,.4);font-size:14px;cursor:pointer;padding:4px}
+body.theme-light #ref-banner{color:#0A0A0F;background:linear-gradient(135deg,rgba(255,159,67,.12),rgba(0,145,234,.06));border-color:rgba(230,130,40,.3)}
+body.theme-light #ref-banner .rb-t small,body.theme-light #ref-banner .rb-x{color:rgba(10,10,15,.5)}
+/* bot paused note (after day 60 without 2 friends) — non-blocking */
+#ref-banner.paused{background:linear-gradient(135deg,rgba(0,229,255,.09),rgba(37,211,102,.07));border-color:rgba(0,229,255,.22)}
+#ref-banner.paused .rb-go{background:linear-gradient(135deg,#25D366,#12A150);color:#fff}
+body.theme-light #ref-banner.paused{background:linear-gradient(135deg,rgba(0,145,234,.07),rgba(37,211,102,.07));border-color:rgba(0,145,234,.22)}
+/* phone pause — the number is detached from the bot while the bot is paused */
+#phones-card-2026 .rp-held{opacity:.78}
+#phones-card-2026 .rp-held .phone-number-text{text-decoration:line-through;text-decoration-color:rgba(255,255,255,.25)}
+.rp-pill{flex-shrink:0;margin-inline-start:auto;font-size:11px;font-weight:900;padding:4px 9px;border-radius:99px;background:rgba(255,159,67,.14);color:#FFB46B;border:1px solid rgba(255,159,67,.28)}
+.rp-box{direction:rtl;margin:10px 0 2px;padding:12px 13px;border-radius:14px;background:linear-gradient(135deg,rgba(0,229,255,.07),rgba(37,211,102,.06));border:1px solid rgba(0,229,255,.2);font-size:12.5px;font-weight:700;line-height:1.6;color:rgba(255,255,255,.78)}
+.rp-box small{display:block;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.5)}
+.rp-box button{display:block;width:100%;margin-top:9px;border:none;border-radius:12px;padding:10px;font-size:13px;font-weight:900;font-family:inherit;background:linear-gradient(135deg,#25D366,#12A150);color:#fff;cursor:pointer}
+#phones-card-2026.rp-paused .phones-add-wrap{opacity:.45}
+#phones-card-2026.rp-paused .phones-header-badge{background:rgba(255,159,67,.14)!important;color:#FFB46B!important;border-color:rgba(255,159,67,.3)!important}
+#rp-modal-note{direction:rtl;margin:0 0 12px;padding:10px 12px;border-radius:12px;background:rgba(255,159,67,.10);border:1px solid rgba(255,159,67,.25);font-size:12.5px;font-weight:700;line-height:1.6;color:#FFB46B;text-align:center}
+body.theme-light .rp-pill{background:rgba(230,130,40,.10);color:#B85D0A;border-color:rgba(230,130,40,.3)}
+body.theme-light .rp-box{background:linear-gradient(135deg,rgba(0,145,234,.06),rgba(37,211,102,.06));border-color:rgba(0,145,234,.2);color:rgba(10,10,15,.78)}
+body.theme-light .rp-box small{color:rgba(10,10,15,.5)}
+body.theme-light #phones-card-2026 .rp-held .phone-number-text{text-decoration-color:rgba(0,0,0,.3)}
+body.theme-light #phones-card-2026.rp-paused .phones-header-badge{color:#B85D0A!important;background:rgba(230,130,40,.10)!important}
+body.theme-light #rp-modal-note{color:#B85D0A;background:rgba(230,130,40,.08);border-color:rgba(230,130,40,.25)}
+</style>
+<script id="mnta-ref-js">
+(function(){
+  'use strict';
+  /* ════════ הגדרות ════════ */
+  var TRIAL_DAYS  = 60;      /* חודשיים חינם */
+  var NEED        = 2;       /* כמה חברים צריך */
+  var WARN_DAYS   = 7;       /* באנר תזכורת מיום 53 */
+  var PLAY_URL    = 'https://play.google.com/store/apps/details?id=com.aoproductions.aobudget';
+  var WEB_URL     = 'https://a4190656-cloud.github.io/AO-TIMLulll/';
+  var DAY = 86400000;
+  var ALPH = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var LS_IN = '_mnta_ref_in', LS_ST = '_mnta_ref_state';
+
+  var $ = function(i){ return document.getElementById(i); };
+  function fs(){ try{ return firebase.firestore(); }catch(e){ return null; } }
+  function FV(){ try{ return firebase.firestore.FieldValue; }catch(e){ return null; } }
+  function TS(d){ try{ return firebase.firestore.Timestamp.fromDate(d); }catch(e){ return d.toISOString(); } }
+  function toast(m,t){ try{ if(window.toast) window.toast(m,t||'info'); }catch(e){} }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function toDate(v){
+    if(!v) return null;
+    try{
+      if(typeof v.toDate==='function') return v.toDate();
+      if(v instanceof Date) return v;
+      if(typeof v==='number') return new Date(v);
+      if(typeof v==='string'){ var d=new Date(v); return isNaN(d)?null:d; }
+      if(typeof v.seconds==='number') return new Date(v.seconds*1000);
+      if(typeof v._seconds==='number') return new Date(v._seconds*1000);
+    }catch(e){}
+    return null;
+  }
+  function codeFor(uid, salt){
+    var h1=0x811c9dc5, h2=0x01000193 ^ (salt||0), i, c;
+    for(i=0;i<uid.length;i++){ c=uid.charCodeAt(i); h1^=c; h1=Math.imul(h1,16777619)>>>0; h2=Math.imul(h2^c, 2246822519)>>>0; h2=(h2<<13|h2>>>19)>>>0; }
+    var out='', x=h1, y=h2;
+    for(i=0;i<6;i++){ var v=(i<3? x : y) & 31; out+=ALPH[v]; if(i<3) x>>>=5; else y>>>=5; }
+    return out;
+  }
+  function normCode(s){ return String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,10); }
+
+  /* ════════ קוד הזמנה שהגיע בקישור (?ref=CODE) ════════ */
+  (function captureIncoming(){
+    try{
+      var m = (location.search+'&'+location.hash).match(/[?&#]ref=([A-Za-z0-9]{4,10})/);
+      if(m) localStorage.setItem(LS_IN, normCode(m[1]));
+    }catch(e){}
+  })();
+  /* קריאה מהאפליקציה (פלאטר) — אחרי קריאת Install Referrer של גוגל פליי */
+  window.mntaSetInstallRef = function(raw){
+    try{
+      var s = decodeURIComponent(String(raw||'')); var m = s.match(/ref=([A-Za-z0-9]{4,10})/) || s.match(/^([A-Za-z0-9]{4,10})$/);
+      if(m){ localStorage.setItem(LS_IN, normCode(m[1])); if(S.uid) maybeAskWhoInvited(); }
+    }catch(e){}
+  };
+
+  /* ════════ מצב ════════ */
+  var S = { uid:null, user:null, doc:null, docLoaded:false, code:null, count:0, names:[], refUnsub:null, docUnsub:null, writing:{} };
+  window._mntaRef = S;
+
+  function state(){
+    var d = S.doc || {};
+    var start = toDate(d.firstUseAt);
+    var end = toDate(d.trialEndsAt) || (start ? new Date(start.getTime()+TRIAL_DAYS*DAY) : null);
+    var unlocked = d.premiumUnlocked === true || S.count >= NEED;
+    var now = Date.now();
+    var daysLeft = end ? Math.ceil((end.getTime()-now)/DAY) : TRIAL_DAYS;
+    /* האפליקציה לא ננעלת אף פעם. אחרי חודשיים בלי 2 חברים רק בוט הוואטסאפ מושהה (הבוט אוכף, לא האפליקציה).
+       מחשבים רק אחרי שספירת החברים נטענה מהשרת */
+    var botPaused = !!(S.docLoaded && S.refLoaded && end && !unlocked && now >= end.getTime());
+    return { start:start, end:end, unlocked:unlocked, locked:false, botPaused:botPaused, daysLeft:daysLeft, warn: !!(S.docLoaded && S.refLoaded && end && !unlocked && !botPaused && daysLeft <= WARN_DAYS), count:Math.min(S.count,NEED), names:S.names };
+  }
+  window.mntaRefState = state;
+  window.mntaIsLocked = function(){ return false; };          /* שום דבר באפליקציה לא ננעל */
+  window.mntaBotPaused = function(){ return state().botPaused; };
+
+  /* ════════ Firestore ════════ */
+  function userRef(){ var db=fs(); return db && S.uid ? db.collection('users').doc(S.uid) : null; }
+
+  function onUserDoc(snap){
+    S.doc = (snap && snap.exists) ? (snap.data()||{}) : {};
+    S.docLoaded = true;
+    var d = S.doc, ref = userRef(); if(!ref) return;
+    /* שעון תקופת הניסיון — כולל משתמשים קיימים (מתחילים היום) */
+    if(!d.firstUseAt && !S.writing.trial){
+      S.writing.trial = true;
+      var now = new Date(), fv = FV();
+      var upd = { firstUseAt: fv ? fv.serverTimestamp() : now.toISOString(), trialEndsAt: TS(new Date(now.getTime()+TRIAL_DAYS*DAY)), trialDays: TRIAL_DAYS };
+      S.doc.firstUseAt = now; S.doc.trialEndsAt = new Date(now.getTime()+TRIAL_DAYS*DAY);
+      ref.set(upd,{merge:true}).catch(function(e){ S.writing.trial=false; console.warn('[ref] trial write',e&&e.code); });
+    }
+    ensureCode();
+    syncFlags();
+    render();
+    maybeAskWhoInvited();
+  }
+
+  function ensureCode(){
+    if(S.code || S.writing.code) return;
+    var d = S.doc||{};
+    if(d.refCode){ S.code = d.refCode; render(); claim(d.refCode, 0, true); return; }
+    S.writing.code = true;
+    claim(codeFor(S.uid,0), 0, false);
+  }
+  /* refCodes/{CODE} = {uid} — כדי שחבר שמקליד את הקוד נדע של מי הוא */
+  function claim(code, attempt, already){
+    var db=fs(); if(!db) return;
+    var cref = db.collection('refCodes').doc(code);
+    cref.get().then(function(s){
+      if(s.exists && s.data() && s.data().uid && s.data().uid !== S.uid){
+        if(attempt > 4) return;
+        return claim(codeFor(S.uid, attempt+1) + ALPH[(attempt*7)%32], attempt+1, false);
+      }
+      S.code = code; render();
+      var jobs = [];
+      if(!s.exists){ var fv=FV(); jobs.push(cref.set({uid:S.uid, createdAt: fv?fv.serverTimestamp():new Date().toISOString()})); }
+      if(!already || (S.doc && S.doc.refCode!==code)) jobs.push(userRef().set({refCode:code},{merge:true}));
+      return Promise.all(jobs);
+    }).catch(function(e){
+      /* גם בלי הרשאה לקרוא — מציגים את הקוד המחושב (חבר לא יוכל לאמת עד שיעודכנו כללי Firestore) */
+      if(!S.code){ S.code = code; render(); }
+      console.warn('[ref] code claim', e && (e.code||e.message));
+    });
+  }
+
+  function listenReferrals(){
+    var db=fs(); if(!db||!S.uid) return;
+    if(S.refUnsub){ try{S.refUnsub();}catch(e){} }
+    var q = db.collection('referrals').where('referrer','==',S.uid);
+    var apply = function(qs){
+      var docs = qs.docs || [];
+      S.count = docs.length; S.refLoaded = true;
+      S.names = docs.map(function(x){ var v=x.data()||{}; return v.name || 'חבר'; });
+      syncFlags(); render();
+    };
+    try{ S.refUnsub = q.onSnapshot(apply, function(e){ console.warn('[ref] referrals listen', e&&e.code); q.get().then(apply).catch(function(){}); }); }catch(e){}
+  }
+
+  /* שדות שהבוט קורא: locked (= הבוט מושהה, מידע בלבד) / premiumUnlocked / referralCount */
+  function syncFlags(){
+    if(!S.docLoaded || !S.uid) return;
+    var d = S.doc||{}, st = state(), ref=userRef(), upd = {};
+    if(S.count >= NEED && d.premiumUnlocked !== true){
+      var fv=FV(); upd.premiumUnlocked = true; upd.unlockedAt = fv?fv.serverTimestamp():new Date().toISOString();
+      celebrate();
+    }
+    if(S.refLoaded && d.referralCount !== S.count) upd.referralCount = S.count;
+    var lk = st.botPaused && !(upd.premiumUnlocked);
+    if(S.refLoaded && d.locked !== lk) upd.locked = lk;
+    phonePause(st);
+    if(Object.keys(upd).length){
+      /* מניעת לולאת כתיבה: אותו עדכון לא נשלח שוב תוך 10 שניות */
+      var sig = JSON.stringify(Object.keys(upd).sort().map(function(k){ return [k, k==='unlockedAt'?1:upd[k]]; }));
+      if(S.lastSig === sig && Date.now()-S.lastSigAt < 10000) return;
+      S.lastSig = sig; S.lastSigAt = Date.now();
+      Object.keys(upd).forEach(function(k){ d[k]=upd[k]; });
+      setTimeout(function(){ ref.set(upd,{merge:true}).catch(function(e){ console.warn('[ref] flags',e&&e.code); }); }, 0);
+    }
+  }
+
+  /* ════════ שיתוף ════════ */
+  function links(){
+    var c = S.code || '';
+    return { play: PLAY_URL + '&referrer=' + encodeURIComponent('ref=' + c), web: WEB_URL + '?ref=' + c };
+  }
+  function shareText(){
+    var l = links();
+    return 'אני מנהל את הכסף עם MNTA+ 💸\n' +
+           'שולחים הוצאה בוואטסאפ ("80 דלק") והיא נרשמת לבד, עם קטגוריות ותקציב. חינם!\n\n' +
+           '📲 אנדרואיד: ' + l.play + '\n' +
+           '🍏 אייפון / מחשב: ' + l.web + '\n\n' +
+           '🎁 קוד החבר שלי: ' + (S.code||'') + ' (מכניסים אותו בהרשמה)';
+  }
+  function shareWA(){
+    if(!S.code){ toast('רגע, מכין את הקוד שלך...','info'); return; }
+    var url = 'https://wa.me/?text=' + encodeURIComponent(shareText());
+    var w = null; try{ w = window.open(url, '_blank'); }catch(e){}
+    if(!w){ try{ location.href = url; }catch(e){} }
+  }
+  function shareAny(){
+    if(!S.code){ toast('רגע, מכין את הקוד שלך...','info'); return; }
+    if(window.nativeShare) window.nativeShare(shareText(), 'MNTA+');
+    else if(navigator.share) navigator.share({title:'MNTA+', text:shareText()}).catch(function(){});
+    else copy(shareText());
+  }
+  function copy(t){
+    var done = function(ok){ toast(ok ? 'הועתק ✓' : 'לא הצלחתי להעתיק', ok?'success':'error'); };
+    try{ if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(t).then(function(){done(true);},function(){ done(legacy()); }); return; } }catch(e){}
+    done(legacy());
+    function legacy(){ try{ var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); var ok=document.execCommand('copy'); ta.remove(); return ok; }catch(e){ return false; } }
+  }
+  /* כפתורי השיתוף הקיימים באפליקציה — עכשיו עם הקוד האישי */
+  var _origShare = window.shareApp;
+  window.shareApp = function(src){
+    if(!S.code){ if(typeof _origShare==='function') return _origShare(src); return; }
+    try{ if(src==='eom' && typeof _origShare==='function' && window.shareHide) window.shareHide(); }catch(e){}
+    shareAny();
+  };
+
+  /* ════════ גיליון (Sheet) ════════ */
+  function sheetEl(){
+    var o = $('ref-sheet');
+    if(!o){ o=document.createElement('div'); o.id='ref-sheet'; o.setAttribute('role','dialog'); o.setAttribute('aria-modal','true'); document.body.appendChild(o);
+      o.addEventListener('click', function(e){ if(e.target===o) closeSheet(); }); }
+    return o;
+  }
+  function openSheet(html, bind){
+    var o = sheetEl();
+    o.innerHTML = '<div class="rf-box"><div class="rf-grab"></div><button class="rf-close" type="button" aria-label="סגור" data-rf="close">✕</button>' + html + '</div>';
+    o.querySelectorAll('[data-rf]').forEach(function(b){
+      var a=b.getAttribute('data-rf');
+      b.addEventListener('click', function(e){ e.preventDefault();
+        if(a==='close'||a==='view') closeSheet();
+        else if(a==='wa') shareWA();
+        else if(a==='share') shareAny();
+        else if(a==='copy') copy(S.code||'');
+        else if(a==='havecode') openWhoInvited(true);
+      });
+    });
+    if(bind) bind(o);
+    requestAnimationFrame(function(){ o.classList.add('open'); });
+  }
+  function closeSheet(){ var o=$('ref-sheet'); if(o) o.classList.remove('open'); }
+  window.mntaCloseRefSheet = closeSheet;
+
+  function progressHTML(st){
+    var slots='', i;
+    for(i=0;i<NEED;i++){
+      var on = i < st.count, nm = on ? (st.names[i]||'חבר') : 'מחכה...';
+      slots += '<div class="rf-slot'+(on?' on':'')+'"><div class="rf-av">'+(on? esc(String(nm).trim().charAt(0)||'✓') : '+')+'</div><div class="rf-nm">'+esc(nm)+'</div></div>';
+    }
+    var mid = '<div class="rf-count">'+st.count+'<small>/'+NEED+'</small></div>';
+    var parts = slots.split('</div></div>'); /* slot1 | count | slot2 */
+    var pct = Math.round(st.count/NEED*100);
+    return '<div class="rf-prog">'+ (parts[0]+'</div></div>') + mid + (parts[1]+'</div></div>') +'</div><div class="rf-bar"><i style="width:'+pct+'%"></i></div>';
+  }
+  function codeHTML(){
+    return '<div class="rf-code"><span>הקוד שלך</span><b>'+esc(S.code||'······')+'</b><button type="button" data-rf="copy">העתק</button></div>';
+  }
+  function canEnterCode(){
+    var d=S.doc||{}; if(d.referredBy) return false;
+    var ct = S.user && S.user.metadata && S.user.metadata.creationTime ? new Date(S.user.metadata.creationTime) : null;
+    return !!(ct && !isNaN(ct) && (Date.now()-ct.getTime()) < 14*DAY);
+  }
+
+  /* בוט הוואטסאפ מושהה — אחרי חודשיים בלי 2 חברים. לא חוסם כלום באפליקציה */
+  function openBotPaused(reason){
+    var st = state(), left = Math.max(1, NEED-st.count);
+    var html =
+      '<div class="rf-gift">🎁</div>' +
+      '<div class="rf-title">בוט הוואטסאפ מושהה<br>הזמן <span class="rf-n">2</span> חברים כדי להפעיל אותו מחדש</div>' +
+      '<div class="rf-sub">האפליקציה ממשיכה לעבוד כרגיל, הכל פתוח.<br>חסר עוד <b><span class="rf-n">'+left+'</span> '+(left===1?'חבר':'חברים')+'</b> שיירשמו עם הקוד שלך, והבוט חוזר לעבוד לתמיד.</div>' +
+      progressHTML(st) + codeHTML() +
+      '<button class="rf-btn rf-wa" type="button" data-rf="wa">💬 הזמן חברים בוואטסאפ</button>' +
+      '<button class="rf-btn rf-ghost" type="button" data-rf="share">שתף בדרך אחרת</button>' +
+      '<button class="rf-btn rf-ghost" type="button" data-rf="view" style="background:none;margin-top:4px">אחר כך</button>' +
+      '<div class="rf-note">החבר נספר כשהוא נרשם ומכניס את הקוד שלך. וגם הוא מקבל חודשיים עם הבוט 🎉</div>';
+    openSheet(html);
+  }
+  /* גיליון הזמנה רגיל (מההגדרות / באנר) */
+  function openInvite(){
+    var st = state();
+    if(st.botPaused) return openBotPaused('invite');
+    var head, sub;
+    if(st.unlocked){
+      head = 'בוט הוואטסאפ פתוח לך לתמיד ✨'; sub = 'תודה שהבאת חברים! רוצה לעזור לעוד מישהו לעשות סדר בכסף? שתף את הקישור.';
+    } else {
+      head = 'הזמן <span class="rf-n">2</span> חברים, ובוט הוואטסאפ ממשיך לעבוד';
+      sub = 'האפליקציה חינמית ופתוחה לך תמיד. אחרי חודשיים, בוט הוואטסאפ ממשיך לעבוד רק למי שהזמין <span class="rf-n">2</span> חברים.' + (st.end ? '<br>נשארו <b><span class="rf-n">'+Math.max(0,st.daysLeft)+'</span> ימים</b> לתקופת הניסיון של הבוט.' : '');
+    }
+    var html =
+      '<div class="rf-gift">'+(st.unlocked?'💎':'🎁')+'</div>' +
+      '<div class="rf-title">'+head+'</div><div class="rf-sub">'+sub+'</div>' +
+      (st.unlocked ? '' : progressHTML(st)) + codeHTML() +
+      '<button class="rf-btn rf-wa" type="button" data-rf="wa">💬 שלח בוואטסאפ</button>' +
+      '<button class="rf-btn rf-ghost" type="button" data-rf="share">שתף בדרך אחרת</button>' +
+      (canEnterCode() ? '<button class="rf-link" type="button" data-rf="havecode">קיבלת קוד מחבר? הכנס אותו כאן</button>' : '') +
+      '<div class="rf-note">גם החבר מקבל חודשיים מלאים עם הבוט מההרשמה 🎉</div>';
+    openSheet(html);
+  }
+  window.openInviteFriends = openInvite;
+  window.openRefLock = openBotPaused;      /* שם ישן נשמר לתאימות */
+  window.openBotPaused = openBotPaused;
+
+  /* "מי הזמין אותך?" — למשתמש חדש */
+  function openWhoInvited(manual){
+    var pre = ''; try{ pre = localStorage.getItem(LS_IN)||''; }catch(e){}
+    var html =
+      '<div class="rf-gift">🤝</div>' +
+      '<div class="rf-title">ברוך הבא! 👋</div>' +
+      '<div class="rf-sub">מי הזמין אותך? <b>(קוד חבר)</b><br>אם חבר שלח לך קוד, הכנס אותו כאן כדי שיקבל קרדיט.</div>' +
+      '<input class="rf-input" id="rf-code-in" maxlength="10" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABC123" value="'+esc(pre)+'">' +
+      '<div class="rf-err" id="rf-code-err"></div>' +
+      '<button class="rf-btn rf-primary" type="button" id="rf-code-ok">אישור</button>' +
+      '<button class="rf-btn rf-ghost" type="button" id="rf-code-skip">אין לי קוד</button>';
+    openSheet(html, function(o){
+      var inp=o.querySelector('#rf-code-in'), err=o.querySelector('#rf-code-err'), ok=o.querySelector('#rf-code-ok');
+      inp.addEventListener('input', function(){ inp.value = normCode(inp.value); err.textContent=''; err.className='rf-err'; });
+      o.querySelector('#rf-code-skip').addEventListener('click', function(){ markAsked(); closeSheet(); });
+      o.querySelector('.rf-close').addEventListener('click', function(){ markAsked(); });
+      ok.addEventListener('click', function(){
+        var c = normCode(inp.value);
+        if(c.length < 4){ err.textContent='הקוד קצר מדי'; return; }
+        if(S.code && c === S.code){ err.textContent='זה הקוד שלך 🙂 צריך קוד של החבר שהזמין אותך'; return; }
+        ok.disabled = true; ok.textContent = 'בודק...';
+        redeem(c).then(function(name){
+          err.className='rf-err ok'; err.textContent='✓ תודה! '+(name?name+' ':'החבר שלך ')+'קיבל קרדיט';
+          ok.textContent='✓';
+          markAsked(); try{ localStorage.removeItem(LS_IN); }catch(e){}
+          setTimeout(closeSheet, 1400);
+        }).catch(function(e){
+          ok.disabled=false; ok.textContent='אישור';
+          err.textContent = (e && e.msg) || 'לא הצלחנו לבדוק את הקוד, נסה שוב';
+        });
+      });
+      if(!manual) setTimeout(function(){ try{ inp.focus(); }catch(e){} }, 400);
+    });
+  }
+  window.openWhoInvited = openWhoInvited;
+  function markAsked(){ try{ localStorage.setItem('_mnta_ref_asked_'+S.uid,'1'); }catch(e){} var r=userRef(); if(r) r.set({refAsked:true},{merge:true}).catch(function(){}); }
+  function maybeAskWhoInvited(){
+    if(!S.docLoaded || !S.uid || S.askedThisSession) return;
+    var d=S.doc||{}; if(d.referredBy || d.refAsked) return;
+    try{ if(localStorage.getItem('_mnta_ref_asked_'+S.uid)) return; }catch(e){}
+    var hasIncoming = false; try{ hasIncoming = !!localStorage.getItem(LS_IN); }catch(e){}
+    var ct = S.user && S.user.metadata && S.user.metadata.creationTime ? new Date(S.user.metadata.creationTime) : null;
+    var isNew = !!(ct && !isNaN(ct) && (Date.now()-ct.getTime()) < 3*DAY);
+    if(!isNew) return; /* משתמשים ותיקים לא נשאלים */
+    var app=$('app'); if(!app || app.classList.contains('hidden')){ clearTimeout(S.askT); S.askT=setTimeout(maybeAskWhoInvited, 1500); return; }
+    S.askedThisSession = true;
+    setTimeout(function(){ openWhoInvited(false); }, hasIncoming ? 1200 : 2500);
+  }
+  function redeem(c){
+    var db=fs(); if(!db) return Promise.reject({msg:'אין חיבור כרגע'});
+    if((S.doc||{}).referredBy) return Promise.reject({msg:'כבר הוזן קוד חבר בחשבון הזה'});
+    return db.collection('refCodes').doc(c).get().then(function(s){
+      var rid = s.exists && s.data() ? s.data().uid : null;
+      if(!rid) throw {msg:'הקוד לא נמצא. בדוק שהקלדת נכון'};
+      if(rid === S.uid) throw {msg:'זה הקוד שלך 🙂'};
+      var fv=FV(), now = fv?fv.serverTimestamp():new Date().toISOString();
+      var first = (S.user && S.user.displayName ? S.user.displayName : ((S.doc||{}).displayName||'')).split(' ')[0] || 'חבר';
+      return userRef().set({referredBy: rid, referredByCode: c, referredAt: now},{merge:true}).then(function(){
+        S.doc.referredBy = rid;
+        return db.collection('referrals').doc(S.uid).set({referrer: rid, code: c, name: first, at: now});
+      }).then(function(){ return ''; });
+    }).catch(function(e){
+      if(e && e.msg) throw e;
+      console.warn('[ref] redeem', e && (e.code||e.message));
+      if(e && e.code==='permission-denied') throw {msg:'לא ניתן לאשר את הקוד כרגע (הרשאות). נסה שוב מאוחר יותר'};
+      throw {msg:'לא הצלחנו לבדוק את הקוד, נסה שוב'};
+    });
+  }
+
+  function celebrate(){
+    if(S.celebrated) return; S.celebrated = true;
+    setTimeout(function(){
+      toast('🎉 2 חברים הצטרפו! בוט הוואטסאפ פתוח לך לתמיד','success');
+      if($('ref-sheet') && $('ref-sheet').classList.contains('open')) openInvite();
+    }, 300);
+  }
+
+  /* ════════ השהיית הבוט בלי קוד הבוט: ניתוק המספר מהחשבון ════════
+     הבוט מזהה משתמש לפי users/{uid}.phones / phone. כשהבוט מושהה (חודשיים בלי 2 חברים) מעבירים את המספרים
+     ל-pausedPhones / pausedPhone ומוחקים phones / phone — הבוט לא מכיר את המספר. כש-2 חברים נרשמים, המספרים חוזרים לבד.
+     האפליקציה עצמה לא ננעלת. */
+  function parr(v){ return Array.isArray(v) ? v.filter(function(x){ return typeof x==='string' && x; }) : ((typeof v==='string' && v) ? [v] : []); }
+  function puniq(a){ var o=[]; a.forEach(function(x){ if(o.indexOf(x)<0) o.push(x); }); return o; }
+  function heldPhones(){ var d=S.doc||{}; return puniq(parr(d.pausedPhones).concat(parr(d.pausedPhone))); }
+  function livePhones(){ var d=S.doc||{}; return puniq(parr(d.phones).concat(parr(d.phone))); }
+  window.mntaPhonesPaused = function(){ return state().botPaused; };
+  window.mntaPausedPhones = heldPhones;
+
+  function phonePause(st){
+    if(!S.docLoaded || !S.refLoaded || !S.uid) return;
+    var d=S.doc||{}, ref=userRef(), fv=FV(); if(!ref || !fv) return;
+    var live = livePhones(), held = heldPhones();
+    if(st.botPaused){
+      /* מנתקים פעם אחת: רק אם עדיין יש מספר פעיל */
+      if(!live.length || S.writing.pause) return;
+      S.writing.pause = true;
+      var all = puniq(held.concat(live));
+      var upd = { pausedPhones: all, pausedPhone: all[0], phonesPausedAt: fv.serverTimestamp(), phones: fv.delete(), phone: fv.delete() };
+      d.pausedPhones = all; d.pausedPhone = all[0]; delete d.phones; delete d.phone;
+      ref.set(upd,{merge:true}).then(function(){ S.writing.pause=false; refreshPhonesUI(); })
+        .catch(function(e){ S.writing.pause=false; console.warn('[ref] phone pause', e&&e.code); });
+      refreshPhonesUI();
+      return;
+    }
+    /* הבוט חזר (2 חברים / premiumUnlocked / תקופת ניסיון פעילה): מחזירים את המספרים */
+    if(!held.length || S.writing.restore) return;
+    S.writing.restore = true;
+    var check = null; try{ check = firebase.functions().httpsCallable('checkPhoneAvailable'); }catch(e){}
+    Promise.all(held.map(function(p){
+      if(live.indexOf(p) >= 0 || !check) return Promise.resolve({p:p, ok:true});
+      /* מספר שבינתיים חובר לחשבון אחר לא מוחזר. אם הבדיקה לא זמינה — מחזירים (המספר היה שלו) */
+      return check({phone:p}).then(function(r){ return {p:p, ok: !(r && r.data && r.data.taken)}; }, function(){ return {p:p, ok:true}; });
+    })).then(function(res){
+      var back = res.filter(function(x){ return x.ok; }).map(function(x){ return x.p; });
+      var lost = res.filter(function(x){ return !x.ok; }).map(function(x){ return x.p; });
+      var phones = puniq(livePhones().concat(back));
+      var upd = { pausedPhones: fv.delete(), pausedPhone: fv.delete(), phonesPausedAt: fv.delete(), phonesRestoredAt: fv.serverTimestamp() };
+      if(phones.length){ upd.phones = phones; upd.phone = phones[0]; }
+      return ref.set(upd,{merge:true}).then(function(){
+        var dd=S.doc||{}; delete dd.pausedPhones; delete dd.pausedPhone; delete dd.phonesPausedAt;
+        if(phones.length){ dd.phones = phones; dd.phone = phones[0]; }
+        S.writing.restore = false; refreshPhonesUI();
+        if(back.length) toast('בוט הוואטסאפ חזר לפעול ✨','success');
+        if(lost.length) setTimeout(function(){ toast('המספר '+lost.join(', ')+' כבר מחובר לחשבון אחר. אפשר להוסיף מספר בהגדרות','error'); }, 1200);
+      });
+    }).catch(function(e){ S.writing.restore=false; console.warn('[ref] phone restore', e&&(e.code||e.message)); });
+  }
+
+  var PAUSE_MSG = 'בוט הוואטסאפ מושהה. אפשר לחבר מספר שוב אחרי ש-2 חברים יירשמו עם הקוד שלך';
+  function blockedPhoneAction(){ toast(PAUSE_MSG,'info'); }
+  /* עוטפים את פונקציות הטלפונים של האפליקציה (מוגדרות אחרי טעינה, לכן בדיקה בכל render) */
+  function wrapPhoneUI(){
+    var w = window;
+    if(typeof w.renderPhonesList==='function' && !w.renderPhonesList.__rp){
+      var oR = w.renderPhonesList;
+      w.renderPhonesList = function(){ var r = oR.apply(this, arguments); try{ decoratePhones(); }catch(e){ console.warn('[ref] phones ui', e); } return r; };
+      w.renderPhonesList.__rp = true;
+    }
+    if(typeof w.addNewPhoneFromInput==='function' && !w.addNewPhoneFromInput.__rp){
+      var oA = w.addNewPhoneFromInput;
+      w.addNewPhoneFromInput = function(){ if(state().botPaused) return blockedPhoneAction(); return oA.apply(this, arguments); };
+      w.addNewPhoneFromInput.__rp = true;
+    }
+    if(typeof w.updatePhonesInDB==='function' && !w.updatePhonesInDB.__rp){
+      var oU = w.updatePhonesInDB;
+      w.updatePhonesInDB = function(arr){ if(state().botPaused && arr && arr.length) return blockedPhoneAction(); return oU.apply(this, arguments); };
+      w.updatePhonesInDB.__rp = true;
+    }
+    var mb = $('btn-save-phone-modal');
+    if(mb && typeof mb.onclick==='function' && !mb.onclick.__rp){
+      var oM = mb.onclick;
+      mb.onclick = function(e){ if(state().botPaused){ blockedPhoneAction(); return; } return oM.call(this, e); };
+      mb.onclick.__rp = true;
+    }
+  }
+  function refreshPhonesUI(){
+    wrapPhoneUI();
+    try{ if(window.renderPhonesList && window.renderPhonesList.__rp) window.renderPhonesList(); else decoratePhones(); }catch(e){}
+  }
+  function decoratePhones(){
+    var st = state(), paused = st.botPaused;
+    var card = $('phones-card-2026'), box = $('phone-list-container');
+    var inp = $('settings-new-phone-input'), addBtn = card ? card.querySelector('.btn-add-phone-2026') : null;
+    var badge = card ? card.querySelector('.phones-header-badge') : null;
+    if(card) card.classList.toggle('rp-paused', paused);
+    if(badge){ if(paused){ if(!badge.__rpTxt) badge.__rpTxt = badge.textContent; badge.textContent = 'מושהה'; } else if(badge.__rpTxt){ badge.textContent = badge.__rpTxt; badge.__rpTxt = null; } }
+    if(inp){
+      if(paused){ if(!inp.__rpPh){ inp.__rpPh = inp.getAttribute('placeholder')||''; } inp.disabled = true; inp.value=''; inp.setAttribute('placeholder','מושהה עד ש-2 חברים יירשמו'); }
+      else if(inp.__rpPh != null){ inp.disabled = false; inp.setAttribute('placeholder', inp.__rpPh); inp.__rpPh = null; }
+    }
+    if(addBtn) addBtn.disabled = paused;
+    /* חלון הוספת מספר */
+    var mb = $('btn-save-phone-modal'), mi = $('modal-phone-input'), note = $('rp-modal-note');
+    if(mb){
+      if(paused){
+        mb.disabled = true; if(mi) mi.disabled = true;
+        if(!note){ note = document.createElement('div'); note.id = 'rp-modal-note'; mb.parentNode.insertBefore(note, mb); }
+        note.textContent = '🤖 ' + PAUSE_MSG;
+      } else if(note){ note.parentNode.removeChild(note); mb.disabled = false; if(mi) mi.disabled = false; }
+    }
+    if(!box || !paused) return;
+    var nums = puniq(heldPhones().concat(livePhones())), html = '';
+    nums.forEach(function(p, i){
+      html += '<div class="phone-item-2026 rp-held" style="animation-delay:'+(i*0.06)+'s"><div class="phone-wa-icon">💬</div>' +
+              '<span class="phone-number-text">'+esc(p)+'</span><span class="rp-pill">מושהה</span></div>';
+    });
+    html += '<div class="rp-box">🤖 בוט הוואטסאפ מושהה' +
+            '<small>' + (nums.length ? 'המספר נותק מהבוט ושמור אצלך. ברגע ש-2 חברים נרשמים עם הקוד שלך הוא חוזר לבד.' : 'אפשר לחבר מספר לבוט אחרי ש-2 חברים יירשמו עם הקוד שלך.') + ' האפליקציה עובדת כרגיל.</small>' +
+            '<button type="button" onclick="window.openInviteFriends()">🎁 הזמן חברים <span dir="ltr">('+st.count+'/'+NEED+')</span></button></div>';
+    box.innerHTML = html;
+  }
+
+  /* ════════ באנר + סימוני נעילה ════════ */
+  function bannerEl(){
+    var b=$('ref-banner'); if(b) return b;
+    var host=$('view-dashboard'); if(!host) return null;
+    b=document.createElement('div'); b.id='ref-banner';
+    host.insertBefore(b, host.firstChild);
+    b.addEventListener('click', function(e){
+      if(e.target.closest('.rb-x')){ e.stopPropagation(); try{ localStorage.setItem('_mnta_ref_bx', new Date().toDateString()); }catch(_){} b.classList.remove('show'); return; }
+      openInvite();
+    });
+    return b;
+  }
+  function render(){
+    var st = state();
+    try{ refreshPhonesUI(); }catch(e){}
+    try{ localStorage.setItem(LS_ST, JSON.stringify({botPaused:st.botPaused, unlocked:st.unlocked})); }catch(e){}
+    var b = bannerEl(); if(!b) return;
+    var dismissed = false; try{ dismissed = localStorage.getItem('_mnta_ref_bx') === new Date().toDateString(); }catch(e){}
+    b.classList.toggle('paused', st.botPaused);
+    if(st.botPaused && !dismissed){
+      b.innerHTML = '<span class="rb-ico">🤖</span><div class="rb-t">בוט הוואטסאפ מושהה<small>הזמן <span class="rf-n">2</span> חברים כדי להפעיל אותו מחדש (<span class="rf-n">'+st.count+'/'+NEED+'</span>)</small></div><button class="rb-go" type="button">הזמן</button><button class="rb-x" type="button" aria-label="סגור">✕</button>';
+      b.classList.add('show');
+    } else if(st.warn && !dismissed){
+      var dl = Math.max(1, st.daysLeft);
+      b.innerHTML = '<span class="rb-ico">🎁</span><div class="rb-t">'+(dl===1?'נשאר יום אחד':'עוד <span class="rf-n">'+dl+'</span> ימים')+' — הזמן <span class="rf-n">2</span> חברים<small>כדי שבוט הוואטסאפ ימשיך לעבוד אחרי תקופת הניסיון (<span class="rf-n">'+st.count+'/'+NEED+'</span>)</small></div><button class="rb-go" type="button">הזמן</button><button class="rb-x" type="button" aria-label="סגור">✕</button>';
+      b.classList.add('show');
+    } else {
+      b.classList.remove('show');
+    }
+  }
+
+  /* ════════ כפתור בהגדרות ════════ */
+  function settingsEntry(){
+    var btn = document.querySelector('#view-settings [onclick*="shareApp(\'settings\')"]');
+    if(btn && !btn.__ref){
+      btn.__ref = true;
+      btn.setAttribute('onclick','window.openInviteFriends()');
+      btn.innerHTML = '🎁 הזמן חברים <span id="ref-set-count" class="rf-n" style="opacity:.6;font-weight:800;direction:ltr"></span>';
+    }
+    var sc = $('ref-set-count'); if(sc){ var st=state(); sc.textContent = st.unlocked ? '✓' : '('+st.count+'/'+NEED+')'; }
+  }
+
+  /* ════════ אתחול ════════ */
+  function start(user){
+    if(!user){ S.uid=null; S.user=null; S.doc=null; S.docLoaded=false; S.code=null; S.count=0; S.names=[]; S.refLoaded=false;
+      if(S.docUnsub){ try{S.docUnsub();}catch(e){} S.docUnsub=null; } if(S.refUnsub){ try{S.refUnsub();}catch(e){} S.refUnsub=null; }
+      return; }
+    if(S.uid === user.uid) return;
+    S.uid = user.uid; S.user = user; S.writing = {};
+    var ref = userRef(); if(!ref) return;
+    try{
+      S.docUnsub = ref.onSnapshot(function(s){ onUserDoc(s); settingsEntry(); }, function(e){ console.warn('[ref] user doc', e&&e.code); ref.get().then(function(s){ onUserDoc(s); settingsEntry(); }).catch(function(){}); });
+    }catch(e){}
+    listenReferrals();
+  }
+  function boot(){
+    try{ firebase.auth().onAuthStateChanged(start); }catch(e){ console.warn('[ref] auth', e); }
+    /* תצוגה מקדימה לבעלים: ?refpreview=lock / ?refpreview=invite / ?refpreview=who */
+    try{ var pm = location.search.match(/refpreview=(lock|invite|who)/); if(pm) setTimeout(function(){ ({lock:openBotPaused, invite:openInvite, who:function(){openWhoInvited(true);}})[pm[1]](); }, 3500); }catch(e){}
+    setInterval(function(){ settingsEntry(); if(S.docLoaded){ syncFlags(); render(); } }, 60000);
+    setTimeout(settingsEntry, 2500);
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
+
+<script id="mnta-v12-glue">
+/* MNTA+ v12 app glue (app shortcuts + home-screen widget).
+   Goes in its own script tag (id="mnta-v12-glue") just before the closing body tag of index.html.
+   - Outside the Android app it only handles ?action=... (harmless in a browser / PWA).
+   - Inside the app (window.flutter_inappwebview) it sends the month's totals to NativeUpdateWidget. */
+(function(){
+  if (window.__mntaV12Glue) return; window.__mntaV12Glue = true;
+  function nat(){ var f = window.flutter_inappwebview; return (f && typeof f.callHandler === 'function') ? f : null; }
+  function $(id){ return document.getElementById(id); }
+
+  /* ── 1. actions from app shortcuts / widget buttons (also ?action=... in the URL) ── */
+  var ACTIONS = {'add-expense':1, 'add-income':1, 'balance':1, 'charts':1};
+  function ready(){
+    var n = $('nav-dashboard');
+    return typeof window.switchView === 'function' && n && n.offsetParent !== null && $('view-dashboard');
+  }
+  window.mntaRunAction = function(action){
+    if (!ACTIONS[action]) return false;
+    var t0 = Date.now();
+    (function go(){
+      if (!ready()) { if (Date.now() - t0 < 25000) setTimeout(go, 300); return; }  /* waits for sign-in / first load */
+      try {
+        if (action === 'charts') { window.switchView('charts'); return; }
+        window.switchView('dashboard');
+        if (action === 'add-expense' || action === 'add-income') {
+          setTimeout(function(){
+            var b = $(action === 'add-income' ? 'btn-add-income' : 'btn-add-expense');
+            if (b) b.click();
+          }, 250);
+        } else {
+          try { window.scrollTo({top:0, behavior:'smooth'}); } catch(e) { window.scrollTo(0,0); }
+        }
+      } catch(e) {}
+    })();
+    return true;
+  };
+  try {
+    var m = location.search.match(/[?&]action=([a-z-]+)/);
+    if (m && ACTIONS[m[1]]) {
+      try {
+        var q = location.search.replace(/([?&])action=[a-z-]+&?/, '$1').replace(/[?&]$/, '');
+        history.replaceState(history.state, '', location.pathname + q + location.hash);
+      } catch(e) {}
+      window.mntaRunAction(m[1]);
+    }
+  } catch(e) {}
+
+  /* ── 2. widget: send this month's totals to the app whenever they change ── */
+  if (!nat()) return;  /* browser / PWA: nothing else to do */
+  function num(s){ var n = Number(String(s == null ? '' : s).replace(/[^\d.-]/g, '')); return isFinite(n) ? n : 0; }
+  function sym(){ try { var c = window._getCurrency ? window._getCurrency() : window._currency; return (c && c.symbol) || '\u20AA'; } catch(e) { return '\u20AA'; } }
+  function money(n){
+    var a = Math.abs(n), s = a >= 100 ? Math.round(a).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : (Math.round(a*100)/100).toString();
+    return (n < 0 ? '-' : '') + sym() + s;
+  }
+  var lastSent = '', timer = null, pending = null;
+  function send(){
+    timer = null; if (!pending) return;
+    var json = JSON.stringify(Object.assign({}, pending, {updatedAt: 0}));
+    if (json === lastSent) return;
+    var f = nat(); if (!f) return;
+    pending.updatedAt = Date.now();
+    try { Promise.resolve(f.callHandler('NativeUpdateWidget', pending)).then(function(r){ if (r && r.ok) lastSent = json; }, function(){}); } catch(e) {}
+  }
+  /* the dashboard numbers (#stat-income / #stat-fixed / #stat-var) are rewritten by renderStats() on every change */
+  function collect(){
+    if (!ready()) return;  /* signed out / login screen: keep the widget as the app left it */
+    var si = $('stat-income'), sf = $('stat-fixed'), sv = $('stat-var');
+    if (!si || !sf || !sv) return;
+    var inc = si.textContent, exp = num(sf.textContent) + num(sv.textContent);
+    var bal, balText;
+    if (typeof window._calcBal === 'function' && typeof window.fmt === 'function') {
+      try { balText = window.fmt(window._calcBal()); bal = num(balText); } catch(e) {}
+    }
+    if (balText == null) { bal = num(inc) - exp; balText = money(bal); }
+    pending = { balance: bal, income: num(inc), expense: exp, currency: sym(),
+                balanceText: balText, incomeText: String(inc).trim(), expenseText: money(exp), updatedAt: 0 };
+    if (timer) clearTimeout(timer); timer = setTimeout(send, 800);
+  }
+  var observed = false;
+  function watch(){
+    if (observed) return;
+    var ids = ['stat-income', 'stat-fixed', 'stat-var'], els = ids.map($);
+    if (els.some(function(e){ return !e; })) { setTimeout(watch, 2000); return; }
+    observed = true;
+    var mo = new MutationObserver(collect);
+    els.forEach(function(e){ mo.observe(e, {childList: true, characterData: true, subtree: true}); });
+  }
+  watch();
+  /* only after a signed-in user's data rendered: wait for the dashboard to be shown once */
+  (function first(){ if (ready()) setTimeout(collect, 1500); else setTimeout(first, 1000); })();
+  /* re-send the latest totals when the app goes to the background */
+  document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'hidden' && pending) { lastSent = ''; send(); } });
+})();
+
+</script>
 </body>
 </html>
