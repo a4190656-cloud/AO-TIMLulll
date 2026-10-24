@@ -18214,10 +18214,28 @@ body.theme-light #rp-modal-note{color:#B85D0A;background:rgba(230,130,40,.08);bo
 <style id="mnta-kb-css">
 /* ══ גיליון הוספה/עריכה: סכום תמיד גלוי מעל המקלדת, צ'יפים קומפקטיים, כפתור צמוד למקלדת ══ */
 #modal-overlay.mk-ov, #edit-modal-overlay.mk-ov {
+  /* v2: ברירת מחדל inset:0 — באנדרואיד (adjustResize) הדפדפן עצמו מקטין את השכבה יחד עם המקלדת, בלי JS ובלי פיגור */
+  position:fixed !important; inset:0 !important;
+  align-items:flex-end; overscroll-behavior:contain; overflow:hidden;
+  contain:layout paint; backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+}
+/* רק כשהמקלדת לא מקטינה את הדף (iOS): גובה לפי visualViewport, מוגדר על השכבה עצמה */
+#modal-overlay.mk-ov.mk-vv, #edit-modal-overlay.mk-ov.mk-vv {
   inset:auto !important; left:0 !important; right:0 !important;
   top:var(--mk-vvt,0px) !important; height:var(--mk-vvh,100%) !important;
-  align-items:flex-end; overscroll-behavior:contain; overflow:hidden;
 }
+#edit-modal-overlay.mk-ov { background:rgba(0,0,0,0.62); }
+#edit-modal-overlay.mk-ov:not(.hidden) { animation:mntaOvIn .16s ease-out both; }
+/* v2: אנימציית פתיחה אחת, קצרה, רק transform/opacity (בלי קפיצת "קפיץ" הלוך-חזור), שכבת GPU קבועה */
+#modal-sheet.mk-sheet, #edit-modal-sheet.mk-sheet {
+  backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+  will-change:transform; transform:translateZ(0); backface-visibility:hidden;
+  contain:layout paint;
+  animation:mkSheetIn .2s cubic-bezier(.2,.8,.2,1) both !important;
+}
+body:not(.theme-light) #edit-modal-sheet.mk-sheet { background:rgba(10,16,30,0.985); }
+@keyframes mkSheetIn { from{ transform:translate3d(0,40px,0); opacity:.6; } to{ transform:translate3d(0,0,0); opacity:1; } }
+@media (prefers-reduced-motion: reduce){ #modal-sheet.mk-sheet, #edit-modal-sheet.mk-sheet { animation:none !important; } }
 #modal-sheet.mk-sheet, #edit-modal-sheet.mk-sheet {
   display:flex; flex-direction:column; box-sizing:border-box;
   max-height:calc(100% - 10px); overflow:hidden;
@@ -18275,16 +18293,23 @@ body.theme-light .mk-chip { background:var(--lt-surf-2,#F4F6F8); border-color:rg
 body.theme-light .mk-chip.mk-on { background:rgba(0,201,177,0.10); border-color:rgba(0,201,177,0.50); color:#00786D; }
 body.theme-light .mk-chip.mk-chip-ev.mk-on { background:rgba(168,85,247,0.09); border-color:rgba(168,85,247,0.45); color:#7E22CE; }
 body.theme-light .mk-chip:focus-within { box-shadow:0 0 0 3px var(--au-teal-lt,rgba(0,201,177,0.15)); }
-/* מסך נמוך (מקלדת פתוחה): מכווצים ריווחים כדי שהכול ייכנס בלי גלילה */
-.mk-tight .mk-sheet .modal-handle { display:none; }
-.mk-tight .mk-sheet.mk-sheet { padding-top:8px !important; padding-bottom:10px !important; }
-.mk-tight .mk-head { margin-bottom:6px; }
-.mk-tight .mk-head h3 { font-size:15px !important; }
-.mk-tight .mk-amt { margin-bottom:8px; }
-.mk-tight .mk-amt .inp { font-size:38px !important; padding:8px 46px !important; }
-.mk-tight .mk-desc.inp { padding:10px 13px !important; margin-bottom:8px !important; }
-.mk-tight .mk-chip { height:36px; }
-.mk-tight #modal-submit, .mk-tight #edit-modal-submit { height:46px; margin-top:8px !important; }
+/* מסך נמוך (מקלדת פתוחה): מכווצים ריווחים כדי שהכול ייכנס בלי גלילה. v2: נקבע בפתיחה ולא מתחלף באמצע תנועת המקלדת */
+.mk-ov.mk-tight .mk-sheet .modal-handle { display:none; }
+.mk-ov.mk-tight .mk-sheet.mk-sheet { padding-top:8px !important; padding-bottom:10px !important; }
+.mk-ov.mk-tight .mk-head { margin-bottom:6px; }
+.mk-ov.mk-tight .mk-head h3 { font-size:15px !important; }
+.mk-ov.mk-tight .mk-amt { margin-bottom:8px; }
+.mk-ov.mk-tight .mk-amt .inp { font-size:38px !important; padding:8px 46px !important; }
+.mk-ov.mk-tight .mk-desc.inp { padding:10px 13px !important; margin-bottom:8px !important; }
+.mk-ov.mk-tight .mk-chip { height:36px; }
+.mk-ov.mk-tight #modal-submit, .mk-ov.mk-tight #edit-modal-submit { height:46px; margin-top:8px !important; }
+
+/* v2: בתוך הגיליון — בלי מעבר "all" על שדות (הוא הנפיש גודל גופן/ריפוד באמצע תנועת המקלדת) ובלי טשטוש רקע על שדות שזזים */
+.mk-sheet .inp, .mk-sheet input, .mk-sheet select, .mk-sheet textarea {
+  transition:border-color .2s, box-shadow .2s, background-color .2s !important;
+  backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+}
+#modal-sheet.mk-sheet, #edit-modal-sheet.mk-sheet { transition:none !important; }
 </style>
 <script id="mnta-kb-js">
 /* גיליון הוספה/עריכה — שכבת תצוגה בלבד: אין שינוי בלוגיקה או בשמירת הנתונים */
@@ -18292,16 +18317,38 @@ body.theme-light .mk-chip:focus-within { box-shadow:0 0 0 3px var(--au-teal-lt,r
   var de=document.documentElement;
   function $(id){ return document.getElementById(id); }
   function isHe(){ var l=(de.lang||'he').toLowerCase(); return !l || l.indexOf('he')===0 || l.indexOf('iw')===0; }
-  /* 1) גובה החלון הנראה (מעל המקלדת) — גם ב-iOS שבו המקלדת לא מקטינה את הדף */
-  function vvUpdate(){
-    var vv=window.visualViewport, h=vv?vv.height:window.innerHeight, t=vv?vv.offsetTop:0;
-    de.style.setProperty('--mk-vvh', Math.round(h)+'px');
-    de.style.setProperty('--mk-vvt', Math.round(t)+'px');
-    de.classList.toggle('mk-tight', h < 600);
+  /* 1) v2: גובה החלון הנראה — מטופל פעם אחת לכל פריים (requestAnimationFrame), נכתב רק על השכבה הפתוחה (לא על כל הדף).
+        באנדרואיד (adjustResize / resizes-content) הדף עצמו מתכווץ, אז השכבה (inset:0) עוקבת לבד ואין מה לעשות כאן.
+        רק ב-iOS, שבו המקלדת לא מקטינה את הדף, מגדירים גובה מ-visualViewport. */
+  var OVS=['modal-overlay','edit-modal-overlay'], rafId=0, settleT=0, lastH=-1, lastT=-1;
+  function openOv(){ for(var i=0;i<OVS.length;i++){ var o=$(OVS[i]); if(o && !o.classList.contains('hidden')) return o; } return null; }
+  function vvApply(){
+    rafId=0;
+    var ov=openOv(); if(!ov) return;
+    var vv=window.visualViewport, ih=window.innerHeight;
+    var h=vv?vv.height:ih, t=vv?vv.offsetTop:0;
+    var needVV = !!vv && (ih - h > 2 || t > 1);   /* iOS: המקלדת מכסה את הדף במקום להקטין אותו */
+    if(needVV){
+      h=Math.round(h); t=Math.round(t);
+      if(h!==lastH){ ov.style.setProperty('--mk-vvh', h+'px'); lastH=h; }
+      if(t!==lastT){ ov.style.setProperty('--mk-vvt', t+'px'); lastT=t; }
+    }
+    if(ov.classList.contains('mk-vv')!==needVV) ov.classList.toggle('mk-vv', needVV);
   }
-  vvUpdate();
-  if(window.visualViewport){ visualViewport.addEventListener('resize', vvUpdate); visualViewport.addEventListener('scroll', vvUpdate); }
-  window.addEventListener('resize', vvUpdate);
+  function vvUpdate(){ if(!rafId) rafId=requestAnimationFrame(vvApply); scheduleSettle(); }
+  /* כשהמקלדת סיימה לזוז (אין אירועי resize ~140ms): בודקים פעם אחת אם צריך מצב צפוף, ומוודאים שהשדה הממוקד גלוי */
+  function scheduleSettle(){ clearTimeout(settleT); settleT=setTimeout(onSettle, 140); }
+  function onSettle(){
+    var ov=openOv(); if(!ov) return;
+    var vv=window.visualViewport, h=vv?vv.height:window.innerHeight;
+    if(h<600 && !ov.classList.contains('mk-tight')) ov.classList.add('mk-tight');   /* רק נדלק, לא מהבהב הלוך-חזור */
+    var el=document.activeElement;
+    if(el && el.closest && el.closest('.mk-body') && !el.classList.contains('mk-native') && ov.contains(el)){
+      try{ el.scrollIntoView({block:'nearest', inline:'nearest', behavior:'instant'}); }catch(_e){ try{ el.scrollIntoView(false); }catch(_e2){} }
+    }
+  }
+  if(window.visualViewport){ visualViewport.addEventListener('resize', vvUpdate, {passive:true}); visualViewport.addEventListener('scroll', vvUpdate, {passive:true}); }
+  window.addEventListener('resize', vvUpdate, {passive:true});
   window.addEventListener('orientationchange', function(){ setTimeout(vvUpdate,250); });
 
   /* 2) תוויות הצ'יפים לפי הערך שנבחר בבורר המקורי */
@@ -18341,9 +18388,13 @@ body.theme-light .mk-chip:focus-within { box-shadow:0 0 0 3px var(--au-teal-lt,r
   document.addEventListener('change', function(e){ if(e.target && e.target.classList && e.target.classList.contains('mk-native')) refreshAll(); }, true);
   document.addEventListener('input', function(e){ if(e.target && e.target.classList && e.target.classList.contains('mk-native')) refreshAll(); }, true);
 
-  /* 3) בפתיחת הגיליון: מרעננים תוויות, מוודאים שהסכום למעלה וגלוי */
+  /* 3) בפתיחת הגיליון: מרעננים תוויות, הסכום למעלה. מצב צפוף נקבע כבר עכשיו בטלפון (המקלדת תמיד נפתחת כי הסכום מקבל פוקוס),
+        כך שהגדלים לא משתנים באמצע תנועת המקלדת */
   function onOpen(ov){
-    vvUpdate(); refreshAll();
+    var coarse=false; try{ coarse=window.matchMedia('(pointer:coarse)').matches; }catch(_e){}
+    var vv=window.visualViewport, h=vv?vv.height:window.innerHeight;
+    ov.classList.toggle('mk-tight', (coarse && window.innerHeight<1000) || h<600);
+    lastH=-1; lastT=-1; vvApply(); refreshAll();
     [60,160,400].forEach(function(ms){ setTimeout(refreshAll, ms); }); /* ערכים שנקבעים קצת אחרי הפתיחה (למשל קטגוריה מראש) */
     var body=ov.querySelector('.mk-body'); if(body) body.scrollTop=0;
   }
@@ -18360,18 +18411,14 @@ body.theme-light .mk-chip:focus-within { box-shadow:0 0 0 3px var(--au-teal-lt,r
   }
   watch('modal-overlay'); watch('edit-modal-overlay');
 
-  /* 4) כשמקלידים: שדה הסכום תמיד בראש הגיליון; שדה אחר שמקבל פוקוס נגלל לתוך האזור הגלוי */
+  /* 4) v2: בפוקוס — בלי תיקונים חוזרים ב-setTimeout שהזיזו את הגיליון באמצע האנימציה. איפוס גלילה פעם אחת,
+        וגלילה של שדה אחר לתוך האזור הגלוי רק אחרי שהמקלדת התייצבה (onSettle), מיידית ולא smooth */
   document.addEventListener('focusin', function(e){
     var el=e.target; if(!el || !el.closest) return;
     var sheet=el.closest('.mk-sheet'); if(!sheet) return;
-    var fix=function(){
-      vvUpdate();
-      var ov=sheet.parentNode; if(ov) ov.scrollTop=0;
-      sheet.scrollTop=0;
-      if(document.scrollingElement && document.scrollingElement.scrollTop && window.visualViewport==null) document.scrollingElement.scrollTop=0;
-      if(el.closest('.mk-body') && !el.classList.contains('mk-native')){ try{ el.scrollIntoView({block:'nearest'}); }catch(_e){} }
-    };
-    fix(); setTimeout(fix,120); setTimeout(fix,350);
+    var ov=sheet.parentNode; if(ov && ov.scrollTop) ov.scrollTop=0;
+    if(sheet.scrollTop) sheet.scrollTop=0;
+    vvUpdate();
   });
 })();
 </script>
