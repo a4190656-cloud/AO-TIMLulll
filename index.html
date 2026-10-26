@@ -17197,6 +17197,22 @@ body.theme-light #mnta-sheet .ms-ghost{background:rgba(0,0,0,0.05);color:rgba(10
     document.addEventListener('click', function(e){
       if(e.target && e.target.closest && e.target.closest('#btn-cycle-ok')) setTimeout(function(){ offer('cycle'); }, 900);
     }, true);
+    /* native app: ask for notification permission right on entry (once per install) */
+    if(nat()){
+      var aTries = 0, aIv = setInterval(function(){
+        aTries++; if(aTries > 20){ clearInterval(aIv); return; }
+        if(document.visibilityState !== 'visible') return;
+        probeNative().then(function(okN){
+          if(!aIv) return;
+          if(!okN){ if(nativeCap === false){ clearInterval(aIv); aIv = null; } return; }
+          clearInterval(aIv); aIv = null;
+          var s0 = st();
+          if(s0.on || s0.autoAsked) return;
+          save({autoAsked: Date.now(), firstOffer: Date.now()});
+          enable();
+        });
+      }, 800);
+    }
     /* once, a little after login, when nothing else is open */
     var tries = 0, iv = setInterval(function(){
       tries++; if(tries > 40){ clearInterval(iv); return; }
