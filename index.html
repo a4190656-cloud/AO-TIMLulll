@@ -5145,14 +5145,20 @@ body.theme-light { background-color: var(--bg) !important; }
     }
 
     /* ── מצב נגישות גלובלי — ניגודיות גבוהה ── */
-    body.a11y-high-contrast { filter: contrast(1.25) !important; }
+    /* הפילטר על <html> ולא על body — פילטר על body הופך את כל ה-position:fixed (תפריט תחתון, חלונות, כפתורים) ליחסיים לדף */
+    html.a11y-high-contrast { filter: contrast(1.25); }
     body.a11y-high-contrast .card,
     body.a11y-high-contrast [class*="card"] { border-width: 2px !important; }
+    /* גבולות ברורים בניגודיות גבוהה (contrast לבד מעלים את הגבולות הכהים) */
+    html.a11y-high-contrast body.a11y-high-contrast #app .card { border-color: rgba(255,255,255,0.30) !important; }
+    html.a11y-high-contrast body.a11y-high-contrast.theme-light #app .card { border-color: rgba(16,18,34,0.30) !important; }
 
     /* ── הדגשת קישורים ── */
     body.a11y-underline-links a,
-    body.a11y-underline-links [onclick],
-    body.a11y-underline-links button { text-decoration: underline !important; }
+    body.a11y-underline-links button,
+    body.a11y-underline-links [role="button"] { text-decoration: underline !important; text-underline-offset: 3px; }
+    body.a11y-underline-links [onclick]:not(:has(div,p,img,svg,canvas,input)) { text-decoration: underline !important; text-underline-offset: 3px; }
+    body.a11y-underline-links .a11y-step-btn { text-decoration: none !important; }
 
     /* ── עצירת אנימציות ── */
     body.a11y-reduce-motion *,
@@ -5173,7 +5179,8 @@ body.theme-light { background-color: var(--bg) !important; }
     body[data-a11y-font="3"] { zoom: 1.24 !important; }
 
     /* ── מצב גווני אפור ── */
-    body.a11y-grayscale { filter: grayscale(1) !important; }
+    html.a11y-grayscale { filter: grayscale(1); }
+    html.a11y-high-contrast.a11y-grayscale { filter: contrast(1.25) grayscale(1); }
 
     /* ── הצהרת נגישות — מודאל ── */
     #a11y-statement-overlay {
@@ -5397,7 +5404,7 @@ body.theme-light { background-color: var(--bg) !important; }
     function _loadToggles(){
       Object.keys(TOGGLE_CLASSES).forEach(function(key){
         var on = localStorage.getItem('_a11y_'+key) === '1';
-        if(on) document.body.classList.add(TOGGLE_CLASSES[key]);
+        if(on){ document.body.classList.add(TOGGLE_CLASSES[key]); document.documentElement.classList.add(TOGGLE_CLASSES[key]); }
       });
       var fontLvl = parseInt(localStorage.getItem('_a11y_font')||'0',10);
       _applyFont(fontLvl);
@@ -5424,6 +5431,7 @@ body.theme-light { background-color: var(--bg) !important; }
     window._a11yToggle = function(key, btnId){
       var cls = TOGGLE_CLASSES[key];
       var isOn = document.body.classList.toggle(cls);
+      document.documentElement.classList.toggle(cls, isOn);
       localStorage.setItem('_a11y_'+key, isOn ? '1' : '0');
       var btn = document.getElementById(btnId);
       if(btn) btn.classList.toggle('on', isOn);
@@ -5444,6 +5452,7 @@ body.theme-light { background-color: var(--bg) !important; }
     window._a11yReset = function(){
       Object.keys(TOGGLE_CLASSES).forEach(function(key){
         document.body.classList.remove(TOGGLE_CLASSES[key]);
+        document.documentElement.classList.remove(TOGGLE_CLASSES[key]);
         localStorage.removeItem('_a11y_'+key);
       });
       document.body.removeAttribute('data-a11y-font');
@@ -6864,6 +6873,9 @@ body.theme-light { background-color: var(--bg) !important; }
           box-shadow:0 -16px 60px rgba(0,0,0,0.6), 0 -1px 0 rgba(168,85,247,0.2);
         }
         #ev-detail-overlay.open #ev-detail-sheet { transform:translateY(0); }
+        /* תיקון: כשהמסך סגור הוא לא יציץ מלמטה בגרירה/גלילה (סרגל הכתובת של כרום / נגישות) */
+        #ev-detail-overlay { visibility:hidden; transition:background .3s, visibility 0s linear .4s; }
+        #ev-detail-overlay.open { visibility:visible; transition:background .3s, visibility 0s; }
         #ev-detail-header {
           position:relative; padding:28px 22px 22px;
           border-bottom:1px solid rgba(255,255,255,0.06); overflow:hidden;
