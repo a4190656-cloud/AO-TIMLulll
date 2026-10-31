@@ -18438,5 +18438,26 @@ body.theme-light .mk-chip:focus-within { box-shadow:0 0 0 3px var(--au-teal-lt,r
   });
 })();
 </script>
+
+<!-- MNTA+ v13: Android back button closes the open window -->
+<script>
+window.mntaOnBack = function () {
+  // finds the top open window/overlay and clicks its own close button
+  var els = document.querySelectorAll('[id*="overlay"],[id*="modal"],[id*="sheet"],[class*="overlay"]');
+  var top = null, topZ = -1;
+  for (var i = 0; i < els.length; i++) {
+    var e = els[i], cs = getComputedStyle(e);
+    if (cs.position !== 'fixed' || cs.display === 'none' || cs.visibility === 'hidden' ||
+        parseFloat(cs.opacity) < 0.1 || cs.pointerEvents === 'none' || e.offsetWidth < innerWidth * 0.6) continue;
+    if (/login|loader|security|auth/i.test(e.id || '')) continue;   // never "close" login / loading screens
+    var z = parseInt(cs.zIndex, 10) || 0;
+    if (z >= topZ) { top = e; topZ = z; }
+  }
+  if (!top) return false;                       // nothing open → the app handles Back
+  var btn = top.querySelector('[data-close],.close,.modal-close,[id*="close"],[aria-label*="סגור"],[onclick*="hide("],[onclick*="close"]');
+  if (btn) { btn.click(); return true; }
+  return false;                                 // no close button found → the app handles Back
+};
+</script>
 </body>
 </html>
