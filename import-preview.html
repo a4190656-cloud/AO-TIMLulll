@@ -17797,6 +17797,7 @@ body.theme-light #rp-modal-note{color:#B85D0A;background:rgba(230,130,40,.08);bo
     var apply = function(qs){
       var docs = qs.docs || [];
       S.count = docs.length; S.refLoaded = true;
+      S.refIds = docs.map(function(x){ return x.id; }); /* הוכחה לכללי האבטחה: מזהי החברים שנרשמו עם הקוד */
       S.names = docs.map(function(x){ var v=x.data()||{}; return v.name || 'חבר'; });
       syncFlags(); render();
     };
@@ -17811,7 +17812,10 @@ body.theme-light #rp-modal-note{color:#B85D0A;background:rgba(230,130,40,.08);bo
       var fv=FV(); upd.premiumUnlocked = true; upd.unlockedAt = fv?fv.serverTimestamp():new Date().toISOString();
       celebrate();
     }
-    if(S.refLoaded && d.referralCount !== S.count) upd.referralCount = S.count;
+    var cnt = Math.min(S.count, 5); /* כללי האבטחה מאמתים עד 5 חברים — לבוט מספיק 2 */
+    if(S.refLoaded && d.referralCount !== cnt) upd.referralCount = cnt;
+    /* כללי Firestore מאשרים premiumUnlocked / referralCount רק עם רשימת החברים שאפשר לאמת */
+    if(upd.premiumUnlocked || ('referralCount' in upd)) upd.refProof = (S.refIds || []).slice(0, 5);
     var lk = st.botPaused && !(upd.premiumUnlocked);
     if(S.refLoaded && d.locked !== lk) upd.locked = lk;
     phonePause(st);
