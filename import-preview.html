@@ -8325,15 +8325,15 @@ body.theme-light #evx-panel{background:#fff}
 <div class="sblock modern-hover" id="import-data-card">
   <div class="sblock-head">
     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-    ייבוא מהבנק / כרטיס אשראי
+    השוואה מול הבנק / ייבוא אקסל
   </div>
   <div class="sblock-body">
     <p style="color:var(--muted); font-size:12px; margin-bottom:12px; line-height:1.6">
-      מורידים קובץ אקסל / CSV של התנועות מאתר הבנק או חברת האשראי, ומעלים אותו כאן. האפליקציה מזהה ומסווגת לבד, ואתה מאשר לפני שמירה.
+      מעלים קובץ אקסל / CSV מהבנק או מחברת האשראי, ומנטה מראה מה שכחת לרשום. מה שכבר רשום לא ייכנס פעמיים, ואתה מאשר לפני שמירה.
     </p>
     <button onclick="window.mntaOpenImport&&window.mntaOpenImport()" class="btn btn-ghost" style="font-size:13px; padding:11px; display:flex; align-items:center; justify-content:center; gap:8px; border-color:rgba(0,229,255,0.3); color:var(--cyan);">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-      ייבוא קובץ תנועות
+      העלאת קובץ מהבנק
     </button>
     <div id="import-settings-sub" style="color:var(--muted); font-size:11.5px; margin-top:8px; text-align:center;"></div>
   </div>
@@ -18524,6 +18524,8 @@ body.theme-light .mk-chip:focus-within { box-shadow:0 0 0 3px var(--au-teal-lt,r
   function norm(s){ return String(s == null ? '' : s).replace(BIDI,'').replace(/["'״׳`]/g,'').replace(/[\s\u00a0_]+/g,' ').trim().toLowerCase(); }
   function clean(s){ return String(s == null ? '' : s).replace(BIDI,'').replace(/[\s\u00a0]+/g,' ').trim(); }
 
+  var FX_CELL = /^(usd|eur|gbp|\$|€|£|דולר|יורו)$/i;
+  var INST = /תשלום\s*(\d{1,2})\s*(?:מתוך|מ-|מ |\/|-)\s*(\d{1,2})/;
   /* ── זיהוי עמודות לפי כותרת. מחזיר עדיפות (קטן = טוב יותר) או -1 ── */
   function rank(h, list){ for(var i=0;i<list.length;i++){ if(list[i].test(h)) return i; } return -1; }
   var R_DATE = [/^(תאריך )?(עסקה|העסקה|רכישה|הרכישה)$/, /^תאריך (עסקה|העסקה|רכישה|הרכישה|ביצוע)/, /^(תאריך|תאריך התנועה|תאריך פעולה|תאריך הפעולה|date|transaction date)$/, /^תאריך(?!.*(ערך|חיוב|לידה))/, /transaction date|posting date|^date/, /תאריך חיוב/, /תאריך ערך|value date/];
@@ -18539,7 +18541,7 @@ body.theme-light .mk-chip:focus-within { box-shadow:0 0 0 3px var(--au-teal-lt,r
 
   function mapHeader(row){
     var m = {date:-1, desc:-1, amt:-1, debit:-1, credit:-1, cat:-1, cur:-1, bal:-1}, best = {date:99, desc:99, amt:99};
-    var cells = 0, hint = false;
+    var cells = 0, hint = false, amts = [];
     for(var c=0;c<row.length;c++){
       var raw = row[c]; if(typeof raw !== 'string') continue;
       var h = norm(raw); if(!h || h.length > 40) continue; cells++;
@@ -18554,12 +18556,14 @@ body.theme-light .mk-chip:focus-within { box-shadow:0 0 0 3px var(--au-teal-lt,r
         if(rank(h, R_DEBIT)>=0){ if(m.debit<0) m.debit = c; continue; }
         if(rank(h, R_CREDIT)>=0){ if(m.credit<0) m.credit = c; continue; }
       }
-      if(!X_AMT.test(h)){ r = rank(h, R_AMT); if(r>=0){ if(r<best.amt){ best.amt=r; m.amt=c; } continue; } }
+      if(!X_AMT.test(h)){ r = rank(h, R_AMT); if(r>=0){ amts.push({c:c, r:r}); if(r<best.amt){ best.amt=r; m.amt=c; } continue; } }
       if(!X_DESC.test(h)){ r = rank(h, R_DESC); if(r>=0 && r<best.desc){ best.desc=r; m.desc=c; } }
     }
     var hasAmt = m.amt>=0 || m.debit>=0 || m.credit>=0;
     if(m.date<0 || !hasAmt || cells<2) return null;
     if(m.debit>=0 && m.credit>=0) m.amt = -1; /* חובה/זכות נפרדים עדיפים */
+    /* עמודת סכום חלופית (למשל "סכום עסקה" כש"סכום חיוב" ריק: עסקאות שעוד לא חויבו במחזור הנוכחי) */
+    m.amt2 = -1; amts.sort(function(a, b){ return a.r - b.r; }); for(var q=0;q<amts.length;q++){ if(amts[q].c !== m.amt){ m.amt2 = amts[q].c; break; } }
     m.card = hint; m.score = (m.desc>=0?1:0) + cells/100;
     return m;
   }
@@ -18660,9 +18664,13 @@ body.theme-light .mk-chip:focus-within { box-shadow:0 0 0 3px var(--au-teal-lt,r
         rec.debit = db; rec.credit = db ? 0 : cr;
       } else {
         var a = parseAmount(row[hdr.amt]);
+        if((a == null || a === 0) && hdr.amt2 >= 0 && !row.some(function(x){ return FX_CELL.test(clean(x)); })){
+          a = parseAmount(row[hdr.amt2]); if(a != null && a !== 0) rec.pending = true;
+        }
         if(a == null || a === 0){ skipped++; continue; }
         rec.raw = a;
       }
+      for(var q=0;q<row.length;q++){ var im = INST.exec(clean(row[q])); if(im && +im[1] >= 1 && +im[1] <= +im[2]){ rec.inst = {n:+im[1], of:+im[2]}; break; } }
       if(hdr.cat>=0) rec.bankCategory = clean(row[hdr.cat]);
       if(hdr.cur>=0){ var cu = clean(row[hdr.cur]); if(cu && FOREIGN.test(cu)) rec.foreign = cu; }
       sec.push(rec);
@@ -18762,6 +18770,81 @@ body.theme-light .mk-chip:focus-within { box-shadow:0 0 0 3px var(--au-teal-lt,r
   }
 
 
+  /* ── השוואה מול הבנק: מה כבר רשום ומה חסר ──
+     התאמה = אותו סוג (הוצאה/הכנסה), אותו סכום עד האגורה, ותאריך בטווח ±3 ימים.
+     כל רישום קיים מתאים לשורה אחת בלבד (חמדני: התאריך הקרוב ביותר, ואז דמיון בתיאור).
+     "אולי רשום?" = הפרש עד 2 ₪ או עד 2%, באותו טווח ימים.
+     הוצאות/הכנסות קבועות (נספרות כל חודש לבד) מותאמות לפי סכום, פעם אחת לכל חודש בקובץ.
+     בתשלומים משווים לסכום החיוב החודשי (סכום השורה בקובץ).
+     existing: [{date, amount, description|name, type}]  fixed: [{amount, name|description, category, type}] */
+  var WIN_DAYS = 3;
+  function dayNum(k){ var p = String(k).split('-'); return Math.round(Date.UTC(+p[0], +p[1]-1, +p[2]) / 86400000); }
+  function cents(n){ return Math.round(Math.abs(Number(n) || 0) * 100); }
+  function nearTol(c){ return Math.max(200, Math.round(c * 0.02)); }
+  function simScore(a, b){
+    var na = norm(a), nb = norm(b); if(!na || !nb) return 0;
+    if(na === nb) return 1;
+    if(na.indexOf(nb) >= 0 || nb.indexOf(na) >= 0) return 0.8;
+    var ta = tokens(a), tb = tokens(b); if(!ta.length || !tb.length) return 0;
+    var inter = ta.filter(function(w){ return tb.indexOf(w) >= 0; }).length;
+    return 0.7 * inter / Math.min(ta.length, tb.length);
+  }
+  function reconcile(rows, existing, dayKeyOf, fixed){
+    var ex = [];
+    (existing || []).forEach(function(x, i){
+      if(!x) return; var k = dayKeyOf(x.date); if(!k) return;
+      var c = cents(x.amount); if(!c) return;
+      ex.push({i:i, d:dayNum(k), key:k, c:c, t:x.type || '', desc:x.description || x.name || '', used:false});
+    });
+    rows.forEach(function(r){ r.st = 'missing'; r.match = null; r._d = dayNum(r.date); r._c = cents(r.amount); });
+    function link(r, e, st, extra){ r.st = st; r.match = {description:e.desc, amount:e.c/100, date:e.key || '', days: extra && extra.dd != null ? extra.dd : null, fixed: !!e.fixed}; }
+    function pass(near){
+      var ps = [];
+      rows.forEach(function(r, ri){
+        if(r.st !== 'missing') return;
+        ex.forEach(function(e){
+          if(e.used || (e.t && e.t !== r.type)) return;
+          var dd = Math.abs(e.d - r._d); if(dd > WIN_DAYS) return;
+          var dc = Math.abs(e.c - r._c);
+          if(near ? (dc === 0 || dc > nearTol(Math.max(e.c, r._c))) : dc !== 0) return;
+          ps.push({r:r, ri:ri, e:e, dd:dd, dc:dc, s:simScore(e.desc, r.description)});
+        });
+      });
+      ps.sort(function(a, b){ return a.dd - b.dd || a.dc - b.dc || b.s - a.s || a.ri - b.ri || a.e.i - b.e.i; });
+      ps.forEach(function(p){ if(p.e.used || p.r.st !== 'missing') return; p.e.used = true; link(p.r, p.e, near ? 'maybe' : 'matched', p); });
+    }
+    /* קבועות: כל פריט קבוע "תופס" שורה אחת בכל חודש */
+    var fx = (fixed || []).map(function(f, i){ return f && cents(f.amount) ? {i:i, c:cents(f.amount), t:f.type || 'expense', desc:f.name || f.description || f.category || '', fixed:true, months:{}} : null; }).filter(Boolean);
+    function fixedPass(near){
+      var ps = [];
+      rows.forEach(function(r, ri){
+        if(r.st !== 'missing') return;
+        fx.forEach(function(f){
+          if(f.t !== r.type) return;
+          var dc = Math.abs(f.c - r._c), s = simScore(f.desc, r.description);
+          if(near){ if(dc === 0 || dc > nearTol(Math.max(f.c, r._c)) || s < 0.35) return; }
+          else if(dc !== 0) return;
+          ps.push({r:r, ri:ri, f:f, ym:r.date.slice(0, 7), dc:dc, s:s});
+        });
+      });
+      ps.sort(function(a, b){ return a.dc - b.dc || b.s - a.s || a.ri - b.ri || a.f.i - b.f.i; });
+      ps.forEach(function(p){
+        if(p.f.months[p.ym] || p.r.st !== 'missing') return;
+        p.f.months[p.ym] = 1;
+        /* סכום זהה אבל קטן ובלי שום דמיון בשם → רק "אולי" */
+        var st = near ? 'maybe' : (p.s > 0 || p.r._c >= 10000 ? 'matched' : 'maybe');
+        link(p.r, p.f, st, null);
+      });
+    }
+    pass(false); fixedPass(false); pass(true); fixedPass(true);
+    rows.forEach(function(r){
+      if(r.st === 'missing' && r.cardLump) r.st = 'lump';
+      r.on = r.st === 'missing';
+      delete r._d; delete r._c;
+    });
+    return rows;
+  }
+
   /* ── קריאת קובץ (xlsx / xls / csv / html-xls) לשורות. XLSX = SheetJS ── */
   function decodeText(u8){
     var start = (u8[0]===0xEF && u8[1]===0xBB && u8[2]===0xBF) ? 3 : 0;
@@ -18793,7 +18876,7 @@ body.theme-light .mk-chip:focus-within { box-shadow:0 0 0 3px var(--au-teal-lt,r
     return c['\t'] > c[','] && c['\t'] >= c[';'] ? '\t' : (c[';'] > c[','] ? ';' : ',');
   }
 
-  var api = {isCardLump:isCardLump, rowsFromFile:rowsFromFile, decodeText:decodeText, norm:norm, parseAmount:parseAmount, parseDate:parseDate, mapHeader:mapHeader, extract:extract, makeMatcher:makeMatcher, markDuplicates:markDuplicates, similar:similar, concept:concept};
+  var api = {isCardLump:isCardLump, rowsFromFile:rowsFromFile, decodeText:decodeText, norm:norm, parseAmount:parseAmount, parseDate:parseDate, mapHeader:mapHeader, extract:extract, makeMatcher:makeMatcher, markDuplicates:markDuplicates, reconcile:reconcile, simScore:simScore, similar:similar, concept:concept};
   if(typeof module !== 'undefined' && module.exports) module.exports = api; else root.MntaImportCore = api;
 })(typeof window !== 'undefined' ? window : this);
 </script>
@@ -18906,6 +18989,66 @@ body.theme-light .imp-btn{color:#0052E0;border-color:rgba(0,82,224,.3);backgroun
 body.theme-light .imp-btn.pri{color:#fff;background:linear-gradient(135deg,#0052E0,#00A0FF)}
 body.theme-light .imp-tools button{color:#0052E0}
 body.theme-light #imp-nudge{background:#fff;color:#0b1220;border-color:rgba(0,82,224,.2)}
+/* השוואה מול הבנק */
+.rc-hero{text-align:center;padding:18px 14px 16px;margin:2px 0 12px;border-radius:22px;background:linear-gradient(145deg,rgba(242,135,106,.13),rgba(255,80,110,.05));border:1px solid rgba(242,135,106,.28)}
+.rc-hero.ok{background:linear-gradient(145deg,rgba(0,230,118,.12),rgba(0,229,255,.05));border-color:rgba(0,230,118,.28)}
+.rc-k{font-size:13px;font-weight:700;color:var(--muted,rgba(255,255,255,.6))}
+.rc-big{font-size:30px;font-weight:900;letter-spacing:-.5px;line-height:1.25;margin:2px 0 4px}
+.rc-hero.ok .rc-big{font-size:24px;color:#00E676}
+.rc-ico{font-size:34px;line-height:1.2}
+.rc-sub{font-size:14px;font-weight:800;color:#F2876A}
+.rc-hero.ok .rc-sub{color:var(--muted,rgba(255,255,255,.6));font-weight:700;font-size:13px}
+.rc-inc{color:#00E676}
+.rc-okbar{display:flex;align-items:center;gap:10px;width:100%;padding:13px 14px;border-radius:16px;cursor:pointer;font-family:inherit;color:inherit;text-align:right;border:1px solid rgba(0,230,118,.22);background:rgba(0,230,118,.06);-webkit-tap-highlight-color:transparent}
+.rc-v{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#04121a;background:#00E676}
+.rc-okt{flex:1;font-weight:800;font-size:14px}
+.rc-more{font-size:12px;font-weight:700;color:var(--muted,rgba(255,255,255,.55))}
+.rc-oklist{margin-top:6px;border-radius:16px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.025);padding:4px 12px}
+.rc-ok{display:grid;grid-template-columns:1fr auto;gap:0 10px;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.rc-ok:last-child{border-bottom:none}
+.rc-okd{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc-okd small{font-weight:600;opacity:.55;font-size:11px}
+.rc-okw{grid-column:1;grid-row:2;font-size:11px;color:var(--muted,rgba(255,255,255,.5));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc-ok .rc-a{grid-row:1/3;grid-column:2;font-size:13px;opacity:.8}
+.rc-sec{margin:20px 4px 8px;font-size:12.5px;font-weight:800;color:var(--muted,rgba(255,255,255,.6))}
+.rc-hint{margin:-4px 4px 8px;font-size:11.5px;color:var(--muted,rgba(255,255,255,.45))}
+.rc-card{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:18px;margin-bottom:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity .15s ease,border-color .15s ease}
+.rc-card.off{opacity:.55}
+.rc-list.small .rc-card{padding:10px 12px;background:rgba(255,255,255,.025)}
+.rc-ck{-webkit-appearance:none;appearance:none;width:24px;height:24px;flex-shrink:0;margin:0;border-radius:50%;border:2px solid rgba(255,255,255,.3);background:transparent;cursor:pointer;display:grid;place-content:center}
+.rc-ck:checked{border-color:transparent;background:linear-gradient(135deg,#00E5FF,#00BFFF)}
+.rc-ck:checked::after{content:'';width:6px;height:11px;border:solid #04121a;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.rc-main{flex:1;min-width:0}
+.rc-d{font-weight:800;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc-meta{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;margin-top:4px;font-size:11.5px;color:var(--muted,rgba(255,255,255,.5))}
+.rc-chip{position:relative;display:inline-flex;align-items:center;gap:3px;max-width:100%;min-width:0;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:20px;cursor:pointer;color:#00E5FF;background:rgba(0,229,255,.09);border:1px solid rgba(0,229,255,.25)}
+.rc-chip-t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:170px}
+.rc-chip select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px;-webkit-appearance:none;appearance:none;border:none}
+.rc-chip.empty{color:#FFC46B;background:rgba(255,170,0,.08);border-color:rgba(255,170,0,.3)}
+.rc-chip option{color:#0b1220;background:#fff}
+.rc-why{margin-top:5px;font-size:11.5px;color:#FFC46B;line-height:1.45}
+.rc-why.lump{color:#c3a8ff}
+.rc-a{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:15px;direction:ltr;white-space:nowrap;color:#F2876A}
+.rc-a.i{color:#00E676}
+.rc-foot{text-align:center;margin:16px 0 6px}
+.rc-link{background:none;border:none;font-family:inherit;font-size:13px;font-weight:700;color:var(--muted,rgba(255,255,255,.55));cursor:pointer;padding:8px;text-decoration:underline;text-underline-offset:3px}
+.imp-why.ok{color:#00E676}
+body.theme-light .rc-hero{background:linear-gradient(145deg,rgba(225,52,79,.07),rgba(225,52,79,.02));border-color:rgba(225,52,79,.2)}
+body.theme-light .rc-hero.ok{background:linear-gradient(145deg,rgba(15,157,88,.08),rgba(0,160,255,.03));border-color:rgba(15,157,88,.22)}
+body.theme-light .rc-sub,body.theme-light .rc-a{color:#E1344F}
+body.theme-light .rc-inc,body.theme-light .rc-a.i,body.theme-light .rc-hero.ok .rc-big,body.theme-light .imp-why.ok{color:#0F9D58}
+body.theme-light .rc-k,body.theme-light .rc-more,body.theme-light .rc-sec,body.theme-light .rc-hint,body.theme-light .rc-meta,body.theme-light .rc-okw,body.theme-light .rc-link,body.theme-light .rc-hero.ok .rc-sub{color:rgba(11,18,32,.55)}
+body.theme-light .rc-okbar{background:rgba(15,157,88,.06);border-color:rgba(15,157,88,.22)}
+body.theme-light .rc-v{background:#0F9D58;color:#fff}
+body.theme-light .rc-oklist,body.theme-light .rc-card{background:rgba(0,0,0,.025);border-color:rgba(0,0,0,.08)}
+body.theme-light .rc-ok{border-color:rgba(0,0,0,.06)}
+body.theme-light .rc-ck{border-color:rgba(11,18,32,.25)}
+body.theme-light .rc-ck:checked{background:linear-gradient(135deg,#0052E0,#00A0FF)}
+body.theme-light .rc-ck:checked::after{border-color:#fff}
+body.theme-light .rc-chip{color:#0052E0;background:rgba(0,82,224,.07);border-color:rgba(0,82,224,.22)}
+body.theme-light .rc-chip.empty{color:#8a5a00;background:rgba(255,170,0,.1);border-color:rgba(200,130,0,.3)}
+body.theme-light .rc-why{color:#8a5a00}
+body.theme-light .rc-why.lump{color:#6b4fd0}
 </style>
 <script>
 /* ✦ ייבוא תנועות מקובץ בנק / אשראי. הקובץ נקרא רק במכשיר; שומר רק את מה שהמשתמש סימן ✦ */
@@ -18955,7 +19098,7 @@ body.theme-light #imp-nudge{background:#fff;color:#0b1220;border-color:rgba(0,82
     if($('imp-overlay')) return;
     var o = document.createElement('div'); o.id = 'imp-overlay';
     o.innerHTML = '<div class="imp-sheet" role="dialog" aria-modal="true" aria-labelledby="imp-title">' +
-      '<div class="imp-head"><h2 id="imp-title">ייבוא מהבנק / אשראי</h2><button class="imp-x" id="imp-close" aria-label="סגור">✕</button></div>' +
+      '<div class="imp-head"><h2 id="imp-title">השוואה מול הבנק</h2><button class="imp-x" id="imp-close" aria-label="סגור">✕</button></div>' +
       '<div class="imp-body" id="imp-body"></div><div class="imp-foot" id="imp-foot"></div></div>' +
       '<input type="file" id="imp-file" accept="' + ACCEPT + '" style="display:none">';
     document.body.appendChild(o);
@@ -19024,7 +19167,7 @@ body.theme-light #imp-nudge{background:#fff;color:#0b1220;border-color:rgba(0,82
   ];
   function stepIntro(){
     $('imp-body').innerHTML =
-      '<div class="imp-hero"><div class="ico">🏦</div><h3>ייבוא מהבנק או מהאשראי</h3><p>הקובץ נקרא רק במכשיר שלך, ושום דבר לא נשמר לפני שתאשר.</p></div>' +
+      '<div class="imp-hero"><div class="ico">🏦</div><h3>השוואה מול הבנק</h3><p>מעלים קובץ מהבנק או מהאשראי, ומנטה מראה מה שכחת לרשום. הקובץ נקרא רק במכשיר שלך, ושום דבר לא נשמר לפני שתאשר.</p></div>' +
       '<div class="imp-note"><span class="n-ico">💡</span><span>שימו לב: צריך קודם לייצא קובץ אקסל מחשבון הבנק או מכרטיס האשראי</span></div>' +
       '<div class="imp-choices">' +
         '<button class="imp-choice pri" id="imp-have" type="button"><span class="c-ico">📄</span><span><span class="c-t">כבר ייצאתי – בחר קובץ</span><span class="c-d">Excel או CSV מהבנק / מחברת האשראי</span></span><span class="c-a">‹</span></button>' +
@@ -19095,14 +19238,14 @@ body.theme-light #imp-nudge{background:#fff;color:#0b1220;border-color:rgba(0,82
   function stepPick(){
     $('imp-body').innerHTML =
       '<div class="imp-hero"><div class="ico">📄</div><h3>מורידים קובץ, ואנחנו מסדרים</h3>' +
-      '<p>מורידים מאתר הבנק או חברת האשראי קובץ אקסל / CSV של התנועות ומעלים אותו כאן. נזהה את התנועות ונציע קטגוריות, ושום דבר לא יישמר לפני שתאשר.</p></div>' +
+      '<p>מורידים מאתר הבנק או חברת האשראי קובץ אקסל / CSV של התנועות ומעלים אותו כאן. נשווה למה שכבר רשמת ונראה לך רק מה שחסר. שום דבר לא יישמר לפני שתאשר.</p></div>' +
       '<button class="imp-btn pri imp-pick" id="imp-pick">בחירת קובץ (Excel / CSV)</button>' +
       '<details class="imp-card"><summary>איפה מורידים את הקובץ? ▾</summary><ul>' +
       '<li><b>בנק</b> (הפועלים, לאומי, דיסקונט, מזרחי-טפחות, הבינלאומי ועוד): באתר הבנק ← עו״ש / תנועות בחשבון ← בוחרים תקופה ← <b>ייצוא לאקסל</b>.</li>' +
       '<li><b>כרטיס אשראי</b> (ישראכרט, אמריקן אקספרס, כאל, מקס ועוד): באתר חברת האשראי ← פירוט עסקאות ← <b>הורדה לאקסל</b>.</li>' +
       '<li>מהטלפון: אחרי ההורדה הקובץ נמצא בתיקיית ״הורדות״.</li></ul></details>' +
       '<div class="imp-card">🔒 הקובץ נקרא רק במכשיר שלך ולא נשלח לשום שרת. נשמרות רק התנועות שתאשר.</div>' +
-      '<div class="imp-card">💳 אם מייבאים גם את פירוט כרטיס האשראי, החיוב החודשי המרוכז שמופיע בדף הבנק לא יסומן, כדי שלא ייספר פעמיים.</div>' +
+      '<div class="imp-card">💳 אם מעלים גם את פירוט כרטיס האשראי, החיוב החודשי המרוכז שמופיע בדף הבנק לא יסומן, כדי שלא ייספר פעמיים.</div>' +
       remCard();
     $('imp-pick').onclick = pickFile; bindRem();
     setFoot([{label:'סגירה', onclick: close}]);
@@ -19118,7 +19261,7 @@ body.theme-light #imp-nudge{background:#fff;color:#0b1220;border-color:rgba(0,82
     S.file = f.name || '';
     if(f.size > 15*1024*1024){ fail('הקובץ גדול מדי (מעל 15MB). נסה לייצא תקופה קצרה יותר.'); return; }
     if(/\.(pdf|jpe?g|png|heic)$/i.test(S.file)){ fail('זה קובץ ' + S.file.split('.').pop().toUpperCase() + '. צריך קובץ אקסל או CSV מאתר הבנק (לקבלות יש את כפתור הסריקה).'); return; }
-    loading('קורא את הקובץ...');
+    loading('משווה מול מה שכבר רשום...');
     var fr = new FileReader();
     fr.onerror = function(){ fail('הקובץ לא נפתח. נסה להוריד אותו שוב.'); };
     fr.onload = function(){
@@ -19134,64 +19277,133 @@ body.theme-light #imp-nudge{background:#fff;color:#0b1220;border-color:rgba(0,82
     fr.readAsArrayBuffer(f);
   }
 
-  /* ── שלב 3: תצוגה מקדימה ── */
+  /* ── שלב 3: השוואה מול מה שכבר רשום ── */
+  function fixedList(){
+    var out = [];
+    try{ (window._appFixedExpenses || []).forEach(function(f){ out.push({amount: f.amount, name: f.name || f.description, category: f.category, type: 'expense'}); }); }catch(e){}
+    try{ (window._appFixedIncomes || []).forEach(function(f){ out.push({amount: f.amount, name: f.name || f.description, category: f.category, type: 'income'}); }); }catch(e){}
+    return out;
+  }
   function prepare(r){
     var rows = r.rows.slice(0, MAX_ROWS);
     var exp = (window.expenses || []), inc = (window.incomes || []);
     var hist = exp.map(function(x){ return {description: x.description || x.name, category: x.category, type:'expense'}; })
       .concat(inc.map(function(x){ return {description: x.description || x.name, category: x.category, type:'income'}; }));
     var match = C.makeMatcher(window._appUserCategories || [], hist);
-    C.markDuplicates(rows, exp.concat(inc), dayKey);
+    /* רק מה שכבר נטען לזיכרון – בלי קריאות נוספות למסד */
+    var existing = exp.map(function(x){ return {date: x.date, amount: x.amount, description: x.description || x.name, type: 'expense'}; })
+      .concat(inc.map(function(x){ return {date: x.date, amount: x.amount, description: x.description || x.name, type: 'income'}; }));
+    C.reconcile(rows, existing, dayKey, fixedList());
     rows.forEach(function(x, i){
       x.i = i; x.cat = match(x.description, x.type, x.bankCategory).name;
-      x.on = x.dup !== 'strong' && !x.cardLump;
       x._match = match;
     });
-    S.rows = rows; S.truncated = r.rows.length > MAX_ROWS;
-    renderPreview();
+    S.rows = rows; S.truncated = r.rows.length > MAX_ROWS; S.showMatched = false;
+    render();
   }
   function catOptions(type, cur){
     var list = (window._appUserCategories || []).filter(function(c){ return (c.type || 'expense') === type; });
-    var h = '<option value="">ללא קטגוריה</option>', found = !cur;
+    var h = '<option value="">' + (cur ? 'ללא קטגוריה' : 'בחר קטגוריה') + '</option>', found = !cur;
     list.forEach(function(c){ if(c.name === cur) found = true; h += '<option value="' + esc(c.name) + '"' + (c.name === cur ? ' selected' : '') + '>' + esc(c.name) + '</option>'; });
     if(!found) h += '<option value="' + esc(cur) + '" selected>' + esc(cur) + '</option>';
     return h;
   }
+  function cnt(n, one, many){ return n === 1 ? one : n + ' ' + many; }
+  function shortDate(k){ var p = k.split('-'); return (+p[2]) + '.' + (+p[1]); }
+  function amtHtml(x){ var t = x.type === 'income' ? 'i' : 'e'; return '<div class="rc-a ' + t + '">' + (t === 'i' ? '+' : '') + money(x.amount) + '</div>'; }
+  function cardHtml(x){
+    var meta = '<span>' + shortDate(x.date) + '</span>';
+    if(x.inst) meta += '<span>תשלום ' + x.inst.n + '/' + x.inst.of + '</span>';
+    if(x.pending) meta += '<span>טרם חויב</span>';
+    if(x.foreign) meta += '<span>' + esc(x.foreign) + '</span>';
+    if(x.type === 'income') meta += '<span class="rc-inc">הכנסה</span>';
+    var why = '';
+    if(x.st === 'maybe' && x.match) why = '<div class="rc-why">דומה ל: ' + esc(x.match.description || (x.match.fixed ? 'קבועה' : 'רישום')) + ' · ' + money(x.match.amount) + (x.match.fixed ? ' · קבועה חודשית' : (x.match.date ? ' · ' + shortDate(x.match.date) : '')) + '</div>';
+    if(x.st === 'lump') why = '<div class="rc-why lump">חיוב אשראי מרוכז. אם מעלים גם את פירוט הכרטיס – משאירים לא מסומן</div>';
+    return '<div class="rc-card' + (x.on ? '' : ' off') + '" data-i="' + x.i + '">' +
+      '<input type="checkbox" class="imp-ck rc-ck"' + (x.on ? ' checked' : '') + ' aria-label="להוסיף">' +
+      '<div class="rc-main"><div class="rc-d">' + esc(x.description || (x.type === 'income' ? 'הכנסה' : 'הוצאה')) + '</div>' +
+      '<div class="rc-meta">' + meta + '<span class="rc-chip' + (x.cat ? '' : ' empty') + '"><span class="rc-chip-t">' + esc(x.cat || 'בחר קטגוריה') + '</span> ▾<select class="imp-cat" aria-label="קטגוריה">' + catOptions(x.type, x.cat) + '</select></span></div>' + why + '</div>' +
+      amtHtml(x) + '</div>';
+  }
+  function okRowHtml(x){
+    var m = x.match || {}, was = m.fixed ? 'קבועה: ' + esc(m.description || '') : 'רשמת: ' + esc(m.description || '') + (m.date ? ' · ' + shortDate(m.date) : '');
+    return '<div class="rc-ok"><span class="rc-okd">' + esc(x.description) + ' <small>' + shortDate(x.date) + '</small></span><span class="rc-okw">' + was + '</span>' + amtHtml(x) + '</div>';
+  }
+  function render(){
+    S.view = 'simple';
+    var rows = S.rows, by = function(s){ return rows.filter(function(x){ return x.st === s; }); };
+    var miss = by('missing'), maybe = by('maybe'), ok = by('matched'), lump = by('lump');
+    var e = 0, inc = 0; miss.forEach(function(x){ if(x.type === 'income') inc += x.amount; else e += x.amount; });
+    var h = '';
+    if(miss.length){
+      h += '<div class="rc-hero"><div class="rc-k">שכחת לרשום</div><div class="rc-big">' + cnt(miss.length, 'תנועה אחת', 'תנועות') + '</div>' +
+        '<div class="rc-sub">' + (e ? money(e) + ' הוצאות' : '') + (e && inc ? ' · ' : '') + (inc ? '<span class="rc-inc">' + money(inc) + ' הכנסות</span>' : '') + '</div></div>';
+    } else {
+      h += '<div class="rc-hero ok"><div class="rc-ico">🎉</div><div class="rc-big">הכול כבר רשום!</div>' +
+        '<div class="rc-sub">' + (maybe.length || lump.length ? 'אין תנועות שחסרות בוודאות' : 'לא שכחת כלום מהקובץ הזה') + '</div></div>';
+    }
+    if(ok.length){
+      h += '<button type="button" class="rc-okbar" id="rc-ok-t"><span class="rc-v">✓</span><span class="rc-okt">' + cnt(ok.length, 'תנועה אחת כבר רשומה', 'תנועות כבר רשומות') + '</span><span class="rc-more">' + (S.showMatched ? 'הסתר ▴' : 'הצג ▾') + '</span></button>' +
+        '<div class="rc-oklist" id="rc-ok-l"' + (S.showMatched ? '' : ' hidden') + '>' + ok.map(okRowHtml).join('') + '</div>';
+    }
+    if(miss.length) h += '<div class="rc-sec">חסרות במנטה · מסומנות להוספה</div><div class="rc-list">' + miss.map(cardHtml).join('') + '</div>';
+    if(maybe.length) h += '<div class="rc-sec">אולי כבר רשום? (' + maybe.length + ')</div><div class="rc-hint">סכום דומה בתאריך קרוב. מסמנים רק אם זו תנועה אחרת</div><div class="rc-list small">' + maybe.map(cardHtml).join('') + '</div>';
+    if(lump.length) h += '<div class="rc-sec">💳 חיוב אשראי מרוכז (' + lump.length + ')</div><div class="rc-list small">' + lump.map(cardHtml).join('') + '</div>';
+    if(S.truncated) h += '<div class="imp-note">הקובץ ארוך מאוד, נבדקו ' + MAX_ROWS + ' התנועות הראשונות.</div>';
+    h += '<div class="rc-foot"><button type="button" class="rc-link" id="rc-all">הצג הכול (' + rows.length + ') ›</button></div>';
+    $('imp-body').innerHTML = h; $('imp-body').scrollTop = 0;
+    var t = $('rc-ok-t'); if(t) t.onclick = function(){ S.showMatched = !S.showMatched; $('rc-ok-l').hidden = !S.showMatched; t.querySelector('.rc-more').textContent = S.showMatched ? 'הסתר ▴' : 'הצג ▾'; };
+    $('rc-all').onclick = renderPreview;
+    bindCards($('imp-body'));
+    summary();
+  }
+  function bindCards(box){
+    box.onchange = function(ev){
+      var el = ev.target, card = el.closest('[data-i]'); if(!card) return; var x = S.rows[+card.getAttribute('data-i')];
+      if(el.classList.contains('imp-ck')){ x.on = el.checked; card.classList.toggle('off', !x.on); summary(); }
+      else if(el.classList.contains('imp-cat')){
+        x.cat = el.value; var chip = el.closest('.rc-chip');
+        if(chip){ chip.classList.toggle('empty', !x.cat); chip.querySelector('.rc-chip-t').textContent = x.cat || 'בחר קטגוריה'; }
+        else el.classList.toggle('empty', !x.cat);
+      }
+    };
+    box.onclick = function(ev){
+      var ty = ev.target.closest('.imp-ty');
+      if(ty){ var row = ty.closest('.imp-row'), y = S.rows[+row.getAttribute('data-i')];
+        y.type = y.type === 'income' ? 'expense' : 'income'; y.cat = y._match(y.description, y.type, y.bankCategory).name;
+        var tmp = document.createElement('div'); tmp.innerHTML = rowHtml(y); row.parentNode.replaceChild(tmp.firstChild, row); summary(); return; }
+      var card = ev.target.closest('.rc-card'); if(!card || ev.target.closest('select,input')) return;
+      var ck = card.querySelector('.imp-ck'); ck.checked = !ck.checked; ck.dispatchEvent(new Event('change', {bubbles: true}));
+    };
+  }
+  /* "הצג הכול": הטבלה המלאה למשתמשים מתקדמים */
+  var ST_BADGE = {matched: '<span class="imp-b dup">כבר רשום</span>', maybe: '<span class="imp-b weak">אולי רשום?</span>', lump: '<span class="imp-b lump">אשראי מרוכז</span>'};
   function rowHtml(x){
-    var t = x.type === 'income' ? 'i' : 'e', b = '';
-    if(x.dup === 'strong') b += '<span class="imp-b dup">כבר קיים</span>';
-    else if(x.dup === 'weak') b += '<span class="imp-b weak">אותו סכום באותו יום</span>';
+    var t = x.type === 'income' ? 'i' : 'e', b = ST_BADGE[x.st] || '';
+    if(x.inst) b += '<span class="imp-b fx">תשלום ' + x.inst.n + '/' + x.inst.of + '</span>';
     if(x.foreign) b += '<span class="imp-b fx">' + esc(x.foreign) + '</span>';
     return '<div class="imp-row' + (x.on ? '' : ' off') + '" data-i="' + x.i + '">' +
-      '<input type="checkbox" class="imp-ck"' + (x.on ? ' checked' : '') + ' aria-label="לייבא">' +
+      '<input type="checkbox" class="imp-ck"' + (x.on ? ' checked' : '') + ' aria-label="להוסיף">' +
       '<div class="imp-d" title="' + esc(x.description) + '">' + esc(x.description || (t === 'i' ? 'הכנסה' : 'הוצאה')) + '</div>' +
       '<div class="imp-a ' + t + '">' + (t === 'i' ? '+' : '−') + money(x.amount) + '</div>' +
       '<div class="imp-m"><span>' + heDate(x.date) + '</span>' +
       '<button class="imp-ty ' + t + '" type="button">' + (t === 'i' ? 'הכנסה' : 'הוצאה') + ' ⇄</button>' +
       '<select class="imp-cat' + (x.cat ? '' : ' empty') + '" aria-label="קטגוריה">' + catOptions(x.type, x.cat) + '</select>' + b + '</div>' +
-      (x.cardLump ? '<div class="imp-why">חיוב אשראי מרוכז – אם תייבא את פירוט הכרטיס, השאר לא מסומן כדי לא לספור פעמיים</div>' : '') +
+      (x.st === 'matched' && x.match ? '<div class="imp-why ok">' + (x.match.fixed ? 'קבועה: ' : 'רשמת: ') + esc(x.match.description || '') + ' · ' + money(x.match.amount) + (x.match.date ? ' · ' + shortDate(x.match.date) : '') + '</div>' : '') +
+      (x.st === 'maybe' && x.match ? '<div class="imp-why">דומה ל: ' + esc(x.match.description || '') + ' · ' + money(x.match.amount) + (x.match.date ? ' · ' + shortDate(x.match.date) : '') + '</div>' : '') +
+      (x.st === 'lump' ? '<div class="imp-why">חיוב אשראי מרוכז – אם תעלה את פירוט הכרטיס, השאר לא מסומן כדי לא לספור פעמיים</div>' : '') +
       '</div>';
   }
   function renderPreview(){
-    var rows = S.rows, dups = rows.filter(function(x){ return x.dup === 'strong'; }).length, lumps = rows.filter(function(x){ return x.cardLump; }).length;
-    var h = '<div class="imp-sum" id="imp-sum"></div>';
-    if(dups) h += '<div class="imp-note">' + (dups === 1 ? 'תנועה אחת כבר קיימת' : dups + ' תנועות כבר קיימות') + ' באפליקציה (אותו יום, סכום ותיאור), ולכן לא ' + (dups === 1 ? 'סומנה' : 'סומנו') + '.</div>';
-    if(lumps) h += '<div class="imp-note">' + (lumps === 1 ? 'שורה אחת היא' : lumps + ' שורות הן') + ' חיוב חודשי מרוכז של כרטיס אשראי ולא ' + (lumps === 1 ? 'סומנה' : 'סומנו') + '. אם לא תייבא את פירוט הכרטיס, אפשר לסמן.</div>';
-    if(S.truncated) h += '<div class="imp-note">הקובץ ארוך מאוד, מוצגות ' + MAX_ROWS + ' התנועות הראשונות.</div>';
-    h += '<div class="imp-tools"><button type="button" id="imp-all">סמן הכל</button><button type="button" id="imp-none">נקה הכל</button><span style="flex:1"></span><span style="align-self:center;opacity:.6">' + esc(S.file) + '</span></div>';
+    S.view = 'all';
+    var rows = S.rows;
+    var h = '<div class="imp-tools"><button type="button" id="rc-back">‹ חזרה לסיכום</button><span style="flex:1"></span><button type="button" id="imp-all">סמן הכל</button><button type="button" id="imp-none">נקה הכל</button></div>';
+    h += '<div class="imp-sum" id="imp-sum"></div>';
     h += '<div id="imp-list">' + rows.map(rowHtml).join('') + '</div>';
     $('imp-body').innerHTML = h; $('imp-body').scrollTop = 0;
-    var list = $('imp-list');
-    list.onchange = function(e){
-      var el = e.target, row = el.closest('.imp-row'); if(!row) return; var x = S.rows[+row.getAttribute('data-i')];
-      if(el.classList.contains('imp-ck')){ x.on = el.checked; row.classList.toggle('off', !x.on); summary(); }
-      else if(el.classList.contains('imp-cat')){ x.cat = el.value; el.classList.toggle('empty', !x.cat); }
-    };
-    list.onclick = function(e){
-      var el = e.target.closest('.imp-ty'); if(!el) return; var row = el.closest('.imp-row'), x = S.rows[+row.getAttribute('data-i')];
-      x.type = x.type === 'income' ? 'expense' : 'income'; x.cat = x._match(x.description, x.type, x.bankCategory).name;
-      var tmp = document.createElement('div'); tmp.innerHTML = rowHtml(x); row.parentNode.replaceChild(tmp.firstChild, row); summary();
-    };
+    bindCards($('imp-list'));
+    $('rc-back').onclick = render;
     $('imp-all').onclick = function(){ setAll(true); }; $('imp-none').onclick = function(){ setAll(false); };
     summary();
   }
@@ -19199,9 +19411,10 @@ body.theme-light #imp-nudge{background:#fff;color:#0b1220;border-color:rgba(0,82
   function summary(){
     var sel = S.rows.filter(function(x){ return x.on; }), e = 0, i = 0;
     sel.forEach(function(x){ if(x.type === 'income') i += x.amount; else e += x.amount; });
-    $('imp-sum').innerHTML = '<span class="imp-chip">נמצאו ' + S.rows.length + '</span><span class="imp-chip">נבחרו ' + sel.length + '</span>' +
+    if($('imp-sum')) $('imp-sum').innerHTML = '<span class="imp-chip">בקובץ ' + S.rows.length + '</span><span class="imp-chip">נבחרו ' + sel.length + '</span>' +
       (e || !i ? '<span class="imp-chip e">הוצאות ' + money(e) + '</span>' : '') + (i ? '<span class="imp-chip i">הכנסות ' + money(i) + '</span>' : '');
-    setFoot([{id:'imp-save', label: sel.length ? 'שמירת ' + sel.length + ' תנועות' : 'לא נבחרו תנועות', pri:true, disabled: !sel.length, onclick: doSave}, {label:'קובץ אחר', onclick: pickFile}]);
+    if(!sel.length && S.view === 'simple') { setFoot([{id:'imp-save', label:'סיום', pri:true, onclick: close}, {label:'קובץ אחר', onclick: pickFile}]); return; }
+    setFoot([{id:'imp-save', label: sel.length ? 'הוסף ' + cnt(sel.length, 'תנועה אחת', 'תנועות') : 'לא נבחרו תנועות', pri:true, disabled: !sel.length, onclick: doSave}, {label:'קובץ אחר', onclick: pickFile}]);
   }
 
   /* ── שלב 4: שמירה (batch) ── */
@@ -19225,20 +19438,20 @@ body.theme-light #imp-nudge{background:#fff;color:#0b1220;border-color:rgba(0,82
       });
     }, Promise.resolve()).then(function(){
       S.saving = false; save({lastImport: Date.now(), lastCount: done});
-      toast('יובאו ' + done + ' תנועות ✓', 'success'); stepDone(done);
+      toast((done === 1 ? 'נוספה תנועה אחת' : 'נוספו ' + done + ' תנועות') + ' ✓', 'success'); stepDone(done);
     }, function(e){
       S.saving = false; console.error('[import] save', e);
-      if(done){ S.rows.forEach(function(x){ if(x.on && sel.indexOf(x) < done) x.on = false; }); }
+      if(done){ sel.slice(0, done).forEach(function(x){ x.on = false; x.st = 'matched'; x.match = {description: x.description, amount: x.amount, date: x.date}; }); }
       toast(done ? ('נשמרו ' + done + ' תנועות, והשאר לא. בדוק חיבור ונסה שוב') : 'השמירה נכשלה, בדוק חיבור ונסה שוב', 'error');
-      if(done) renderPreview(); else { var b2 = $('imp-save'); if(b2){ b2.disabled = false; summary(); } }
+      if(done){ if(S.view === 'all') renderPreview(); else render(); } else { var b2 = $('imp-save'); if(b2){ b2.disabled = false; summary(); } }
     });
   }
   function stepDone(n){
     var s = st();
-    $('imp-body').innerHTML = '<div class="imp-hero"><div class="ico">✅</div><h3>יובאו ' + n + ' תנועות</h3><p>הן כבר מופיעות בהיסטוריה ובחישוב החודש, עם הערה ״' + NOTE + '״.</p></div>' +
-      (s.remOn ? '' : '<div class="imp-card" style="margin-top:16px"><b>להזכיר לך פעם בחודש לייבא?</b><br>כך כל התנועות יישארו מעודכנות בלי מאמץ.</div>') + (s.remOn ? '' : remCard());
+    $('imp-body').innerHTML = '<div class="imp-hero"><div class="ico">✅</div><h3>' + (n === 1 ? 'נוספה תנועה אחת' : 'נוספו ' + n + ' תנועות') + '</h3><p>עכשיו מנטה מעודכנת מול הבנק. התנועות כבר בהיסטוריה ובחישוב החודש, עם הערה ״' + NOTE + '״.</p></div>' +
+      (s.remOn ? '' : '<div class="imp-card" style="margin-top:16px"><b>להזכיר לך פעם בחודש להשוות מול הבנק?</b><br>כך כל התנועות יישארו מעודכנות בלי מאמץ.</div>') + (s.remOn ? '' : remCard());
     bindRem();
-    setFoot([{label:'סגירה', pri:true, onclick: close}, {label:'ייבוא קובץ נוסף', onclick: pickFile}]);
+    setFoot([{label:'סגירה', pri:true, onclick: close}, {label:'השוואת קובץ נוסף', onclick: pickFile}]);
   }
 
   /* ── תזכורת חודשית לייבוא ── */
@@ -19428,8 +19641,8 @@ body.theme-light .inw-art .tst{stroke:rgba(0,82,224,.22)}
     o.innerHTML = '<div class="inw-card" role="dialog" aria-modal="true" aria-labelledby="inw-title" aria-describedby="inw-text">' +
       '<div class="inw-art">' + icon() + '</div>' +
       '<div class="inw-tag"><i></i>NEW</div>' +
-      '<h2 class="inw-title" id="inw-title"><b>חדש!</b> ייבוא נתונים מהבנק</h2>' +
-      '<p class="inw-text" id="inw-text">מורידים אקסל מהבנק או מכרטיס האשראי ומייבאים בלחיצה – הכול מסתווג לבד</p>' +
+      '<h2 class="inw-title" id="inw-title"><b>חדש!</b> השוואה מול הבנק</h2>' +
+      '<p class="inw-text" id="inw-text">מעלים אקסל מהבנק או מהאשראי ומנטה מראה מה שכחתם לרשום</p>' +
       '<div class="inw-chips"><span>🏦 כל הבנקים</span><span>💳 כרטיסי אשראי</span><span>🔒 הקובץ נשאר אצלך</span></div>' +
       '<button class="inw-go" id="imp-new-go" type="button">לנסות עכשיו</button>' +
       '<button class="inw-later" id="imp-new-close" type="button">אחר כך</button>' +
