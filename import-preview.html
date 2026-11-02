@@ -18862,6 +18862,39 @@ body.theme-light .mk-chip:focus-within { box-shadow:0 0 0 3px var(--au-teal-lt,r
 #imp-nudge .r{display:flex;gap:8px}
 #imp-nudge button{flex:1;padding:10px;border-radius:12px;font-family:inherit;font-weight:800;font-size:13px;cursor:pointer;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:inherit}
 #imp-nudge button.pri{border:none;background:linear-gradient(135deg,#00E5FF,#00BFFF);color:#04121a}
+.imp-note{display:flex;gap:10px;align-items:flex-start;margin:16px 0 4px;padding:13px 14px;border-radius:16px;font-size:13.5px;font-weight:700;line-height:1.6;color:#FFD58A;background:rgba(255,184,0,.08);border:1px solid rgba(255,184,0,.24)}
+.imp-note .n-ico{flex-shrink:0;font-size:17px;line-height:1.4}
+.imp-choices{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.imp-choice{display:flex;align-items:center;gap:13px;width:100%;padding:15px 16px;border-radius:18px;cursor:pointer;text-align:right;font-family:inherit;color:inherit;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.035);-webkit-tap-highlight-color:transparent;transition:transform .15s ease,border-color .15s ease}
+.imp-choice:active{transform:scale(.98)}
+.imp-choice.pri{border-color:rgba(0,229,255,.35);background:linear-gradient(135deg,rgba(0,229,255,.12),rgba(0,180,255,.05))}
+.imp-choice .c-ico{width:42px;height:42px;flex-shrink:0;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
+.imp-choice.pri .c-ico{background:rgba(0,229,255,.14);border-color:rgba(0,229,255,.3)}
+.imp-choice .c-t{display:block;font-size:14.5px;font-weight:900;margin-bottom:2px}
+.imp-choice.pri .c-t{color:#00E5FF}
+.imp-choice .c-d{display:block;font-size:11.5px;font-weight:600;color:var(--muted,rgba(255,255,255,.5));line-height:1.45}
+.imp-choice .c-a{margin-right:auto;opacity:.35;font-size:18px}
+.imp-sec{margin:18px 2px 8px;font-size:11.5px;font-weight:800;letter-spacing:.5px;color:var(--muted,rgba(255,255,255,.5))}
+.imp-banks{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.imp-bank{display:flex;align-items:center;gap:10px;padding:11px 11px;border-radius:15px;cursor:pointer;text-align:right;font-family:inherit;color:inherit;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);-webkit-tap-highlight-color:transparent;min-width:0;transition:transform .15s ease,border-color .15s ease}
+.imp-bank:active{transform:scale(.97)}
+.imp-bank.sel{border-color:rgba(0,229,255,.55);background:rgba(0,229,255,.07)}
+.imp-bank .b-av{width:36px;height:36px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#fff;letter-spacing:-.3px;box-shadow:0 0 0 2px rgba(255,255,255,.08) inset}
+.imp-bank .b-n{display:block;font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.imp-bank .b-s{display:block;font-size:10.5px;font-weight:600;color:var(--muted,rgba(255,255,255,.45))}
+.imp-bank.sel .b-s{color:#00E5FF}
+#imp-back-pick{flex:2.3;font-size:13.5px;white-space:nowrap}
+.imp-hint{margin-top:12px;font-size:12px;line-height:1.6;color:var(--muted,rgba(255,255,255,.55));text-align:center}
+.imp-back-banner{margin-top:14px;padding:12px 14px;border-radius:16px;font-size:12.5px;line-height:1.6;border:1px solid rgba(0,229,255,.25);background:rgba(0,229,255,.06)}
+body.theme-light .imp-note{color:#8a5a00;background:rgba(255,170,0,.1);border-color:rgba(200,130,0,.25)}
+body.theme-light .imp-choice,body.theme-light .imp-bank{background:rgba(0,0,0,.025);border-color:rgba(0,0,0,.08)}
+body.theme-light .imp-choice.pri{background:linear-gradient(135deg,rgba(0,82,224,.08),rgba(0,160,255,.04));border-color:rgba(0,82,224,.3)}
+body.theme-light .imp-choice.pri .c-t,body.theme-light .imp-bank.sel .b-s{color:#0052E0}
+body.theme-light .imp-choice .c-ico{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.08)}
+body.theme-light .imp-choice.pri .c-ico{background:rgba(0,82,224,.1);border-color:rgba(0,82,224,.25)}
+body.theme-light .imp-choice .c-d,body.theme-light .imp-bank .b-s,body.theme-light .imp-sec,body.theme-light .imp-hint{color:rgba(11,18,32,.55)}
+body.theme-light .imp-bank.sel{border-color:rgba(0,82,224,.5);background:rgba(0,82,224,.06)}
+body.theme-light .imp-back-banner{border-color:rgba(0,82,224,.22);background:rgba(0,82,224,.05)}
 body.theme-light .imp-sheet{background:linear-gradient(180deg,#ffffff,#f4f7fb);color:#0b1220;border-color:rgba(0,82,224,.15)}
 body.theme-light .imp-head,body.theme-light .imp-foot{border-color:rgba(0,0,0,.07)}
 body.theme-light .imp-foot{background:rgba(255,255,255,.8)}
@@ -18932,7 +18965,7 @@ body.theme-light #imp-nudge{background:#fff;color:#0b1220;border-color:rgba(0,82
   }
   function open(){
     if(!user()){ toast('צריך להתחבר כדי לייבא', 'error'); return; }
-    build(); S.rows = []; stepPick();
+    build(); S.rows = []; S.bank = null; stepIntro(); probeApp();
     $('imp-overlay').classList.add('open');
     try{ document.body.style.overflow = 'hidden'; }catch(e){}
     loadXLSX().catch(function(){}); /* חימום */
@@ -18968,6 +19001,97 @@ body.theme-light #imp-nudge{background:#fff;color:#0b1220;border-color:rgba(0,82
     sel.onchange = function(){ setReminder(true, +this.value); refreshRem(); };
   }
   function refreshRem(){ var s = st(), sw = $('imp-rem-sw'), sel = $('imp-rem-day'), sub = $('imp-rem-sub'); if(!sw) return; sw.classList.toggle('on', !!s.remOn); sel.style.display = s.remOn ? '' : 'none'; sub.textContent = remSub(); renderSettingsLine(); }
+
+  /* ── שלב 0: לפני שמתחילים – כבר יש קובץ, או כניסה לבנק לייצוא ── */
+  /* קישורים: עמוד הכניסה / הבית הרשמי (נבדקו). pkg = מזהה האפליקציה בגוגל פליי (נבדק מול החנות) */
+  var BANKS = [
+    {k:'hapoalim', n:'בנק הפועלים', av:'פ', c:'#D7141A', url:'https://login.bankhapoalim.co.il/ng-portals/auth/he/', pkg:'com.ideomobile.hapoalim'},
+    {k:'leumi', n:'לאומי', av:'ל', c:'#0A5DC2', url:'https://hb2.bankleumi.co.il/staticcontent/gate-keeper/he/', pkg:'com.leumi.leumiwallet'},
+    {k:'discount', n:'דיסקונט', av:'ד', c:'#0E9F4D', url:'https://start.telebank.co.il/login/', pkg:'com.ideomobile.discount'},
+    {k:'mizrahi', n:'מזרחי טפחות', av:'מ', c:'#F08A1C', url:'https://www.mizrahi-tefahot.co.il/', pkg:'com.MizrahiTefahot.nh'},
+    {k:'fibi', n:'הבינלאומי', av:'ב', c:'#1D3F8F', url:'https://www.fibi.co.il/', pkg:'com.fibi.nativeapp'},
+    {k:'mercantile', n:'מרכנתיל', av:'מר', c:'#00745A', url:'https://www.mercantile.co.il/', pkg:'com.ideomobile.mercantile'},
+    {k:'jerusalem', n:'בנק ירושלים', av:'י', c:'#8A2A5B', url:'https://www.bankjerusalem.co.il/', pkg:'com.bankjerusalem'},
+    {k:'otsar', n:'אוצר החייל', av:'א', c:'#2F6B3A', url:'https://www.bankotsar.co.il/', pkg:'com.otsar.nativeapp'},
+    {k:'massad', n:'מסד', av:'מס', c:'#0096C7', url:'https://www.bankmassad.co.il/', pkg:'com.masad.nativeapp'},
+    {k:'yahav', n:'יהב', av:'יה', c:'#6A2C82', url:'https://www.bank-yahav.co.il/', pkg:'il.co.yahav.mobbanking'}
+  ];
+  var CARDS = [
+    {k:'isracard', n:'ישראכרט', av:'יש', c:'#123E8C', url:'https://www.isracard.co.il/', pkg:'com.isracard.hatavot', card:1},
+    {k:'cal', n:'כאל', av:'כ', c:'#00A39A', url:'https://www.cal-online.co.il/', pkg:'com.onoapps.cal4u', card:1},
+    {k:'max', n:'מקס', av:'max', c:'#E8175D', url:'https://www.max.co.il/login', pkg:'com.ideomobile.leumicard', card:1},
+    {k:'amex', n:'אמריקן אקספרס', av:'AE', c:'#016FD0', url:'https://he.americanexpress.co.il/personalarea/login/', pkg:'com.americanexpress.android', card:1}
+  ];
+  function stepIntro(){
+    $('imp-body').innerHTML =
+      '<div class="imp-hero"><div class="ico">🏦</div><h3>ייבוא מהבנק או מהאשראי</h3><p>הקובץ נקרא רק במכשיר שלך, ושום דבר לא נשמר לפני שתאשר.</p></div>' +
+      '<div class="imp-note"><span class="n-ico">💡</span><span>שימו לב: צריך קודם לייצא קובץ אקסל מחשבון הבנק או מכרטיס האשראי</span></div>' +
+      '<div class="imp-choices">' +
+        '<button class="imp-choice pri" id="imp-have" type="button"><span class="c-ico">📄</span><span><span class="c-t">כבר ייצאתי – בחר קובץ</span><span class="c-d">Excel או CSV מהבנק / מחברת האשראי</span></span><span class="c-a">‹</span></button>' +
+        '<button class="imp-choice" id="imp-go-bank" type="button"><span class="c-ico">🔐</span><span><span class="c-t">כניסה לחשבון הבנק לייצוא</span><span class="c-d">בוחרים בנק או כרטיס, ומורידים משם את פירוט התנועות</span></span><span class="c-a">‹</span></button>' +
+      '</div>';
+    $('imp-have').onclick = function(){ stepPick(); pickFile(); };
+    $('imp-go-bank').onclick = stepBanks;
+    setFoot([{label:'סגירה', onclick: close}]);
+  }
+  /* סביבה: אפליקציית אנדרואיד (גרסה חדשה פותחת קישורים בחוץ; גרסה ישנה טוענת אותם בתוך האפליקציה), כרום באנדרואיד, אחר */
+  var _appNew = null;
+  function nat(){ var f = window.flutter_inappwebview; return (f && typeof f.callHandler === 'function') ? f : null; }
+  function probeApp(){
+    if(!nat() || _appNew !== null) return;
+    _appNew = false;
+    var done = false, t = setTimeout(function(){ done = true; }, 3000);
+    try{ Promise.resolve(nat().callHandler('NativeReminders', {action:'status'})).then(function(r){ if(!done){ clearTimeout(t); _appNew = !!(r && r.ok === true); } }, function(){}); }catch(e){}
+  }
+  function envKind(){
+    if(nat()) return _appNew ? 'app' : 'app-old';
+    var ua = navigator.userAgent || '';
+    if(/Android/i.test(ua) && !/; wv\)/.test(ua)) return 'android';
+    return 'web';
+  }
+  function linkFor(b, env){
+    /* כרום באנדרואיד: מנסה לפתוח את אפליקציית הבנק, ואם אינה מותקנת – את אתר הבנק */
+    if(env === 'android' && b.pkg) return 'intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=' + b.pkg + ';S.browser_fallback_url=' + encodeURIComponent(b.url) + ';end';
+    return b.url;   /* באפליקציה החדשה: האתר נפתח בדפדפן מחוץ לאפליקציה */
+  }
+  function copyText(t){
+    try{ if(navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(t); }catch(e){}
+    try{ var ta = document.createElement('textarea'); ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }catch(e){}
+    return Promise.resolve();
+  }
+  function openBank(b){
+    S.bank = b; save({lastBank: b.k});
+    var env = envKind();
+    if(env === 'app-old'){
+      /* גרסה ישנה של האפליקציה הייתה טוענת את אתר הבנק בתוך מנטה – לכן מעתיקים את הקישור */
+      copyText(b.url); toast('הקישור לאתר ' + b.n + ' הועתק – פתחו אותו בדפדפן או באפליקציית הבנק', 'info');
+    } else {
+      var a = document.createElement('a'); a.href = linkFor(b, env); a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.style.display = 'none'; document.body.appendChild(a); a.click(); setTimeout(function(){ a.remove(); }, 0);
+    }
+    renderBanks();
+  }
+  function bankBtn(b){
+    var sel = S.bank && S.bank.k === b.k;
+    return '<button class="imp-bank' + (sel ? ' sel' : '') + '" type="button" data-k="' + b.k + '">' +
+      '<span class="b-av" style="background:' + b.c + (b.av.length > 2 ? ';font-size:10px' : '') + '">' + esc(b.av) + '</span>' +
+      '<span style="min-width:0"><span class="b-n">' + esc(b.n) + '</span><span class="b-s">' + (sel ? 'נפתח ✓' : (b.card ? 'פירוט עסקאות' : 'עו״ש')) + '</span></span></button>';
+  }
+  function renderBanks(){
+    var last = st().lastBank, all = BANKS.concat(CARDS);
+    function ord(list){ return list.slice().sort(function(x, y){ return (y.k === last) - (x.k === last); }); }
+    $('imp-body').innerHTML =
+      '<div class="imp-hero" style="padding-top:2px"><h3>מאיפה מייצאים?</h3><p>נפתח את האתר הרשמי, נכנסים כרגיל ומורידים את פירוט התנועות לאקסל.</p></div>' +
+      '<div class="imp-sec">🏦 בנקים</div><div class="imp-banks">' + ord(BANKS).map(bankBtn).join('') + '</div>' +
+      '<div class="imp-sec">💳 כרטיסי אשראי</div><div class="imp-banks">' + ord(CARDS).map(bankBtn).join('') + '</div>' +
+      (S.bank ? '<div class="imp-back-banner">אחרי ההורדה חוזרים לכאן ובוחרים את הקובץ. בטלפון הוא נמצא בתיקיית ״הורדות״.</div>' : '') +
+      '<div class="imp-hint">בבנק בדרך כלל: עו״ש ← פירוט תנועות ← ייצוא לאקסל<br>באשראי בדרך כלל: פירוט עסקאות ← ייצוא / הורדה לאקסל</div>';
+    var bs = document.querySelectorAll('#imp-body .imp-bank');
+    for(var i = 0; i < bs.length; i++) bs[i].onclick = (function(k){ return function(){ for(var j = 0; j < all.length; j++) if(all[j].k === k) openBank(all[j]); }; })(bs[i].getAttribute('data-k'));
+    setFoot(S.bank ? [{label:'חזרתי עם הקובץ – בחר קובץ', pri:true, id:'imp-back-pick', onclick: function(){ stepPick(); pickFile(); }}, {label:'חזרה', onclick: stepIntro}]
+                   : [{label:'חזרה', onclick: stepIntro}, {label:'כבר יש לי קובץ', onclick: function(){ stepPick(); pickFile(); }}]);
+  }
+  function stepBanks(){ probeApp(); renderBanks(); try{ $('imp-body').scrollTop = 0; }catch(e){} }
   function stepPick(){
     $('imp-body').innerHTML =
       '<div class="imp-hero"><div class="ico">📄</div><h3>מורידים קובץ, ואנחנו מסדרים</h3>' +
@@ -19174,6 +19298,177 @@ body.theme-light #imp-nudge{background:#fff;color:#0b1220;border-color:rgba(0,82
     document.addEventListener('visibilitychange', function(){ if(document.visibilityState === 'visible' && user() && dueNudge() && !overlayOpen()) setTimeout(function(){ if(dueNudge() && !overlayOpen()) nudge(); }, 1500); });
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
+
+<!-- ✦ MNTA+ "מה חדש": הודעה חד-פעמית על ייבוא מהבנק (פעם אחת לכל מכשיר) ✦ -->
+<style id="mnta-whatsnew-css">
+#imp-new-overlay{position:fixed;inset:0;z-index:9980;display:flex;align-items:center;justify-content:center;padding:22px 18px calc(22px + env(safe-area-inset-bottom));direction:rtl;background:rgba(2,5,14,.58);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);opacity:0;transition:opacity .35s ease;font-family:'Syne','Heebo',system-ui,sans-serif}
+#imp-new-overlay.open{opacity:1}
+#imp-new-overlay.closing{opacity:0;transition:opacity .25s ease}
+.inw-card{position:relative;width:100%;max-width:356px;border-radius:30px;padding:30px 24px 18px;text-align:center;color:#fff;overflow:hidden;
+  background:radial-gradient(120% 70% at 50% -10%,rgba(0,229,255,.16),transparent 60%),linear-gradient(170deg,#0d1529 0%,#060a17 100%);
+  border:1px solid rgba(0,229,255,.18);box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.03) inset;
+  transform:translateY(22px) scale(.94);opacity:0;transition:transform .55s cubic-bezier(.22,1.25,.36,1),opacity .35s ease}
+#imp-new-overlay.open .inw-card{transform:none;opacity:1}
+#imp-new-overlay.closing .inw-card{transform:translateY(12px) scale(.97);opacity:0;transition:transform .25s ease,opacity .2s ease}
+.inw-card::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,.7),transparent)}
+.inw-art{position:relative;height:96px;margin:0 auto 18px;max-width:236px}
+.inw-art svg{display:block;width:100%;height:100%;overflow:visible}
+.inw-tile{opacity:0;transform:scale(.6);transform-box:fill-box;transform-origin:center}
+#imp-new-overlay.open .inw-tile{animation:inwPop .6s cubic-bezier(.22,1.4,.36,1) forwards}
+#imp-new-overlay.open .inw-tile.t2{animation-delay:.32s}
+#imp-new-overlay.open .inw-tile.t1{animation-delay:.12s}
+@keyframes inwPop{to{opacity:1;transform:scale(1)}}
+.inw-flow{stroke-dasharray:2 7;animation:inwFlow 1.1s linear infinite}
+@keyframes inwFlow{to{stroke-dashoffset:-18}}
+.inw-bar{transform-box:fill-box;transform-origin:bottom;transform:scaleY(0)}
+#imp-new-overlay.open .inw-bar{animation:inwGrow .5s cubic-bezier(.22,1.2,.36,1) forwards}
+#imp-new-overlay.open .inw-bar.b1{animation-delay:.55s}#imp-new-overlay.open .inw-bar.b2{animation-delay:.65s}#imp-new-overlay.open .inw-bar.b3{animation-delay:.75s}
+@keyframes inwGrow{to{transform:scaleY(1)}}
+.inw-tag{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:800;letter-spacing:2px;color:#00E5FF;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.25);margin-bottom:12px;direction:ltr}
+.inw-tag i{width:6px;height:6px;border-radius:50%;background:#00E5FF;box-shadow:0 0 10px #00E5FF;animation:inwPulse 1.8s ease-in-out infinite}
+@keyframes inwPulse{50%{opacity:.35}}
+.inw-title{margin:0 0 8px;font-size:23px;font-weight:900;letter-spacing:-.4px;line-height:1.25;color:#fff}
+.inw-title b{background:linear-gradient(135deg,#00E5FF,#00BFFF);-webkit-background-clip:text;background-clip:text;color:transparent}
+.inw-text{margin:0 auto 16px;max-width:290px;font-size:14px;font-weight:600;line-height:1.6;color:rgba(255,255,255,.62)}
+.inw-chips{display:flex;justify-content:center;gap:5px;flex-wrap:wrap;margin-bottom:22px}
+.inw-chips span{font-size:10.5px;font-weight:700;padding:4px 9px;white-space:nowrap;border-radius:999px;color:rgba(255,255,255,.7);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09)}
+.inw-go{display:block;width:100%;padding:15px;border:none;border-radius:17px;cursor:pointer;font-family:inherit;font-size:15.5px;font-weight:900;color:#03121a;background:linear-gradient(135deg,#00E5FF,#00BFFF);box-shadow:0 10px 30px rgba(0,200,255,.32);transition:transform .15s ease,box-shadow .15s ease;-webkit-tap-highlight-color:transparent}
+.inw-go:active{transform:scale(.97);box-shadow:0 6px 18px rgba(0,200,255,.28)}
+.inw-go:focus,.inw-later:focus{outline:none}.inw-go:focus-visible,.inw-later:focus-visible{outline:2px solid rgba(0,229,255,.6);outline-offset:3px}
+.inw-later{display:block;width:100%;margin-top:6px;padding:12px;border:none;background:none;cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;color:rgba(255,255,255,.45);-webkit-tap-highlight-color:transparent}
+.inw-later:active{color:rgba(255,255,255,.75)}
+body.theme-light #imp-new-overlay{background:rgba(15,23,42,.30)}
+body.theme-light .inw-card{color:#0b1220;background:radial-gradient(120% 70% at 50% -10%,rgba(0,140,255,.12),transparent 60%),linear-gradient(170deg,#ffffff 0%,#f3f7fc 100%);border-color:rgba(0,82,224,.14);box-shadow:0 30px 70px rgba(15,23,42,.22)}
+body.theme-light .inw-card::before{background:linear-gradient(90deg,transparent,rgba(0,110,255,.5),transparent)}
+body.theme-light .inw-title{color:#0b1220}
+body.theme-light .inw-title b{background-image:linear-gradient(135deg,#0052E0,#00A0FF)}
+body.theme-light .inw-text{color:rgba(11,18,32,.62)}
+body.theme-light .inw-tag{color:#0052E0;background:rgba(0,82,224,.06);border-color:rgba(0,82,224,.2)}
+body.theme-light .inw-tag i{background:#0066ff;box-shadow:0 0 8px rgba(0,102,255,.6)}
+body.theme-light .inw-chips span{color:rgba(11,18,32,.66);background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
+body.theme-light .inw-go{color:#fff;background:linear-gradient(135deg,#0052E0,#00A0FF);box-shadow:0 10px 26px rgba(0,82,224,.28)}
+body.theme-light .inw-later{color:rgba(11,18,32,.5)}
+body.theme-light .inw-art .ln{stroke:#0066ff}
+body.theme-light .inw-art .tbg{fill:url(#inwTileL)}
+body.theme-light .inw-art .tst{stroke:rgba(0,82,224,.22)}
+@media (prefers-reduced-motion:reduce){.inw-card,#imp-new-overlay{transition:none}.inw-tile,.inw-bar{animation:none!important;opacity:1;transform:none}.inw-flow,.inw-tag i{animation:none}}
+</style>
+<script>
+/* ✦ "חדש! ייבוא נתונים מהבנק" — מופיע פעם אחת לכל מכשיר (localStorage mnta_seen_import_v1),
+   רק אחרי התחברות כשהמסך הראשי מוצג, אף פעם לא מעל חלון אחר / אונבורדינג, ולא שוב אחרי סגירה ✦ */
+(function(){
+  'use strict';
+  var KEY = 'mnta_seen_import_v1', DAY = 86400000;
+  var shownThisSession = false, timer = null, clear = 0, ticks = 0;
+  function $(id){ return document.getElementById(id); }
+  function user(){ try{ return firebase.auth().currentUser; }catch(e){ return null; } }
+  /* אם אי אפשר לקרוא/לכתוב localStorage – לא מציגים בכלל (כדי שלא יופיע בכל פתיחה) */
+  function seen(){ try{ return localStorage.getItem(KEY) !== null; }catch(e){ return true; } }
+  function mark(how){ try{ localStorage.setItem(KEY, JSON.stringify({at: Date.now(), how: how})); }catch(e){} }
+  function visible(el){ if(!el) return false; var cs = getComputedStyle(el); return cs.display !== 'none' && cs.visibility !== 'hidden' && parseFloat(cs.opacity) > 0.05 && el.offsetHeight > 0; }
+  function mainScreen(){
+    var app = $('app'), dash = $('view-dashboard');
+    return !!(app && !app.classList.contains('hidden') && visible(app) && dash && !dash.classList.contains('hidden') && visible(dash));
+  }
+  /* כל חלון / גיליון / אונבורדינג פתוח → מחכים */
+  function otherDialogOpen(){
+    if($('imp-nudge')) return true;
+    var ob = $('onboarding-overlay'); if(ob && ob.classList.contains('open')) return true;
+    var sl = $('security-loader-overlay'); if(sl && !sl.classList.contains('hidden') && visible(sl)) return true;
+    var els = document.querySelectorAll('[id*="overlay"],[id*="modal"],[id*="sheet"],[class*="overlay"],[role="dialog"],[aria-modal="true"]');
+    for(var i = 0; i < els.length; i++){
+      var e = els[i]; if(e.id === 'imp-new-overlay' || (e.closest && e.closest('#imp-new-overlay'))) continue;
+      var cs = getComputedStyle(e);
+      if(cs.position !== 'fixed' || cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity) < 0.1 || cs.pointerEvents === 'none') continue;
+      if(e.offsetHeight > innerHeight * 0.3 || e.getAttribute('role') === 'dialog' || e.getAttribute('aria-modal') === 'true') return true;
+    }
+    return false;
+  }
+  /* משתמש חדש (פחות מיממה) – יש לו אונבורדינג ושאלת "מי הזמין"; מחכים לפתיחה הבאה */
+  function tooNew(){
+    var u = user(), ct = u && u.metadata && u.metadata.creationTime ? new Date(u.metadata.creationTime).getTime() : 0;
+    if(ct && Date.now() - ct < DAY) return true;
+    try{ if(!localStorage.getItem('ob-done') && ct && Date.now() - ct < 3*DAY) return true; }catch(e){}
+    return false;
+  }
+  function alreadyImported(){ try{ var s = JSON.parse(localStorage.getItem('mnta_import_v1')) || {}; return !!s.lastImport; }catch(e){ return false; } }
+  function deepLink(){ return /[?&#]action=/.test(location.search + location.hash); }
+
+  function icon(){
+    return '<svg viewBox="0 0 236 96" aria-hidden="true">' +
+      '<defs><linearGradient id="inwG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00E5FF"/><stop offset="1" stop-color="#00A0FF"/></linearGradient>' +
+      '<linearGradient id="inwTile" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(0,229,255,.16)"/><stop offset="1" stop-color="rgba(0,229,255,.04)"/></linearGradient>' +
+      '<linearGradient id="inwTileL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(0,102,255,.10)"/><stop offset="1" stop-color="rgba(0,102,255,.02)"/></linearGradient>' +
+      '<filter id="inwGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter></defs>' +
+      /* זרימה: מהבנק (ימין) אל הגרף (שמאל) */
+      '<path class="inw-flow ln" d="M150 48 H86" fill="none" stroke="#00E5FF" stroke-width="2.4" stroke-linecap="round" opacity=".8"/>' +
+      '<path class="ln" d="M92 42 L84 48 L92 54" fill="none" stroke="#00E5FF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>' +
+      /* בנק */
+      '<g class="inw-tile t1"><rect x="152" y="12" width="76" height="72" rx="22" fill="url(#inwG)" opacity=".18" filter="url(#inwGlow)"/>' +
+      '<rect class="tbg tst" x="154" y="14" width="72" height="68" rx="21" fill="url(#inwTile)" stroke="rgba(0,229,255,.32)" stroke-width="1.2"/>' +
+      '<g fill="none" stroke="url(#inwG)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M172 40 L190 29 L208 40 Z"/><path d="M176 45 V60 M185 45 V60 M195 45 V60 M204 45 V60"/><path d="M171 65 H209"/></g></g>' +
+      /* גרף */
+      '<g class="inw-tile t2"><rect x="8" y="12" width="76" height="72" rx="22" fill="url(#inwG)" opacity=".18" filter="url(#inwGlow)"/>' +
+      '<rect class="tbg tst" x="10" y="14" width="72" height="68" rx="21" fill="url(#inwTile)" stroke="rgba(0,229,255,.32)" stroke-width="1.2"/>' +
+      '<rect class="inw-bar b1" x="25" y="52" width="9" height="14" rx="3" fill="url(#inwG)" opacity=".55"/>' +
+      '<rect class="inw-bar b2" x="40" y="43" width="9" height="23" rx="3" fill="url(#inwG)" opacity=".75"/>' +
+      '<rect class="inw-bar b3" x="55" y="32" width="9" height="34" rx="3" fill="url(#inwG)"/>' +
+      '<path d="M24 44 L41 34 L50 38 L67 26" fill="none" stroke="url(#inwG)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<circle cx="67" cy="26" r="3.2" fill="#00E5FF"/></g>' +
+      '</svg>';
+  }
+
+  function show(){
+    if($('imp-new-overlay')) return;
+    shownThisSession = true; mark('shown');   /* נרשם ברגע ההצגה – לא יופיע שוב גם אם האפליקציה נסגרת */
+    var o = document.createElement('div'); o.id = 'imp-new-overlay';
+    o.innerHTML = '<div class="inw-card" role="dialog" aria-modal="true" aria-labelledby="inw-title" aria-describedby="inw-text">' +
+      '<div class="inw-art">' + icon() + '</div>' +
+      '<div class="inw-tag"><i></i>NEW</div>' +
+      '<h2 class="inw-title" id="inw-title"><b>חדש!</b> ייבוא נתונים מהבנק</h2>' +
+      '<p class="inw-text" id="inw-text">מורידים אקסל מהבנק או מכרטיס האשראי ומייבאים בלחיצה – הכול מסתווג לבד</p>' +
+      '<div class="inw-chips"><span>🏦 כל הבנקים</span><span>💳 כרטיסי אשראי</span><span>🔒 הקובץ נשאר אצלך</span></div>' +
+      '<button class="inw-go" id="imp-new-go" type="button">לנסות עכשיו</button>' +
+      '<button class="inw-later" id="imp-new-close" type="button">אחר כך</button>' +
+      '</div>';
+    document.body.appendChild(o);
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ o.classList.add('open'); }); });
+    $('imp-new-go').onclick = function(){
+      dismiss('try', function(){ try{ if(window.mntaOpenImport) window.mntaOpenImport(); else if(window.mntaRunAction) window.mntaRunAction('import'); }catch(e){ console.warn('[whatsnew] open import', e); } });
+    };
+    $('imp-new-close').onclick = function(){ dismiss('later'); };
+    o.addEventListener('click', function(e){ if(e.target === o) dismiss('backdrop'); });
+    document.addEventListener('keydown', onKey);
+  }
+  function onKey(e){ if(e.key === 'Escape') dismiss('esc'); }
+  function dismiss(how, then){
+    var o = $('imp-new-overlay'); if(!o || o.classList.contains('closing')) return;
+    mark(how); document.removeEventListener('keydown', onKey);
+    o.classList.add('closing'); o.classList.remove('open');
+    setTimeout(function(){ if(o.parentNode) o.parentNode.removeChild(o); if(then) then(); }, 260);
+  }
+
+  /* בודקים כל 1.5 שניות; מציגים רק אחרי שני מבטים רצופים "נקיים" ולפחות 4 שניות על המסך הראשי */
+  function tick(){
+    ticks++;
+    if(seen() || shownThisSession){ stop(); return; }
+    if(ticks > 120){ stop(); return; }   /* 3 דקות בלי רגע מתאים → ננסה בפתיחה הבאה */
+    if(document.visibilityState !== 'visible' || !user() || !mainScreen()){ clear = 0; return; }
+    if(alreadyImported()){ mark('already-imported'); stop(); return; }
+    if(tooNew() || deepLink()){ stop(); return; }   /* לא מסמנים – יופיע בפתיחה הבאה */
+    if(otherDialogOpen()){ clear = 0; return; }
+    clear++;
+    if(clear >= 3) { stop(); show(); }
+  }
+  function start(){ if(timer || seen() || shownThisSession) return; ticks = 0; clear = 0; timer = setInterval(tick, 1500); }
+  function stop(){ if(timer){ clearInterval(timer); timer = null; } }
+  document.addEventListener('visibilitychange', function(){ if(document.visibilityState === 'visible') start(); });
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+  /* לבדיקות בלבד */
+  window._mntaWhatsNew = {key: KEY, seen: seen, check: tick};
 })();
 </script>
 
