@@ -9114,6 +9114,35 @@ body.theme-light #evx-panel{background:#fff}
 
   db.enablePersistence().catch(function(e){ console.log('Offline persistence:', e.code); });
 
+  /* ── חיסכון בקריאות: מנתקים את Firestore כשהאפליקציה ברקע דקה או ללא מגע 15 דק׳; מתחברים מחדש מיד בחזרה.
+        המאזינים (onSnapshot) נשארים פעילים ומקבלים את כל השינויים כשהרשת חוזרת; כתיבות בזמן ניתוק נשמרות בתור ונשלחות בחיבור. ── */
+  (function(){
+    var HIDDEN_MS = 60000, IDLE_MS = 15 * 60000;
+    var netOff = false, hiddenTimer = null, lastAct = Date.now();
+    function off(why){ if (netOff) return; netOff = true; try { db.disableNetwork().catch(function(){}); console.log('[net-pause] off:', why); } catch(e){} }
+    function on(why){ if (!netOff) return; netOff = false; try { db.enableNetwork().catch(function(){}); console.log('[net-pause] on:', why); } catch(e){} }
+    function onVis(){
+      try {
+        if (document.visibilityState === 'hidden') {
+          if (!hiddenTimer) hiddenTimer = setTimeout(function(){ hiddenTimer = null; if (document.visibilityState === 'hidden') off('hidden'); }, HIDDEN_MS);
+        } else {
+          if (hiddenTimer) { clearTimeout(hiddenTimer); hiddenTimer = null; }
+          lastAct = Date.now(); on('visible');
+        }
+      } catch(e){}
+    }
+    function onAct(){ lastAct = Date.now(); if (netOff && document.visibilityState !== 'hidden') on('activity'); }
+    try {
+      document.addEventListener('visibilitychange', onVis);
+      window.addEventListener('pageshow', onVis);
+      window.addEventListener('focus', onAct);
+      ['pointerdown','keydown','touchstart','wheel'].forEach(function(t){ window.addEventListener(t, onAct, { passive: true, capture: true }); });
+      window.addEventListener('scroll', onAct, { passive: true, capture: true });
+      setInterval(function(){ if (!netOff && document.visibilityState !== 'hidden' && Date.now() - lastAct > IDLE_MS) off('idle'); }, 60000);
+      window._mntaNetPause = { state: function(){ return { off: netOff, idleMs: Date.now() - lastAct }; } };
+    } catch(e){ console.log('[net-pause] init failed', e); }
+  })();
+
   /* ── State ── */
   var uid = null, resetDay = 1, displayName = '';
   var resetEnabled = true; /* true = איפוס חודשי (ברירת מחדל), false = מצטבר לכל הזמן */
