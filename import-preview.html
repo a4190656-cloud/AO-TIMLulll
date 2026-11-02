@@ -8353,8 +8353,8 @@ body.theme-light #evx-panel{background:#fff}
     </button>
   </div>
 </div>
-      <!-- ✦ עדכון אפליקציה ✦ -->
-      <div class="sblock modern-hover" style="border-color:rgba(0,229,255,0.15);">
+      <!-- ✦ עדכון אפליקציה ✦ (מוסתר מהמסך לבקשת אהרן, נוב׳ 2026 – הקוד שמאחוריו נשאר) -->
+      <div class="sblock modern-hover" id="settings-app-update-card" aria-hidden="true" style="display:none;border-color:rgba(0,229,255,0.15);">
         <div class="sblock-head" style="border-bottom-color:rgba(0,229,255,0.10);background:rgba(0,229,255,0.03);">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
           <span style="color:var(--cyan);">עדכון אפליקציה</span>
@@ -18713,9 +18713,12 @@ body.theme-light .mk-chip:focus-within { box-shadow:0 0 0 3px var(--au-teal-lt,r
   function makeMatcher(cats, history){
     cats = (cats||[]).filter(function(c){ return c && c.name; });
     var hist = {};
+    var cpHist = {}, cpList = [];
     (history||[]).forEach(function(h){
       if(!h || !h.category || !h.description) return;
       var k = h.type + '|' + norm(h.description); hist[k] = h.category;
+      var c = counterparty(h.description);
+      if(c){ cpHist[h.type + '|' + c] = h.category; if(cpList.length < 3000) cpList.push({t: h.type, cp: c, cat: h.category}); }
     });
     var names = {}; cats.forEach(function(c){ names[(c.type||'expense') + '|' + c.name] = 1; });
     function ofType(t){ return cats.filter(function(c){ return (c.type||'expense') === t; }); }
@@ -18738,8 +18741,26 @@ body.theme-light .mk-chip:focus-within { box-shadow:0 0 0 3px var(--au-teal-lt,r
         var words = norm(list[i].name).split(/[^\u0590-\u05ffa-z0-9]+/).map(stripVav).filter(function(w){ return w.length >= 3; });
         for(var j=0;j<words.length;j++){ if(nd && hasWord(nd, words[j]) || (srcs[1] && srcs[1].indexOf(words[j])>=0)) return {name: list[i].name, how:'name'}; }
       }
+      /* אותו צד שני בהיסטוריה (העברות / ביט / פייבוקס: "הע. לבי אם אס" ↔ "העברה לבי אם אס") */
+      var cp = counterparty(desc);
+      if(cp && cpHist[type + '|' + cp] && names[type + '|' + cpHist[type + '|' + cp]]) return {name: cpHist[type + '|' + cp], how:'history-cp'};
+      if(cp && cp.length >= 3){
+        for(var q=0;q<cpList.length;q++){
+          var h = cpList[q]; if(h.t !== type || !names[type + '|' + h.cat]) continue;
+          if((' ' + h.cp + ' ').indexOf(' ' + cp + ' ') >= 0 || (h.cp.length >= 3 && (' ' + cp + ' ').indexOf(' ' + h.cp + ' ') >= 0)) return {name: h.cat, how:'history-cp'};
+        }
+      }
       return {name:'', how:''};
     };
+  }
+  /* הצד השני בתנועה: בלי "העברה/הע./ביט/פייבוקס/לחשבון", בלי מספרים וסימנים */
+  var XFER_WORDS = /(^| )(העברת כסף|העברה בביט|העברה|העברות|העברת|העבר|הע|העב|bit|ביט|ב ביט|paybox|pay box|פייבוקס|פיי בוקס|פייבקס|זיכוי|חיוב|לחשבון|מחשבון|חשבון|חש|באפליקציה|אפליקציה|דיגיטלית|דיגיטל|online|אונליין|מאת|אל|עבור|ע ס|העברה מ|העברה ל|בנקאית|בנק|סניף|מס|אסמכתא|העברה עצמית|לטובת|ת ז)(?= |$)/g;
+  function counterparty(s){
+    var x = norm(s).replace(/[0-9\/\-\.,:;()\[\]#*+_|]+/g, ' ').replace(/\s+/g, ' ').trim();
+    var prev; do { prev = x; x = (' ' + x + ' ').replace(XFER_WORDS, ' ').replace(/\s+/g, ' ').trim(); } while(x !== prev);
+    /* "לבי אם אס" → "בי אם אס", "מדוד" → "דוד" (רק אחרי מילת העברה, כדי לא לחתוך שמות רגילים) */
+    if(/(^| )(העברה|העברת|הע|העב|bit|ביט|paybox|פייבוקס)( |\.|$)/.test(norm(s).replace(/\./g, ' . ')) || /^(הע\.|העב')/.test(norm(s))) x = x.replace(/^[למ](?=[\u0590-\u05ff]{2})/, '').replace(/^[למ] /, '');
+    return x.length >= 2 ? x : '';
   }
 
   /* ── כפילויות: אותו יום + אותו סכום + תיאור דומה. existing: [{date(any), amount, description}] ── */
@@ -18876,7 +18897,7 @@ body.theme-light .mk-chip:focus-within { box-shadow:0 0 0 3px var(--au-teal-lt,r
     return c['\t'] > c[','] && c['\t'] >= c[';'] ? '\t' : (c[';'] > c[','] ? ';' : ',');
   }
 
-  var api = {isCardLump:isCardLump, rowsFromFile:rowsFromFile, decodeText:decodeText, norm:norm, parseAmount:parseAmount, parseDate:parseDate, mapHeader:mapHeader, extract:extract, makeMatcher:makeMatcher, markDuplicates:markDuplicates, reconcile:reconcile, simScore:simScore, similar:similar, concept:concept};
+  var api = {isCardLump:isCardLump, rowsFromFile:rowsFromFile, decodeText:decodeText, norm:norm, parseAmount:parseAmount, parseDate:parseDate, mapHeader:mapHeader, extract:extract, makeMatcher:makeMatcher, markDuplicates:markDuplicates, reconcile:reconcile, simScore:simScore, similar:similar, concept:concept, counterparty:counterparty};
   if(typeof module !== 'undefined' && module.exports) module.exports = api; else root.MntaImportCore = api;
 })(typeof window !== 'undefined' ? window : this);
 </script>
@@ -19049,6 +19070,13 @@ body.theme-light .rc-chip{color:#0052E0;background:rgba(0,82,224,.07);border-col
 body.theme-light .rc-chip.empty{color:#8a5a00;background:rgba(255,170,0,.1);border-color:rgba(200,130,0,.3)}
 body.theme-light .rc-why{color:#8a5a00}
 body.theme-light .rc-why.lump{color:#6b4fd0}
+
+/* מספרים בפונט הרגיל של האפליקציה (לא פונט התצוגה שבו ספרות נראות כמו אותיות) */
+#imp-overlay,#imp-overlay .imp-sheet,#imp-overlay button,#imp-overlay select,#imp-overlay input,#imp-overlay textarea,#imp-nudge,#imp-nudge button{font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,'Heebo',Arial,sans-serif;font-variant-numeric:lining-nums tabular-nums}
+#imp-overlay .rc-n,#imp-overlay .rc-a,#imp-overlay .imp-a{font-family:'JetBrains Mono',monospace;font-variant-numeric:lining-nums tabular-nums;letter-spacing:-.03em}
+.rc-n{direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+/* תיאור מלא בשתי שורות במקום "..." */
+.rc-d,.rc-okd{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:clip;line-height:1.35;word-break:break-word;overflow-wrap:anywhere}
 </style>
 <script>
 /* ✦ ייבוא תנועות מקובץ בנק / אשראי. הקובץ נקרא רק במכשיר; שומר רק את מה שהמשתמש סימן ✦ */
@@ -19309,6 +19337,8 @@ body.theme-light .rc-why.lump{color:#6b4fd0}
     return h;
   }
   function cnt(n, one, many){ return n === 1 ? one : n + ' ' + many; }
+  function cntH(n, one, many){ return n === 1 ? one : '<span class="rc-n">' + n + '</span> ' + many; }
+  function moneyH(n){ return '<span class="rc-n">' + money(n) + '</span>'; }
   function shortDate(k){ var p = k.split('-'); return (+p[2]) + '.' + (+p[1]); }
   function amtHtml(x){ var t = x.type === 'income' ? 'i' : 'e'; return '<div class="rc-a ' + t + '">' + (t === 'i' ? '+' : '') + money(x.amount) + '</div>'; }
   function cardHtml(x){
@@ -19337,14 +19367,14 @@ body.theme-light .rc-why.lump{color:#6b4fd0}
     var e = 0, inc = 0; miss.forEach(function(x){ if(x.type === 'income') inc += x.amount; else e += x.amount; });
     var h = '';
     if(miss.length){
-      h += '<div class="rc-hero"><div class="rc-k">שכחת לרשום</div><div class="rc-big">' + cnt(miss.length, 'תנועה אחת', 'תנועות') + '</div>' +
-        '<div class="rc-sub">' + (e ? money(e) + ' הוצאות' : '') + (e && inc ? ' · ' : '') + (inc ? '<span class="rc-inc">' + money(inc) + ' הכנסות</span>' : '') + '</div></div>';
+      h += '<div class="rc-hero"><div class="rc-k">שכחת לרשום</div><div class="rc-big">' + cntH(miss.length, 'תנועה אחת', 'תנועות') + '</div>' +
+        '<div class="rc-sub">' + (e ? moneyH(e) + ' הוצאות' : '') + (e && inc ? ' · ' : '') + (inc ? '<span class="rc-inc">' + moneyH(inc) + ' הכנסות</span>' : '') + '</div></div>';
     } else {
       h += '<div class="rc-hero ok"><div class="rc-ico">🎉</div><div class="rc-big">הכול כבר רשום!</div>' +
         '<div class="rc-sub">' + (maybe.length || lump.length ? 'אין תנועות שחסרות בוודאות' : 'לא שכחת כלום מהקובץ הזה') + '</div></div>';
     }
     if(ok.length){
-      h += '<button type="button" class="rc-okbar" id="rc-ok-t"><span class="rc-v">✓</span><span class="rc-okt">' + cnt(ok.length, 'תנועה אחת כבר רשומה', 'תנועות כבר רשומות') + '</span><span class="rc-more">' + (S.showMatched ? 'הסתר ▴' : 'הצג ▾') + '</span></button>' +
+      h += '<button type="button" class="rc-okbar" id="rc-ok-t"><span class="rc-v">✓</span><span class="rc-okt">' + cntH(ok.length, 'תנועה אחת כבר רשומה', 'תנועות כבר רשומות') + '</span><span class="rc-more">' + (S.showMatched ? 'הסתר ▴' : 'הצג ▾') + '</span></button>' +
         '<div class="rc-oklist" id="rc-ok-l"' + (S.showMatched ? '' : ' hidden') + '>' + ok.map(okRowHtml).join('') + '</div>';
     }
     if(miss.length) h += '<div class="rc-sec">חסרות במנטה · מסומנות להוספה</div><div class="rc-list">' + miss.map(cardHtml).join('') + '</div>';
@@ -19569,16 +19599,20 @@ body.theme-light .inw-art .tst{stroke:rgba(0,82,224,.22)}
 @media (prefers-reduced-motion:reduce){.inw-card,#imp-new-overlay{transition:none}.inw-tile,.inw-bar{animation:none!important;opacity:1;transform:none}.inw-flow,.inw-tag i{animation:none}}
 </style>
 <script>
-/* ✦ "חדש! ייבוא נתונים מהבנק" — מופיע פעם אחת לכל מכשיר (localStorage mnta_seen_import_v1),
+/* ✦ "חדש! השוואה מול הבנק" — מופיע פעם אחת לכל מכשיר (localStorage mnta_seen_import_v1),
    רק אחרי התחברות כשהמסך הראשי מוצג, אף פעם לא מעל חלון אחר / אונבורדינג, ולא שוב אחרי סגירה ✦ */
 (function(){
   'use strict';
   var KEY = 'mnta_seen_import_v1', DAY = 86400000;
   var shownThisSession = false, timer = null, clear = 0, ticks = 0;
+  /* מתג בדיקה: ?shownew=1 – מוחק את הסימון, עוקף "כבר ייבא" ו"חשבון חדש", ומציג ~1.5 שניות אחרי שהמסך הראשי מוצג.
+     בלי הפרמטר – ההתנהגות לא משתנה */
+  var FORCE = /[?&]shownew=1(?:&|$)/.test(location.search), cleanSince = 0;
+  if(FORCE){ try{ localStorage.removeItem(KEY); }catch(e){} }
   function $(id){ return document.getElementById(id); }
   function user(){ try{ return firebase.auth().currentUser; }catch(e){ return null; } }
   /* אם אי אפשר לקרוא/לכתוב localStorage – לא מציגים בכלל (כדי שלא יופיע בכל פתיחה) */
-  function seen(){ try{ return localStorage.getItem(KEY) !== null; }catch(e){ return true; } }
+  function seen(){ if(FORCE) return shownThisSession; try{ return localStorage.getItem(KEY) !== null; }catch(e){ return true; } }
   function mark(how){ try{ localStorage.setItem(KEY, JSON.stringify({at: Date.now(), how: how})); }catch(e){} }
   function visible(el){ if(!el) return false; var cs = getComputedStyle(el); return cs.display !== 'none' && cs.visibility !== 'hidden' && parseFloat(cs.opacity) > 0.05 && el.offsetHeight > 0; }
   function mainScreen(){
@@ -19668,20 +19702,26 @@ body.theme-light .inw-art .tst{stroke:rgba(0,82,224,.22)}
   function tick(){
     ticks++;
     if(seen() || shownThisSession){ stop(); return; }
-    if(ticks > 120){ stop(); return; }   /* 3 דקות בלי רגע מתאים → ננסה בפתיחה הבאה */
-    if(document.visibilityState !== 'visible' || !user() || !mainScreen()){ clear = 0; return; }
+    if(ticks > (FORCE ? 360 : 120)){ stop(); return; }   /* 3 דקות בלי רגע מתאים → ננסה בפתיחה הבאה */
+    if(document.visibilityState !== 'visible' || !user() || !mainScreen()){ clear = 0; cleanSince = 0; return; }
+    if(FORCE){   /* מצב בדיקה: בלי "כבר ייבא" / "חשבון חדש" / קישור עמוק – רק מחכים שאין חלון אחר פתוח */
+      if(otherDialogOpen()){ cleanSince = 0; return; }
+      if(!cleanSince) cleanSince = Date.now();
+      if(Date.now() - cleanSince >= 1200){ stop(); show(); }
+      return;
+    }
     if(alreadyImported()){ mark('already-imported'); stop(); return; }
     if(tooNew() || deepLink()){ stop(); return; }   /* לא מסמנים – יופיע בפתיחה הבאה */
     if(otherDialogOpen()){ clear = 0; return; }
     clear++;
     if(clear >= 3) { stop(); show(); }
   }
-  function start(){ if(timer || seen() || shownThisSession) return; ticks = 0; clear = 0; timer = setInterval(tick, 1500); }
+  function start(){ if(timer || seen() || shownThisSession) return; ticks = 0; clear = 0; cleanSince = 0; timer = setInterval(tick, FORCE ? 500 : 1500); }
   function stop(){ if(timer){ clearInterval(timer); timer = null; } }
   document.addEventListener('visibilitychange', function(){ if(document.visibilityState === 'visible') start(); });
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
   /* לבדיקות בלבד */
-  window._mntaWhatsNew = {key: KEY, seen: seen, check: tick};
+  window._mntaWhatsNew = {key: KEY, seen: seen, check: tick, force: FORCE};
 })();
 </script>
 
