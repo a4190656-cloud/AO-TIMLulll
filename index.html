@@ -19041,6 +19041,13 @@ body.theme-light .mk-chip:focus-within { box-shadow:0 0 0 3px var(--au-teal-lt,r
 #imp-back-pick{flex:2.3;font-size:13.5px;white-space:nowrap}
 .imp-hint{margin-top:12px;font-size:12px;line-height:1.6;color:var(--muted,rgba(255,255,255,.55));text-align:center}
 .imp-back-banner{margin-top:14px;padding:12px 14px;border-radius:16px;font-size:12.5px;line-height:1.6;border:1px solid rgba(0,229,255,.25);background:rgba(0,229,255,.06)}
+/* v15: טיפ שיתוף קובץ ישירות למנטה (מוצג רק באפליקציה שתומכת בשיתוף) */
+.imp-share{display:flex;gap:9px;align-items:flex-start;margin:12px 2px 0;padding:10px 12px;border-radius:14px;font-size:12px;font-weight:600;line-height:1.55;color:var(--muted,rgba(255,255,255,.62));background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.18);border-right:3px solid #00E5FF}
+.imp-share[hidden]{display:none}
+.imp-share .s-ico{flex-shrink:0;font-size:15px;line-height:1.35}
+.imp-share b{color:#00E5FF;font-weight:800}
+body.theme-light .imp-share{color:rgba(11,18,32,.62);background:rgba(0,82,224,.04);border-color:rgba(0,82,224,.16);border-right-color:#0052E0}
+body.theme-light .imp-share b{color:#0052E0}
 body.theme-light .imp-note{color:#8a5a00;background:rgba(255,170,0,.1);border-color:rgba(200,130,0,.25)}
 body.theme-light .imp-choice,body.theme-light .imp-bank{background:rgba(0,0,0,.025);border-color:rgba(0,0,0,.08)}
 body.theme-light .imp-choice.pri{background:linear-gradient(135deg,rgba(0,82,224,.08),rgba(0,160,255,.04));border-color:rgba(0,82,224,.3)}
@@ -19251,14 +19258,43 @@ body.theme-light .rc-why.lump{color:#6b4fd0}
       '<div class="imp-choices">' +
         '<button class="imp-choice pri" id="imp-have" type="button"><span class="c-ico">📄</span><span><span class="c-t">כבר ייצאתי – בחר קובץ</span><span class="c-d">Excel או CSV מהבנק / מחברת האשראי</span></span><span class="c-a">‹</span></button>' +
         '<button class="imp-choice" id="imp-go-bank" type="button"><span class="c-ico">🔐</span><span><span class="c-t">כניסה לחשבון הבנק לייצוא</span><span class="c-d">בוחרים בנק או כרטיס, ומורידים משם את פירוט התנועות</span></span><span class="c-a">‹</span></button>' +
-      '</div>';
+      '</div>' + shareTip();
     $('imp-have').onclick = function(){ stepPick(); pickFile(); };
+    probeShare();
     $('imp-go-bank').onclick = stepBanks;
     setFoot([{label:'סגירה', onclick: close}]);
   }
   /* סביבה: אפליקציית אנדרואיד (גרסה חדשה פותחת קישורים בחוץ; גרסה ישנה טוענת אותם בתוך האפליקציה), כרום באנדרואיד, אחר */
   var _appNew = null;
   function nat(){ var f = window.flutter_inappwebview; return (f && typeof f.callHandler === 'function') ? f : null; }
+  /* v15: אפליקציה שתומכת בשיתוף קובץ ישירות למנטה רושמת את NativeTakeSharedFile (גרסאות ישנות מחזירות null).
+     הבדיקה גם "לוקחת" קובץ ששותף וממתין – לכן אם הגיע קובץ, מעבירים אותו מיד לייבוא. */
+  var _shareOk = null, _shareAsking = false;
+  function shareTip(){
+    return '<div class="imp-share" id="imp-share"' + (_shareOk ? '' : ' hidden') + '><span class="s-ico">📲</span><span><b>טיפ:</b> אפשר לשתף את קובץ האקסל ישר למנטה מההורדות או מהבנק: שיתוף ← <b>מנטה פלוס</b></span></div>';
+  }
+  function showShareTip(){ var e = $('imp-share'); if(e && _shareOk) e.hidden = false; }
+  function probeShare(){
+    if(_shareOk !== null || _shareAsking || !nat()) return;
+    _shareAsking = true;
+    var t = setTimeout(function(){ _shareAsking = false; }, 3000);
+    try{
+      Promise.resolve(nat().callHandler('NativeTakeSharedFile')).then(function(r){
+        clearTimeout(t); _shareAsking = false;
+        if(!r || typeof r !== 'object' || !('ok' in r)){ _shareOk = false; return; }
+        _shareOk = true; showShareTip();
+        if(r.ok && r.base64){
+          try{
+            var bin = atob(r.base64), u8 = new Uint8Array(bin.length);
+            for(var i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+            var f; try{ f = new File([u8], r.name || 'bank-file.xlsx', {type: r.mime || ''}); }
+            catch(e){ f = new Blob([u8], {type: r.mime || ''}); f.name = r.name || 'bank-file.xlsx'; }
+            stepPick(); readFile(f);
+          }catch(e){}
+        } else if(r.error === 'too_big'){ toast('הקובץ גדול מדי (מעל 15MB). נסה לייצא תקופה קצרה יותר.', 'info'); }
+      }, function(){ clearTimeout(t); _shareAsking = false; });
+    }catch(e){ clearTimeout(t); _shareAsking = false; }
+  }
   function probeApp(){
     if(!nat() || _appNew !== null) return;
     _appNew = false;
@@ -19319,6 +19355,7 @@ body.theme-light .rc-why.lump{color:#6b4fd0}
       '<div class="imp-hero"><div class="ico">📄</div><h3>מורידים קובץ, ואנחנו מסדרים</h3>' +
       '<p>מורידים מאתר הבנק או חברת האשראי קובץ אקסל / CSV של התנועות ומעלים אותו כאן. נשווה למה שכבר רשמת ונראה לך רק מה שחסר. שום דבר לא יישמר לפני שתאשר.</p></div>' +
       '<button class="imp-btn pri imp-pick" id="imp-pick">בחירת קובץ (Excel / CSV)</button>' +
+      shareTip() +
       '<details class="imp-card"><summary>איפה מורידים את הקובץ? ▾</summary><ul>' +
       '<li><b>בנק</b> (הפועלים, לאומי, דיסקונט, מזרחי-טפחות, הבינלאומי ועוד): באתר הבנק ← עו״ש / תנועות בחשבון ← בוחרים תקופה ← <b>ייצוא לאקסל</b>.</li>' +
       '<li><b>כרטיס אשראי</b> (ישראכרט, אמריקן אקספרס, כאל, מקס ועוד): באתר חברת האשראי ← פירוט עסקאות ← <b>הורדה לאקסל</b>.</li>' +
@@ -19326,7 +19363,7 @@ body.theme-light .rc-why.lump{color:#6b4fd0}
       '<div class="imp-card">🔒 הקובץ נקרא רק במכשיר שלך ולא נשלח לשום שרת. נשמרות רק התנועות שתאשר.</div>' +
       '<div class="imp-card">💳 אם מעלים גם את פירוט כרטיס האשראי, החיוב החודשי המרוכז שמופיע בדף הבנק לא יסומן, כדי שלא ייספר פעמיים.</div>' +
       remCard();
-    $('imp-pick').onclick = pickFile; bindRem();
+    $('imp-pick').onclick = pickFile; bindRem(); probeShare();
     setFoot([{label:'סגירה', onclick: close}]);
   }
 
