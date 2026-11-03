@@ -8627,7 +8627,7 @@ body.theme-light #evx-panel{background:#fff}
 <!-- ✦ WHATSAPP BOT FAB ✦ -->
 <style>
   #wa-fab {
-    position:fixed; left:16px; bottom:calc(146px + env(safe-area-inset-bottom,0px)); /* above the תקלה? pill (bottom 88px, ~48px tall) + 10px gap */
+    position:fixed; left:16px; bottom:calc(104px + env(safe-area-inset-bottom,0px)); /* fallback; the script after #wa-fab sets it 6px above the תקלה? pill */
     z-index:90; display:none; align-items:center; direction:ltr;
     -webkit-tap-highlight-color:transparent; pointer-events:none;
   }
@@ -8760,6 +8760,53 @@ body.theme-light #evx-panel{background:#fff}
     tNext = setTimeout(cycle, 15000);
   }
   setTimeout(cycle, 4000);
+})();
+</script>
+<script>
+/* WhatsApp button snug above the "תקלה?" pill: measured live (browser + app WebView), 6px gap; the CSS 104px is the fallback when the pill is hidden */
+(function(){
+  var GAP = 6, raf = 0;
+  function place(){
+    raf = 0;
+    var fab = document.getElementById('wa-fab'), pill = document.getElementById('beta-bubble');
+    if (!fab) return;
+    var b = '', l = '';
+    if (pill) {
+      var cs = getComputedStyle(pill), ph = pill.offsetHeight;
+      if (cs.display !== 'none' && cs.visibility !== 'hidden' && ph > 0) {
+        var pb = parseFloat(cs.bottom);
+        if (cs.position !== 'fixed' || !isFinite(pb)) pb = (document.documentElement.clientHeight || window.innerHeight) - pill.getBoundingClientRect().bottom;
+        var btn = document.getElementById('wa-fab-btn'), under = 0;
+        if (btn && fab.offsetHeight) under = Math.max(0, fab.offsetHeight - btn.offsetTop - btn.offsetHeight);
+        b = Math.round(pb + ph + GAP - under) + 'px';
+        var pl = parseFloat(cs.left);
+        if (isFinite(pl)) l = Math.round(pl) + 'px';
+      }
+    }
+    if (fab.style.bottom !== b) fab.style.bottom = b;
+    if (fab.style.left !== l) fab.style.left = l;
+  }
+  function schedule(){ if (!raf) raf = (window.requestAnimationFrame || setTimeout)(place); }
+  window._waFabPlace = place;
+  function init(){
+    var fab = document.getElementById('wa-fab'), pill = document.getElementById('beta-bubble');
+    try {
+      var mo = new MutationObserver(schedule);
+      if (pill) mo.observe(pill, {attributes:true, attributeFilter:['class','style','hidden']});
+      if (fab) mo.observe(fab, {attributes:true, attributeFilter:['class']});
+      mo.observe(document.body, {attributes:true, attributeFilter:['class']});
+    } catch(e) {}
+    try {
+      if (window.ResizeObserver) { var ro = new ResizeObserver(schedule); if (pill) ro.observe(pill); if (fab) ro.observe(fab); }
+    } catch(e) {}
+    place();
+    var n = 0, iv = setInterval(function(){ place(); if (++n >= 20) clearInterval(iv); }, 250);
+  }
+  window.addEventListener('resize', schedule);
+  window.addEventListener('orientationchange', function(){ schedule(); setTimeout(place, 350); });
+  window.addEventListener('load', schedule);
+  document.addEventListener('visibilitychange', schedule);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
 </script>
 
