@@ -5997,10 +5997,13 @@ body.theme-light { background-color: var(--bg) !important; }
       </div>
 
       <div class="hero-divider"></div>
+    <div class="ss-row" id="ss-row">
+    <button id="ss-pill" class="ss-pill hidden" type="button" onclick="window.openSafeSpend&&window.openSafeSpend()" aria-label="נשאר לך להוציא היום"></button>
     <button id="carry-pill" class="cb-pill hidden" type="button" onclick="window.openCarry()" aria-label="יתרה מחודשים קודמים">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.5 15a9 9 0 1 0 2.1-9.4L1 10"/></svg>
       <span>מחודשים קודמים</span><b id="carry-pill-amt">₪0</b><i>›</i>
     </button>
+    </div>
     </div>
 
     <script>
@@ -9778,6 +9781,7 @@ body.theme-light #evx-panel{background:#fff}
   function calcBal(){ return calcIncome()-calcFixedExp()-calcVarExp(); }
   window._calcBal = calcBal;
   window._fixedLists = function(){ return {inc: fixedIncomes.slice(), exp: fixedExpenses.slice()}; };
+  window._mntaCats = function(){ return userCategories; }; /* safe-spend: קריאה בלבד מהזיכרון */
   window._fixedParts = function(){ return {inc: fixedIncomes.reduce(function(a,i){ return a+Number(i.amount||0); },0), exp: calcFixedExp()}; };
   window._fixedNet = function(){ return fixedIncomes.reduce(function(a,i){ return a+Number(i.amount||0); },0) - calcFixedExp(); };
 
@@ -16565,6 +16569,269 @@ window._askLangChange = function(currencyCode, currencyName, currencyFlag){
   var bd=$('balance-display');
   if(bd){ try{ new MutationObserver(function(){ clearTimeout(T); T=setTimeout(update,400); }).observe(bd,{childList:true,characterData:true,subtree:true}); }catch(e){} }
   setTimeout(update,2500); setTimeout(update,8000);
+})();
+</script>
+
+<!-- ✦ SAFE-TO-SPEND TODAY (נשאר לך להוציא היום) ✦ — מחושב רק מנתונים שכבר בזיכרון, אפס קריאות Firestore -->
+<style id="safe-spend">
+  /* שני הכפתורים (נשאר להיום + מחודשים קודמים) בשורה אחת, אחד ליד השני — אף פעם לא אחד מעל השני */
+  .ss-row{position:relative;z-index:3;display:flex;flex-wrap:nowrap;align-items:stretch;justify-content:center;gap:8px;margin:12px auto 0;width:100%;max-width:100%;box-sizing:border-box}
+  .ss-row:empty,.ss-row.ss-none{display:none}
+  .ss-row>.ss-pill,.ss-row>.cb-pill{margin:0;box-sizing:border-box;min-height:34px;min-width:0;max-width:100%;flex:0 1 auto;justify-content:center;white-space:nowrap;overflow:hidden}
+  .ss-row>.ss-pill.hidden,.ss-row>.cb-pill.hidden{display:none}
+  .ss-row>.cb-pill>span,.ss-row>.ss-pill>.ss-l{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ss-row>button>b,.ss-row>button>svg,.ss-row>button>.ss-dot,.ss-row>button>i{flex:0 0 auto}
+  .ss-row.ss-two{gap:6px;width:calc(100% + 16px);max-width:none;margin-left:-8px;margin-right:-8px}
+  .ss-row.ss-two>.ss-pill,.ss-row.ss-two>.cb-pill{flex:1 1 0;width:auto;padding:7px 8px;gap:5px}
+  .ss-row.ss-two>button>i{display:none}
+  .ss-row.ss-two>button>b{font-size:12px;letter-spacing:-.2px}
+  .ss-row.ss-two>button{font-size:11px}
+  .ss-row.ss-two>.cb-pill>svg{display:none}
+  @media (max-width:374px){ .ss-row.ss-two{gap:5px} .ss-row.ss-two>.ss-pill,.ss-row.ss-two>.cb-pill{padding:7px 6px;gap:4px;letter-spacing:-.1px} }
+  .ss-pill .ss-s{display:none}
+  .ss-row.ss-two .ss-pill .ss-f{display:none}.ss-row.ss-two .ss-pill .ss-s{display:inline}
+  .ss-pill{display:flex;align-items:center;gap:7px;width:fit-content;max-width:100%;padding:7px 13px;border-radius:99px;cursor:pointer;white-space:nowrap;
+    border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.07);color:rgba(255,255,255,.8);font:700 11.5px 'Syne','Heebo',sans-serif;line-height:1.2;
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .15s,background .2s;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  .ss-pill.hidden{display:none}
+  .ss-pill:active{transform:scale(.96)}
+  .ss-pill .ss-dot{width:7px;height:7px;border-radius:50%;flex:0 0 7px;background:currentColor}
+  .ss-pill b{font:800 12.5px 'JetBrains Mono',monospace;direction:ltr;unicode-bidi:isolate}
+  .ss-pill i{font-style:normal;opacity:.55;font-size:15px;line-height:1}
+  .ss-pill.ok .ss-dot,.ss-pill.ok b{color:#2EE59D}
+  .ss-pill.tight .ss-dot,.ss-pill.tight b,.ss-pill.today .ss-dot,.ss-pill.today b{color:#FFC14D}
+  .ss-pill.over .ss-dot,.ss-pill.over b{color:#FF7A8F}
+  .ss-pill.prompt{color:rgba(255,255,255,.72);font-weight:600}
+  body.theme-light .ss-pill{color:#10121B;background:rgba(16,18,34,.05);border-color:rgba(16,18,34,.12)}
+  body.theme-light .ss-pill.ok .ss-dot,body.theme-light .ss-pill.ok b{color:#0F9D58}
+  body.theme-light .ss-pill.tight .ss-dot,body.theme-light .ss-pill.tight b,body.theme-light .ss-pill.today .ss-dot,body.theme-light .ss-pill.today b{color:#B7791F}
+  body.theme-light .ss-pill.over .ss-dot,body.theme-light .ss-pill.over b{color:#E1344F}
+  /* בבית 2026 כרטיס היתרה תמיד פטרול כהה — גם במצב בהיר */
+  body.v-home #hero-balance-card .ss-pill{color:#fff !important;background:rgba(255,255,255,.12) !important;border-color:rgba(255,255,255,.2) !important}
+  body.v-home #hero-balance-card .ss-pill.prompt{color:rgba(255,255,255,.82) !important}
+  body.v-home #hero-balance-card .ss-pill.ok .ss-dot,body.v-home #hero-balance-card .ss-pill.ok b{color:#8EF3D9 !important}
+  body.v-home #hero-balance-card .ss-pill.tight .ss-dot,body.v-home #hero-balance-card .ss-pill.tight b,body.v-home #hero-balance-card .ss-pill.today .ss-dot,body.v-home #hero-balance-card .ss-pill.today b{color:#FFD27A !important}
+  body.v-home #hero-balance-card .ss-pill.over .ss-dot,body.v-home #hero-balance-card .ss-pill.over b{color:#FFB4A3 !important}
+  @media (prefers-reduced-motion:no-preference){ body.v-home .ss-pill{transition:transform .25s cubic-bezier(.34,1.56,.64,1),background .2s} }
+
+  #ss-overlay{position:fixed;inset:0;z-index:9430;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.6)}
+  #ss-overlay.open{display:flex;animation:ssF .18s ease both}
+  @keyframes ssF{from{opacity:0}to{opacity:1}}@keyframes ssU{from{transform:translateY(40px)}to{transform:none}}
+  #ss-panel{--g:#2EE59D;--a:#FFC14D;--r:#FF7A8F;--ink:#fff;--mut:rgba(255,255,255,.5);--bg2:rgba(255,255,255,.045);--bd:rgba(255,255,255,.09);--tr:rgba(255,255,255,.08);
+    width:100%;max-width:520px;max-height:90vh;max-height:90dvh;display:flex;flex-direction:column;color:var(--ink);border-radius:26px 26px 0 0;overflow:hidden;
+    background:linear-gradient(175deg,#0F2C38,#071C25);border:1px solid rgba(43,181,204,.22);border-bottom:none;box-shadow:0 -20px 50px rgba(0,0,0,.5);
+    animation:ssU .28s cubic-bezier(.2,.9,.3,1) both;font-family:'Heebo','Syne',sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body.theme-light #ss-overlay{background:rgba(16,24,40,.45)}
+  body.theme-light #ss-panel{--g:#0F9D58;--a:#B7791F;--r:#E1344F;--ink:#0E2A33;--mut:rgba(14,42,51,.56);--bg2:#F4F8F9;--bd:rgba(14,42,51,.08);--tr:rgba(14,42,51,.08);background:#fff;border-color:rgba(14,42,51,.1)}
+  .ss-h{padding:14px 18px 6px;text-align:center}
+  .ss-grab{width:40px;height:4px;border-radius:2px;background:var(--bd);margin:0 auto 12px}
+  .ss-h small{display:block;font-size:11.5px;font-weight:800;letter-spacing:.04em;color:var(--mut)}
+  .ss-big{display:block;margin-top:4px;font:800 34px 'JetBrains Mono',monospace;direction:ltr;unicode-bidi:isolate;line-height:1.15}
+  .ss-sub{margin-top:4px;font-size:12px;font-weight:600;color:var(--mut)}
+  .ss-bar{height:6px;border-radius:99px;background:var(--tr);overflow:hidden;margin:12px 4px 4px}
+  .ss-bar i{display:block;height:100%;border-radius:99px;background:var(--g)}
+  .ss-barl{display:flex;justify-content:space-between;font-size:10.5px;font-weight:700;color:var(--mut);padding:0 4px}
+  .ss-barl b{font-family:'JetBrains Mono',monospace;direction:ltr;unicode-bidi:isolate}
+  .ss-b{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:4px 18px calc(20px + env(safe-area-inset-bottom,0px))}
+  .ss-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 4px}
+  .ss-grid div{padding:11px 8px;border-radius:15px;background:var(--bg2);border:1px solid var(--bd);text-align:center;min-width:0}
+  .ss-grid small{display:block;font-size:10.5px;font-weight:700;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ss-grid b{display:block;margin-top:3px;font:800 15px 'JetBrains Mono',monospace;direction:ltr;unicode-bidi:isolate}
+  .ss-grid b.t{font:800 13.5px 'Heebo','Syne',sans-serif;direction:inherit}
+  .ss-tip{display:flex;gap:9px;align-items:flex-start;margin:12px 0 4px;padding:12px 13px;border-radius:15px;font-size:12.5px;font-weight:600;line-height:1.55;
+    background:rgba(242,169,59,.10);border:1px solid rgba(242,169,59,.22)}
+  .ss-tip span:first-child{font-size:15px;line-height:1.3}
+  body.theme-light .ss-tip{background:#FFF7EA;border-color:rgba(183,121,31,.2)}
+  .ss-sec{margin:16px 2px 7px;font-size:10.5px;font-weight:900;letter-spacing:.06em;color:var(--mut)}
+  .ss-calc{border-radius:15px;background:var(--bg2);border:1px solid var(--bd);padding:4px 13px}
+  .ss-calc div{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;font-size:12.5px;font-weight:600;border-bottom:1px solid var(--bd)}
+  .ss-calc div:last-child{border-bottom:none}
+  .ss-calc div.tot{font-weight:800}
+  .ss-calc em{font:800 12.5px 'JetBrains Mono',monospace;font-style:normal;direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+  .ss-cat{display:flex;align-items:center;gap:10px;padding:10px 13px;margin-bottom:6px;border-radius:14px;background:var(--bg2);border:1px solid var(--bd);font-size:12.5px;font-weight:700}
+  .ss-cat span:first-child{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ss-cat small{font-size:11px;font-weight:600;color:var(--mut);white-space:nowrap}
+  .ss-cat em{font:800 12px 'Heebo','Syne',sans-serif;font-style:normal;white-space:nowrap}
+  .ss-cat em bdi,.ss-cat small bdi{font-family:'JetBrains Mono',monospace}
+  #ss-panel bdi{unicode-bidi:isolate;direction:ltr;color:inherit !important}
+  .ss-note{margin-top:12px;font-size:10.5px;font-weight:500;line-height:1.7;color:var(--mut)}
+  .ss-p{font-size:13px;font-weight:600;line-height:1.65;margin:8px 2px 2px;color:var(--ink)}
+  .ss-btns{display:flex;gap:8px;margin-top:14px}
+  .ss-btn{flex:1;padding:13px 8px;border-radius:14px;background:var(--bg2);color:var(--ink);font:800 13px 'Heebo','Syne',sans-serif;cursor:pointer;border:1px solid var(--bd)}
+  .ss-btn.pri{background:linear-gradient(135deg,#27AEC4,#0E7F95);color:#fff;border:none}
+</style>
+<div id="ss-overlay" role="dialog" aria-modal="true" aria-labelledby="ss-ttl"><div id="ss-panel"></div></div>
+<script>
+(function(){
+  var S={"he":{"pill_left":"נשאר להיום","pill_over_today":"חרגת היום ב-","pill_over_month":"חרגת החודש ב-","pill_prompt":"כמה נשאר להוציא היום?","pill_noinc":"הוסף את הכנסת החודש","pill_prompt_s":"כמה נשאר להיום?","pill_noinc_s":"הוסף הכנסה","pill_left_s":"נשאר להיום","pill_over_today_s":"חרגת היום ב-","pill_over_month_s":"חרגת החודש ב-","title":"נשאר לך להוציא היום","of_daily":"מתוך {a} ליום","days_left":"{n} ימים עד סוף החודש","last_day":"היום היום האחרון בחודש","spent_today":"הוצאת היום","week":"השבוע (עד שבת)","daily":"ליום עד סוף החודש","pace":"קצב מול התכנון","forecast":"צפי לסוף החודש","pace_ok":"בקצב טוב","pace_tight":"קצת מהר","pace_over":"חריגה","too_early":"מוקדם מדי","how":"איך זה מחושב","r_inc":"הכנסות החודש","r_fixed":"הוצאות קבועות","r_var":"הוצאות משתנות עד אתמול","r_left":"נשאר לחודש","r_days":"÷ ימים שנשארו (כולל היום)","r_budget":"סך התקציבים שהגדרת","r_bspent":"הוצאת בקטגוריות עם תקציב","basis_budget":"אין עדיין הכנסה החודש, אז החישוב לפי התקציבים שהגדרת.","cats":"תקציבים לפי קטגוריה","cat_per_day":"{a} ליום","cat_over":"חרגת ב-{a}","cat_left":"נשאר {a}","t_over":"חרגת ב-{a} החודש – נסה להוציא פחות בימים הקרובים, כל יום חסכוני מצמצם את הפער.","t_today":"היום יצא יותר מהמתוכנן – זה בסדר. מחר זה מתעדכן ל-{a} ליום.","t_today_last":"היום יצא יותר מהמתוכנן. מחר מתחיל חודש חדש 🙂","t_tight_cat":"\"{c}\" מושכת למעלה החודש – כדאי להאט בה קצת.","t_tight":"הקצב קצת מהיר. אם תשמור על {a} ליום, תסיים את החודש מאוזן.","t_ok_fc":"בקצב הזה תסיים את החודש עם עודף של כ-{a} 💪","t_ok":"אתה בקצב טוב – תמשיך ככה 💪","p_title":"כמה נשאר לך להוציא היום?","p_body":"כדי לחשב, צריך לדעת עם כמה כסף מתחילים את החודש: רשום את ההכנסה של החודש, או הגדר תקציב לקטגוריות.","p_noinc":"עוד לא נרשמה הכנסה החודש. בחודש שעבר נרשמו {a} – אם החודש דומה, יוצא בערך {d} ליום.","b_add_inc":"הוסף הכנסה","b_budget":"הגדר תקציב לקטגוריה","b_close":"סגור","note":"מחושב על המכשיר מהנתונים שכבר רשומים באפליקציה. הקבועות מנוכות במלואן בתחילת החודש, כמו ביתרה.","r_var_all":"הוצאות משתנות החודש","r_perday":"= ליום","ttl_over":"חריגה החודש","ttl_today":"חריגה היום","r_today":"הוצאת היום","days_n":"ימים שנשארו"},"en":{"pill_left":"Left for today","pill_over_today":"Over today by ","pill_over_month":"Over this month by ","pill_prompt":"How much can I spend today?","pill_noinc":"Add this month's income","pill_prompt_s":"Today's budget?","pill_noinc_s":"Add income","pill_left_s":"Left today","pill_over_today_s":"Over today","pill_over_month_s":"Month over","title":"Left to spend today","of_daily":"of {a} per day","days_left":"{n} days to month end","last_day":"Today is the last day of the month","spent_today":"Spent today","week":"This week (to Sat)","daily":"Per day to month end","pace":"Pace vs plan","forecast":"Month-end forecast","pace_ok":"On track","pace_tight":"A bit fast","pace_over":"Over","too_early":"Too early","how":"How it works","r_inc":"This month's income","r_fixed":"Fixed expenses","r_var":"Variable spending to yesterday","r_left":"Left for the month","r_days":"÷ days left (incl. today)","r_budget":"Your total budgets","r_bspent":"Spent in budgeted categories","basis_budget":"No income logged yet this month, so this uses the budgets you set.","cats":"Budgets by category","cat_per_day":"{a}/day","cat_over":"Over by {a}","cat_left":"{a} left","t_over":"You're over by {a} this month – try to spend a little less over the next few days; every lighter day closes the gap.","t_today":"Today ran over plan – that's fine. Tomorrow it updates to {a} per day.","t_today_last":"Today ran over plan. A new month starts tomorrow 🙂","t_tight_cat":"\"{c}\" is pulling you up this month – worth slowing down there.","t_tight":"Your pace is a bit fast. Stick to {a} a day and you end the month balanced.","t_ok_fc":"At this pace you'll end the month about {a} ahead 💪","t_ok":"You're on track – keep it up 💪","p_title":"How much can you spend today?","p_body":"To work it out, the app needs to know what you start the month with: log this month's income, or set budgets for your categories.","p_noinc":"No income logged yet this month. Last month you logged {a} – if this month is similar, that's about {d} a day.","b_add_inc":"Add income","b_budget":"Set a category budget","b_close":"Close","note":"Calculated on your device from what is already in the app. Fixed expenses are deducted in full at the start of the month, like the balance.","r_var_all":"Variable spending this month","r_perday":"= per day","ttl_over":"Over this month","ttl_today":"Over today","r_today":"Spent today","days_n":"Days left"},"ar":{"pill_left":"المتبقي لليوم","pill_over_today":"تجاوزت اليوم بـ ","pill_over_month":"تجاوزت هذا الشهر بـ ","pill_prompt":"كم يمكنني أن أصرف اليوم؟","pill_noinc":"أضف دخل هذا الشهر","pill_prompt_s":"كم تبقى لليوم؟","pill_noinc_s":"أضف دخلاً","pill_left_s":"المتبقي لليوم","pill_over_today_s":"تجاوزت اليوم بـ ","pill_over_month_s":"تجاوزت هذا الشهر بـ ","title":"المتبقي للصرف اليوم","of_daily":"من {a} يوميًا","days_left":"{n} أيام حتى نهاية الشهر","last_day":"اليوم هو آخر يوم في الشهر","spent_today":"صرفت اليوم","week":"هذا الأسبوع (حتى السبت)","daily":"يوميًا حتى نهاية الشهر","pace":"الوتيرة مقابل الخطة","forecast":"توقع نهاية الشهر","pace_ok":"وتيرة جيدة","pace_tight":"أسرع قليلًا","pace_over":"تجاوز","too_early":"مبكر جدًا","how":"كيف يُحسب","r_inc":"دخل هذا الشهر","r_fixed":"المصاريف الثابتة","r_var":"المصاريف المتغيرة حتى أمس","r_left":"المتبقي للشهر","r_days":"÷ الأيام المتبقية (مع اليوم)","r_budget":"مجموع الميزانيات","r_bspent":"المصروف في فئات لها ميزانية","basis_budget":"لا يوجد دخل مسجل هذا الشهر بعد، لذا الحساب حسب الميزانيات التي حددتها.","cats":"الميزانيات حسب الفئة","cat_per_day":"{a} يوميًا","cat_over":"تجاوز بـ {a}","cat_left":"متبقٍ {a}","t_over":"تجاوزت بـ {a} هذا الشهر – حاول أن تصرف أقل في الأيام القادمة، كل يوم موفر يقلّص الفجوة.","t_today":"صرفت اليوم أكثر من المخطط – لا بأس. غدًا يتحدث إلى {a} يوميًا.","t_today_last":"صرفت اليوم أكثر من المخطط. غدًا يبدأ شهر جديد 🙂","t_tight_cat":"فئة \"{c}\" ترفع المصاريف هذا الشهر – يستحق التمهل فيها.","t_tight":"الوتيرة سريعة قليلًا. إذا التزمت بـ {a} يوميًا ستنهي الشهر متوازنًا.","t_ok_fc":"بهذه الوتيرة ستنهي الشهر بفائض يقارب {a} 💪","t_ok":"أنت على المسار الصحيح – استمر 💪","p_title":"كم يمكنك أن تصرف اليوم؟","p_body":"للحساب نحتاج أن نعرف بكم تبدأ الشهر: سجّل دخل هذا الشهر، أو حدّد ميزانيات للفئات.","p_noinc":"لم يُسجل دخل هذا الشهر بعد. في الشهر الماضي سُجّل {a} – إن كان هذا الشهر مشابهًا فهذا نحو {d} يوميًا.","b_add_inc":"أضف دخلًا","b_budget":"حدّد ميزانية لفئة","b_close":"إغلاق","note":"يُحسب على جهازك من البيانات الموجودة في التطبيق. المصاريف الثابتة تُخصم كاملة في بداية الشهر، كما في الرصيد.","r_var_all":"المصاريف المتغيرة هذا الشهر","r_perday":"= يوميًا","ttl_over":"تجاوز هذا الشهر","ttl_today":"تجاوز اليوم","r_today":"صرفت اليوم","days_n":"الأيام المتبقية"},"fr":{"pill_left":"Reste pour aujourd'hui","pill_over_today":"Dépassé aujourd'hui de ","pill_over_month":"Dépassé ce mois de ","pill_prompt":"Combien dépenser aujourd'hui ?","pill_noinc":"Ajoutez le revenu du mois","pill_prompt_s":"Budget du jour ?","pill_noinc_s":"Ajouter un revenu","pill_left_s":"Reste ce jour","pill_over_today_s":"Dépassé auj.","pill_over_month_s":"Dépassé mois","title":"Reste à dépenser aujourd'hui","of_daily":"sur {a} par jour","days_left":"{n} jours avant la fin du mois","last_day":"Aujourd'hui est le dernier jour du mois","spent_today":"Dépensé aujourd'hui","week":"Cette semaine (jusqu'à sam.)","daily":"Par jour jusqu'à la fin du mois","pace":"Rythme vs plan","forecast":"Prévision fin de mois","pace_ok":"Bon rythme","pace_tight":"Un peu rapide","pace_over":"Dépassement","too_early":"Trop tôt","how":"Comment c’est calculé","r_inc":"Revenus du mois","r_fixed":"Dépenses fixes","r_var":"Dépenses variables jusqu'à hier","r_left":"Reste pour le mois","r_days":"÷ jours restants (aujourd'hui inclus)","r_budget":"Total de vos budgets","r_bspent":"Dépensé dans les catégories budgétées","basis_budget":"Aucun revenu saisi ce mois-ci, le calcul utilise donc vos budgets.","cats":"Budgets par catégorie","cat_per_day":"{a}/jour","cat_over":"Dépassé de {a}","cat_left":"Reste {a}","t_over":"Vous dépassez de {a} ce mois-ci – essayez de dépenser un peu moins ces prochains jours, chaque jour léger réduit l’écart.","t_today":"Aujourd'hui a dépassé le plan – pas grave. Demain, ce sera {a} par jour.","t_today_last":"Aujourd'hui a dépassé le plan. Un nouveau mois commence demain 🙂","t_tight_cat":"« {c} » fait grimper le mois – mieux vaut ralentir là-dessus.","t_tight":"Le rythme est un peu rapide. Tenez {a} par jour et le mois finira à l’équilibre.","t_ok_fc":"À ce rythme, vous finirez le mois avec environ {a} d’avance 💪","t_ok":"Vous êtes sur la bonne voie – continuez 💪","p_title":"Combien pouvez-vous dépenser aujourd'hui ?","p_body":"Pour le calculer, il faut savoir avec quoi vous commencez le mois : saisissez le revenu du mois ou fixez des budgets par catégorie.","p_noinc":"Aucun revenu saisi ce mois-ci. Le mois dernier : {a} – si ce mois est similaire, cela fait environ {d} par jour.","b_add_inc":"Ajouter un revenu","b_budget":"Fixer un budget","b_close":"Fermer","note":"Calculé sur votre appareil à partir des données déjà dans l'app. Les dépenses fixes sont déduites en entier en début de mois, comme dans le solde.","r_var_all":"Dépenses variables du mois","r_perday":"= par jour","ttl_over":"Dépassement ce mois","ttl_today":"Dépassement aujourd'hui","r_today":"Dépensé aujourd'hui","days_n":"Jours restants"},"de":{"pill_left":"Heute übrig","pill_over_today":"Heute drüber um ","pill_over_month":"Diesen Monat drüber um ","pill_prompt":"Wie viel kann ich heute ausgeben?","pill_noinc":"Einkommen des Monats eintragen","pill_prompt_s":"Heute übrig?","pill_noinc_s":"Einkommen eintragen","pill_left_s":"Heute übrig","pill_over_today_s":"Heute drüber","pill_over_month_s":"Monat drüber","title":"Heute noch auszugeben","of_daily":"von {a} pro Tag","days_left":"{n} Tage bis Monatsende","last_day":"Heute ist der letzte Tag des Monats","spent_today":"Heute ausgegeben","week":"Diese Woche (bis Sa)","daily":"Pro Tag bis Monatsende","pace":"Tempo vs. Plan","forecast":"Prognose Monatsende","pace_ok":"Im Plan","pace_tight":"Etwas schnell","pace_over":"Überzogen","too_early":"Zu früh","how":"So wird gerechnet","r_inc":"Einnahmen diesen Monat","r_fixed":"Fixkosten","r_var":"Variable Ausgaben bis gestern","r_left":"Übrig für den Monat","r_days":"÷ verbleibende Tage (inkl. heute)","r_budget":"Summe deiner Budgets","r_bspent":"Ausgaben in Budget-Kategorien","basis_budget":"Noch kein Einkommen diesen Monat erfasst, daher rechnen wir mit deinen Budgets.","cats":"Budgets nach Kategorie","cat_per_day":"{a}/Tag","cat_over":"{a} drüber","cat_left":"{a} übrig","t_over":"Du liegst diesen Monat {a} drüber – gib in den nächsten Tagen etwas weniger aus, jeder sparsame Tag verkleinert die Lücke.","t_today":"Heute lag über Plan – kein Problem. Morgen sind es {a} pro Tag.","t_today_last":"Heute lag über Plan. Morgen beginnt ein neuer Monat 🙂","t_tight_cat":"„{c}“ treibt den Monat nach oben – dort lohnt es sich, langsamer zu machen.","t_tight":"Das Tempo ist etwas hoch. Mit {a} pro Tag endet der Monat ausgeglichen.","t_ok_fc":"In diesem Tempo hast du am Monatsende etwa {a} übrig 💪","t_ok":"Du bist im Plan – weiter so 💪","p_title":"Wie viel kannst du heute ausgeben?","p_body":"Dafür muss die App wissen, womit du in den Monat startest: trag das Einkommen des Monats ein oder setz Budgets für Kategorien.","p_noinc":"Diesen Monat ist noch kein Einkommen erfasst. Letzten Monat waren es {a} – bei einem ähnlichen Monat sind das etwa {d} pro Tag.","b_add_inc":"Einkommen hinzufügen","b_budget":"Kategorie-Budget setzen","b_close":"Schließen","note":"Auf deinem Gerät aus den Daten in der App berechnet. Fixkosten werden wie beim Saldo zu Monatsbeginn voll abgezogen.","r_var_all":"Variable Ausgaben diesen Monat","r_perday":"= pro Tag","ttl_over":"Diesen Monat drüber","ttl_today":"Heute drüber","r_today":"Heute ausgegeben","days_n":"Verbleibende Tage"},"es":{"pill_left":"Queda para hoy","pill_over_today":"Hoy te pasaste por ","pill_over_month":"Este mes te pasaste por ","pill_prompt":"¿Cuánto puedo gastar hoy?","pill_noinc":"Añade el ingreso del mes","pill_prompt_s":"¿Cuánto hoy?","pill_noinc_s":"Añadir ingreso","pill_left_s":"Queda hoy","pill_over_today_s":"Exceso hoy","pill_over_month_s":"Exceso mes","title":"Te queda para gastar hoy","of_daily":"de {a} al día","days_left":"{n} días hasta fin de mes","last_day":"Hoy es el último día del mes","spent_today":"Gastado hoy","week":"Esta semana (hasta el sáb.)","daily":"Por día hasta fin de mes","pace":"Ritmo vs. plan","forecast":"Previsión fin de mes","pace_ok":"Buen ritmo","pace_tight":"Algo rápido","pace_over":"Excedido","too_early":"Muy pronto","how":"Cómo se calcula","r_inc":"Ingresos del mes","r_fixed":"Gastos fijos","r_var":"Gastos variables hasta ayer","r_left":"Queda para el mes","r_days":"÷ días restantes (con hoy)","r_budget":"Total de tus presupuestos","r_bspent":"Gastado en categorías con presupuesto","basis_budget":"Aún no hay ingresos este mes, así que se calcula con tus presupuestos.","cats":"Presupuestos por categoría","cat_per_day":"{a}/día","cat_over":"Excedido en {a}","cat_left":"Quedan {a}","t_over":"Este mes te pasaste por {a} – intenta gastar un poco menos los próximos días; cada día ligero reduce la diferencia.","t_today":"Hoy gastaste más de lo previsto – no pasa nada. Mañana se actualiza a {a} al día.","t_today_last":"Hoy gastaste más de lo previsto. Mañana empieza un mes nuevo 🙂","t_tight_cat":"\"{c}\" está subiendo el mes – conviene frenar ahí.","t_tight":"El ritmo es algo rápido. Con {a} al día terminas el mes equilibrado.","t_ok_fc":"A este ritmo terminarás el mes con unos {a} de sobra 💪","t_ok":"Vas bien – sigue así 💪","p_title":"¿Cuánto puedes gastar hoy?","p_body":"Para calcularlo hace falta saber con cuánto empiezas el mes: registra el ingreso del mes o pon presupuestos a las categorías.","p_noinc":"Aún no hay ingresos este mes. El mes pasado registraste {a} – si este mes es parecido, son unos {d} al día.","b_add_inc":"Añadir ingreso","b_budget":"Poner presupuesto","b_close":"Cerrar","note":"Calculado en tu dispositivo con los datos que ya están en la app. Los gastos fijos se descuentan completos al inicio del mes, como en el saldo.","r_var_all":"Gastos variables del mes","r_perday":"= por día","ttl_over":"Exceso este mes","ttl_today":"Exceso hoy","r_today":"Gastado hoy","days_n":"Días restantes"},"ru":{"pill_left":"Осталось на сегодня","pill_over_today":"Сегодня перерасход ","pill_over_month":"Перерасход за месяц ","pill_prompt":"Сколько можно потратить сегодня?","pill_noinc":"Добавьте доход за месяц","pill_prompt_s":"Сколько на сегодня?","pill_noinc_s":"Добавить доход","pill_left_s":"На сегодня","pill_over_today_s":"Сегодня сверх","pill_over_month_s":"Месяц сверх","title":"Осталось потратить сегодня","of_daily":"из {a} в день","days_left":"{n} дн. до конца месяца","last_day":"Сегодня последний день месяца","spent_today":"Потрачено сегодня","week":"Эта неделя (до сб)","daily":"В день до конца месяца","pace":"Темп и план","forecast":"Прогноз на конец месяца","pace_ok":"В плане","pace_tight":"Немного быстро","pace_over":"Перерасход","too_early":"Рано","how":"Как считается","r_inc":"Доходы за месяц","r_fixed":"Постоянные расходы","r_var":"Переменные расходы до вчера","r_left":"Осталось на месяц","r_days":"÷ оставшиеся дни (с сегодня)","r_budget":"Сумма ваших бюджетов","r_bspent":"Потрачено в категориях с бюджетом","basis_budget":"В этом месяце ещё нет дохода, поэтому расчёт по вашим бюджетам.","cats":"Бюджеты по категориям","cat_per_day":"{a}/день","cat_over":"Перерасход {a}","cat_left":"Осталось {a}","t_over":"В этом месяце перерасход {a} – постарайтесь тратить чуть меньше в ближайшие дни, каждый экономный день сокращает разрыв.","t_today":"Сегодня вышло больше плана – ничего страшного. Завтра будет {a} в день.","t_today_last":"Сегодня вышло больше плана. Завтра начинается новый месяц 🙂","t_tight_cat":"«{c}» тянет месяц вверх – там стоит притормозить.","t_tight":"Темп немного высокий. Держитесь {a} в день – и месяц закончится в балансе.","t_ok_fc":"В таком темпе вы закончите месяц с запасом около {a} 💪","t_ok":"Вы в плане – так держать 💪","p_title":"Сколько можно потратить сегодня?","p_body":"Для расчёта нужно знать, с чем вы начинаете месяц: внесите доход за месяц или задайте бюджеты категориям.","p_noinc":"В этом месяце доход ещё не внесён. В прошлом месяце было {a} – если месяц похожий, это около {d} в день.","b_add_inc":"Добавить доход","b_budget":"Задать бюджет","b_close":"Закрыть","note":"Считается на устройстве по данным, уже внесённым в приложение. Постоянные расходы вычитаются полностью в начале месяца, как в балансе.","r_var_all":"Переменные расходы за месяц","r_perday":"= в день","ttl_over":"Перерасход за месяц","ttl_today":"Перерасход сегодня","r_today":"Потрачено сегодня","days_n":"Осталось дней"}};
+  var $=function(i){return document.getElementById(i)}, T=null, last=null, DAY=864e5;
+  function L(){ var l=window._appLang||'he'; return S[l]?l:'he'; }
+  function t(k,v){ var s=(S[L()]||S.he)[k]||S.he[k]||''; if(v) for(var x in v) s=s.split('{'+x+'}').join(v[x]); return s; }
+  function F(n){ return typeof window.fmt==='function' ? window.fmt(n) : '\u20AA'+Math.round(Number(n)||0).toLocaleString('he-IL'); }
+  function tH(k,v){ var s=esc((S[L()]||S.he)[k]||S.he[k]||''); if(v) for(var x in v) s=s.split('{'+x+'}').join('<bdi>'+esc(v[x])+'</bdi>'); return s; }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function pd(d){ try{ return window._parseDate?window._parseDate(d):new Date(d); }catch(e){ return new Date(d); } }
+  function num(x){ var n=Number(x&&x.amount||0); return isFinite(n)?n:0; }
+  function d0(d){ return new Date(d.getFullYear(),d.getMonth(),d.getDate()); }
+  /* בדיוק כמו cycleStart() של האפליקציה (כולל ההתנהגות ביום איפוס 29–31) */
+  function cycStartAt(now,day){ var s=new Date(now.getFullYear(),now.getMonth(),day); if(now.getDate()<day) s.setMonth(s.getMonth()-1); return s; }
+  function calc(){
+    var cfg=(window._cycleCfg&&window._cycleCfg())||{day:1,on:true};
+    if(cfg.on===false) return {state:'off'};
+    var day=cfg.day||1, now=new Date(), today=d0(now), start=cycStartAt(now,day), next=null;
+    for(var k=1;k<=62;k++){ var dd=new Date(today.getFullYear(),today.getMonth(),today.getDate()+k); if(cycStartAt(dd,day).getTime()!==start.getTime()){ next=dd; break; } }
+    if(!next) next=new Date(start.getFullYear(),start.getMonth()+1,start.getDate());
+    var daysLeft=Math.max(1,Math.round((next-today)/DAY)), daysTotal=Math.max(daysLeft,Math.round((next-d0(start))/DAY)), elapsed=daysTotal-daysLeft;
+    var inc=window.incomes||[], exp=window.expenses||[];
+    var fx=(window._fixedParts&&window._fixedParts())||{inc:0,exp:0};
+    var cats=(window._mntaCats&&window._mntaCats())||[];
+    var tKey=today.getTime(), prevStart=cycStartAt(new Date(start.getFullYear(),start.getMonth(),start.getDate()-1),day);
+    var incCyc=0, incPrev=0, varCyc=0, spentToday=0, future=0, byCat={}, catToday={}, any=inc.length+exp.length;
+    inc.forEach(function(i){ if(i.eventId) return; var d=pd(i.date); if(!d||isNaN(d)) return; if(d>=start) incCyc+=num(i); else if(d>=prevStart) incPrev+=num(i); });
+    exp.forEach(function(i){ if(i.eventId) return; var d=pd(i.date); if(!d||isNaN(d)||d<start) return; var a=num(i); varCyc+=a;
+      var c=i.category||''; byCat[c]=(byCat[c]||0)+a; var dk=d0(d).getTime(); if(dk===tKey){ spentToday+=a; catToday[c]=(catToday[c]||0)+a; } else if(dk>tKey) future+=a; });
+    var fxInc=Number(fx.inc)||0, fxExp=Number(fx.exp)||0;
+    var budgets=[], bSum=0, bSpent=0, bToday=0;
+    cats.forEach(function(c){ var b=Number(c&&c.budget||0); if(!c||c.type!=='expense'||!(b>0)) return; var sp=byCat[c.name]||0;
+      budgets.push({name:c.name,budget:b,spent:sp,left:b-sp,ratio:sp/b}); bSum+=b; bSpent+=sp; bToday+=catToday[c.name]||0; });
+    budgets.sort(function(a,b){ return b.ratio-a.ratio; });
+    var base={daysLeft:daysLeft,daysTotal:daysTotal,elapsed:elapsed,start:start,next:next,incCyc:incCyc,fxInc:fxInc,fxExp:fxExp,varCyc:varCyc,
+      spentToday:spentToday,budgets:budgets,bSum:bSum,bSpent:bSpent,weekDays:Math.min(7-today.getDay(),daysLeft)};
+    var basis=null, pool, plan, spT;
+    if(incCyc+fxInc>0){ basis='income'; spT=spentToday; pool=incCyc+fxInc-fxExp-varCyc+spT; plan=incCyc+fxInc-fxExp; }
+    else if(bSum>0){ basis='budget'; spT=bToday; pool=bSum-bSpent+spT; plan=bSum; }
+    else {
+      base.state=(any||fxExp>0)?'prompt':'none';
+      if(incPrev>0){ base.prevInc=incPrev; var est=incPrev+fxInc-fxExp-varCyc+spentToday; base.estDaily=est>0?Math.floor(est/daysLeft):0; base.prompt='noinc'; }
+      return base;
+    }
+    base.basis=basis; base.pool=pool; base.plan=plan; base.spT=spT;
+    var left=pool-spT, daily=pool>0?Math.floor(pool/daysLeft):0, todayLeft=daily-spT;
+    base.left=left; base.daily=daily; base.todayLeft=todayLeft;
+    base.weekLeft=daily*base.weekDays-spT;
+    base.plannedDaily=plan>0?plan/daysTotal:0;
+    base.tomorrow=daysLeft>1&&left>0?Math.floor(left/(daysLeft-1)):null;
+    if(elapsed>=3){ var before=(basis==='income'?varCyc:bSpent)-spT-(basis==='income'?future:0); var avg=Math.max(0,before)/elapsed; base.forecast=left-avg*(daysLeft-1); }
+    else base.forecast=null;
+    if(left<0){ base.state='over'; base.overBy=-left; }
+    else if(todayLeft<0){ base.state='today'; base.overToday=-todayLeft; }
+    else if(base.plannedDaily>0 && daily<base.plannedDaily*0.85) base.state='tight';
+    else base.state='ok';
+    base.paceFast=base.plannedDaily>0 && daily<base.plannedDaily*0.85;
+    return base;
+  }
+  window._mntaSafeSpend={calc:calc};
+  function render(){
+    var pill=$('ss-pill'); if(!pill) return;
+    var c=null; try{ c=calc(); }catch(e){ c=null; }
+    last=c;
+    if(!c||c.state==='off'||c.state==='none'){ pill.classList.add('hidden'); return; }
+    var h, cls;
+    if(c.state==='prompt'){ cls='prompt'; var pk=c.prompt==='noinc'?'pill_noinc':'pill_prompt'; h='<span class="ss-l">\uD83D\uDCA1 <span class="ss-f">'+esc(t(pk))+'</span><span class="ss-s">'+esc(t(pk+'_s'))+'</span></span><i>\u203A</i>'; }
+    else if(c.state==='over'){ cls='over'; h='<span class="ss-dot"></span><span class="ss-l"><span class="ss-f">'+esc(t('pill_over_month'))+'</span><span class="ss-s">'+esc(t('pill_over_month_s'))+'</span></span><b>'+esc(F(c.overBy))+'</b><i>\u203A</i>'; }
+    else if(c.state==='today'){ cls='today'; h='<span class="ss-dot"></span><span class="ss-l"><span class="ss-f">'+esc(t('pill_over_today'))+'</span><span class="ss-s">'+esc(t('pill_over_today_s'))+'</span></span><b>'+esc(F(c.overToday))+'</b><i>\u203A</i>'; }
+    else { cls=c.state; h='<span class="ss-dot"></span><span class="ss-l"><span class="ss-f">'+esc(t('pill_left'))+'</span><span class="ss-s">'+esc(t('pill_left_s'))+'</span></span><b>'+esc(F(Math.max(0,c.todayLeft)))+'</b><i>\u203A</i>'; }
+    if(pill._h!==h){ pill.innerHTML=h; pill._h=h; }
+    pill.className='ss-pill '+cls;
+    pill.setAttribute('aria-label', t('title'));
+    if($('ss-overlay').classList.contains('open')) fill(c);
+  }
+  function tipFor(c){ /* returns safe HTML */
+    if(c.state==='over') return tH('t_over',{a:F(c.overBy)});
+    if(c.state==='today') return c.tomorrow!=null ? tH('t_today',{a:F(c.tomorrow)}) : tH('t_today_last');
+    if(c.state==='tight'){ var b=c.budgets[0]; if(b&&b.ratio>=1) return tH('t_tight_cat',{c:b.name}); return tH('t_tight',{a:F(c.daily)}); }
+    if(c.forecast!=null && c.forecast>=1) return tH('t_ok_fc',{a:F(c.forecast)});
+    return tH('t_ok');
+  }
+  function fill(c){
+    var P=$('ss-panel'), col=c.state==='over'?'var(--r)':(c.state==='today'||c.state==='tight')?'var(--a)':'var(--g)';
+    var h='<div class="ss-h"><div class="ss-grab"></div>';
+    if(c.state==='prompt'){
+      h+='<small id="ss-ttl">'+esc(t('p_title'))+'</small></div><div class="ss-b">';
+      h+='<p class="ss-p">'+(c.prompt==='noinc'?tH('p_noinc',{a:F(c.prevInc),d:F(c.estDaily)}):tH('p_body'))+'</p>';
+      h+='<div class="ss-btns"><button class="ss-btn pri" type="button" data-ss="inc">'+esc(t('b_add_inc'))+'</button><button class="ss-btn" type="button" data-ss="bud">'+esc(t('b_budget'))+'</button></div>';
+      h+='<button class="ss-btn" style="width:100%;margin-top:8px" type="button" data-ss="x" data-close aria-label="סגור">'+esc(t('b_close'))+'</button></div>';
+      P.innerHTML=h; return;
+    }
+    var big=c.state==='over'?F(c.overBy):c.state==='today'?F(c.overToday):F(Math.max(0,c.todayLeft));
+    var ttl=c.state==='over'?t('ttl_over'):c.state==='today'?t('ttl_today'):t('title');
+    h+='<small id="ss-ttl">'+esc(ttl)+'</small><b class="ss-big" style="color:'+col+'">'+esc(big)+'</b>';
+    h+='<div class="ss-sub">'+(c.state==='over'?'':tH('of_daily',{a:F(c.daily)})+' · ')+(c.daysLeft<=1?tH('last_day'):tH('days_left',{n:c.daysLeft}))+'</div>';
+    if(c.state!=='over' && c.daily>0){ var pct=Math.max(0,Math.min(100,Math.round(c.spT/c.daily*100)));
+      h+='<div class="ss-bar"><i style="width:'+pct+'%;background:'+col+'"></i></div><div class="ss-barl"><span>'+esc(t('spent_today'))+' <b>'+esc(F(c.spT))+'</b></span><b>'+esc(F(c.daily))+'</b></div>'; }
+    h+='</div><div class="ss-b">';
+    var paceTxt=c.state==='over'?t('pace_over'):c.paceFast?t('pace_tight'):t('pace_ok'), pcol=c.state==='over'?'var(--r)':c.paceFast?'var(--a)':'var(--g)';
+    var fc=c.forecast==null?'<b class="t">'+esc(t('too_early'))+'</b>':'<b style="color:'+(c.forecast>=0?'var(--g)':'var(--r)')+'">'+esc(F(c.forecast))+'</b>';
+    var wk=Math.max(0,c.weekLeft);
+    var cell1=c.state==='over' ? '<div><small>'+esc(t('r_today'))+'</small><b>'+esc(F(c.spT))+'</b></div>' : '<div><small>'+esc(t('week'))+'</small><b>'+esc(F(wk))+'</b></div>';
+    var cell2=c.state==='over' ? '<div><small>'+esc(t('days_n'))+'</small><b>'+c.daysLeft+'</b></div>' : '<div><small>'+esc(t('daily'))+'</small><b>'+esc(F(c.daily))+'</b></div>';
+    h+='<div class="ss-grid">'+cell1+cell2+
+      '<div><small>'+esc(t('pace'))+'</small><b class="t" style="color:'+pcol+'">'+esc(paceTxt)+'</b></div>'+
+      '<div><small>'+esc(t('forecast'))+'</small>'+fc+'</div></div>';
+    h+='<div class="ss-tip"><span>\uD83D\uDCA1</span><span>'+tipFor(c)+'</span></div>';
+    h+='<div class="ss-sec">'+esc(t('how'))+'</div><div class="ss-calc">';
+    var ov=c.state==='over', vv=ov?0:c.spT;
+    if(c.basis==='income'){
+      h+='<div><span>'+esc(t('r_inc'))+'</span><em>'+esc(F(c.incCyc+c.fxInc))+'</em></div>'+
+         '<div><span>'+esc(t('r_fixed'))+'</span><em>\u2212'+esc(F(c.fxExp))+'</em></div>'+
+         '<div><span>'+esc(t(ov?'r_var_all':'r_var'))+'</span><em>\u2212'+esc(F(c.varCyc-vv))+'</em></div>';
+    } else {
+      h+='<div><span>'+esc(t('r_budget'))+'</span><em>'+esc(F(c.bSum))+'</em></div>'+
+         '<div><span>'+esc(t('r_bspent'))+'</span><em>\u2212'+esc(F(c.bSpent-vv))+'</em></div>';
+    }
+    if(ov) h+='<div class="tot"><span>'+esc(t('r_left'))+'</span><em style="color:var(--r)">'+esc(F(c.left))+'</em></div></div>';
+    else h+='<div class="tot"><span>'+esc(t('r_left'))+'</span><em>'+esc(F(c.pool))+'</em></div>'+
+       '<div><span>'+esc(t('r_days'))+'</span><em>'+c.daysLeft+'</em></div>'+
+       '<div class="tot"><span>'+esc(t('r_perday'))+'</span><em>'+esc(F(c.daily))+'</em></div></div>';
+    if(c.basis==='budget') h+='<div class="ss-note" style="margin-top:8px">'+esc(t('basis_budget'))+'</div>';
+    if(c.budgets.length){
+      h+='<div class="ss-sec">'+esc(t('cats'))+'</div>';
+      c.budgets.slice(0,3).forEach(function(b){
+        var over=b.left<0, pd2=b.left>0?Math.floor(b.left/c.daysLeft):0;
+        h+='<div class="ss-cat"><span>'+esc(b.name)+'</span><small>'+(over?'':tH('cat_left',{a:F(b.left)}))+'</small><em style="color:'+(over?'var(--r)':b.ratio>=0.8?'var(--a)':'var(--g)')+'">'+(over?tH('cat_over',{a:F(-b.left)}):tH('cat_per_day',{a:F(pd2)}))+'</em></div>';
+      });
+    }
+    h+='<div class="ss-note">'+esc(t('note'))+'</div>';
+    h+='<button class="ss-btn" style="width:100%;margin-top:14px" type="button" data-ss="x" data-close aria-label="סגור">'+esc(t('b_close'))+'</button></div>';
+    P.innerHTML=h;
+  }
+  window.openSafeSpend=function(){
+    var c=null; try{ c=calc(); }catch(e){}
+    if(!c||c.state==='off'||c.state==='none') return;
+    var sh=$('ss-overlay'); sh.setAttribute('dir',(window._i18n&&window._i18n[L()]&&window._i18n[L()].dir)||'rtl');
+    fill(c); sh.classList.add('open'); document.body.style.overflow='hidden';
+  };
+  window.closeSafeSpend=function(){ $('ss-overlay').classList.remove('open'); document.body.style.overflow=''; };
+  document.addEventListener('click',function(e){
+    var tg=e.target; if(!tg) return;
+    if(tg.id==='ss-overlay'){ window.closeSafeSpend(); return; }
+    var b=tg.closest&&tg.closest('[data-ss]'); if(!b) return;
+    var a=b.getAttribute('data-ss'); window.closeSafeSpend();
+    if(a==='inc'){ var bi=$('btn-add-income'); if(bi) setTimeout(function(){ bi.click(); },120); }
+    else if(a==='bud'){ try{ window.switchView&&window.switchView('categories'); }catch(_){} }
+  });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&$('ss-overlay').classList.contains('open')) window.closeSafeSpend(); });
+  function soon(){ clearTimeout(T); T=setTimeout(render,350); }
+  var bd=$('balance-display');
+  if(bd){ try{ new MutationObserver(soon).observe(bd,{childList:true,characterData:true,subtree:true}); }catch(e){} }
+  /* קטגוריות/תקציבים משתנים בלי שהיתרה זזה — הרשימה בעמוד הקטגוריות מתרנדרת מחדש */
+  var cl=$('cat-list2'); if(cl){ try{ new MutationObserver(soon).observe(cl,{childList:true}); }catch(e){} }
+  if(typeof window._applyLang==='function' && !window._applyLang._ssWrapped){
+    var _o=window._applyLang; window._applyLang=function(){ var r=_o.apply(this,arguments); try{ soon(); }catch(e){} return r; };
+    for(var p in _o) if(Object.prototype.hasOwnProperty.call(_o,p)) window._applyLang[p]=_o[p];
+    window._applyLang._ssWrapped=true;
+  }
+  document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') soon(); });
+  /* מעבר יום כשהאפליקציה פתוחה — בדיקה מקומית בלבד, בלי רשת */
+  var lastDay=new Date().getDate();
+  setInterval(function(){ if(document.visibilityState==='hidden') return; var d=new Date().getDate(); if(d!==lastDay){ lastDay=d; render(); } },60000);
+  /* שורת הכפתורים: שניים → זה ליד זה ברוחב שווה; אחד → במרכז; אף אחד → השורה מוסתרת (בלי רשת) */
+  function rowSync(){ var r=$('ss-row'); if(!r) return; var a=$('ss-pill'), b=$('carry-pill');
+    var va=!!(a&&!a.classList.contains('hidden')), vb=!!(b&&!b.classList.contains('hidden'));
+    r.classList.toggle('ss-two',va&&vb); r.classList.toggle('ss-none',!va&&!vb); }
+  try{ var RO=new MutationObserver(rowSync); ['ss-pill','carry-pill'].forEach(function(id){ var e=$(id); if(e) RO.observe(e,{attributes:true,attributeFilter:['class']}); }); }catch(e){}
+  rowSync();
+  setTimeout(render,1500); setTimeout(render,5000);
 })();
 </script>
 
