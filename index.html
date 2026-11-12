@@ -19315,7 +19315,9 @@ body.theme-light .mk-chip:focus-within { box-shadow:0 0 0 3px var(--au-teal-lt,r
 .imp-bank{display:flex;align-items:center;gap:10px;padding:11px 11px;border-radius:15px;cursor:pointer;text-align:right;font-family:inherit;color:inherit;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);-webkit-tap-highlight-color:transparent;min-width:0;transition:transform .15s ease,border-color .15s ease}
 .imp-bank:active{transform:scale(.97)}
 .imp-bank.sel{border-color:rgba(0,229,255,.55);background:rgba(0,229,255,.07)}
-.imp-bank .b-av{width:36px;height:36px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#fff;letter-spacing:-.3px;box-shadow:0 0 0 2px rgba(255,255,255,.08) inset}
+.imp-bank .b-av{position:relative;overflow:hidden;width:36px;height:36px;flex-shrink:0;border-radius:11px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#fff;letter-spacing:-.3px;box-shadow:0 0 0 2px rgba(255,255,255,.08) inset}
+/* לוגו המוסד (קבצים מקומיים ב-logos/); אם התמונה לא נטענת נשארת האות הצבעונית */
+.imp-bank .b-logo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;background:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.1) inset}
 .imp-bank .b-n{display:block;font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .imp-bank .b-s{display:block;font-size:10.5px;font-weight:600;color:var(--muted,rgba(255,255,255,.45))}
 .imp-bank.sel .b-s{color:#00E5FF}
@@ -19337,6 +19339,7 @@ body.theme-light .imp-choice .c-ico{background:rgba(0,0,0,.04);border-color:rgba
 body.theme-light .imp-choice.pri .c-ico{background:rgba(0,82,224,.1);border-color:rgba(0,82,224,.25)}
 body.theme-light .imp-choice .c-d,body.theme-light .imp-bank .b-s,body.theme-light .imp-sec,body.theme-light .imp-hint{color:rgba(11,18,32,.55)}
 body.theme-light .imp-bank.sel{border-color:rgba(0,82,224,.5);background:rgba(0,82,224,.06)}
+body.theme-light .imp-bank .b-logo{box-shadow:0 0 0 1px rgba(11,18,32,.09) inset}
 body.theme-light .imp-back-banner{border-color:rgba(0,82,224,.22);background:rgba(0,82,224,.05)}
 body.theme-light .imp-sheet{background:linear-gradient(180deg,#ffffff,#f4f7fb);color:#0b1220;border-color:rgba(0,82,224,.15)}
 body.theme-light .imp-head,body.theme-light .imp-foot{border-color:rgba(0,0,0,.07)}
@@ -19613,7 +19616,7 @@ body.theme-light .rc-why.lump{color:#6b4fd0}
   function bankBtn(b){
     var sel = S.bank && S.bank.k === b.k;
     return '<button class="imp-bank' + (sel ? ' sel' : '') + '" type="button" data-k="' + b.k + '">' +
-      '<span class="b-av" style="background:' + b.c + (b.av.length > 2 ? ';font-size:10px' : '') + '">' + esc(b.av) + '</span>' +
+      '<span class="b-av" style="background:' + b.c + (b.av.length > 2 ? ';font-size:10px' : '') + '">' + esc(b.av) + '<img class="b-logo" src="logos/' + b.k + '.webp" alt="" width="36" height="36" decoding="async" onerror="this.remove()"></span>' +
       '<span style="min-width:0"><span class="b-n">' + esc(b.n) + '</span><span class="b-s">' + (sel ? 'נפתח ✓' : (b.card ? 'פירוט עסקאות' : 'עו״ש')) + '</span></span></button>';
   }
   function renderBanks(){
